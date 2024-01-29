@@ -11,7 +11,7 @@
 #define __I3C_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -22,7 +22,7 @@
 /**
     @addtogroup I3C I3C Serial Interface Controller (I3C)
     Memory Mapped Structure for I3C Controller
-    @{ 
+    @{
 */
 
 typedef struct
@@ -118,7 +118,7 @@ typedef struct
 /**
     @addtogroup I3C_CONST I3C Bit Field Definition
     Constant Definitions for I3C Controller
-    @{ 
+    @{
 */
 
 #define I3C_DEVCTL_IBAINCL_Pos          (0U)
@@ -651,7 +651,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __I3C_REG_H__ */

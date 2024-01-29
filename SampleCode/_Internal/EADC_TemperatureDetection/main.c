@@ -60,7 +60,7 @@ void SYS_Init(void)
     /* Workaround(TESTCHIP_ONLY)  */
     /* If the ADC clock is divided, the conversion result value will deviate, so only the PCLK0 clock can be divided. */
     /* PCLK0 clock divider 15 */
-     CLK_SET_PCLK0DIV(15);
+    CLK_SET_PCLK0DIV(15);
     /* Enable EADC peripheral clock */
     CLK_SetModuleClock(EADC0_MODULE, CLK_EADCSEL_EADC0SEL_PCLK0, CLK_EADCDIV_EADC0DIV(1));
 
@@ -70,7 +70,7 @@ void SYS_Init(void)
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
     SystemCoreClockUpdate();
-    
+
     /* Debug UART clock setting*/
     SetDebugUartCLK();
 
@@ -91,14 +91,14 @@ void SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 double GetTemperature(void)
 {
-     /* The equation of converting to real temperature is as below
-     *      Vtemp = Tc * (temperature - Ta) + dmVoffset
-     *      Vtemp = EADC_result / 4095 * ADC_Vref
-     *      so, temperature = Ta + (Vtemp - Vtemp_os) / Tc
-     *                      = Ta + ((dTemperatureData / 4095 * ADC_Vref) - dmVoffset) / dTc
-     *      where Vtemp_os, Tc, and Ta can be got from the data sheet document.
-     *            ADC_Vref is the ADC Vref that according to the configuration of SYS and EADC.
-     */
+    /* The equation of converting to real temperature is as below
+    *      Vtemp = Tc * (temperature - Ta) + dmVoffset
+    *      Vtemp = EADC_result / 4095 * ADC_Vref
+    *      so, temperature = Ta + (Vtemp - Vtemp_os) / Tc
+    *                      = Ta + ((dTemperatureData / 4095 * ADC_Vref) - dmVoffset) / dTc
+    *      where Vtemp_os, Tc, and Ta can be got from the data sheet document.
+    *            ADC_Vref is the ADC Vref that according to the configuration of SYS and EADC.
+    */
     uint32_t u32Ta = 25;
     double dmVoffset = 1030;
     double dTc = -2.7;
@@ -112,7 +112,7 @@ double GetTemperature(void)
     dmVT = (dTemperatureData  / 4095) * 3300;
 
     /* Get temperature with temperature sensor */
-    dT = u32Ta +((dmVT - dmVoffset) / (dTc));
+    dT = u32Ta + ((dmVT - dmVoffset) / (dTc));
 
     return (dT);
 }

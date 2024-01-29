@@ -14,7 +14,7 @@
 
 uint8_t volatile g_u8Suspend = 0;
 static uint8_t s_u8Idle = 0, s_u8Protocol = 0;
-uint8_t Led_Status[8]={0};
+uint8_t Led_Status[8] = {0};
 
 /*--------------------------------------------------------------------------*/
 /**

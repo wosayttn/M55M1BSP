@@ -150,6 +150,7 @@ void GenPrivateKey(char *d, uint32_t u32NBits)
     uint32_t u32Idx;
 
     u8r = (uint8_t *)&au32r[0];
+
     do
     {
         /* Generate random number for private key */
@@ -160,6 +161,7 @@ void GenPrivateKey(char *d, uint32_t u32NBits)
             d[j++] = B2C(u8r[u32Idx] & 0xf);
             d[j++] = B2C(u8r[u32Idx] >> 4);
         }
+
         d[(u32NBits + 3) / 4] = 0;
 
         /* Check if the private key valid */
@@ -171,14 +173,17 @@ void GenPrivateKey(char *d, uint32_t u32NBits)
         {
             /* Decrease 1 bit and try again */
             d[(u32NBits + 2) / 4] = 0;
+
             if (ECC_IsPrivateKeyValid(CRYPTO, ECC_CURVE_TYPE, d))
             {
                 if (((u32NBits & 0x3) != 0) && (((u32NBits - 1) & 0x3) == 0))
                 {
                     /* Need padding 1 nibble back */
                     j = (u32NBits + 2) / 4;
+
                     for (i = j; i > 0; i--)
                         d[i] = d[i - 1];
+
                     d[i + 1] = 0;
                     d[0] = '0';
                 }
@@ -191,8 +196,7 @@ void GenPrivateKey(char *d, uint32_t u32NBits)
                 printf("Current private key is not valid. Need a new one.\n");
             }
         }
-    }
-    while (1);
+    } while (1);
 
 }
 
@@ -244,11 +248,13 @@ int32_t main(void)
     /* Generate public Key A */
     /* Reset SysTick to measure calculation time */
     SysTick->VAL = 0;
+
     if (ECC_GeneratePublicKey(CRYPTO, ECC_CURVE_TYPE, d, Qx, Qy) < 0)
     {
         printf("ECC key generation failed!!\n");
         return -1;
     }
+
     u32Time = 0xffffff - SysTick->VAL;
 
     printf("Pub Key    Ax = %s\n", Qx);
@@ -264,11 +270,13 @@ int32_t main(void)
     /* Generate public Key B */
     /* Reset SysTick to measure calculation time */
     SysTick->VAL = 0;
+
     if (ECC_GeneratePublicKey(CRYPTO, ECC_CURVE_TYPE, d2, Qx2, Qy2) < 0)
     {
         printf("ECC key generation failed!!\n");
         return -1;
     }
+
     u32Time = 0xffffff - SysTick->VAL;
 
     printf("Pub Key     Bx = %s\n", Qx2);

@@ -65,16 +65,16 @@ static volatile int  g_CHA_done;
 
 uint8_t au8TestKeyCHA[32] =
 {
-    0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 
-	0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
-	0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 
-	0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f
+    0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+    0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+    0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
+    0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f
 };
 
 uint8_t au8TestNonceCHA[12] =
 {
     0x00, 0x00, 0x00, 0x09, 0x00, 0x00,
-	0x00, 0x4a, 0x00, 0x00, 0x00, 0x00
+    0x00, 0x4a, 0x00, 0x00, 0x00, 0x00
 };
 
 //-----------------------------------------------------------------------//
@@ -100,7 +100,7 @@ void CRYPTO_IRQHandler()
         AES_CLR_INT_FLAG(CRYPTO);
         CU_ASSERT_FALSE(CRYPTO->INTSTS & (CRYPTO_INTSTS_AESIF_Msk | CRYPTO_INTSTS_AESEIF_Msk));
     }
-	
+
     if (CHAPOLY_GET_INT_FLAG(CRYPTO))
     {
         CU_ASSERT_TRUE(CRYPTO->INTSTS & (CRYPTO_INTSTS_CHAPOLYIF_Msk | CRYPTO_INTSTS_CHAPOLYEIF_Msk));
@@ -108,7 +108,7 @@ void CRYPTO_IRQHandler()
         CHAPOLY_CLR_INT_FLAG(CRYPTO);
         CU_ASSERT_FALSE(CRYPTO->INTSTS & (CRYPTO_INTSTS_CHAPOLYIF_Msk | CRYPTO_INTSTS_CHAPOLYEIF_Msk));
     }
-		
+
 }
 
 
@@ -156,7 +156,7 @@ void Crypto_Const_AES()
 
 void Crypto_Const_CHAPOLY()
 {
-	CU_ASSERT(CHAPOLY_MODE_CHACHA20 == 0);
+    CU_ASSERT(CHAPOLY_MODE_CHACHA20 == 0);
     CU_ASSERT(CHAPOLY_MODE_POLY1305 == 1);
     CU_ASSERT(CHAPOLY_MODE_AEAD == 2);
 }
@@ -216,10 +216,10 @@ void MACRO_CHAPOLY_ENABLE_INT()
     CRYPTO->INTEN = 0;
 
     CHAPOLY_ENABLE_INT(CRYPTO);
-    CU_ASSERT_TRUE((CRYPTO->INTEN & (CRYPTO_INTEN_CHAPOLYIEN_Msk|CRYPTO_INTEN_CHAPOLYEIEN_Msk)) ==  (CRYPTO_INTEN_CHAPOLYIEN_Msk|CRYPTO_INTEN_CHAPOLYEIEN_Msk));
-	
+    CU_ASSERT_TRUE((CRYPTO->INTEN & (CRYPTO_INTEN_CHAPOLYIEN_Msk | CRYPTO_INTEN_CHAPOLYEIEN_Msk)) == (CRYPTO_INTEN_CHAPOLYIEN_Msk | CRYPTO_INTEN_CHAPOLYEIEN_Msk));
+
     CHAPOLY_DISABLE_INT(CRYPTO);
-    CU_ASSERT_FALSE(CRYPTO->INTEN & (CRYPTO_INTEN_CHAPOLYIEN_Msk|CRYPTO_INTEN_CHAPOLYEIEN_Msk));
+    CU_ASSERT_FALSE(CRYPTO->INTEN & (CRYPTO_INTEN_CHAPOLYIEN_Msk | CRYPTO_INTEN_CHAPOLYEIEN_Msk));
 }
 
 
@@ -229,13 +229,13 @@ void MACRO_CHAPOLY_INT_FLAG()
 
     CHAPOLY_CLR_INT_FLAG(CRYPTO);
     CU_ASSERT_FALSE(CRYPTO->INTSTS & (CRYPTO_INTSTS_CHAPOLYIF_Msk | CRYPTO_INTSTS_CHAPOLYEIF_Msk));
-    
+
     CHA_SetKeyandNonce(CRYPTO, au8TestKeyCHA, au8TestNonceCHA, 1);
     CHA_SetDMATransfer(CRYPTO, au8InputData, au8OutputData, sizeof(au8InputData));
     CHA_Start(CRYPTO, 1);
 
     while (!g_CHA_done);
-	
+
 }
 //---------------------API-------------------------------------//
 void API_AES_Open()
@@ -428,14 +428,14 @@ void API_AES_Start()
 void API_CHAPOLY_SetKeyNounceCounter()
 {
     uint8_t  *key_ptr;
-	uint8_t  *nonce_ptr;
-	uint8_t counter =1;
-	int       i;
+    uint8_t  *nonce_ptr;
+    uint8_t counter = 1;
+    int       i;
 
     key_ptr = (uint8_t *)((uint32_t)&CRYPTO->CHAPOLY_KEY[0]);
     nonce_ptr = (uint8_t *)((uint32_t)&CRYPTO->CHAPOLY_NONCE[0]);
-    
-	for (i = 0; i < 32; i++)
+
+    for (i = 0; i < 32; i++)
         key_ptr[i] = 0;
 
     CHA_SetKeyandNonce(CRYPTO, au8TestKeyCHA, au8TestNonceCHA, counter);
@@ -445,8 +445,8 @@ void API_CHAPOLY_SetKeyNounceCounter()
 
     for (i = 0; i < 12; i++)
         CU_ASSERT(nonce_ptr[i] == au8TestNonceCHA[i]);
-	
-	CU_ASSERT((CRYPTO->CHAPOLY_CNT)==counter);
+
+    CU_ASSERT((CRYPTO->CHAPOLY_CNT) == counter);
 
     CU_PASS();
 }
@@ -457,15 +457,15 @@ void API_CHAPOLY_Start()
 
     CHAPOLY_ENABLE_INT(CRYPTO);
     CHAPOLY_CLR_INT_FLAG(CRYPTO);
-        
+
     CHA_SetKeyandNonce(CRYPTO, au8TestKeyCHA, au8TestNonceCHA, 1);
     CHA_SetDMATransfer(CRYPTO, au8InputData, au8OutputData, sizeof(au8InputData));
-	
-	CHA_Start(CRYPTO, 1);
+
+    CHA_Start(CRYPTO, 1);
     CU_ASSERT(CRYPTO->CHAPOLY_CTL & CRYPTO_CHAPOLY_CTL_ENCRYPTO_Msk);
 
-	  while (!g_CHA_done);
-	
+    while (!g_CHA_done);
+
     CU_PASS();
 }
 
@@ -474,16 +474,16 @@ CU_TestInfo Crypto_ConstantTests[] =
 {
     {"Crypto CONST AES", Crypto_Const_AES},
     {"Crypto CONST AES", Crypto_Const_DMA},
-	{"Crypto CONST CHAPOLY", Crypto_Const_CHAPOLY},
+    {"Crypto CONST CHAPOLY", Crypto_Const_CHAPOLY},
     CU_TEST_INFO_NULL
 };
 
 CU_TestInfo Crypto_MacroTests[] =
 {
     {"Enable/Disable AES interrupt", MACRO_AES_ENABLE_INT},
-    {"Get/Clear AES interrupt flag", MACRO_AES_INT_FLAG},		
+    {"Get/Clear AES interrupt flag", MACRO_AES_INT_FLAG},
     {"Enable/Disable AES key protect", MACRO_AES_KEY_PROTECT},
-	{"Enable/Disable CHAPOLY interrupt", MACRO_CHAPOLY_ENABLE_INT},
+    {"Enable/Disable CHAPOLY interrupt", MACRO_CHAPOLY_ENABLE_INT},
     {"Get/Clear CHAPOLY interrupt flag", MACRO_CHAPOLY_INT_FLAG},
     CU_TEST_INFO_NULL
 };
@@ -495,9 +495,9 @@ CU_TestInfo Crypto_ApiTests[] =
     {"AES_SetInitVect", API_AES_SetInitVect},
     {"AES_SetDMATransfer", API_AES_SetDMATransfer},
     {"AES_Start", API_AES_Start},
-	{"CHAPOLY_Start", API_CHAPOLY_Start},		
-	{"CHAPOLY_SetKeyNonceCounter", API_CHAPOLY_SetKeyNounceCounter},
-		
+    {"CHAPOLY_Start", API_CHAPOLY_Start},
+    {"CHAPOLY_SetKeyNonceCounter", API_CHAPOLY_SetKeyNounceCounter},
+
     CU_TEST_INFO_NULL
 };
 

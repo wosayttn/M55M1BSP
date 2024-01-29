@@ -36,27 +36,27 @@ void SYS_Init(void);
 NVT_ITCM void DAC01_IRQHandler(void)
 {
     if (DAC_GET_INT_FLAG(DAC0, 0) && (DAC_GET_INT_FLAG(DAC1, 0))
-    {
-        /* Clear the DAC conversion complete finish flag */
-        DAC_CLR_INT_FLAG(DAC0, 0);
+{
+    /* Clear the DAC conversion complete finish flag */
+    DAC_CLR_INT_FLAG(DAC0, 0);
         /* Clear the DAC conversion complete finish flag */
         DAC_CLR_INT_FLAG(DAC1, 0);
-        
+
         g_u16Dac0Data = g_au16Sine[g_u32Index];
         g_u16Dac1Data = g_au16Sine[g_u32Index >= g_u32ArraySize / 2 ? g_u32Index - g_u32ArraySize / 2 : g_u32Index + g_u32ArraySize / 2];
-        
+
         if (++g_u32Index == g_u32ArraySize)
-            g_u32Index = 0; 
+            g_u32Index = 0;
 
         /* Set DAC 12-bit Group data */
-       DAC_GROUP_WRITE_DATA(g_u16Dac0Data,g_u16Dac1Data);
+        DAC_GROUP_WRITE_DATA(g_u16Dac0Data, g_u16Dac1Data);
 
-       g_u32GroupDacDone = 1;
+        g_u32GroupDacDone = 1;
     }
 
     if (g_u32GroupDacDone == 1)
-    {
-        DAC_START_CONV(DAC0);
+{
+    DAC_START_CONV(DAC0);
         g_u32GroupDacDone = 0;
     }
 
@@ -101,16 +101,16 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
-    GPIO_SetMode(PB,BIT12 | BIT13,GPIO_MODE_INPUT);
-     /* Set multi-function pin for DAC voltage output */
+    GPIO_SetMode(PB, BIT12 | BIT13, GPIO_MODE_INPUT);
+    /* Set multi-function pin for DAC voltage output */
     SET_DAC0_OUT_PB12();//conflict with UART0_RXD pin
     SET_DAC1_OUT_PB13();//conflict with UART0_TXD pin
 
     /* Disable digital input path of analog pin DAC0_OUT and DAC1_OUT to prevent leakage */
-    GPIO_DISABLE_DIGITAL_PATH(PB,BIT12 | BIT13 );
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT12 | BIT13);
     /* Set PB multi-function pins for Debug UART RXD and TXD */
     SetDebugUartMFP();
-  
+
 
 
 }
@@ -155,7 +155,7 @@ int32_t main(void)
     g_u16Dac0Data = g_au16Sine[0];
     g_u16Dac1Data = g_au16Sine[g_u32ArraySize / 2];
     /* Set DAC 12-bit Group data */
-    DAC_GROUP_WRITE_DATA(g_u16Dac0Data,g_u16Dac1Data);
+    DAC_GROUP_WRITE_DATA(g_u16Dac0Data, g_u16Dac1Data);
 
 
     /* Clear the DAC conversion complete finish flag for safe */

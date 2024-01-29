@@ -27,33 +27,33 @@
 void tcp_echoserver_serve(struct netconn *conn)
 {
     struct netbuf *inbuf;
-    char* buf;
+    char *buf;
     u16_t buflen;
     char string_pass[] = "Hello World!!";
     char string_fail[] = "Wrong Password!!";
 
     printf("Wait for TCP data  ...\n");
 
-    while (netconn_recv(conn, &inbuf) == ERR_OK) 
+    while (netconn_recv(conn, &inbuf) == ERR_OK)
     {
-        do 
+        do
         {
-            netbuf_data(inbuf, (void**)&buf, &buflen);
+            netbuf_data(inbuf, (void **)&buf, &buflen);
+
             if (strncmp(buf, "nuvoton", 7) == 0)
             {
-                netconn_write(conn, (const unsigned char*)string_pass, (size_t)strlen(string_pass), NETCONN_NOCOPY);
+                netconn_write(conn, (const unsigned char *)string_pass, (size_t)strlen(string_pass), NETCONN_NOCOPY);
                 printf("Response [ %s ] to client.\n", string_pass);
             }
             else
             {
-                netconn_write(conn, (const unsigned char*)string_fail, (size_t)strlen(string_fail), NETCONN_NOCOPY);
+                netconn_write(conn, (const unsigned char *)string_fail, (size_t)strlen(string_fail), NETCONN_NOCOPY);
                 printf("Response [ %s ] to client.\n", string_fail);
             }
-        } 
-        while (netbuf_next(inbuf) >= 0);
+        } while (netbuf_next(inbuf) >= 0);
 
         netbuf_delete(inbuf);
-    }    
+    }
 }
 
 /**
@@ -70,7 +70,7 @@ static void tcp_echoserver_netconn_thread(void *arg)
     /* Create a new TCP connection handle */
     conn = netconn_new(NETCONN_TCP);
 
-    if (conn!= NULL)
+    if (conn != NULL)
     {
         /* Bind to port 80 (HTTP) with default IP address */
         err = netconn_bind(conn, NULL, server_port);
@@ -80,7 +80,7 @@ static void tcp_echoserver_netconn_thread(void *arg)
             /* Put the connection into LISTEN state */
             netconn_listen(conn);
 
-            while(1)
+            while (1)
             {
                 printf("Wait for TCP connection ...");
 
@@ -93,9 +93,9 @@ static void tcp_echoserver_netconn_thread(void *arg)
 
                     /* serve connection */
                     tcp_echoserver_serve(newconn);
-                    
+
                     printf("\tClose TCP connection ... OK\n");
-                    
+
                     /* Close connection and delete connection */
                     netconn_close(newconn);
                     netconn_delete(newconn);

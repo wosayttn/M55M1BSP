@@ -51,6 +51,7 @@ NVT_ITCM void LPTMR0_IRQHandler(void)
     {
         cnt = 0;
     }
+
     __DSB();
     __ISB();
 }

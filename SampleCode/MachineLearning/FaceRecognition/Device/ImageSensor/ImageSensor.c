@@ -65,8 +65,8 @@ void CCAP_IRQHandler(void)
     }
 
     CCAP->CTL = CCAP->CTL | CCAP_CTL_UPDATE;
-	__DSB();
-	__ISB();
+    __DSB();
+    __ISB();
 }
 
 #define CLK_CCAPSEL_CCAP0SEL_HCLK2           (0x1UL << CLK_CCAPSEL_CCAP0SEL_Pos)         /*!< Select CCAP sensor clock source from HIRC \hideinitializer */
@@ -129,7 +129,7 @@ static void MFP_ConfigCCAP(uint32_t bConfigCCAP)
         SET_GPIO_PG9();
         SET_GPIO_PG10();
         SET_GPIO_PG12();
-        SET_GPIO_PG13();		
+        SET_GPIO_PG13();
 #else
         // ETM Adapater Board Sensor 0
         SET_GPIO_PB13();
@@ -137,7 +137,7 @@ static void MFP_ConfigCCAP(uint32_t bConfigCCAP)
         SET_GPIO_PB10();
         SET_GPIO_PB9();
 #endif
-	}
+    }
     else
     {
 
@@ -153,10 +153,10 @@ static void MFP_ConfigCCAP(uint32_t bConfigCCAP)
 
 #if 1
         // NuMaker-M55M1 Sensor 0
-		SET_CCAP_PIXCLK_PG9();
-		SET_CCAP_SCLK_PG10();
-		SET_CCAP_VSYNC_PG12();
-		SET_CCAP_HSYNC_PG13();	
+        SET_CCAP_PIXCLK_PG9();
+        SET_CCAP_SCLK_PG10();
+        SET_CCAP_VSYNC_PG12();
+        SET_CCAP_HSYNC_PG13();
 #else
         // ETM Adapater Board Sensor 0
         SET_CCAP_PIXCLK_PB13();
@@ -164,7 +164,7 @@ static void MFP_ConfigCCAP(uint32_t bConfigCCAP)
         SET_CCAP_VSYNC_PB10();
         SET_CCAP_HSYNC_PB9();
 #endif
-	}
+    }
 }
 
 static S_SENSOR_INFO *s_psSensorInfo = NULL;
@@ -180,7 +180,7 @@ int ImageSensor_Init(void)
     s_psSensorInfo = &g_sSensorHM1055_VGA_YUV422;
     //i32RetCode = s_psSensorInfo->m_pfnInitFunc(8);
 
-	/* Initialize sensor and set sensor output format as YUV422 */
+    /* Initialize sensor and set sensor output format as YUV422 */
     if (s_psSensorInfo->pfnInitSensor(0) == FALSE) return -1;
 
     return 0;
@@ -242,7 +242,7 @@ int ImageSensor_TriggerCapture(uint32_t u32FrameBufAddr)
 
     /* Trigger image capture */
     CCAP_Start();
-	CCAP->CTL |= CCAP_CTL_SHUTTER_Msk;
+    CCAP->CTL |= CCAP_CTL_SHUTTER_Msk;
 
     return 0;
 }
@@ -251,10 +251,10 @@ int ImageSensor_WaitCaptureDone(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock << 1; /* 2 second */
 
-	while (!CCAP_IS_STOPPED())
-	{
-		if (--u32TimeOutCnt == 0) return CCAP_ERR_TIMEOUT;
-	}
+    while (!CCAP_IS_STOPPED())
+    {
+        if (--u32TimeOutCnt == 0) return CCAP_ERR_TIMEOUT;
+    }
 
-	return 0;
+    return 0;
 }

@@ -44,10 +44,10 @@
 
 //#define DEBUG
 #ifdef DEBUG
-#undef TR
-#  define TR(fmt, args...) printf("SynopGMAC: " fmt, ##args)
+    #undef TR
+    #define TR(fmt, args...) printf("SynopGMAC: " fmt, ##args)
 #else
-# define TR(fmt, args...) /* not debugging: nothing */
+    #define TR(fmt, args...) /* not debugging: nothing */
 #endif
 
 typedef unsigned char   u8;         ///< Define 8-bit unsigned data type

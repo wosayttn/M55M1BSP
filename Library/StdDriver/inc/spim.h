@@ -1179,7 +1179,7 @@ typedef enum
   */
 #define SPIM_GET_PHDMAR_ADDR_DTR(spim)   \
     ((spim->PHDMAR & SPIM_PHDMAR_DTR_ADDR_Msk) >> SPIM_PHDMAR_DTR_ADDR_Pos)
-	
+
 /**
   * @brief   Set SPI Interface Bit Mode for Address Phase.
   * @param[in]   spim
@@ -1250,7 +1250,7 @@ typedef enum
   */
 #define SPIM_GET_PHDMAR_DATA_DTR(spim)   \
     ((spim->PHDMAR & SPIM_PHDMAR_DTR_DATA_Msk) >> SPIM_PHDMAR_DTR_DATA_Pos)
-	
+
 /**
   * @brief   Disable Double Transfer Rate Mode for Data Phase.
   * @param[in]   spim

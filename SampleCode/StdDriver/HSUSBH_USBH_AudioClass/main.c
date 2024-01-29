@@ -127,7 +127,7 @@ void SYS_Init(void)
 
 #if (USE_USB_APLL1_CLOCK)
     /* Enable APLL1 96MHz clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);    
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);
 #endif
 
     /* Enable GPIOA module clock */

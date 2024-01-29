@@ -40,7 +40,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     SYS_Init();
     /* Init Debug UART for print message */
     InitDebugUart();
-    
+
     printf("\n\n");
     printf("+--------------------------------------+\n");
     printf("|         M55M1 RNG CUnit Test         |\n");

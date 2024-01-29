@@ -296,53 +296,53 @@ void HID_ClassRequest(void)
         // Device to host
         switch (au8Buf[1])
         {
-        case GET_LINE_CODE:
-        {
-            if (au8Buf[4] == 0)   /* VCOM-1 */
+            case GET_LINE_CODE:
             {
-                USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_LineCoding, 7);
+                if (au8Buf[4] == 0)   /* VCOM-1 */
+                {
+                    USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_LineCoding, 7);
+                }
+
+                /* Data stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 7);
+                /* Status stage */
+                USBD_PrepareCtrlOut(0, 0);
+                break;
             }
 
-            /* Data stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 7);
-            /* Status stage */
-            USBD_PrepareCtrlOut(0, 0);
-            break;
-        }
+            case GET_REPORT:
 
-        case GET_REPORT:
+            //            {
+            //                break;
+            //            }
+            case GET_IDLE:
+            {
+                USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
+                /* Data stage */
+                USBD_PrepareCtrlIn(&s_u8Idle, au8Buf[6]);
+                /* Status stage */
+                USBD_PrepareCtrlOut(0, 0);
+                break;
+            }
 
-        //            {
-        //                break;
-        //            }
-        case GET_IDLE:
-        {
-            USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
-            /* Data stage */
-            USBD_PrepareCtrlIn(&s_u8Idle, au8Buf[6]);
-            /* Status stage */
-            USBD_PrepareCtrlOut(0, 0);
-            break;
-        }
+            case GET_PROTOCOL:
+            {
+                USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
+                /* Data stage */
+                USBD_PrepareCtrlIn(&s_u8Protocol, au8Buf[6]);
+                /* Status stage */
+                USBD_PrepareCtrlOut(0, 0);
+                break;
+            }
 
-        case GET_PROTOCOL:
-        {
-            USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
-            /* Data stage */
-            USBD_PrepareCtrlIn(&s_u8Protocol, au8Buf[6]);
-            /* Status stage */
-            USBD_PrepareCtrlOut(0, 0);
-            break;
-        }
-
-        default:
-        {
-            /* Setup error, stall the device */
-            USBD_SetStall(EP0);
-            USBD_SetStall(EP1);
-            break;
-        }
+            default:
+            {
+                /* Setup error, stall the device */
+                USBD_SetStall(EP0);
+                USBD_SetStall(EP1);
+                break;
+            }
         }
     }
     else
@@ -350,72 +350,72 @@ void HID_ClassRequest(void)
         // Host to device
         switch (au8Buf[1])
         {
-        case SET_CONTROL_LINE_STATE:
-        {
-            if (au8Buf[4] == 0)   /* VCOM-1 */
+            case SET_CONTROL_LINE_STATE:
             {
-                g_u16CtrlSignal = au8Buf[3];
-                g_u16CtrlSignal = (uint16_t)(g_u16CtrlSignal << 8) | au8Buf[2];
-                //printf("RTS=%d  DTR=%d\n", (g_u16CtrlSignal >> 1) & 1, g_u16CtrlSignal & 1);
+                if (au8Buf[4] == 0)   /* VCOM-1 */
+                {
+                    g_u16CtrlSignal = au8Buf[3];
+                    g_u16CtrlSignal = (uint16_t)(g_u16CtrlSignal << 8) | au8Buf[2];
+                    //printf("RTS=%d  DTR=%d\n", (g_u16CtrlSignal >> 1) & 1, g_u16CtrlSignal & 1);
+                }
+
+                /* Status stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+                break;
             }
 
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-            break;
-        }
-
-        case SET_LINE_CODE:
-        {
-            //g_USBD_u32UsbConfig = 0100;
-            if (au8Buf[4] == 0) /* VCOM-1 */
-                USBD_PrepareCtrlOut((uint8_t *)&g_LineCoding, 7);
-
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-
-            break;
-        }
-
-        case SET_REPORT:
-        {
-            if (au8Buf[3] == 3)
+            case SET_LINE_CODE:
             {
-                /* Request Type = Feature */
-                USBD_SET_DATA1(EP1);
-                USBD_SET_PAYLOAD_LEN(EP1, 0);
+                //g_USBD_u32UsbConfig = 0100;
+                if (au8Buf[4] == 0) /* VCOM-1 */
+                    USBD_PrepareCtrlOut((uint8_t *)&g_LineCoding, 7);
+
+                /* Status stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+
+                break;
             }
 
-            break;
-        }
+            case SET_REPORT:
+            {
+                if (au8Buf[3] == 3)
+                {
+                    /* Request Type = Feature */
+                    USBD_SET_DATA1(EP1);
+                    USBD_SET_PAYLOAD_LEN(EP1, 0);
+                }
 
-        case SET_IDLE:
-        {
-            s_u8Idle = au8Buf[3];
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-            break;
-        }
+                break;
+            }
 
-        case SET_PROTOCOL:
-        {
-            s_u8Protocol = au8Buf[2];
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-            break;
-        }
+            case SET_IDLE:
+            {
+                s_u8Idle = au8Buf[3];
+                /* Status stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+                break;
+            }
 
-        default:
-        {
-            // Stall
-            /* Setup error, stall the device */
-            USBD_SetStall(EP0);
-            USBD_SetStall(EP1);
-            break;
-        }
+            case SET_PROTOCOL:
+            {
+                s_u8Protocol = au8Buf[2];
+                /* Status stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+                break;
+            }
+
+            default:
+            {
+                // Stall
+                /* Setup error, stall the device */
+                USBD_SetStall(EP0);
+                USBD_SetStall(EP1);
+                break;
+            }
         }
     }
 }
@@ -619,32 +619,32 @@ int32_t ProcessCommand(uint8_t *pu8Buffer, uint32_t u32BufferLen)
 
     switch (s_Cmd.u8Cmd)
     {
-    case HID_CMD_ERASE:
-    {
-        HID_CmdEraseSectors(&s_Cmd);
-        break;
-    }
+        case HID_CMD_ERASE:
+        {
+            HID_CmdEraseSectors(&s_Cmd);
+            break;
+        }
 
-    case HID_CMD_READ:
-    {
-        HID_CmdReadPages(&s_Cmd);
-        break;
-    }
+        case HID_CMD_READ:
+        {
+            HID_CmdReadPages(&s_Cmd);
+            break;
+        }
 
-    case HID_CMD_WRITE:
-    {
-        HID_CmdWritePages(&s_Cmd);
-        break;
-    }
+        case HID_CMD_WRITE:
+        {
+            HID_CmdWritePages(&s_Cmd);
+            break;
+        }
 
-    case HID_CMD_TEST:
-    {
-        HID_CmdTest(&s_Cmd);
-        break;
-    }
+        case HID_CMD_TEST:
+        {
+            HID_CmdTest(&s_Cmd);
+            break;
+        }
 
-    default:
-        return -1;
+        default:
+            return -1;
     }
 
     return 0;

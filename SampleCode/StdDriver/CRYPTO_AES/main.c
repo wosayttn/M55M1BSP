@@ -64,23 +64,30 @@ void DumpBuffHex(uint8_t *pucBuff, int nBytes)
     int32_t i32Idx, i;
 
     i32Idx = 0;
+
     while (nBytes > 0)
     {
         printf("0x%04X  ", i32Idx);
+
         for (i = 0; i < 16; i++)
             printf("%02x ", pucBuff[i32Idx + i]);
+
         printf("  ");
+
         for (i = 0; i < 16; i++)
         {
             if ((pucBuff[i32Idx + i] >= 0x20) && (pucBuff[i32Idx + i] < 127))
                 printf("%c", pucBuff[i32Idx + i]);
             else
                 printf(".");
+
             nBytes--;
         }
+
         i32Idx += 16;
         printf("\n");
     }
+
     printf("\n");
 }
 
@@ -181,6 +188,7 @@ int32_t main(void)
 
     /* Waiting for AES calculation */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (!g_AES_done)
     {
         if (--u32TimeOutCnt == 0)
@@ -207,6 +215,7 @@ int32_t main(void)
 
     /* Waiting for AES calculation */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (!g_AES_done)
     {
         if (--u32TimeOutCnt == 0)

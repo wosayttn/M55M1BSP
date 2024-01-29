@@ -11,7 +11,7 @@
 #define __WWDT_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 /**
@@ -109,7 +109,7 @@ typedef struct
 /**
     @addtogroup WWDT_CONST WWDT Bit Field Definition
     Constant Definitions for WWDT Controller
-    @{ 
+    @{
 */
 
 #define WWDT_RLDCNT_RLDCNT_Pos           (0)                                               /*!< WWDT_T::RLDCNT: RLDCNT Position        */
@@ -144,7 +144,7 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 #endif /* __WWDT_REG_H__ */

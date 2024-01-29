@@ -93,8 +93,7 @@ void BuildSrcPattern(uint32_t u32Addr, uint32_t u32Length)
             *pAddr++ = (uint8_t)(j + i);
 
         i++;
-    }
-    while ((loop != 0) || (u32Length != 0));
+    } while ((loop != 0) || (u32Length != 0));
 
 }
 

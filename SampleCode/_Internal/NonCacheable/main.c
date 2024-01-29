@@ -61,6 +61,7 @@ void MemManage_Handler(void)
     if (SCB->CFSR & SCB_CFSR_DACCVIOL_Msk)
     {
         printf("  Data access violation flag is raised.");
+
         if (SCB->CFSR & SCB_CFSR_MMARVALID_Msk)
             printf("  Fault address: 0x%08X\n", SCB->MMFAR);
     }
@@ -175,6 +176,7 @@ NVT_ITCM int32_t WriteTest(uint32_t *pu32BaseAddr, uint32_t u32ByteSize)
          * Write through mode: data is write to cache and memory
          */
         printf("CPU write (addr + 0x%02X)\n", au8TestPattern[i]);
+
         for (u32Offset = 0; u32Offset < u32ByteSize; u32Offset += 4)
         {
             pu32BaseAddr[u32Offset / 4] = (u32Offset + au8TestPattern[i]);
@@ -182,6 +184,7 @@ NVT_ITCM int32_t WriteTest(uint32_t *pu32BaseAddr, uint32_t u32ByteSize)
 
         /* Check with CPU */
         printf("CPU check ");
+
         for (u32Offset = 0; u32Offset < u32ByteSize; u32Offset += 4)
         {
             if (pu32BaseAddr[u32Offset / 4] != (u32Offset + au8TestPattern[i]))
@@ -190,10 +193,12 @@ NVT_ITCM int32_t WriteTest(uint32_t *pu32BaseAddr, uint32_t u32ByteSize)
                 return -1;
             }
         }
+
         printf("Pass\n");
 
         /* Check with PDMA */
         printf("PDMA transfer\n");
+
         if (PDMA_Transfer(0, pu32BaseAddr, u32ByteSize) != 0)
         {
             printf("[Error] Failed to do PDMA transfer !\n");
@@ -201,12 +206,14 @@ NVT_ITCM int32_t WriteTest(uint32_t *pu32BaseAddr, uint32_t u32ByteSize)
         }
 
         u32DataErrCnt = 0;
+
         for (u32Offset = 0; u32Offset < u32ByteSize; u32Offset += 4)
         {
             if (g_au32PDMA_DstBuf[u32Offset / 4] != pu32BaseAddr[u32Offset / 4])
             {
                 if (u32DataErrCnt == 0)
                     printf("  Check (0x%08X != 0x%08X).\n", g_au32PDMA_DstBuf[u32Offset / 4], pu32BaseAddr[u32Offset / 4]);
+
                 u32DataErrCnt++;
             }
         }
@@ -219,6 +226,7 @@ NVT_ITCM int32_t WriteTest(uint32_t *pu32BaseAddr, uint32_t u32ByteSize)
         else
             printf("  Check PDMA copied data - Pass.\n");
     }
+
     g_u32TestVar += i32RetCode;
     g_u32DTCMTestVar += g_u32TestVar;
     return i32RetCode;
@@ -244,21 +252,28 @@ int main()
         printf("[Error] WriteTest not in ITCM region (0x%08X) !\n", (uint32_t)WriteTest);
 
     printf("\nTest Cacheable Buffer - PDMA check should fail.\n");
+
     if (WriteTest(g_au32CacheableBuf, TEST_BUF_SIZE) == 0)
         printf("[Error] WriteTest did not fail !\n");
+
     printf("g_u32TestVar: %d, g_u32DTCMTestVar: %d\n", g_u32TestVar, g_u32DTCMTestVar);
 
     printf("\nTest NonCacheable Buffer - PDMA check should pass.\n");
+
     if (WriteTest(g_au32NonCacheableBuf, TEST_BUF_SIZE) != 0)
         printf("[Error] WriteTest did not pass !\n");
+
     printf("g_u32TestVar: %d, g_u32DTCMTestVar: %d\n", g_u32TestVar, g_u32DTCMTestVar);
 
     printf("\nTest DTCM Buffer - PDMA check should pass.\n");
+
     if (WriteTest(g_au32DTCMBuf, TEST_BUF_SIZE) != 0)
         printf("[Error] WriteTest did not pass !\n");
+
     printf("g_u32TestVar: %d, g_u32DTCMTestVar: %d\n", g_u32TestVar, g_u32DTCMTestVar);
 
     printf("\nDone\n");
+
     while (1);
 }
 

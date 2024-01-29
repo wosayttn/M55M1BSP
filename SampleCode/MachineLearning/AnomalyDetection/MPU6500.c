@@ -14,7 +14,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 volatile    uint8_t     g_u8DeviceAddr;
 unsigned    char        BUF[10];
-short T_X,T_Y,T_Z,T_T;
+short T_X, T_Y, T_Z, T_T;
 
 uint8_t buff[512];
 #define IMU_I2C  LPI2C0
@@ -52,34 +52,38 @@ int8_t MPU6500_test(void)
     g_u8DeviceAddr = MPU6500_DEVICE_ID;
 
     printf("Who am I = %02x\n", LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, WHO_AM_I));
-    if(LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, WHO_AM_I) == 0x70) {
+
+    if (LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, WHO_AM_I) == 0x70)
+    {
         printf("MPU6500 found.\n");
         /* Init MPU6500 sensor */
         Init_MPU6500();
-    } else {
+    }
+    else
+    {
         printf("MPU6500 not found!!!\n");
         return -1;
     }
 
     /* X-axis */
-    BUF[0]=LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_XOUT_L);
-    BUF[1]=LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_XOUT_H);
-    T_X=    (BUF[1]<<8)|BUF[0];
+    BUF[0] = LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_XOUT_L);
+    BUF[1] = LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_XOUT_H);
+    T_X = (BUF[1] << 8) | BUF[0];
 
 
     /* Y-axis */
-    BUF[2]=LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_YOUT_L);
-    BUF[3]=LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_YOUT_H);
-    T_Y=    (BUF[3]<<8)|BUF[2];
+    BUF[2] = LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_YOUT_L);
+    BUF[3] = LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_YOUT_H);
+    T_Y = (BUF[3] << 8) | BUF[2];
 
 
     /* Z-axis */
-    BUF[4]=LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_ZOUT_L);
-    BUF[5]=LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_ZOUT_H);
-    T_Z=    (BUF[5]<<8)|BUF[4];
+    BUF[4] = LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_ZOUT_L);
+    BUF[5] = LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_ZOUT_H);
+    T_Z = (BUF[5] << 8) | BUF[4];
 
 
-    if(((T_Z+T_Y+T_X)<0) || ((T_Z+T_Y+T_X)>40000))
+    if (((T_Z + T_Y + T_X) < 0) || ((T_Z + T_Y + T_X) > 40000))
     {
         printf("GYRO Sensor Error\n");
         return -1;
@@ -91,31 +95,31 @@ int8_t MPU6500_test(void)
 }
 
 
-int8_t MPU6500_readXYZ_mg(float * pftr)
+int8_t MPU6500_readXYZ_mg(float *pftr)
 {
-    float acc_sensitivity = 16384/1000;
+    float acc_sensitivity = 16384 / 1000;
 
     /* X-axis */
-    BUF[0]=LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_XOUT_L);
-    BUF[1]=LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_XOUT_H);
-    T_X=    (BUF[1]<<8)|BUF[0];
+    BUF[0] = LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_XOUT_L);
+    BUF[1] = LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_XOUT_H);
+    T_X = (BUF[1] << 8) | BUF[0];
 
 
     /* Y-axis */
-    BUF[2]=LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_YOUT_L);
-    BUF[3]=LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_YOUT_H);
-    T_Y=    (BUF[3]<<8)|BUF[2];
+    BUF[2] = LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_YOUT_L);
+    BUF[3] = LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_YOUT_H);
+    T_Y = (BUF[3] << 8) | BUF[2];
 
 
     /* Z-axis */
-    BUF[4]=LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_ZOUT_L);
-    BUF[5]=LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_ZOUT_H);
-    T_Z=    (BUF[5]<<8)|BUF[4];
+    BUF[4] = LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_ZOUT_L);
+    BUF[5] = LPI2C_ReadByteOneReg(IMU_I2C, MPU6500_DEVICE_ID, ACCEL_ZOUT_H);
+    T_Z = (BUF[5] << 8) | BUF[4];
 
 
-    *pftr++ = (float)(T_X)/(acc_sensitivity);
-    *pftr++ = (float)(T_Y)/(acc_sensitivity);
-    *pftr++ = (float)(T_Z)/(acc_sensitivity);
+    *pftr++ = (float)(T_X) / (acc_sensitivity);
+    *pftr++ = (float)(T_Y) / (acc_sensitivity);
+    *pftr++ = (float)(T_Z) / (acc_sensitivity);
 
     return 0;
 }

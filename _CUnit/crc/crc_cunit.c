@@ -59,7 +59,8 @@ int suite_success_clean(void)
 /*               description                                                                               */
 /*---------------------------------------------------------------------------------------------------------*/
 
-CU_SuiteInfo CRC_Suites[] = {
+CU_SuiteInfo CRC_Suites[] =
+{
     {"CRC MACRO", suite_success_init, suite_success_clean, NULL, NULL, CRC_MACRO},
     {"CRC API", suite_success_init, suite_success_clean, NULL, NULL, CRC_API},
     CU_SUITE_INFO_NULL
@@ -68,33 +69,37 @@ CU_SuiteInfo CRC_Suites[] = {
 
 int32_t CRC_InitClock(void)
 {
-   
-		CLK_EnableModuleClock(CRC0_MODULE);
-	  SYS_ResetModule(SYS_CRC0RST);
+
+    CLK_EnableModuleClock(CRC0_MODULE);
+    SYS_ResetModule(SYS_CRC0RST);
 
     return 0;
 }
 
-const uint32_t au32ModeSel[] = {
+const uint32_t au32ModeSel[] =
+{
     CRC_8,
     CRC_16,
     CRC_32,
 };
 
-const uint32_t au32AttrSel[] = {
+const uint32_t au32AttrSel[] =
+{
     CRC_WDATA_RVS,
     CRC_CHECKSUM_RVS,
     CRC_WDATA_COM,
     CRC_CHECKSUM_COM,
 };
 
-const uint32_t au32DWLSel[] = {
+const uint32_t au32DWLSel[] =
+{
     CRC_CPU_WDATA_8,
     CRC_CPU_WDATA_16,
     CRC_CPU_WDATA_32,
 };
 
-const uint32_t au32SEEDTbl[] = {
+const uint32_t au32SEEDTbl[] =
+{
     0x00000000,
     0x00000001,
     0x55555555,
@@ -107,32 +112,36 @@ void CONSTANT_CRC_SETTING(void)
 {
     volatile uint32_t i;
 
-    if(CRC_InitClock() != 0) {
+    if (CRC_InitClock() != 0)
+    {
         CU_FAIL("CRC Clock FAIL");
         return ;
     }
 
     /* Select CRC Polynomial Mode */
-    for(i=0; i<sizeof(au32ModeSel)/4; i++) {
+    for (i = 0; i < sizeof(au32ModeSel) / 4; i++)
+    {
         D_msg("ModeSel %d\n", i);
-        CRC_Open(au32ModeSel[i], CRC_WDATA_RVS|CRC_CHECKSUM_COM, 0x5A5A5A5A+i, CRC_CPU_WDATA_32);
-        CU_ASSERT_EQUAL(CRC->CTL, ((i<<30)|0x29000001));
-        CU_ASSERT_EQUAL(CRC->SEED, (0x5A5A5A5A+i));
+        CRC_Open(au32ModeSel[i], CRC_WDATA_RVS | CRC_CHECKSUM_COM, 0x5A5A5A5A + i, CRC_CPU_WDATA_32);
+        CU_ASSERT_EQUAL(CRC->CTL, ((i << 30) | 0x29000001));
+        CU_ASSERT_EQUAL(CRC->SEED, (0x5A5A5A5A + i));
     }
 
     /* Select CRC Attribute */
-    for(i=0; i<sizeof(au32AttrSel)/4; i++) {
+    for (i = 0; i < sizeof(au32AttrSel) / 4; i++)
+    {
         D_msg("AttrSel %d\n", i);
-        CRC_Open(CRC_16, au32AttrSel[i], 0xA5A5A5A5+i, CRC_CPU_WDATA_32);
-        CU_ASSERT_EQUAL(CRC->CTL, ((1<<(24+i))|0xA0000001));
-        CU_ASSERT_EQUAL(CRC->SEED, (0xA5A5A5A5+i));
+        CRC_Open(CRC_16, au32AttrSel[i], 0xA5A5A5A5 + i, CRC_CPU_WDATA_32);
+        CU_ASSERT_EQUAL(CRC->CTL, ((1 << (24 + i)) | 0xA0000001));
+        CU_ASSERT_EQUAL(CRC->SEED, (0xA5A5A5A5 + i));
     }
 
     /* Select CRC Write Data Length */
-    for(i=0; i<sizeof(au32DWLSel)/4; i++) {
+    for (i = 0; i < sizeof(au32DWLSel) / 4; i++)
+    {
         D_msg("DWLSel %d\n", i);
-        CRC_Open(CRC_8, CRC_WDATA_RVS|CRC_CHECKSUM_RVS, i, au32DWLSel[i]);
-        CU_ASSERT_EQUAL(CRC->CTL, ((i<<28)|0x43000001));
+        CRC_Open(CRC_8, CRC_WDATA_RVS | CRC_CHECKSUM_RVS, i, au32DWLSel[i]);
+        CU_ASSERT_EQUAL(CRC->CTL, ((i << 28) | 0x43000001));
         CU_ASSERT_EQUAL(CRC->SEED, i);
     }
 }
@@ -141,13 +150,15 @@ void MACRO_SEED(void)
 {
     volatile uint32_t i;
 
-    if(CRC_InitClock() != 0) {
+    if (CRC_InitClock() != 0)
+    {
         CU_FAIL("CRC Clock FAIL");
         return ;
     }
 
     /* Check CRC_SET_SEED() and CRC_GET_SEED() */
-    for(i=0; i<sizeof(au32SEEDTbl)/4; i++) {
+    for (i = 0; i < sizeof(au32SEEDTbl) / 4; i++)
+    {
         D_msg("SEEDTbl %d\n", i);
         CRC_SET_SEED(au32SEEDTbl[i]);
         CU_ASSERT_EQUAL(CRC->CTL, 0x63000001);
@@ -159,7 +170,8 @@ void MACRO_WRITE_DATA(void)
 {
     volatile uint32_t i;
 
-    if(CRC_InitClock() != 0) {
+    if (CRC_InitClock() != 0)
+    {
         CU_FAIL("CRC Clock FAIL");
         return ;
     }
@@ -191,7 +203,8 @@ void API_CRC_Open(void)
     uint32_t u32TargetChecksum = 0x5CAE, u32CalChecksum = 0;
     uint16_t *p16SrcAddr;
 
-    if(CRC_InitClock() != 0) {
+    if (CRC_InitClock() != 0)
+    {
         CU_FAIL("CRC Clock FAIL");
         return ;
     }
@@ -203,15 +216,20 @@ void API_CRC_Open(void)
     p16SrcAddr = (uint16_t *)acCRCSrcPattern;
 
     /* Start to execute CRC-CCITT operation */
-    for(i = 0; i < sizeof(acCRCSrcPattern) / 2; i++) {
+    for (i = 0; i < sizeof(acCRCSrcPattern) / 2; i++)
+    {
         CRC_WRITE_DATA((p16SrcAddr[i] & 0xFFFF));
     }
 
     /* Get CRC-CCITT checksum value */
     u32CalChecksum = CRC_GetChecksum();
-    if(u32CalChecksum == u32TargetChecksum) {
+
+    if (u32CalChecksum == u32TargetChecksum)
+    {
         D_msg("PASS\n");
-    } else {
+    }
+    else
+    {
         D_msg("FAIL - CRC checksum 0x%X\n", u32CalChecksum);
         CU_FAIL("CRC checksum error");
     }
@@ -220,14 +238,16 @@ void API_CRC_Open(void)
     CRC->CTL &= ~CRC_CTL_CRCEN_Msk;
 }
 
-CU_TestInfo CRC_MACRO[] = {
+CU_TestInfo CRC_MACRO[] =
+{
     {"Check CRC CONSTANT ",                       CONSTANT_CRC_SETTING},
     {"Check CRC_SET_SEED and CRC_GET_SEED ",      MACRO_SEED},
     {"Check CRC_WRITE_DATA ",                     MACRO_WRITE_DATA},
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo CRC_API[] = {
+CU_TestInfo CRC_API[] =
+{
     {"Check CRC_Open and CRC_GetChecksum API ", API_CRC_Open},
     CU_TEST_INFO_NULL
 };

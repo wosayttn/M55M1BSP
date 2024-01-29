@@ -19,12 +19,12 @@ static uint8_t  au8RxBuf[1514];
 static uint16_t s_u16IpPacketId = 1000; // Packet ID used in IP header
 static uint32_t s_u32PktRdy;            // If not 0, this variable stores the Tx packet length
 #ifdef __ICCARM__
-#pragma data_alignment=4
-static uint8_t  s_au8DhcpRawBuffer[3020];
+    #pragma data_alignment=4
+    static uint8_t  s_au8DhcpRawBuffer[3020];
 #elif defined (__GNUC__)
-static uint8_t  s_au8DhcpRawBuffer[3020] __attribute__ ((aligned(4)));
+    static uint8_t  s_au8DhcpRawBuffer[3020] __attribute__((aligned(4)));
 #else
-__align(4) static uint8_t  s_au8DhcpRawBuffer[3020];   // Buffer to store DHCP Tx/Rx data
+    __align(4) static uint8_t  s_au8DhcpRawBuffer[3020];   // Buffer to store DHCP Tx/Rx data
 #endif
 
 /* RFC 1533
@@ -73,16 +73,18 @@ static void EnableRXIRQ(void)
 
 static uint16_t chksum(uint16_t *cp, int cnt)
 {
-    uint16_t i1=0, i2;
+    uint16_t i1 = 0, i2;
 
     while (cnt--)
     {
         i2 = *cp++;
         i2 = SWAP16(i2);
         i1 += i2;
+
         if (i1 < i2)
             i1++;
     }
+
     return SWAP16(i1);
 }
 
@@ -93,7 +95,7 @@ static void arp_reply(uint8_t *target_ip, uint8_t *target_mac)
 
     buf = EMAC_AllocatePktBuf();
     arp = (ARP_PACKET *)buf;
-    
+
     memcpy((char *)arp->au8DestMac, (char *)target_mac, 6);
     memcpy((char *)arp->au8SrcMac, (char *)g_au8MacAddr, 6);
     arp->u16Type = SWAP16(PROTOCOL_ARP);
@@ -106,13 +108,13 @@ static void arp_reply(uint8_t *target_ip, uint8_t *target_mac)
     memcpy((char *)arp->su8SenderIP, (char *)g_au8IpAddr, 4);
     memcpy((char *)arp->au8TargetHA, (char *)target_mac, 6);
     memcpy((char *)arp->au8TargetIP, (char *)target_ip, 4);
-    
+
     EMAC_TransmitPkt(buf, sizeof(ARP_PACKET));
 }
 
-static void  udp_send( uint8_t *pu8SrcMac, uint8_t *pu8SrcIP, uint16_t u16SrcPort,
-                       uint8_t *pu8DestMac, uint8_t *pu8DestIP, uint16_t u16DestPort,
-                       uint8_t *pu8TxData, uint32_t u32Len)
+static void  udp_send(uint8_t *pu8SrcMac, uint8_t *pu8SrcIP, uint16_t u16SrcPort,
+                      uint8_t *pu8DestMac, uint8_t *pu8DestIP, uint16_t u16DestPort,
+                      uint8_t *pu8TxData, uint32_t u32Len)
 {
     UDP_PACKET  *udp = NULL;
     uint8_t     *buf = NULL;
@@ -121,7 +123,7 @@ static void  udp_send( uint8_t *pu8SrcMac, uint8_t *pu8SrcIP, uint16_t u16SrcPor
     udp = (UDP_PACKET *)buf;
 
     DisableRXIRQ();
-    
+
     /*- prepare Ethernet header, 14 bytes -*/
     memcpy((char *)&buf[sizeof(UDP_PACKET)], (char *)pu8TxData, u32Len);
     memcpy((char *)udp->au8DestMac, (char *)pu8DestMac, 6);
@@ -169,7 +171,7 @@ int process_rx_packet(uint8_t *pu8Packet, uint32_t u32Len)
          */
         if ((!COMPARE_IP(arp->au8TargetIP, g_au8IpAddr)) &&
                 (arp->u16Type == SWAP16(PROTOCOL_ARP)) && (arp->u16Operation == SWAP16(ARP_REQUEST)))
-        {            
+        {
             arp_reply(arp->su8SenderIP, arp->au8SenderHA);
         }
 
@@ -208,7 +210,7 @@ int process_rx_packet(uint8_t *pu8Packet, uint32_t u32Len)
                 (pu8Packet[34] == 0x08))
         {
             IP_PACKET   *tx_ip;
-            
+
             /* duplicate packet then modify it */
             buf = EMAC_AllocatePktBuf();
             memcpy((char *)&buf[0], (char *)&pu8Packet[0], u32Len);
@@ -274,11 +276,11 @@ int dhcp_start(void)
     dhcpTx->seconds = 0;        /* Not use this */
 
 
-    memset((char *)&(dhcpTx->clientIP), 0, 4);
+    memset((char *) & (dhcpTx->clientIP), 0, 4);
     //memset((char *)_HostIP, 0, 4);
     /* give host MAC address */
 
-    memcpy((char *)&(dhcpTx->client_hw_addr), (char *)g_au8MacAddr, 6);
+    memcpy((char *) & (dhcpTx->client_hw_addr), (char *)g_au8MacAddr, 6);
     memcpy((char *)dhcpTx->options, (char *)s_au8DhcpOptions, sizeof(s_au8DhcpOptions));
 
     opt_len = sizeof(s_au8DhcpOptions);
@@ -297,6 +299,7 @@ int dhcp_start(void)
 
 wait_offer:
     out = 0;
+
     for (retry = 0; (retry < 16) && (!out); retry++)
     {
         if (retry)
@@ -307,14 +310,16 @@ wait_offer:
                  (uint8_t *)dhcpTx, DHCP_OPT_OFFSET + opt_len + 1);
 
         delay = 0x600000;
-        while(delay--)
+
+        while (delay--)
         {
-            if(s_u32PktRdy)
+            if (s_u32PktRdy)
             {
                 DisableRXIRQ();
                 memcpy((char *)&s_au8DhcpRawBuffer[1500], au8RxBuf, s_u32PktRdy);
                 s_u32PktRdy = 0;
                 EnableRXIRQ();
+
                 if ((udp->u16DestPort == SWAP16(CLIENT_PORT)) &&
                         (dhcpRx->op_code == BOOTP_REPLY) &&
                         (dhcpRx->tx_id == dhcpTx->tx_id))
@@ -342,6 +347,7 @@ wait_offer:
     while (*cptr != 0xff)
     {
         len = cptr[1] + 2;
+
         if (*cptr == 53)
         {
             if (cptr[2] == DHCP_OFFER)
@@ -352,6 +358,7 @@ wait_offer:
             memcpy((char *)(dhcpTx->options) + opt_len, (char *)cptr, len);
             opt_len += len;
         }
+
         cptr += len;
     }
 
@@ -361,10 +368,10 @@ wait_offer:
         goto wait_offer;             /* wrong type, read again */
     }
 
-    cptr =     (uint8_t *)(dhcpTx->options) + opt_len;
+    cptr = (uint8_t *)(dhcpTx->options) + opt_len;
     *cptr++ = 50;
     *cptr++ = 4;
-    memcpy((char *)cptr, (char *)&(dhcpRx->yourIP), 4);
+    memcpy((char *)cptr, (char *) & (dhcpRx->yourIP), 4);
     opt_len += 6;
 
     dhcpTx->options[6] = DHCP_REQUEST;
@@ -374,6 +381,7 @@ wait_offer:
     printf("DHCP REQUEST...\n");
 
     out = 0;
+
     for (retry = 0; (retry < 16) && (!out); retry++)
     {
         if (retry)
@@ -384,15 +392,17 @@ wait_offer:
                  (uint8_t *)dhcpTx, DHCP_OPT_OFFSET + opt_len + 1);
 
         delay = 0x600000;
-        while(delay--)
+
+        while (delay--)
         {
-            if(s_u32PktRdy)
+            if (s_u32PktRdy)
             {
                 DisableRXIRQ();
                 memcpy((char *)&s_au8DhcpRawBuffer[1500], au8RxBuf, s_u32PktRdy);
                 s_u32PktRdy = 0;
                 EnableRXIRQ();
-                if((udp->u16DestPort == SWAP16(CLIENT_PORT)) &&
+
+                if ((udp->u16DestPort == SWAP16(CLIENT_PORT)) &&
                         (dhcpRx->op_code != BOOTP_REPLY) &&
                         (dhcpRx->tx_id != dhcpTx->tx_id))
                 {
@@ -410,10 +420,12 @@ wait_offer:
         while (*cptr != 0xff)
         {
             len = cptr[1] + 2;
+
             if (cptr[0] == 53)
             {
                 if (cptr[2] == DHCP_ACK)
                     goto acked;
+
                 if (cptr[2] == DHCP_NAK)
                 {
                     printf("DHCP Naked!\n");
@@ -421,6 +433,7 @@ wait_offer:
                     return -1;
                 }
             }
+
             cptr += len;
         }
     }
@@ -430,7 +443,7 @@ wait_offer:
 acked:
     printf("DHCP ACKed...\n");
 
-    memcpy((char *)g_au8IpAddr, (char *)&(dhcpRx->yourIP), 4);
+    memcpy((char *)g_au8IpAddr, (char *) & (dhcpRx->yourIP), 4);
     printf("IP Address. . . . . . . . . . . . : %d.%d.%d.%d\n", g_au8IpAddr[0], g_au8IpAddr[1],
            g_au8IpAddr[2], g_au8IpAddr[3]);
 
@@ -439,21 +452,26 @@ acked:
     while (*cptr != 0xff)
     {
         len = cptr[1];
+
         switch (*cptr)
         {
-        case 1:                 /* subnet mask */
-            printf("Subnet Mask . . . . . . . . . . . : %d.%d.%d.%d\n", cptr[2], cptr[3], cptr[4], cptr[5]);
-            break;
-        case 2:                 /* time offset */
-            break;
-        case 3:                 /* router, take 1 */
-            printf("Default Gateway . . . . . . . . . : %d.%d.%d.%d\n", cptr[2], cptr[3], cptr[4], cptr[5]);
-            break;
-        case 4:                 /* time server */
-            printf("Time server: %d.%d.%d.%d\n", cptr[2], cptr[3], cptr[4], cptr[5]);
-            break;
+            case 1:                 /* subnet mask */
+                printf("Subnet Mask . . . . . . . . . . . : %d.%d.%d.%d\n", cptr[2], cptr[3], cptr[4], cptr[5]);
+                break;
+
+            case 2:                 /* time offset */
+                break;
+
+            case 3:                 /* router, take 1 */
+                printf("Default Gateway . . . . . . . . . : %d.%d.%d.%d\n", cptr[2], cptr[3], cptr[4], cptr[5]);
+                break;
+
+            case 4:                 /* time server */
+                printf("Time server: %d.%d.%d.%d\n", cptr[2], cptr[3], cptr[4], cptr[5]);
+                break;
 
         }
+
         cptr += len + 2;
     }
 

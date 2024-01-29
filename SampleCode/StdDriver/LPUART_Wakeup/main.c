@@ -312,24 +312,24 @@ void LPUART_PowerDownWakeUpTest(void)
 
     switch (u32Item)
     {
-    case '1':
-        LPUART_CTSWakeUp();
-        break;
+        case '1':
+            LPUART_CTSWakeUp();
+            break;
 
-    case '2':
-        LPUART_DataWakeUp();
-        break;
+        case '2':
+            LPUART_DataWakeUp();
+            break;
 
-    case '3':
-        LPUART_RxThresholdWakeUp();
-        break;
+        case '3':
+            LPUART_RxThresholdWakeUp();
+            break;
 
-    case '4':
-        LPUART_RS485WakeUp();
-        break;
+        case '4':
+            LPUART_RS485WakeUp();
+            break;
 
-    default:
-        return;
+        default:
+            return;
     }
 
     /* Unlock protected registers before entering Power-down mode */

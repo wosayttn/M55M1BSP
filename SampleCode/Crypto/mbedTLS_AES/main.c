@@ -126,7 +126,9 @@ int32_t main(void)
     {
         printf("Test fail!\n");
     }
+
     printf("Test Done!\n");
+
     while (1);
 
 }

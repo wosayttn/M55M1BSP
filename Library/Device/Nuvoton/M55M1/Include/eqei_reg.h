@@ -284,7 +284,7 @@ typedef struct
 /**
     @addtogroup EQEI_CONST EQEI Bit Field Definition
     Constant Definitions for EQEI Controller
-    @{ 
+    @{
 */
 
 #define EQEI_CNT_CNT_Pos                  (0)                                               /*!< EQEI_T::CNT: CNT Position               */

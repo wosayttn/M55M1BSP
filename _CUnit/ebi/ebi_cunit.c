@@ -63,79 +63,79 @@ CU_SuiteInfo suites[] =
 
 void EBI_InitPins(void)
 {
-        /* EBI MCLK, ALE, nRD, nWR */
-        SET_EBI_ALE_PA8();
-        SET_EBI_MCLK_PA9();
-        SET_EBI_nRD_PA11();
-        SET_EBI_nWR_PA10();
-        
-        /* EBI nWRH and nWRL pins */
-#if 0   /* TESTCHIP_ONLY not support */    
-        SET_EBI_nWRH_PG8();
+    /* EBI MCLK, ALE, nRD, nWR */
+    SET_EBI_ALE_PA8();
+    SET_EBI_MCLK_PA9();
+    SET_EBI_nRD_PA11();
+    SET_EBI_nWR_PA10();
+
+    /* EBI nWRH and nWRL pins */
+#if 0   /* TESTCHIP_ONLY not support */
+    SET_EBI_nWRH_PG8();
 #else
-        SET_EBI_nWRH_PB6();
+    SET_EBI_nWRH_PB6();
 #endif
-        SET_EBI_nWRL_PB7();
-         
-        /* EBI nCS0 */
-        SET_EBI_nCS0_PD12();
-        /* EBI nCS1 */
-        SET_EBI_nCS1_PD11();
-        /* EBI nCS2 */
-        SET_EBI_nCS2_PD10();
-                
-        /* AD0 ~ AD15 */
-        SET_EBI_AD0_PC0();
-        SET_EBI_AD1_PC1();
-        SET_EBI_AD2_PC2();
-        SET_EBI_AD3_PC3();
-        SET_EBI_AD4_PC4();
-        SET_EBI_AD5_PC5();
-        SET_EBI_AD6_PD8();
-        SET_EBI_AD7_PD9();
-        SET_EBI_AD8_PE14();
-        SET_EBI_AD9_PE15();
-#if 0   /* TESTCHIP_ONLY not support */        
-        SET_EBI_AD10_PD3();
-        SET_EBI_AD11_PC14();
-        SET_EBI_AD12_PB15();
-        SET_EBI_AD13_PB14();
+    SET_EBI_nWRL_PB7();
+
+    /* EBI nCS0 */
+    SET_EBI_nCS0_PD12();
+    /* EBI nCS1 */
+    SET_EBI_nCS1_PD11();
+    /* EBI nCS2 */
+    SET_EBI_nCS2_PD10();
+
+    /* AD0 ~ AD15 */
+    SET_EBI_AD0_PC0();
+    SET_EBI_AD1_PC1();
+    SET_EBI_AD2_PC2();
+    SET_EBI_AD3_PC3();
+    SET_EBI_AD4_PC4();
+    SET_EBI_AD5_PC5();
+    SET_EBI_AD6_PD8();
+    SET_EBI_AD7_PD9();
+    SET_EBI_AD8_PE14();
+    SET_EBI_AD9_PE15();
+#if 0   /* TESTCHIP_ONLY not support */
+    SET_EBI_AD10_PD3();
+    SET_EBI_AD11_PC14();
+    SET_EBI_AD12_PB15();
+    SET_EBI_AD13_PB14();
 #else
-        SET_EBI_AD10_PE7();
-        SET_EBI_AD11_PE6();
-        SET_EBI_AD12_PH8();
-        SET_EBI_AD13_PH9();
+    SET_EBI_AD10_PE7();
+    SET_EBI_AD11_PE6();
+    SET_EBI_AD12_PH8();
+    SET_EBI_AD13_PH9();
 #endif
-        SET_EBI_AD14_PH10();
-        SET_EBI_AD15_PH11();
-            
-        /* ADR0 ~ ADR19 */
-        SET_EBI_ADR0_PH7();
-        SET_EBI_ADR1_PB4();
-        SET_EBI_ADR2_PB3();
-        SET_EBI_ADR3_PB2();
-        SET_EBI_ADR4_PC12();
-        SET_EBI_ADR5_PC11();
-        SET_EBI_ADR6_PC10();
-        SET_EBI_ADR7_PC9();
-        SET_EBI_ADR8_PB1();
-        SET_EBI_ADR9_PG1();
-        SET_EBI_ADR10_PC13();
-        SET_EBI_ADR11_PG2();
-        SET_EBI_ADR12_PG3();
-        SET_EBI_ADR13_PG4();
-        SET_EBI_ADR14_PF11();
-        SET_EBI_ADR15_PE13();
-        SET_EBI_ADR16_PB11();
-        SET_EBI_ADR17_PB10();
-        SET_EBI_ADR18_PF7();
-        SET_EBI_ADR19_PF6();
+    SET_EBI_AD14_PH10();
+    SET_EBI_AD15_PH11();
+
+    /* ADR0 ~ ADR19 */
+    SET_EBI_ADR0_PH7();
+    SET_EBI_ADR1_PB4();
+    SET_EBI_ADR2_PB3();
+    SET_EBI_ADR3_PB2();
+    SET_EBI_ADR4_PC12();
+    SET_EBI_ADR5_PC11();
+    SET_EBI_ADR6_PC10();
+    SET_EBI_ADR7_PC9();
+    SET_EBI_ADR8_PB1();
+    SET_EBI_ADR9_PG1();
+    SET_EBI_ADR10_PC13();
+    SET_EBI_ADR11_PG2();
+    SET_EBI_ADR12_PG3();
+    SET_EBI_ADR13_PG4();
+    SET_EBI_ADR14_PF11();
+    SET_EBI_ADR15_PE13();
+    SET_EBI_ADR16_PB11();
+    SET_EBI_ADR17_PB10();
+    SET_EBI_ADR18_PF7();
+    SET_EBI_ADR19_PF6();
 }
 
 int32_t EBI_InitClock(void)
 {
     CLK_EnableModuleClock(EBI0_MODULE);
-    
+
     if (CLK->EBICTL & CLK_EBICTL_EBI0CKEN_Msk)
     {
         return 0;
@@ -425,8 +425,8 @@ void API_EBI_Open(void)
         CU_ASSERT_EQUAL(EBI->TCTL1, 0xA0);
         CU_ASSERT_EQUAL(EBI->CTL2, 0x5);
         CU_ASSERT_EQUAL(EBI->TCTL2, 0xA0);
-        CU_ASSERT_EQUAL(EBI->CTL0, (0x0000000B | au32TimingSetting[i*2]));
-        CU_ASSERT_EQUAL(EBI->TCTL0, au32TimingSetting[(i*2)+1]);
+        CU_ASSERT_EQUAL(EBI->CTL0, (0x0000000B | au32TimingSetting[i * 2]));
+        CU_ASSERT_EQUAL(EBI->TCTL0, au32TimingSetting[(i * 2) + 1]);
 
         CU_ASSERT_EQUAL(ResetEBIRegister(EBI_BANK0), 0);
         EBI_Open(EBI_BANK0, EBI_BUSWIDTH_16BIT, au32TimingSel[i], EBI_OPMODE_NORMAL, EBI_CS_ACTIVE_HIGH);
@@ -436,7 +436,7 @@ void API_EBI_Open(void)
         CU_ASSERT_EQUAL(EBI->TCTL2, 0xA0);
         CU_ASSERT_EQUAL(EBI->CTL0, (0x00000007 | au32TimingSetting[i * 2]));
         CU_ASSERT_EQUAL(EBI->TCTL0, au32TimingSetting[(i * 2) + 1]);
-        
+
         EBI_Close(EBI_BANK0);
         CU_ASSERT_EQUAL(EBI->CTL0, (0x00000006 | au32TimingSetting[i * 2]));
     }
@@ -477,8 +477,8 @@ void API_EBI_Open(void)
         CU_ASSERT_EQUAL(EBI->TCTL0, 0xA0);
         CU_ASSERT_EQUAL(EBI->CTL2, 0x5);
         CU_ASSERT_EQUAL(EBI->TCTL2, 0xA0);
-        CU_ASSERT_EQUAL(EBI->CTL1, (0x0000000B | (au32TimingSetting[i*2]&~EBI_CTL_TALE_Msk)));
-        CU_ASSERT_EQUAL(EBI->TCTL1, au32TimingSetting[(i*2)+1]);
+        CU_ASSERT_EQUAL(EBI->CTL1, (0x0000000B | (au32TimingSetting[i * 2] & ~EBI_CTL_TALE_Msk)));
+        CU_ASSERT_EQUAL(EBI->TCTL1, au32TimingSetting[(i * 2) + 1]);
 
         CU_ASSERT_EQUAL(ResetEBIRegister(EBI_BANK1), 0);
         EBI_Open(EBI_BANK1, EBI_BUSWIDTH_16BIT, au32TimingSel[i], EBI_OPMODE_NORMAL, EBI_CS_ACTIVE_HIGH);
@@ -528,8 +528,8 @@ void API_EBI_Open(void)
         CU_ASSERT_EQUAL(EBI->TCTL0, 0xA0);
         CU_ASSERT_EQUAL(EBI->CTL1, 0x5);
         CU_ASSERT_EQUAL(EBI->TCTL1, 0xA0);
-        CU_ASSERT_EQUAL(EBI->CTL2, (0x0000000B | (au32TimingSetting[i*2]&~EBI_CTL_TALE_Msk)));
-        CU_ASSERT_EQUAL(EBI->TCTL2, au32TimingSetting[(i*2)+1]);
+        CU_ASSERT_EQUAL(EBI->CTL2, (0x0000000B | (au32TimingSetting[i * 2] & ~EBI_CTL_TALE_Msk)));
+        CU_ASSERT_EQUAL(EBI->TCTL2, au32TimingSetting[(i * 2) + 1]);
 
         CU_ASSERT_EQUAL(ResetEBIRegister(EBI_BANK2), 0);
         EBI_Open(EBI_BANK2, EBI_BUSWIDTH_16BIT, au32TimingSel[i], EBI_OPMODE_NORMAL, EBI_CS_ACTIVE_HIGH);

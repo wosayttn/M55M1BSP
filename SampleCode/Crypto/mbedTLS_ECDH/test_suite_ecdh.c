@@ -141,6 +141,7 @@ typedef struct data_tag
 int test_fail_if_psa_leaking(int line_no, const char *filename)
 {
     const char *msg = mbedtls_test_helper_is_psa_leaking();
+
     if (msg == NULL)
         return 0;
     else
@@ -166,6 +167,7 @@ static int redirect_output(FILE *out_stream, const char *path)
     }
 
     path_stream = myfopen(path, "w");
+
     if (path_stream == NULL)
     {
         close(dup_fd);
@@ -173,6 +175,7 @@ static int redirect_output(FILE *out_stream, const char *path)
     }
 
     fflush(out_stream);
+
     if (dup2(fileno(path_stream), out_fd) == -1)
     {
         close(dup_fd);
@@ -189,6 +192,7 @@ static int restore_output(FILE *out_stream, int dup_fd)
     int out_fd = fileno(out_stream);
 
     fflush(out_stream);
+
     if (dup2(dup_fd, out_fd) == -1)
     {
         close(out_fd);
@@ -278,8 +282,10 @@ int myfeof(FILE *f)
 {
     MYFILE *myfile;
     myfile = (MYFILE *)f;
+
     if (myfile->base + myfile->ofs >= myfile->limit)
         return 1;
+
     return 0;
 }
 
@@ -317,9 +323,9 @@ static int load_public_key(int grp_id, data_t *point,
     int ok = 0;
     TEST_ASSERT(mbedtls_ecp_group_load(&ecp->grp, grp_id) == 0);
     TEST_ASSERT(mbedtls_ecp_point_read_binary(&ecp->grp,
-                &ecp->Q,
-                point->x,
-                point->len) == 0);
+                                              &ecp->Q,
+                                              point->x,
+                                              point->len) == 0);
     TEST_ASSERT(mbedtls_ecp_check_pubkey(&ecp->grp,
                                          &ecp->Q) == 0);
     ok = 1;
@@ -621,13 +627,13 @@ void test_ecdh_restart(int id, data_t *dA, data_t *dB, data_t *z,
     len = 0;
 
     cnt_restart = 0;
+
     do
     {
         ret = mbedtls_ecdh_make_params(&srv, &len, buf, sizeof(buf),
                                        mbedtls_test_rnd_buffer_rand,
                                        &rnd_info_A);
-    }
-    while (ret == MBEDTLS_ERR_ECP_IN_PROGRESS && ++cnt_restart);
+    } while (ret == MBEDTLS_ERR_ECP_IN_PROGRESS && ++cnt_restart);
 
     TEST_ASSERT(ret == 0);
     TEST_ASSERT(cnt_restart >= min_restart);
@@ -642,13 +648,13 @@ void test_ecdh_restart(int id, data_t *dA, data_t *dB, data_t *z,
     len = 0;
 
     cnt_restart = 0;
+
     do
     {
         ret = mbedtls_ecdh_make_public(&cli, &len, buf, sizeof(buf),
                                        mbedtls_test_rnd_buffer_rand,
                                        &rnd_info_B);
-    }
-    while (ret == MBEDTLS_ERR_ECP_IN_PROGRESS && ++cnt_restart);
+    } while (ret == MBEDTLS_ERR_ECP_IN_PROGRESS && ++cnt_restart);
 
     TEST_ASSERT(ret == 0);
     TEST_ASSERT(cnt_restart >= min_restart);
@@ -662,13 +668,13 @@ void test_ecdh_restart(int id, data_t *dA, data_t *dB, data_t *z,
     len = 0;
 
     cnt_restart = 0;
+
     do
     {
         ret = mbedtls_ecdh_calc_secret(&srv, &len, buf, sizeof(buf),
                                        &mbedtls_test_rnd_pseudo_rand,
                                        &rnd_info);
-    }
-    while (ret == MBEDTLS_ERR_ECP_IN_PROGRESS && ++cnt_restart);
+    } while (ret == MBEDTLS_ERR_ECP_IN_PROGRESS && ++cnt_restart);
 
     TEST_ASSERT(ret == 0);
     TEST_ASSERT(cnt_restart >= min_restart);
@@ -682,13 +688,13 @@ void test_ecdh_restart(int id, data_t *dA, data_t *dB, data_t *z,
     len = 0;
 
     cnt_restart = 0;
+
     do
     {
         ret = mbedtls_ecdh_calc_secret(&cli, &len, buf, sizeof(buf),
                                        &mbedtls_test_rnd_pseudo_rand,
                                        &rnd_info);
-    }
-    while (ret == MBEDTLS_ERR_ECP_IN_PROGRESS && ++cnt_restart);
+    } while (ret == MBEDTLS_ERR_ECP_IN_PROGRESS && ++cnt_restart);
 
     TEST_ASSERT(ret == 0);
     TEST_ASSERT(cnt_restart >= min_restart);
@@ -732,6 +738,7 @@ void test_ecdh_exchange_calc_secret(int grp_id,
 
     if (! load_private_key(grp_id, our_private_key, &our_key, &rnd_info))
         goto exit;
+
     if (! load_public_key(grp_id, their_point, &their_key))
         goto exit;
 
@@ -795,6 +802,7 @@ void test_ecdh_exchange_get_params_fail(int our_grp_id,
 
     if (! load_private_key(our_grp_id, our_private_key, &our_key, &rnd_info))
         goto exit;
+
     if (! load_public_key(their_grp_id, their_point, &their_key))
         goto exit;
 
@@ -855,54 +863,62 @@ int get_expression(int32_t exp_id, int32_t *out_value)
 
 #if defined(MBEDTLS_ECDH_C)
 
-    case 0:
-    {
-        *out_value = MBEDTLS_ECP_DP_SECP192R1;
-    }
-    break;
-    case 1:
-    {
-        *out_value = MBEDTLS_ECP_DP_SECP224R1;
-    }
-    break;
-    case 2:
-    {
-        *out_value = MBEDTLS_ECP_DP_SECP256R1;
-    }
-    break;
-    case 3:
-    {
-        *out_value = MBEDTLS_ECP_DP_SECP384R1;
-    }
-    break;
-    case 4:
-    {
-        *out_value = MBEDTLS_ECP_DP_SECP521R1;
-    }
-    break;
-    case 5:
-    {
-        *out_value = MBEDTLS_ECP_DP_CURVE25519;
-    }
-    break;
-    case 6:
-    {
-        *out_value = MBEDTLS_ECP_DP_BP256R1;
-    }
-    break;
-    case 7:
-    {
-        *out_value = MBEDTLS_ERR_ECP_BAD_INPUT_DATA;
-    }
-    break;
+        case 0:
+        {
+            *out_value = MBEDTLS_ECP_DP_SECP192R1;
+        }
+        break;
+
+        case 1:
+        {
+            *out_value = MBEDTLS_ECP_DP_SECP224R1;
+        }
+        break;
+
+        case 2:
+        {
+            *out_value = MBEDTLS_ECP_DP_SECP256R1;
+        }
+        break;
+
+        case 3:
+        {
+            *out_value = MBEDTLS_ECP_DP_SECP384R1;
+        }
+        break;
+
+        case 4:
+        {
+            *out_value = MBEDTLS_ECP_DP_SECP521R1;
+        }
+        break;
+
+        case 5:
+        {
+            *out_value = MBEDTLS_ECP_DP_CURVE25519;
+        }
+        break;
+
+        case 6:
+        {
+            *out_value = MBEDTLS_ECP_DP_BP256R1;
+        }
+        break;
+
+        case 7:
+        {
+            *out_value = MBEDTLS_ERR_ECP_BAD_INPUT_DATA;
+        }
+        break;
 #endif
 
-    default:
-    {
-        ret = KEY_VALUE_MAPPING_NOT_FOUND;
+        default:
+        {
+            ret = KEY_VALUE_MAPPING_NOT_FOUND;
+        }
+        break;
     }
-    break;
-    }
+
     return (ret);
 }
 
@@ -929,74 +945,81 @@ int dep_check(int dep_id)
 
 #if defined(MBEDTLS_ECDH_C)
 
-    case 0:
-    {
+        case 0:
+        {
 #if defined(MBEDTLS_ECP_DP_SECP192R1_ENABLED)
-        ret = DEPENDENCY_SUPPORTED;
+            ret = DEPENDENCY_SUPPORTED;
 #else
-        ret = DEPENDENCY_NOT_SUPPORTED;
+            ret = DEPENDENCY_NOT_SUPPORTED;
 #endif
-    }
-    break;
-    case 1:
-    {
+        }
+        break;
+
+        case 1:
+        {
 #if defined(MBEDTLS_ECP_DP_SECP224R1_ENABLED)
-        ret = DEPENDENCY_SUPPORTED;
+            ret = DEPENDENCY_SUPPORTED;
 #else
-        ret = DEPENDENCY_NOT_SUPPORTED;
+            ret = DEPENDENCY_NOT_SUPPORTED;
 #endif
-    }
-    break;
-    case 2:
-    {
+        }
+        break;
+
+        case 2:
+        {
 #if defined(MBEDTLS_ECP_DP_SECP256R1_ENABLED)
-        ret = DEPENDENCY_SUPPORTED;
+            ret = DEPENDENCY_SUPPORTED;
 #else
-        ret = DEPENDENCY_NOT_SUPPORTED;
+            ret = DEPENDENCY_NOT_SUPPORTED;
 #endif
-    }
-    break;
-    case 3:
-    {
+        }
+        break;
+
+        case 3:
+        {
 #if defined(MBEDTLS_ECP_DP_SECP384R1_ENABLED)
-        ret = DEPENDENCY_SUPPORTED;
+            ret = DEPENDENCY_SUPPORTED;
 #else
-        ret = DEPENDENCY_NOT_SUPPORTED;
+            ret = DEPENDENCY_NOT_SUPPORTED;
 #endif
-    }
-    break;
-    case 4:
-    {
+        }
+        break;
+
+        case 4:
+        {
 #if defined(MBEDTLS_ECP_DP_SECP521R1_ENABLED)
-        ret = DEPENDENCY_SUPPORTED;
+            ret = DEPENDENCY_SUPPORTED;
 #else
-        ret = DEPENDENCY_NOT_SUPPORTED;
+            ret = DEPENDENCY_NOT_SUPPORTED;
 #endif
-    }
-    break;
-    case 5:
-    {
+        }
+        break;
+
+        case 5:
+        {
 #if defined(MBEDTLS_ECP_DP_CURVE25519_ENABLED)
-        ret = DEPENDENCY_SUPPORTED;
+            ret = DEPENDENCY_SUPPORTED;
 #else
-        ret = DEPENDENCY_NOT_SUPPORTED;
+            ret = DEPENDENCY_NOT_SUPPORTED;
 #endif
-    }
-    break;
-    case 6:
-    {
+        }
+        break;
+
+        case 6:
+        {
 #if defined(MBEDTLS_ECP_DP_BP256R1_ENABLED)
-        ret = DEPENDENCY_SUPPORTED;
+            ret = DEPENDENCY_SUPPORTED;
 #else
-        ret = DEPENDENCY_NOT_SUPPORTED;
+            ret = DEPENDENCY_NOT_SUPPORTED;
 #endif
-    }
-    break;
+        }
+        break;
 #endif
 
-    default:
-        break;
+        default:
+            break;
     }
+
     return (ret);
 }
 
@@ -1096,6 +1119,7 @@ int dispatch_test(size_t func_idx, void **params)
     if (func_idx < (int)(sizeof(test_funcs) / sizeof(TestWrapper_t)))
     {
         fp = test_funcs[func_idx];
+
         if (fp)
         {
 #if defined(MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG)
@@ -1138,6 +1162,7 @@ int check_test(size_t func_idx)
     if (func_idx < (int)(sizeof(test_funcs) / sizeof(TestWrapper_t)))
     {
         fp = test_funcs[func_idx];
+
         if (fp == NULL)
             ret = DISPATCH_UNSUPPORTED_SUITE;
     }
@@ -1267,6 +1292,7 @@ int get_line(FILE *f, char *buf, size_t len)
     do
     {
         ret = myfgets(buf, len, f);
+
         if (ret == NULL)
             return (-1);
 
@@ -1275,10 +1301,13 @@ int get_line(FILE *f, char *buf, size_t len)
         /* Skip empty line and comment */
         if (str_len == 0 || buf[0] == '#')
             continue;
+
         has_string = 0;
+
         for (i = 0; i < str_len; i++)
         {
             char c = buf[i];
+
             if (c != ' ' && c != '\t' && c != '\n' &&
                     c != '\v' && c != '\f' && c != '\r')
             {
@@ -1286,13 +1315,14 @@ int get_line(FILE *f, char *buf, size_t len)
                 break;
             }
         }
-    }
-    while (!has_string);
+    } while (!has_string);
 
     /* Strip new line and carriage return */
     ret = buf + strlen(buf);
+
     if (ret-- > buf && *ret == '\n')
         *ret = '\0';
+
     if (ret-- > buf && *ret == '\r')
         *ret = '\0';
 
@@ -1326,6 +1356,7 @@ static int parse_arguments(char *buf, size_t len, char **params,
             p++;
             continue;
         }
+
         if (*p == ':')
         {
             if (p + 1 < buf + len)
@@ -1334,6 +1365,7 @@ static int parse_arguments(char *buf, size_t len, char **params,
                 TEST_HELPER_ASSERT(cnt < params_len);
                 params[cnt++] = cur;
             }
+
             *p = '\0';
         }
 
@@ -1366,6 +1398,7 @@ static int parse_arguments(char *buf, size_t len, char **params,
             else
                 *(q++) = *(p++);
         }
+
         *q = '\0';
     }
 
@@ -1448,6 +1481,7 @@ static int convert_params(size_t cnt, char **params, int32_t *int_params_store)
         else if (strcmp(type, "exp") == 0)
         {
             int exp_id = strtol(val, NULL, 10);
+
             if (get_expression(exp_id, int_params_store) == 0)
             {
                 *out++ = (char *)int_params_store++;
@@ -1464,6 +1498,7 @@ static int convert_params(size_t cnt, char **params, int32_t *int_params_store)
             break;
         }
     }
+
     return (ret);
 }
 
@@ -1495,7 +1530,9 @@ static int test_snprintf(size_t n, const char *ref_buf, int ref_ret)
 
     if (n >= sizeof(buf))
         return (-1);
+
     ret = mbedtls_snprintf(buf, n, "%s", "123");
+
     if (ret < 0 || (size_t) ret >= n)
         ret = -1;
 
@@ -1546,18 +1583,23 @@ static void write_outcome_entry(FILE *outcome_file,
     if (platform == NULL)
     {
         platform = getenv("MBEDTLS_TEST_PLATFORM");
+
         if (platform == NULL)
             platform = "unknown";
     }
+
     if (configuration == NULL)
     {
         configuration = getenv("MBEDTLS_TEST_CONFIGURATION");
+
         if (configuration == NULL)
             configuration = "unknown";
     }
+
     if (test_suite == NULL)
     {
         test_suite = strrchr(argv0, '/');
+
         if (test_suite != NULL)
             test_suite += 1; // skip the '/'
         else
@@ -1595,49 +1637,61 @@ static void write_outcome_result(FILE *outcome_file,
      * Ignore errors: writing the outcome file is on a best-effort basis. */
     switch (ret)
     {
-    case DISPATCH_TEST_SUCCESS:
-        if (unmet_dep_count > 0)
-        {
-            size_t i;
-            mbedtls_fprintf(outcome_file, "SKIP");
-            for (i = 0; i < unmet_dep_count; i++)
+        case DISPATCH_TEST_SUCCESS:
+            if (unmet_dep_count > 0)
             {
-                mbedtls_fprintf(outcome_file, "%c%d",
-                                i == 0 ? ';' : ':',
-                                unmet_dependencies[i]);
+                size_t i;
+                mbedtls_fprintf(outcome_file, "SKIP");
+
+                for (i = 0; i < unmet_dep_count; i++)
+                {
+                    mbedtls_fprintf(outcome_file, "%c%d",
+                                    i == 0 ? ';' : ':',
+                                    unmet_dependencies[i]);
+                }
+
+                if (missing_unmet_dependencies)
+                    mbedtls_fprintf(outcome_file, ":...");
+
+                break;
             }
-            if (missing_unmet_dependencies)
-                mbedtls_fprintf(outcome_file, ":...");
+
+            switch (info->result)
+            {
+                case MBEDTLS_TEST_RESULT_SUCCESS:
+                    mbedtls_fprintf(outcome_file, "PASS;");
+                    break;
+
+                case MBEDTLS_TEST_RESULT_SKIPPED:
+                    mbedtls_fprintf(outcome_file, "SKIP;Runtime skip");
+                    break;
+
+                default:
+                    mbedtls_fprintf(outcome_file, "FAIL;%s:%d:%s",
+                                    info->filename, info->line_no,
+                                    info->test);
+                    break;
+            }
+
             break;
-        }
-        switch (info->result)
-        {
-        case MBEDTLS_TEST_RESULT_SUCCESS:
-            mbedtls_fprintf(outcome_file, "PASS;");
+
+        case DISPATCH_TEST_FN_NOT_FOUND:
+            mbedtls_fprintf(outcome_file, "FAIL;Test function not found");
             break;
-        case MBEDTLS_TEST_RESULT_SKIPPED:
-            mbedtls_fprintf(outcome_file, "SKIP;Runtime skip");
+
+        case DISPATCH_INVALID_TEST_DATA:
+            mbedtls_fprintf(outcome_file, "FAIL;Invalid test data");
             break;
+
+        case DISPATCH_UNSUPPORTED_SUITE:
+            mbedtls_fprintf(outcome_file, "SKIP;Unsupported suite");
+            break;
+
         default:
-            mbedtls_fprintf(outcome_file, "FAIL;%s:%d:%s",
-                            info->filename, info->line_no,
-                            info->test);
+            mbedtls_fprintf(outcome_file, "FAIL;Unknown cause");
             break;
-        }
-        break;
-    case DISPATCH_TEST_FN_NOT_FOUND:
-        mbedtls_fprintf(outcome_file, "FAIL;Test function not found");
-        break;
-    case DISPATCH_INVALID_TEST_DATA:
-        mbedtls_fprintf(outcome_file, "FAIL;Invalid test data");
-        break;
-    case DISPATCH_UNSUPPORTED_SUITE:
-        mbedtls_fprintf(outcome_file, "SKIP;Unsupported suite");
-        break;
-    default:
-        mbedtls_fprintf(outcome_file, "FAIL;Unknown cause");
-        break;
     }
+
     mbedtls_fprintf(outcome_file, "\n");
     fflush(outcome_file);
 }
@@ -1696,6 +1750,7 @@ int execute_tests(int argc, const char **argv)
      * structures, which should work on every modern platform. Let's be sure.
      */
     memset(&pointer, 0, sizeof(void *));
+
     if (pointer != NULL)
     {
         mbedtls_fprintf(stderr, "all-bits-zero is not a NULL pointer\n");
@@ -1714,6 +1769,7 @@ int execute_tests(int argc, const char **argv)
     if (outcome_file_name != NULL && *outcome_file_name != '\0')
     {
         outcome_file = myfopen(outcome_file_name, "a");
+
         if (outcome_file == NULL)
         {
             mbedtls_fprintf(stderr, "Unable to open outcome file. Continuing anyway.\n");
@@ -1769,12 +1825,15 @@ int execute_tests(int argc, const char **argv)
         test_filename = test_files[ testfile_index ];
 
         file = myfopen(test_filename, "r");
+
         if (file == NULL)
         {
             mbedtls_fprintf(stderr, "Failed to open test file: %s\n",
                             test_filename);
+
             if (outcome_file != NULL)
                 myfclose(outcome_file);
+
             return (1);
         }
 
@@ -1786,17 +1845,21 @@ int execute_tests(int argc, const char **argv)
                                 "FATAL: Dep count larger than zero at start of loop\n");
                 mbedtls_exit(MBEDTLS_EXIT_FAILURE);
             }
+
             unmet_dep_count = 0;
             missing_unmet_dependencies = 0;
 
             if ((ret = get_line(file, buf, sizeof(buf))) != 0)
                 break;
+
             mbedtls_fprintf(stdout, "%s%.66s",
                             mbedtls_test_info.result == MBEDTLS_TEST_RESULT_FAILED ?
                             "\n" : "", buf);
             mbedtls_fprintf(stdout, " ");
+
             for (i = strlen(buf) + 1; i < 67; i++)
                 mbedtls_fprintf(stdout, ".");
+
             mbedtls_fprintf(stdout, " ");
             fflush(stdout);
             write_outcome_entry(outcome_file, argv[0], buf);
@@ -1805,6 +1868,7 @@ int execute_tests(int argc, const char **argv)
 
             if ((ret = get_line(file, buf, sizeof(buf))) != 0)
                 break;
+
             cnt = parse_arguments(buf, strlen(buf), params,
                                   sizeof(params) / sizeof(params[0]));
 
@@ -1813,6 +1877,7 @@ int execute_tests(int argc, const char **argv)
                 for (i = 1; i < cnt; i++)
                 {
                     int dep_id = strtol(params[i], NULL, 10);
+
                     if (dep_check(dep_id) != DEPENDENCY_SUPPORTED)
                     {
                         if (unmet_dep_count <
@@ -1830,6 +1895,7 @@ int execute_tests(int argc, const char **argv)
 
                 if ((ret = get_line(file, buf, sizeof(buf))) != 0)
                     break;
+
                 cnt = parse_arguments(buf, strlen(buf), params,
                                       sizeof(params) / sizeof(params[0]));
             }
@@ -1840,24 +1906,29 @@ int execute_tests(int argc, const char **argv)
                 mbedtls_test_info_reset();
 
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
+
                 /* Suppress all output from the library unless we're verbose
                  * mode
                  */
                 if (!option_verbose)
                 {
                     stdout_fd = redirect_output(stdout, "/dev/null");
+
                     if (stdout_fd == -1)
                     {
                         /* Redirection has failed with no stdout so exit */
                         exit(1);
                     }
                 }
+
 #endif /* __unix__ || __APPLE__ __MACH__ */
 
                 function_id = strtoul(params[0], NULL, 10);
+
                 if ((ret = check_test(function_id)) == DISPATCH_TEST_SUCCESS)
                 {
                     ret = convert_params(cnt - 1, params + 1, int_params);
+
                     if (DISPATCH_TEST_SUCCESS == ret)
                     {
                         ret = dispatch_test(function_id, (void **)(params + 1));
@@ -1865,11 +1936,13 @@ int execute_tests(int argc, const char **argv)
                 }
 
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
+
                 if (!option_verbose && restore_output(stdout, stdout_fd))
                 {
                     /* Redirection has failed with no stdout so exit */
                     exit(1);
                 }
+
 #endif /* __unix__ || __APPLE__ __MACH__ */
 
             }
@@ -1878,6 +1951,7 @@ int execute_tests(int argc, const char **argv)
                                  unmet_dep_count, unmet_dependencies,
                                  missing_unmet_dependencies,
                                  ret, &mbedtls_test_info);
+
             if (unmet_dep_count > 0 || ret == DISPATCH_UNSUPPORTED_SUITE)
             {
                 total_skipped++;
@@ -1891,14 +1965,17 @@ int execute_tests(int argc, const char **argv)
                 if (1 == option_verbose && unmet_dep_count > 0)
                 {
                     mbedtls_fprintf(stdout, "\n   Unmet dependencies: ");
+
                     for (i = 0; i < unmet_dep_count; i++)
                     {
                         mbedtls_fprintf(stdout, "%d ",
                                         unmet_dependencies[i]);
                     }
+
                     if (missing_unmet_dependencies)
                         mbedtls_fprintf(stdout, "...");
                 }
+
                 mbedtls_fprintf(stdout, "\n");
                 fflush(stdout);
 
@@ -1922,21 +1999,26 @@ int execute_tests(int argc, const char **argv)
                     mbedtls_fprintf(stdout, "FAILED\n");
                     mbedtls_fprintf(stdout, "  %s\n  at ",
                                     mbedtls_test_info.test);
+
                     if (mbedtls_test_info.step != (unsigned long)(-1))
                     {
                         mbedtls_fprintf(stdout, "step %lu, ",
                                         mbedtls_test_info.step);
                     }
+
                     mbedtls_fprintf(stdout, "line %d, %s",
                                     mbedtls_test_info.line_no,
                                     mbedtls_test_info.filename);
+
                     if (mbedtls_test_info.line1[0] != 0)
                         mbedtls_fprintf(stdout, "\n  %s",
                                         mbedtls_test_info.line1);
+
                     if (mbedtls_test_info.line2[0] != 0)
                         mbedtls_fprintf(stdout, "\n  %s",
                                         mbedtls_test_info.line2);
                 }
+
                 fflush(stdout);
             }
             else if (ret == DISPATCH_INVALID_TEST_DATA)
@@ -1954,6 +2036,7 @@ int execute_tests(int argc, const char **argv)
             else
                 total_errors++;
         }
+
         myfclose(file);
     }
 
@@ -1961,6 +2044,7 @@ int execute_tests(int argc, const char **argv)
         myfclose(outcome_file);
 
     mbedtls_fprintf(stdout, "\n----------------------------------------------------------------------------\n\n");
+
     if (total_errors == 0)
         mbedtls_fprintf(stdout, "PASSED");
     else
@@ -2086,6 +2170,7 @@ int main()
 #endif
 
     int ret = mbedtls_test_platform_setup();
+
     if (ret != 0)
     {
         mbedtls_fprintf(stderr,

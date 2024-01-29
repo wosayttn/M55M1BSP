@@ -222,24 +222,24 @@ void NPU_IRQHandler(void)
 
 void TestFunc_NPU_Open_Close()
 {
-	uint32_t u32SecureEnable;
-	uint32_t u32PrivilegeEnable;
-	
-	//Secure and Privilege enable/disable test
-	for(u32SecureEnable = 0; u32SecureEnable <= 1; u32SecureEnable ++)
-	{
-		for(u32PrivilegeEnable = 0; u32PrivilegeEnable <= 1; u32PrivilegeEnable ++)
-		{
-			CU_ASSERT((ethosu_init(&ethosu0_driver,
-                    (void *)(NPU_BASE),
-                    ethosu_scratch,
-                    ETHOSU_FAST_MEMORY_SIZE,
-                    u32SecureEnable,
-                    u32PrivilegeEnable) == 0));
-			
-			ethosu_deinit(&ethosu0_driver);
-		}
-	}
+    uint32_t u32SecureEnable;
+    uint32_t u32PrivilegeEnable;
+
+    //Secure and Privilege enable/disable test
+    for (u32SecureEnable = 0; u32SecureEnable <= 1; u32SecureEnable ++)
+    {
+        for (u32PrivilegeEnable = 0; u32PrivilegeEnable <= 1; u32PrivilegeEnable ++)
+        {
+            CU_ASSERT((ethosu_init(&ethosu0_driver,
+                                   (void *)(NPU_BASE),
+                                   ethosu_scratch,
+                                   ETHOSU_FAST_MEMORY_SIZE,
+                                   u32SecureEnable,
+                                   u32PrivilegeEnable) == 0));
+
+            ethosu_deinit(&ethosu0_driver);
+        }
+    }
 
     ethosu_release_driver(&ethosu0_driver);
 }
@@ -258,19 +258,19 @@ void TestFunc_NPU_Invoke()
 
     // Initialize Ethos-U NPU driver
     ethosu_init(&ethosu0_driver,
-                    (void *)(NPU_BASE),
-                    ethosu_scratch,
-                    ETHOSU_FAST_MEMORY_SIZE,
-                    1,
-                    1);
+                (void *)(NPU_BASE),
+                ethosu_scratch,
+                ETHOSU_FAST_MEMORY_SIZE,
+                1,
+                1);
 
     // Enable Ethos-U interrupt
     NVIC_EnableIRQ(NPU_IRQn);
 
-	ethosu_request_power(&ethosu0_driver);
+    ethosu_request_power(&ethosu0_driver);
 
-	// Setup base address and size
-	memset(au64BaseAddr, 0, sizeof(au64BaseAddr));
+    // Setup base address and size
+    memset(au64BaseAddr, 0, sizeof(au64BaseAddr));
     memset(au32BaseAddrSize, 0, sizeof(au32BaseAddrSize));
 
     au64BaseAddr[0] = (uint64_t)g_NPU_weightsBiases0;
@@ -280,28 +280,28 @@ void TestFunc_NPU_Invoke()
     au64BaseAddr[2] = (uint64_t)g_NPU_fastScratch;
     au32BaseAddrSize[2] = sizeof(g_NPU_fastScratch);
 
-	// Invoke test: valid command stream
-	i32Ret = ethosu_invoke_v3(&ethosu0_driver,
+    // Invoke test: valid command stream
+    i32Ret = ethosu_invoke_v3(&ethosu0_driver,
                               (void *)g_NPU_commandStream,
                               sizeof(g_NPU_commandStream),
                               au64BaseAddr,
                               au32BaseAddrSize,
                               ETHOSU_BASEP_INDEXES,
                               NULL);
-	CU_ASSERT((i32Ret == 0));
-	CU_ASSERT((memcmp(g_NPU_expected0, g_NPU_scratch + 1024, sizeof(g_NPU_expected0)) == 0));
-							  
-	// Invoke test: illegal command stream
-	i32Ret = ethosu_invoke_v3(&ethosu0_driver,
+    CU_ASSERT((i32Ret == 0));
+    CU_ASSERT((memcmp(g_NPU_expected0, g_NPU_scratch + 1024, sizeof(g_NPU_expected0)) == 0));
+
+    // Invoke test: illegal command stream
+    i32Ret = ethosu_invoke_v3(&ethosu0_driver,
                               (void *) 0,
                               sizeof(g_NPU_commandStream),
                               au64BaseAddr,
                               au32BaseAddrSize,
                               ETHOSU_BASEP_INDEXES,
                               NULL);
-	CU_ASSERT((i32Ret != 0));
+    CU_ASSERT((i32Ret != 0));
 
-	ethosu_deinit(&ethosu0_driver);
+    ethosu_deinit(&ethosu0_driver);
     ethosu_release_power(&ethosu0_driver);
     ethosu_release_driver(&ethosu0_driver);
 }

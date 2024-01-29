@@ -1,11 +1,11 @@
- /**************************************************************************//**
- * @file    main.c
- * @version V1.00
- * @brief   RNG_Random code for M55M1 series MCU
- *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- *****************************************************************************/
+/**************************************************************************//**
+* @file    main.c
+* @version V1.00
+* @brief   RNG_Random code for M55M1 series MCU
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
@@ -56,8 +56,8 @@ void SYS_Init(void)
 
     /* Enable CRYPTO0 module clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
-		
-	/* Enable TRNG0 module clock */
+
+    /* Enable TRNG0 module clock */
     CLK_EnableModuleClock(TRNG0_MODULE);
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -80,8 +80,8 @@ int main(void)
 
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
-	
-	 /* Init Debug UART for printf */
+
+    /* Init Debug UART for printf */
     InitDebugUart();
 
     /* Lock protected registers */
@@ -98,18 +98,18 @@ int main(void)
         /* Get random number */
         n = RNG_Random(au32Buf, 8);
 
-        if(n)
+        if (n)
         {
-            for(i = 0; i < 8; i++)
+            for (i = 0; i < 8; i++)
             {
                 printf("%08x", au32Buf[i]);
             }
+
             printf("\n");
         }
 
         CLK_SysTickDelay(100000);
-    }
-    while(1);
+    } while (1);
 
 }
 

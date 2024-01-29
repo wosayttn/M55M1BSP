@@ -25,7 +25,8 @@
 #ifndef CNNMODEL_H
 #define CNNMODEL_H
 
-class CNNModel : public Model {
+class CNNModel : public Model
+{
 
 public:
     CNNModel();
@@ -37,13 +38,13 @@ private:
     tflite::MicroMutableOpResolver<_maxOpCnt> _opResolver;
 protected:
     /** @brief   Gets the reference to op resolver interface class */
-    const tflite::MicroOpResolver& GetOpResolver() override;
+    const tflite::MicroOpResolver &GetOpResolver() override;
 
     /** @brief   Adds operations to the op resolver instance */
     bool EnlistOperations() override;
 
     /** @brief   Gets a pointer to the tensor arena */
-    uint8_t* GetTensorArena() override;
+    uint8_t *GetTensorArena() override;
 
     /** @brief   Gets the total size of tensor arena available for use */
     size_t GetActivationBufferSize() override;

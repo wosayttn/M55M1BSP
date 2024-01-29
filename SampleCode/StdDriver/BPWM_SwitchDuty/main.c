@@ -107,7 +107,7 @@ int main(void)
     /* Start BPWM counter */
     BPWM_Start(BPWM0, BPWM_CH_0_MASK);
 
-    while(1)
+    while (1)
     {
         printf("\nSelect new duty: \n");
         printf("[1] 100%% \n");
@@ -117,19 +117,19 @@ int main(void)
         printf("[Other] Exit \n");
         u8Option = (uint8_t)getchar();
 
-        if(u8Option == '1')
+        if (u8Option == '1')
         {
             u32NewDutyCycle = 100;
         }
-        else if(u8Option == '2')
+        else if (u8Option == '2')
         {
             u32NewDutyCycle = 75;
         }
-        else if(u8Option == '3')
+        else if (u8Option == '3')
         {
             u32NewDutyCycle = 25;
         }
-        else if(u8Option == '4')
+        else if (u8Option == '4')
         {
             u32NewDutyCycle = 0;
         }
@@ -138,6 +138,7 @@ int main(void)
             printf("Exit\n");
             break;
         }
+
         /* Get new comparator value by call CalNewDutyCMR() */
         u32NewCMR = CalNewDutyCMR(BPWM0, 0, u32NewDutyCycle, 100);
         /* Set new comparator value to register */

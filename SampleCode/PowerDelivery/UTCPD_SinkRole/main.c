@@ -133,7 +133,7 @@ void SYS_Init(void)
     SET_INT1_PB4();
 
 
- /* UTCPD VBSRCEN Multiple Function Pin */
+    /* UTCPD VBSRCEN Multiple Function Pin */
     SET_UTCPD0_VBSRCEN_PA2();
     /* UTCPD VBSNKEN Multiple Function Pin */
     SET_UTCPD0_VBSNKEN_PA3();
@@ -234,7 +234,7 @@ NVT_ITCM void TIMER1_IRQHandler(void)
     TIMER_ClearIntFlag(TIMER1);
     /*Confirm that the Flag has been cleared.*/
     M32(&TIMER1->INTSTS);
-  
+
 }
 
 /**
@@ -272,8 +272,8 @@ void pd_task(void)
 
     while (1)
     {
-//        pd_timer_init(port);
-//        pd_task_init(port);
+        //        pd_timer_init(port);
+        //        pd_task_init(port);
         pd_task_reinit(port);
         /* As long as pd_task_loop returns true, keep running the loop.
          * pd_task_loop returns false when the code needs to re-init
@@ -328,7 +328,7 @@ int main()
 
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
-  
+
     /* Init DEBUG_PORT to 115200-8n1 for print message */
     UART_Open(DEBUG_PORT, 115200);
     printf("UART Initial\n");

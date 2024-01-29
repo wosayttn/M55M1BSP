@@ -1,11 +1,11 @@
- /**************************************************************************//**
- * @file    main.c
- * @version V1.00
- * @brief   RGN_EntropyPoll code for M55M1 series MCU
- *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
- *****************************************************************************/
+/**************************************************************************//**
+* @file    main.c
+* @version V1.00
+* @brief   RGN_EntropyPoll code for M55M1 series MCU
+*
+* SPDX-License-Identifier: Apache-2.0
+* @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+*****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
@@ -54,10 +54,10 @@ void SYS_Init(void)
 
     /* Enable CRYPTO0 module clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
-		
-	/* Enable TRNG0 module clock */
+
+    /* Enable TRNG0 module clock */
     CLK_EnableModuleClock(TRNG0_MODULE);
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -82,7 +82,7 @@ int main(void)
     /* Init Debug UART for printf */
     InitDebugUart();
 
-	  /* Lock protected registers */
+    /* Lock protected registers */
     SYS_LockReg();
 
     printf("CPU @ %dHz\n", SystemCoreClock);
@@ -94,25 +94,26 @@ int main(void)
     do
     {
         /* Get entropy */
-        n = RNG_EntropyPoll((uint32_t*)(au8Buf), 32);
+        n = RNG_EntropyPoll((uint32_t *)(au8Buf), 32);
 
-        if(n < 0)
+        if (n < 0)
         {
             printf("Entropy poll fail. return code = %d\n", n);
             break;
         }
 
-        for(i = 0; i < n; i++)
+        for (i = 0; i < n; i++)
         {
             printf("%02x", au8Buf[i]);
         }
+
         printf("\n");
 
         CLK_SysTickDelay(100000);
-    } while(1);
+    } while (1);
 
 
-    for(;;) {}
+    for (;;) {}
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

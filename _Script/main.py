@@ -36,7 +36,7 @@ def astyle():
     f = open('astyle.txt', "w+")
     subprocess.call('\"C:\\Program Files (x86)\\AStyle\\bin\\AStyle.exe\" \
                     --options=_Script\\AStyle_BSP.txt --ascii --recursive \
-                    *.c,*.h',
+                    *.c,*.h,*.cpp,*.hpp',
                     shell=True, stdout=f, stderr=f)
     f.close()
     print("Done...")

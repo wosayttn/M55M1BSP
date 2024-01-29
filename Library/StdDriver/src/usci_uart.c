@@ -346,7 +346,7 @@ uint32_t UUART_Open(UUART_T *uuart, uint32_t u32baudrate)
 
     if (u32Tmp >= u32Tmp2) u32Div = u32Div + 1ul;
 
-    if(u32Div >= 65536ul)
+    if (u32Div >= 65536ul)
     {
 
         /* Set the smallest baud rate that USCI_UART can generate */
@@ -359,12 +359,13 @@ uint32_t UUART_Open(UUART_T *uuart, uint32_t u32baudrate)
     {
 
         u32Tmp = 0x400ul * 0x10ul;
-        for(u32PDSCnt = 1ul; u32PDSCnt <= 0x04ul; u32PDSCnt++)
+
+        for (u32PDSCnt = 1ul; u32PDSCnt <= 0x04ul; u32PDSCnt++)
         {
-            if(u32Div <= (u32Tmp * u32PDSCnt)) break;
+            if (u32Div <= (u32Tmp * u32PDSCnt)) break;
         }
 
-        if(u32PDSCnt > 0x4ul) u32PDSCnt = 0x4ul;
+        if (u32PDSCnt > 0x4ul) u32PDSCnt = 0x4ul;
 
         u32Div = u32Div / u32PDSCnt;
 
@@ -374,12 +375,12 @@ uint32_t UUART_Open(UUART_T *uuart, uint32_t u32baudrate)
         u32MinClkDiv = 0ul;
         u32Tmp = 0ul;
 
-        for(u32DSCnt = 6ul; u32DSCnt <= 0x10ul; u32DSCnt++)   /* DSCNT could be 0x5~0xF */
+        for (u32DSCnt = 6ul; u32DSCnt <= 0x10ul; u32DSCnt++)  /* DSCNT could be 0x5~0xF */
         {
 
             u32ClkDiv = u32Div / u32DSCnt;
 
-            if(u32ClkDiv > 0x400ul)
+            if (u32ClkDiv > 0x400ul)
             {
                 u32ClkDiv = 0x400ul;
                 u32Tmp = u32Div - (u32ClkDiv * u32DSCnt);
@@ -391,20 +392,20 @@ uint32_t UUART_Open(UUART_T *uuart, uint32_t u32baudrate)
                 u32Tmp2 = ((u32ClkDiv + 1ul) * u32DSCnt) - u32Div;
             }
 
-            if(u32Tmp >= u32Tmp2)
+            if (u32Tmp >= u32Tmp2)
             {
                 u32ClkDiv = u32ClkDiv + 1ul;
             }
             else u32Tmp2 = u32Tmp;
 
-            if(u32Tmp2 < u32Min)
+            if (u32Tmp2 < u32Min)
             {
                 u32Min = u32Tmp2;
                 u32MinDSCnt = u32DSCnt;
                 u32MinClkDiv = u32ClkDiv;
 
                 /* Break when get good results */
-                if(u32Min == 0ul)
+                if (u32Min == 0ul)
                 {
                     break;
                 }
@@ -514,7 +515,7 @@ uint32_t UUART_SetLine_Config(UUART_T *uuart, uint32_t u32baudrate, uint32_t u32
 
         if (u32Tmp >= u32Tmp2) u32Div = u32Div + 1ul;
 
-        if(u32Div >= 65536ul)
+        if (u32Div >= 65536ul)
         {
 
             /* Set the smallest baud rate that USCI_UART can generate */
@@ -527,12 +528,13 @@ uint32_t UUART_SetLine_Config(UUART_T *uuart, uint32_t u32baudrate, uint32_t u32
         {
 
             u32Tmp = 0x400ul * 0x10ul;
-            for(u32PDSCnt = 1ul; u32PDSCnt <= 0x04ul; u32PDSCnt++)
+
+            for (u32PDSCnt = 1ul; u32PDSCnt <= 0x04ul; u32PDSCnt++)
             {
-                if(u32Div <= (u32Tmp * u32PDSCnt)) break;
+                if (u32Div <= (u32Tmp * u32PDSCnt)) break;
             }
 
-            if(u32PDSCnt > 0x4ul) u32PDSCnt = 0x4ul;
+            if (u32PDSCnt > 0x4ul) u32PDSCnt = 0x4ul;
 
             u32Div = u32Div / u32PDSCnt;
 
@@ -541,11 +543,11 @@ uint32_t UUART_SetLine_Config(UUART_T *uuart, uint32_t u32baudrate, uint32_t u32
             u32MinDSCnt = 0ul;
             u32MinClkDiv = 0ul;
 
-            for(u32DSCnt = 6ul; u32DSCnt <= 0x10ul; u32DSCnt++)   /* DSCNT could be 0x5~0xF */
+            for (u32DSCnt = 6ul; u32DSCnt <= 0x10ul; u32DSCnt++)  /* DSCNT could be 0x5~0xF */
             {
                 u32ClkDiv = u32Div / u32DSCnt;
 
-                if(u32ClkDiv > 0x400ul)
+                if (u32ClkDiv > 0x400ul)
                 {
                     u32ClkDiv = 0x400ul;
                     u32Tmp = u32Div - (u32ClkDiv * u32DSCnt);
@@ -557,20 +559,20 @@ uint32_t UUART_SetLine_Config(UUART_T *uuart, uint32_t u32baudrate, uint32_t u32
                     u32Tmp2 = ((u32ClkDiv + 1ul) * u32DSCnt) - u32Div;
                 }
 
-                if(u32Tmp >= u32Tmp2)
+                if (u32Tmp >= u32Tmp2)
                 {
                     u32ClkDiv = u32ClkDiv + 1ul;
                 }
                 else u32Tmp2 = u32Tmp;
 
-                if(u32Tmp2 < u32Min)
+                if (u32Tmp2 < u32Min)
                 {
                     u32Min = u32Tmp2;
                     u32MinDSCnt = u32DSCnt;
                     u32MinClkDiv = u32ClkDiv;
 
                     /* Break when get good results */
-                    if(u32Min == 0ul)
+                    if (u32Min == 0ul)
                     {
                         break;
                     }

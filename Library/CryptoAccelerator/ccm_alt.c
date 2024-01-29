@@ -39,12 +39,12 @@
 #include <string.h>
 
 #if defined(MBEDTLS_SELF_TEST) && defined(MBEDTLS_AES_C)
-#if defined(MBEDTLS_PLATFORM_C)
-#include "mbedtls/platform.h"
-#else
-#include <stdio.h>
-#define mbedtls_printf printf
-#endif /* MBEDTLS_PLATFORM_C */
+    #if defined(MBEDTLS_PLATFORM_C)
+        #include "mbedtls/platform.h"
+    #else
+        #include <stdio.h>
+        #define mbedtls_printf printf
+    #endif /* MBEDTLS_PLATFORM_C */
 #endif /* MBEDTLS_SELF_TEST && MBEDTLS_AES_C */
 
 #if defined(MBEDTLS_CCM_ALT)
@@ -82,13 +82,13 @@ int32_t ToBigEndian(uint8_t *pbuf, uint32_t u32Size)
     uint32_t u32Tmp;
 
     /* pbuf must be word alignment */
-    if((uint32_t)pbuf & 0x3)
+    if ((uint32_t)pbuf & 0x3)
     {
         printf("The buffer must be 32-bit alignment.");
         return -1;
     }
 
-    while(u32Size >= 4)
+    while (u32Size >= 4)
     {
         u8Tmp = *pbuf;
         *(pbuf) = *(pbuf + 3);
@@ -102,10 +102,11 @@ int32_t ToBigEndian(uint8_t *pbuf, uint32_t u32Size)
         pbuf += 4;
     }
 
-    if(u32Size > 0)
+    if (u32Size > 0)
     {
         u32Tmp = 0;
-        for(i = 0; i < u32Size; i++)
+
+        for (i = 0; i < u32Size; i++)
         {
             u32Tmp |= *(pbuf + i) << (24 - i * 8);
         }
@@ -159,11 +160,13 @@ int32_t CCMPacker(const uint8_t *iv, uint32_t ivlen, const uint8_t *A, uint32_t 
     q = 15 - ivlen;
     u8Tmp = (q - 1) | ((tlen - 2) / 2 << 3) | ((alen > 0) ? 0x40 : 0);
     pbuf[0] = u8Tmp;            // flags
-    for(i = 0; i < ivlen; i++)  // N
+
+    for (i = 0; i < ivlen; i++) // N
         pbuf[i + 1] = iv[i];
-    for(i = ivlen + 1, j = q - 1; i < 16; i++, j--)    // Q
+
+    for (i = ivlen + 1, j = q - 1; i < 16; i++, j--)   // Q
     {
-        if(j >= 4)
+        if (j >= 4)
             pbuf[i] = 0;
         else
         {
@@ -172,34 +175,38 @@ int32_t CCMPacker(const uint8_t *iv, uint32_t ivlen, const uint8_t *A, uint32_t 
     }
 
     u32Offset = 16;
+
     /* Formatting addition data */
     /* alen. It is limited to be smaller than 2^16-2^8 */
-    if(alen > 0)
+    if (alen > 0)
     {
         pbuf[u32Offset] = (alen >> 8) & 0xfful;
         pbuf[u32Offset + 1] = alen & 0xfful;
 
-        for(i = 0; i < alen; i++)
+        for (i = 0; i < alen; i++)
             pbuf[u32Offset + i + 2] = A[i];
 
         alen_aligned = ((alen + 2 + 15) / 16) * 16;
-        for(i = u32Offset + 2 + alen; i < alen_aligned; i++)
+
+        for (i = u32Offset + 2 + alen; i < alen_aligned; i++)
         {
-            pbuf[i] = (enc)?0:0xff; // padding zero or 0xff
+            pbuf[i] = (enc) ? 0 : 0xff; // padding zero or 0xff
         }
 
         u32Offset += alen_aligned;
     }
 
     /* Formatting payload */
-    if(plen > 0)
+    if (plen > 0)
     {
         plen_aligned = ((plen + 15) / 16) * 16;
-        for(i = 0; i < plen; i++)
+
+        for (i = 0; i < plen; i++)
         {
             pbuf[u32Offset + i] = P[i];
         }
-        for(; i < plen_aligned; i++)
+
+        for (; i < plen_aligned; i++)
         {
             pbuf[u32Offset + i] = 0; // padding zero
         }
@@ -210,11 +217,13 @@ int32_t CCMPacker(const uint8_t *iv, uint32_t ivlen, const uint8_t *A, uint32_t 
 
     /* Formatting Ctr0 */
     pbuf[u32Offset] = q - 1; // Flags
-    for(i = 0; i < ivlen; i++) // N
+
+    for (i = 0; i < ivlen; i++) // N
     {
         pbuf[u32Offset + 1 + i] = iv[i];
     }
-    for(; i < 16; i++)
+
+    for (; i < 16; i++)
     {
         pbuf[u32Offset + 1 + i] = 0; // padding zero to block alignment
     }
@@ -225,17 +234,18 @@ int32_t CCMPacker(const uint8_t *iv, uint32_t ivlen, const uint8_t *A, uint32_t 
 }
 
 
-static int32_t _CCM(mbedtls_ccm_context *ctx, int32_t enc, const uint8_t *iv, uint32_t ivlen, const uint8_t *A, uint32_t alen, const uint8_t *P, uint32_t plen, uint8_t *buf, uint8_t *tag, uint32_t tlen)
+static int32_t _CCM(mbedtls_ccm_context *ctx, int32_t enc, const uint8_t *iv, uint32_t ivlen, const uint8_t *A, uint32_t alen, const uint8_t *P, uint32_t plen, uint8_t *buf, uint8_t *tag,
+                    uint32_t tlen)
 {
     uint32_t size, plen_aligned;
     int32_t timeout = 0x1000000;
     uint32_t *pu32;
     uint32_t key[8], i;
 
-    if(ivlen > 16)
+    if (ivlen > 16)
         return -1;
 
-    for(i=0;i<8;i++)
+    for (i = 0; i < 8; i++)
     {
         key[i] = CRPT->AES_KEY[i];
     }
@@ -243,7 +253,7 @@ static int32_t _CCM(mbedtls_ccm_context *ctx, int32_t enc, const uint8_t *iv, ui
     SYS->IPRST0 = SYS_IPRST0_CRPTRST_Msk;
     SYS->IPRST0 = 0;
 
-    for(i=0;i<8;i++)
+    for (i = 0; i < 8; i++)
     {
         CRPT->AES_KEY[i] = key[i];
     }
@@ -259,14 +269,14 @@ static int32_t _CCM(mbedtls_ccm_context *ctx, int32_t enc, const uint8_t *iv, ui
 
     plen_aligned = (plen & 0xful) ? ((plen + 15) / 16) * 16 : plen;
 
-    if(ctx->keySize == 16)
+    if (ctx->keySize == 16)
     {
         CRPT->AES_CTL = (enc << CRPT_AES_CTL_ENCRPT_Pos) |
                         (AES_MODE_CCM << CRPT_AES_CTL_OPMODE_Pos) |
                         (AES_KEY_SIZE_128 << CRPT_AES_CTL_KEYSZ_Pos) |
                         (AES_OUT_SWAP << CRPT_AES_CTL_OUTSWAP_Pos);
     }
-    else if(ctx->keySize == 24)
+    else if (ctx->keySize == 24)
     {
         CRPT->AES_CTL = (enc << CRPT_AES_CTL_ENCRPT_Pos) |
                         (AES_MODE_CCM << CRPT_AES_CTL_OPMODE_Pos) |
@@ -305,9 +315,9 @@ static int32_t _CCM(mbedtls_ccm_context *ctx, int32_t enc, const uint8_t *iv, ui
     CRPT->AES_CTL |= CRPT_AES_CTL_START_Msk | (CRYPTO_DMA_ONE_SHOT << CRPT_AES_CTL_DMALAST_Pos);
 
     /* Waiting for AES calculation */
-    while((CRPT->INTSTS & CRPT_INTSTS_AESIF_Msk) == 0)
+    while ((CRPT->INTSTS & CRPT_INTSTS_AESIF_Msk) == 0)
     {
-        if(timeout-- < 0)
+        if (timeout-- < 0)
             return -1;
     }
 
@@ -316,10 +326,11 @@ static int32_t _CCM(mbedtls_ccm_context *ctx, int32_t enc, const uint8_t *iv, ui
 
     memcpy(buf, ctx->out_buf, plen);
 
-    if(tlen > 16)
+    if (tlen > 16)
     {
         tlen = 16;
     }
+
     memcpy(tag, &ctx->out_buf[plen_aligned], tlen);
 
     return 0;
@@ -331,65 +342,68 @@ static int32_t _CCM(mbedtls_ccm_context *ctx, int32_t enc, const uint8_t *iv, ui
 /*
  * Initialize context
  */
-void mbedtls_ccm_init( mbedtls_ccm_context *ctx )
+void mbedtls_ccm_init(mbedtls_ccm_context *ctx)
 {
-    CCM_VALIDATE( ctx != NULL );
-    memset( ctx, 0, sizeof( mbedtls_ccm_context ) );
+    CCM_VALIDATE(ctx != NULL);
+    memset(ctx, 0, sizeof(mbedtls_ccm_context));
 }
 
-int mbedtls_ccm_setkey( mbedtls_ccm_context *ctx,
-                        mbedtls_cipher_id_t cipher,
-                        const unsigned char *key,
-                        unsigned int keybits )
+int mbedtls_ccm_setkey(mbedtls_ccm_context *ctx,
+                       mbedtls_cipher_id_t cipher,
+                       const unsigned char *key,
+                       unsigned int keybits)
 {
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
-    const mbedtls_cipher_info_t* cipher_info;
+    const mbedtls_cipher_info_t *cipher_info;
 
-    CCM_VALIDATE_RET( ctx != NULL );
-    CCM_VALIDATE_RET( key != NULL );
+    CCM_VALIDATE_RET(ctx != NULL);
+    CCM_VALIDATE_RET(key != NULL);
 
     uint32_t au32Buf[8];
     int32_t i, klen;
 
     cipher_info = mbedtls_cipher_info_from_values(cipher, keybits, MBEDTLS_MODE_ECB);
-    if(cipher_info == NULL)
-        return(MBEDTLS_ERR_CCM_BAD_INPUT);
 
-    if(cipher_info->block_size != 16)
-        return(MBEDTLS_ERR_CCM_BAD_INPUT);
+    if (cipher_info == NULL)
+        return (MBEDTLS_ERR_CCM_BAD_INPUT);
+
+    if (cipher_info->block_size != 16)
+        return (MBEDTLS_ERR_CCM_BAD_INPUT);
 
     mbedtls_cipher_free(&ctx->cipher_ctx);
 
-    if((ret = mbedtls_cipher_setup(&ctx->cipher_ctx, cipher_info)) != 0)
-        return(ret);
+    if ((ret = mbedtls_cipher_setup(&ctx->cipher_ctx, cipher_info)) != 0)
+        return (ret);
 
-    if((ret = mbedtls_cipher_setkey(&ctx->cipher_ctx, key, keybits,
-        MBEDTLS_ENCRYPT)) != 0)
+    if ((ret = mbedtls_cipher_setkey(&ctx->cipher_ctx, key, keybits,
+                                     MBEDTLS_ENCRYPT)) != 0)
     {
-        return(ret);
+        return (ret);
     }
 
     klen = keybits / 8;
     ctx->keySize = klen;
     memcpy(au32Buf, key, klen);
     ToBigEndian((uint8_t *)au32Buf, klen);
-    for(i = 0; i < klen / 4; i++)
+
+    for (i = 0; i < klen / 4; i++)
     {
         CRPT->AES_KEY[i] = au32Buf[i];
     }
 
-    return( 0 );
+    return (0);
 }
 
 /*
  * Free context
  */
-void mbedtls_ccm_free( mbedtls_ccm_context *ctx )
+void mbedtls_ccm_free(mbedtls_ccm_context *ctx)
 {
-    if( ctx == NULL )
+    if (ctx == NULL)
         return;
-    mbedtls_cipher_free( &ctx->cipher_ctx );
-    mbedtls_platform_zeroize( ctx, sizeof( mbedtls_ccm_context ) );
+
+    mbedtls_cipher_free(&ctx->cipher_ctx);
+    mbedtls_platform_zeroize(ctx, sizeof(mbedtls_ccm_context));
 }
 
 /*
@@ -404,7 +418,7 @@ void mbedtls_ccm_free( mbedtls_ccm_context *ctx )
 #define UPDATE_CBC_MAC                                                      \
     for( i = 0; i < 16; i++ )                                               \
         y[i] ^= b[i];                                                       \
-                                                                            \
+    \
     if( ( ret = mbedtls_cipher_update( &ctx->cipher_ctx, y, 16, y, &olen ) ) != 0 ) \
         return( ret );
 
@@ -416,126 +430,127 @@ void mbedtls_ccm_free( mbedtls_ccm_context *ctx )
 #define CTR_CRYPT( dst, src, len  )                                            \
     if( ( ret = mbedtls_cipher_update( &ctx->cipher_ctx, ctr, 16, b, &olen ) ) != 0 )  \
         return( ret );                                                         \
-                                                                               \
+    \
     for( i = 0; i < len; i++ )                                                 \
         dst[i] = src[i] ^ b[i];
 
 /*
  * Authenticated encryption or decryption
  */
-static int ccm_auth_crypt( mbedtls_ccm_context *ctx, int mode, size_t length,
-                           const unsigned char *iv, size_t iv_len,
-                           const unsigned char *add, size_t add_len,
-                           const unsigned char *input, unsigned char *output,
-                           unsigned char *tag, size_t tag_len )
+static int ccm_auth_crypt(mbedtls_ccm_context *ctx, int mode, size_t length,
+                          const unsigned char *iv, size_t iv_len,
+                          const unsigned char *add, size_t add_len,
+                          const unsigned char *input, unsigned char *output,
+                          unsigned char *tag, size_t tag_len)
 {
     int ret;
 
-    if(iv_len < 7 || iv_len > 13)
-        return(MBEDTLS_ERR_CCM_BAD_INPUT);
+    if (iv_len < 7 || iv_len > 13)
+        return (MBEDTLS_ERR_CCM_BAD_INPUT);
 
 
     ret = _CCM(ctx, mode, iv, iv_len, add, add_len, input, length, output, tag, tag_len);
-    return( ret );
+    return (ret);
 }
 
 /*
  * Authenticated encryption
  */
-int mbedtls_ccm_star_encrypt_and_tag( mbedtls_ccm_context *ctx, size_t length,
-                                      const unsigned char *iv, size_t iv_len,
-                                      const unsigned char *add, size_t add_len,
-                                      const unsigned char *input, unsigned char *output,
-                                      unsigned char *tag, size_t tag_len )
+int mbedtls_ccm_star_encrypt_and_tag(mbedtls_ccm_context *ctx, size_t length,
+                                     const unsigned char *iv, size_t iv_len,
+                                     const unsigned char *add, size_t add_len,
+                                     const unsigned char *input, unsigned char *output,
+                                     unsigned char *tag, size_t tag_len)
 {
-    CCM_VALIDATE_RET( ctx != NULL );
-    CCM_VALIDATE_RET( iv != NULL );
-    CCM_VALIDATE_RET( add_len == 0 || add != NULL );
-    CCM_VALIDATE_RET( length == 0 || input != NULL );
-    CCM_VALIDATE_RET( length == 0 || output != NULL );
-    CCM_VALIDATE_RET( tag_len == 0 || tag != NULL );
-    return( ccm_auth_crypt( ctx, CCM_ENCRYPT, length, iv, iv_len,
-                            add, add_len, input, output, tag, tag_len ) );
+    CCM_VALIDATE_RET(ctx != NULL);
+    CCM_VALIDATE_RET(iv != NULL);
+    CCM_VALIDATE_RET(add_len == 0 || add != NULL);
+    CCM_VALIDATE_RET(length == 0 || input != NULL);
+    CCM_VALIDATE_RET(length == 0 || output != NULL);
+    CCM_VALIDATE_RET(tag_len == 0 || tag != NULL);
+    return (ccm_auth_crypt(ctx, CCM_ENCRYPT, length, iv, iv_len,
+                           add, add_len, input, output, tag, tag_len));
 }
 
-int mbedtls_ccm_encrypt_and_tag( mbedtls_ccm_context *ctx, size_t length,
-                                 const unsigned char *iv, size_t iv_len,
-                                 const unsigned char *add, size_t add_len,
-                                 const unsigned char *input, unsigned char *output,
-                                 unsigned char *tag, size_t tag_len )
+int mbedtls_ccm_encrypt_and_tag(mbedtls_ccm_context *ctx, size_t length,
+                                const unsigned char *iv, size_t iv_len,
+                                const unsigned char *add, size_t add_len,
+                                const unsigned char *input, unsigned char *output,
+                                unsigned char *tag, size_t tag_len)
 {
-    CCM_VALIDATE_RET( ctx != NULL );
-    CCM_VALIDATE_RET( iv != NULL );
-    CCM_VALIDATE_RET( add_len == 0 || add != NULL );
-    CCM_VALIDATE_RET( length == 0 || input != NULL );
-    CCM_VALIDATE_RET( length == 0 || output != NULL );
-    CCM_VALIDATE_RET( tag_len == 0 || tag != NULL );
-    if( tag_len == 0 )
-        return( MBEDTLS_ERR_CCM_BAD_INPUT );
+    CCM_VALIDATE_RET(ctx != NULL);
+    CCM_VALIDATE_RET(iv != NULL);
+    CCM_VALIDATE_RET(add_len == 0 || add != NULL);
+    CCM_VALIDATE_RET(length == 0 || input != NULL);
+    CCM_VALIDATE_RET(length == 0 || output != NULL);
+    CCM_VALIDATE_RET(tag_len == 0 || tag != NULL);
 
-    return( mbedtls_ccm_star_encrypt_and_tag( ctx, length, iv, iv_len, add,
-            add_len, input, output, tag, tag_len ) );
+    if (tag_len == 0)
+        return (MBEDTLS_ERR_CCM_BAD_INPUT);
+
+    return (mbedtls_ccm_star_encrypt_and_tag(ctx, length, iv, iv_len, add,
+                                             add_len, input, output, tag, tag_len));
 }
 
 /*
  * Authenticated decryption
  */
-int mbedtls_ccm_star_auth_decrypt( mbedtls_ccm_context *ctx, size_t length,
-                                   const unsigned char *iv, size_t iv_len,
-                                   const unsigned char *add, size_t add_len,
-                                   const unsigned char *input, unsigned char *output,
-                                   const unsigned char *tag, size_t tag_len )
+int mbedtls_ccm_star_auth_decrypt(mbedtls_ccm_context *ctx, size_t length,
+                                  const unsigned char *iv, size_t iv_len,
+                                  const unsigned char *add, size_t add_len,
+                                  const unsigned char *input, unsigned char *output,
+                                  const unsigned char *tag, size_t tag_len)
 {
     int ret;
     unsigned char check_tag[16];
     unsigned char i;
     int diff;
 
-    CCM_VALIDATE_RET( ctx != NULL );
-    CCM_VALIDATE_RET( iv != NULL );
-    CCM_VALIDATE_RET( add_len == 0 || add != NULL );
-    CCM_VALIDATE_RET( length == 0 || input != NULL );
-    CCM_VALIDATE_RET( length == 0 || output != NULL );
-    CCM_VALIDATE_RET( tag_len == 0 || tag != NULL );
+    CCM_VALIDATE_RET(ctx != NULL);
+    CCM_VALIDATE_RET(iv != NULL);
+    CCM_VALIDATE_RET(add_len == 0 || add != NULL);
+    CCM_VALIDATE_RET(length == 0 || input != NULL);
+    CCM_VALIDATE_RET(length == 0 || output != NULL);
+    CCM_VALIDATE_RET(tag_len == 0 || tag != NULL);
 
-    if( ( ret = ccm_auth_crypt( ctx, CCM_DECRYPT, length,
-                                iv, iv_len, add, add_len,
-                                input, output, check_tag, tag_len ) ) != 0 )
+    if ((ret = ccm_auth_crypt(ctx, CCM_DECRYPT, length,
+                              iv, iv_len, add, add_len,
+                              input, output, check_tag, tag_len)) != 0)
     {
-        return( ret );
+        return (ret);
     }
 
     /* Check tag in "constant-time" */
-    for( diff = 0, i = 0; i < tag_len; i++ )
+    for (diff = 0, i = 0; i < tag_len; i++)
         diff |= tag[i] ^ check_tag[i];
 
-    if( diff != 0 )
+    if (diff != 0)
     {
-        mbedtls_platform_zeroize( output, length );
-        return( MBEDTLS_ERR_CCM_AUTH_FAILED );
+        mbedtls_platform_zeroize(output, length);
+        return (MBEDTLS_ERR_CCM_AUTH_FAILED);
     }
 
-    return( 0 );
+    return (0);
 }
 
-int mbedtls_ccm_auth_decrypt( mbedtls_ccm_context *ctx, size_t length,
-                              const unsigned char *iv, size_t iv_len,
-                              const unsigned char *add, size_t add_len,
-                              const unsigned char *input, unsigned char *output,
-                              const unsigned char *tag, size_t tag_len )
+int mbedtls_ccm_auth_decrypt(mbedtls_ccm_context *ctx, size_t length,
+                             const unsigned char *iv, size_t iv_len,
+                             const unsigned char *add, size_t add_len,
+                             const unsigned char *input, unsigned char *output,
+                             const unsigned char *tag, size_t tag_len)
 {
-    CCM_VALIDATE_RET( ctx != NULL );
-    CCM_VALIDATE_RET( iv != NULL );
-    CCM_VALIDATE_RET( add_len == 0 || add != NULL );
-    CCM_VALIDATE_RET( length == 0 || input != NULL );
-    CCM_VALIDATE_RET( length == 0 || output != NULL );
-    CCM_VALIDATE_RET( tag_len == 0 || tag != NULL );
+    CCM_VALIDATE_RET(ctx != NULL);
+    CCM_VALIDATE_RET(iv != NULL);
+    CCM_VALIDATE_RET(add_len == 0 || add != NULL);
+    CCM_VALIDATE_RET(length == 0 || input != NULL);
+    CCM_VALIDATE_RET(length == 0 || output != NULL);
+    CCM_VALIDATE_RET(tag_len == 0 || tag != NULL);
 
-    if( tag_len == 0 )
-        return( MBEDTLS_ERR_CCM_BAD_INPUT );
+    if (tag_len == 0)
+        return (MBEDTLS_ERR_CCM_BAD_INPUT);
 
-    return( mbedtls_ccm_star_auth_decrypt( ctx, length, iv, iv_len, add,
-                                           add_len, input, output, tag, tag_len ) );
+    return (mbedtls_ccm_star_auth_decrypt(ctx, length, iv, iv_len, add,
+                                          add_len, input, output, tag, tag_len));
 }
 #endif /* MBEDTLS_CCM_ALT */
 #endif /* MBEDTLS_CCM_C */

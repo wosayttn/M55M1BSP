@@ -62,10 +62,10 @@
 #define configQUEUE_REGISTRY_SIZE                       8
 /* Timers and queues */
 /* Software timer definitions. */
-#define configUSE_TIMERS				                1
-#define configTIMER_TASK_PRIORITY		                ( 2 )
-#define configTIMER_QUEUE_LENGTH		                5
-#define configTIMER_TASK_STACK_DEPTH	                ( 80 )
+#define configUSE_TIMERS                                1
+#define configTIMER_TASK_PRIORITY                       ( 2 )
+#define configTIMER_QUEUE_LENGTH                        5
+#define configTIMER_TASK_STACK_DEPTH                    ( 80 )
 /* Task settings */
 #define INCLUDE_vTaskPrioritySet                        1
 #define INCLUDE_uxTaskPriorityGet                       1
@@ -85,9 +85,9 @@
 #define configUSE_STATS_FORMATTING_FUNCTIONS            1
 #define configCOMMAND_INT_MAX_OUTPUT_SIZE               2048
 #ifdef __NVIC_PRIO_BITS
-#define configPRIO_BITS                                 __NVIC_PRIO_BITS
+    #define configPRIO_BITS                                 __NVIC_PRIO_BITS
 #else
-#define configPRIO_BITS                                 3
+    #define configPRIO_BITS                                 3
 #endif
 /* Interrupt settings */
 #define configLIBRARY_LOWEST_INTERRUPT_PRIORITY         0x07
@@ -101,8 +101,8 @@
     #define configTICK_RATE_HZ                          (TickType_t)1000
 #endif /* __IASMARM__ */
 #if defined(CPU_CORTEX_M3) || defined(CPU_CORTEX_M4) || defined(CPU_CORTEX_M7)
-#define xPortPendSVHandler                              PendSV_Handler
-#define vPortSVCHandler                                 SVC_Handler
-#define xPortSysTickHandler                             SysTick_Handler
+    #define xPortPendSVHandler                              PendSV_Handler
+    #define vPortSVCHandler                                 SVC_Handler
+    #define xPortSysTickHandler                             SysTick_Handler
 #endif
 #endif /* FREERTOS_CONFIG_H */

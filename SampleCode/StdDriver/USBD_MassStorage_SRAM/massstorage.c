@@ -266,8 +266,9 @@ NVT_ITCM void USBD_IRQHandler(void)
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP11);
         }
     }
-     __DSB( );
-     __ISB( );
+
+    __DSB();
+    __ISB();
 }
 
 void EP2_Handler(void)

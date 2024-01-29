@@ -767,9 +767,9 @@ int32_t I3C_BroadcastRSTDAA(I3C_T *i3c)
     i3c->CMDQUE = ((0 << I3C_CMDQUE_DATLEN_Pos) | I3C_CMDATTR_TRANSFER_ARG);
 
     i3c->CMDQUE = (I3C_CMDQUE_TOC_Msk | I3C_CMDQUE_ROC_Msk
-                    | I3C_CMDQUE_CP_Msk
-                    | ((I3C_CCC_RSTDAA(TRUE) <<  I3C_CMDQUE_CMD_Pos) & I3C_CMDQUE_CMD_Msk)
-                    | I3C_CMDATTR_TRANSFER_CMD);
+                   | I3C_CMDQUE_CP_Msk
+                   | ((I3C_CCC_RSTDAA(TRUE) <<  I3C_CMDQUE_CMD_Pos) & I3C_CMDQUE_CMD_Msk)
+                   | I3C_CMDATTR_TRANSFER_CMD);
 
     while ((i3c->INTSTS & I3C_INTSTS_RESPRDY_Msk) == 0);
 

@@ -89,7 +89,7 @@ void MACRO_USBD_ENABLE_DISABLE_USB()
     CU_ASSERT((USBD->ATTR & 0x90) == 0x10);
 
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void MACRO_USBD_ENABLE_DISABLE_PHY()
@@ -100,7 +100,7 @@ void MACRO_USBD_ENABLE_DISABLE_PHY()
     USBD_DISABLE_PHY();
     CU_ASSERT_FALSE(USBD->ATTR & 0x10);
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void MACRO_USBD_SET_CLEAR_SE0()
@@ -111,7 +111,7 @@ void MACRO_USBD_SET_CLEAR_SE0()
     USBD_SET_SE0();
     CU_ASSERT_TRUE(USBD->SE0 & 1);
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void MACRO_USBD_SET_GET_ADDR()
@@ -123,8 +123,8 @@ void MACRO_USBD_SET_GET_ADDR()
     USBD_SET_ADDR(0xAA);
     CU_ASSERT((USBD->FADDR & 0x7F) == 0x2A);
     CU_ASSERT(USBD_GET_ADDR() == 0x2A);
-     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    /* Reset USBD */
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void MACRO_USBD_ENABLE_INT()
@@ -140,7 +140,7 @@ void MACRO_USBD_ENABLE_INT()
     USBD_ENABLE_INT(USBD_INT_BUS);
     CU_ASSERT(USBD->INTEN & 1);
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void MACRO_USBD_GET_CLR_INT_FLAG()
@@ -226,7 +226,7 @@ void MACRO_USBD_STOP_TRANSACTION()
     USBD_STOP_TRANSACTION(EP24);
     CU_ASSERT(USBD->EP[24].CFGP == 0);
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void MACRO_USBD_SET_DATA0_DATA1()
@@ -332,19 +332,19 @@ void MACRO_USBD_SET_DATA0_DATA1()
     USBD_SET_DATA0(24);
     CU_ASSERT((USBD->EP[24].CFG & 0x80) == 0);
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void MACRO_USBD_SET_GET_PAYLOAD_LEN()
 {
     uint32_t u32EpNum, u32ReturnValue;
 
-    for(u32EpNum = 0; u32EpNum < USBD_MAX_EP; u32EpNum++)
+    for (u32EpNum = 0; u32EpNum < USBD_MAX_EP; u32EpNum++)
     {
         USBD_CONFIG_EP(u32EpNum, USBD_CFG_EPMODE_IN);
     }
 
-    for(u32EpNum = 0; u32EpNum < USBD_MAX_EP; u32EpNum++)
+    for (u32EpNum = 0; u32EpNum < USBD_MAX_EP; u32EpNum++)
     {
         USBD_SET_PAYLOAD_LEN(u32EpNum, 0);
         CU_ASSERT(USBD->EP[u32EpNum].MXPLD == 0);
@@ -361,8 +361,9 @@ void MACRO_USBD_SET_GET_PAYLOAD_LEN()
         u32ReturnValue = USBD_GET_PAYLOAD_LEN(u32EpNum);
         CU_ASSERT(u32ReturnValue == 0x1FF);
     }
+
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void MACRO_USBD_CONFIG_EP()
@@ -370,54 +371,61 @@ void MACRO_USBD_CONFIG_EP()
     uint32_t u32EpNum;
 
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
-    for(u32EpNum = 0; u32EpNum < USBD_MAX_EP; u32EpNum++)
+    SYS_ResetModule(SYS_USBD0RST);
+
+    for (u32EpNum = 0; u32EpNum < USBD_MAX_EP; u32EpNum++)
     {
         CU_ASSERT(USBD->EP[u32EpNum].CFG == USBD_CFG_EPMODE_DISABLE);
         USBD_CONFIG_EP(u32EpNum, USBD_CFG_CSTALL | USBD_CFG_DSQSYNC_Msk | USBD_CFG_EPMODE_OUT | USBD_CFG_TYPE_ISO | 0xF);
         CU_ASSERT(USBD->EP[u32EpNum].CFG == 0x2BF);
     }
+
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
-    for(u32EpNum = 0; u32EpNum < USBD_MAX_EP; u32EpNum++)
+    SYS_ResetModule(SYS_USBD0RST);
+
+    for (u32EpNum = 0; u32EpNum < USBD_MAX_EP; u32EpNum++)
     {
         CU_ASSERT(USBD->EP[u32EpNum].CFG == USBD_CFG_EPMODE_DISABLE);
         USBD_CONFIG_EP(u32EpNum, USBD_CFG_DB_EN | USBD_CFG_DBTGACTIVE | USBD_CFG_CSTALL | USBD_CFG_DSQSYNC_Msk | USBD_CFG_EPMODE_IN | USBD_CFG_TYPE_ISO | 0xF);
         CU_ASSERT(USBD->EP[u32EpNum].CFG == 0xE5F);
     }
+
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
-    for(u32EpNum = 0; u32EpNum < USBD_MAX_EP; u32EpNum++)
+    SYS_ResetModule(SYS_USBD0RST);
+
+    for (u32EpNum = 0; u32EpNum < USBD_MAX_EP; u32EpNum++)
     {
         CU_ASSERT(USBD->EP[u32EpNum].CFG == USBD_CFG_EPMODE_DISABLE);
         USBD_CONFIG_EP(u32EpNum, USBD_CFG_DB_EN | USBD_CFG_CSTALL | USBD_CFG_DSQSYNC_Msk | USBD_CFG_EPMODE_OUT | USBD_CFG_TYPE_ISO | 0xF);
         CU_ASSERT(USBD->EP[u32EpNum].CFG == 0xABF);
     }
+
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
-    
+    SYS_ResetModule(SYS_USBD0RST);
+
 }
 
 void MACRO_USBD_SET_GET_EP_BUF_ADDR()
 {
     uint32_t u32EpNum;
 
-    for(u32EpNum = 0; u32EpNum < USBD_MAX_EP; u32EpNum++)
+    for (u32EpNum = 0; u32EpNum < USBD_MAX_EP; u32EpNum++)
     {
         USBD_SET_EP_BUF_ADDR(u32EpNum, 0x1F8);
         CU_ASSERT(USBD->EP[u32EpNum].BUFSEG == 0x1F8);
         CU_ASSERT(USBD_GET_EP_BUF_ADDR(u32EpNum) == 0x1F8);
     }
+
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
-    
+    SYS_ResetModule(SYS_USBD0RST);
+
 }
 
 void MACRO_USBD_SET_CLR_GET_EP_STALL()
 {
     uint32_t u32EpCount;
 
-    for(u32EpCount = 0; u32EpCount < USBD_MAX_EP; u32EpCount++)
+    for (u32EpCount = 0; u32EpCount < USBD_MAX_EP; u32EpCount++)
     {
         USBD_SET_EP_STALL(u32EpCount);
         CU_ASSERT(USBD->EP[u32EpCount].CFGP == 2);
@@ -427,15 +435,16 @@ void MACRO_USBD_SET_CLR_GET_EP_STALL()
         CU_ASSERT(USBD->EP[u32EpCount].CFGP == 0);
         CU_ASSERT_FALSE(USBD_GET_EP_STALL(u32EpCount));
     }
+
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void MACRO_USBD_SET_DB_SB_MODE_IS_DB_MODE()
 {
     uint32_t u32EpCount;
 
-    for(u32EpCount = 0; u32EpCount < USBD_MAX_EP; u32EpCount++)
+    for (u32EpCount = 0; u32EpCount < USBD_MAX_EP; u32EpCount++)
     {
         USBD_SET_DB_MODE(u32EpCount);
         CU_ASSERT(USBD->EP[u32EpCount].CFG == (0x800 | USBD_CFG_DSQSYNC_Msk));
@@ -445,15 +454,16 @@ void MACRO_USBD_SET_DB_SB_MODE_IS_DB_MODE()
         CU_ASSERT(USBD->EP[u32EpCount].CFG == (0 | USBD_CFG_DSQSYNC_Msk));
         CU_ASSERT_FALSE(USBD_IS_DB_MODE(u32EpCount));
     }
+
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void MACRO_USBD_SET_DB_ACTIVE_INACTIVE()
 {
     uint32_t u32EpCount;
 
-    for(u32EpCount = 0; u32EpCount < USBD_MAX_EP; u32EpCount++)
+    for (u32EpCount = 0; u32EpCount < USBD_MAX_EP; u32EpCount++)
     {
         USBD_SET_DB_ACTIVE(u32EpCount);
         CU_ASSERT(USBD->EP[u32EpCount].CFG == 0x400);
@@ -461,8 +471,9 @@ void MACRO_USBD_SET_DB_ACTIVE_INACTIVE()
         USBD_SET_DB_INACTIVE(u32EpCount);
         CU_ASSERT(USBD->EP[u32EpCount].CFG == 0);
     }
+
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void MACRO_USBD_MemCopy()
@@ -471,13 +482,15 @@ void MACRO_USBD_MemCopy()
     uint8_t u8Dest[20];
     uint32_t u32Count;
 
-    for(u32Count = 0; u32Count < 20; u32Count++)
+    for (u32Count = 0; u32Count < 20; u32Count++)
     {
         u8Src[u32Count] = u32Count + 1;
         u8Dest[u32Count] = 0;
     }
+
     USBD_MemCopy(u8Dest, u8Src, 20);
-    for(u32Count = 0; u32Count < 20; u32Count++)
+
+    for (u32Count = 0; u32Count < 20; u32Count++)
     {
         CU_ASSERT(u8Src[u32Count] == u8Dest[u32Count])
     }
@@ -504,7 +517,7 @@ void MACRO_USBD_SetStall_ClearStall_GetStall()
     CU_ASSERT_FALSE(USBD_GetStall(0x2));
 
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 
@@ -530,14 +543,14 @@ uint8_t gu8DeviceDescriptor[] =
     /* idVendor */
     0x0416 & 0x00FF,
     (0x0416 & 0xFF00) >> 8,
-    /* idProduct */
-    0x8248 & 0x00FF,
-    (0x8248 & 0xFF00) >> 8,
-    0x00, 0x00,     /* bcdDevice */
-    0x01,           /* iManufacture */
-    0x02,           /* iProduct */
-    0x03,           /* iSerialNumber */
-    0x01            /* bNumConfigurations */
+                      /* idProduct */
+                      0x8248 & 0x00FF,
+                      (0x8248 & 0xFF00) >> 8,
+                      0x00, 0x00,     /* bcdDevice */
+                      0x01,           /* iManufacture */
+                      0x02,           /* iProduct */
+                      0x03,           /* iSerialNumber */
+                      0x01            /* bNumConfigurations */
 };
 
 /*!<USB HID Report Descriptor */
@@ -593,43 +606,43 @@ const uint8_t gu8ConfigDescriptorHID[] =
     /* wTotalLength */
     LEN_CONFIG_AND_SUBORDINATE & 0x00FF,
     (LEN_CONFIG_AND_SUBORDINATE & 0xFF00) >> 8,
-    0x01,           /* bNumInterfaces */
-    0x01,           /* bConfigurationValue */
-    0x00,           /* iConfiguration */
-    0x80 | (USBD_SELF_POWERED << 6) | (USBD_REMOTE_WAKEUP << 5),/* bmAttributes */
-    USBD_MAX_POWER,         /* MaxPower */
+                                          0x01,           /* bNumInterfaces */
+                                          0x01,           /* bConfigurationValue */
+                                          0x00,           /* iConfiguration */
+                                          0x80 | (USBD_SELF_POWERED << 6) | (USBD_REMOTE_WAKEUP << 5),/* bmAttributes */
+                                          USBD_MAX_POWER,         /* MaxPower */
 
-    /* I/F descr: HID */
-    LEN_INTERFACE,  /* bLength */
-    DESC_INTERFACE, /* bDescriptorType */
-    0x00,           /* bInterfaceNumber */
-    0x00,           /* bAlternateSetting */
-    0x01,           /* bNumEndpoints */
-    0x03,           /* bInterfaceClass */
-    0x01,           /* bInterfaceSubClass */
-    HID_MOUSE,      /* bInterfaceProtocol */
-    0x00,           /* iInterface */
+                                          /* I/F descr: HID */
+                                          LEN_INTERFACE,  /* bLength */
+                                          DESC_INTERFACE, /* bDescriptorType */
+                                          0x00,           /* bInterfaceNumber */
+                                          0x00,           /* bAlternateSetting */
+                                          0x01,           /* bNumEndpoints */
+                                          0x03,           /* bInterfaceClass */
+                                          0x01,           /* bInterfaceSubClass */
+                                          HID_MOUSE,      /* bInterfaceProtocol */
+                                          0x00,           /* iInterface */
 
-    /* HID Descriptor */
-    LEN_HID,        /* Size of this descriptor in UINT8s. */
-    DESC_HID,       /* HID descriptor type. */
-    0x10, 0x01,     /* HID Class Spec. release number. */
-    0x00,           /* H/W target country. */
-    0x01,           /* Number of HID class descriptors to follow. */
-    DESC_HID_RPT,   /* Descriptor type. */
-    /* Total length of report descriptor. */
-    sizeof(HID_MouseReportDescriptor) & 0x00FF,
-    (sizeof(HID_MouseReportDescriptor) & 0xFF00) >> 8,
+                                          /* HID Descriptor */
+                                          LEN_HID,        /* Size of this descriptor in UINT8s. */
+                                          DESC_HID,       /* HID descriptor type. */
+                                          0x10, 0x01,     /* HID Class Spec. release number. */
+                                          0x00,           /* H/W target country. */
+                                          0x01,           /* Number of HID class descriptors to follow. */
+                                          DESC_HID_RPT,   /* Descriptor type. */
+                                          /* Total length of report descriptor. */
+                                          sizeof(HID_MouseReportDescriptor) & 0x00FF,
+                                          (sizeof(HID_MouseReportDescriptor) & 0xFF00) >> 8,
 
-    /* EP Descriptor: interrupt in. */
-    LEN_ENDPOINT,   /* bLength */
-    DESC_ENDPOINT,  /* bDescriptorType */
-    (INT_IN_EP_NUM | EP_INPUT), /* bEndpointAddress */
-    EP_INT,         /* bmAttributes */
-    /* wMaxPacketSize */
-    EP2_MAX_PKT_SIZE & 0x00FF,
-    (EP2_MAX_PKT_SIZE & 0xFF00) >> 8,
-    HID_DEFAULT_INT_IN_INTERVAL     /* bInterval */
+                                          /* EP Descriptor: interrupt in. */
+                                          LEN_ENDPOINT,   /* bLength */
+                                          DESC_ENDPOINT,  /* bDescriptorType */
+                                          (INT_IN_EP_NUM | EP_INPUT), /* bEndpointAddress */
+                                          EP_INT,         /* bmAttributes */
+                                          /* wMaxPacketSize */
+                                          EP2_MAX_PKT_SIZE & 0x00FF,
+                                          (EP2_MAX_PKT_SIZE & 0xFF00) >> 8,
+                                          HID_DEFAULT_INT_IN_INTERVAL     /* bInterval */
 };
 
 /*!<USB Configuration Descriptor for MSC */
@@ -764,7 +777,7 @@ void API_USBD_Open()
 #endif
     CU_ASSERT(USBD->SE0 == 1);
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void API_USBD_Start()
@@ -773,7 +786,7 @@ void API_USBD_Start()
     CU_ASSERT(USBD->INTEN == 0x010F);
     CU_ASSERT(USBD->SE0 == 0);
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void API_USBD_GetSetupPacket()
@@ -781,16 +794,17 @@ void API_USBD_GetSetupPacket()
     uint32_t u32Count, u32ErrorCount = 0;
     uint8_t u8Buffer[8];
 
-    for(u32Count = 0; u32Count < 8; u32Count++)
+    for (u32Count = 0; u32Count < 8; u32Count++)
         g_usbd_SetupPacket[u32Count] = u32Count;
 
     USBD_GetSetupPacket(u8Buffer);
 
-    for(u32Count = 0; u32Count < 8; u32Count++)
+    for (u32Count = 0; u32Count < 8; u32Count++)
     {
-        if(g_usbd_SetupPacket[u32Count] != u8Buffer[u32Count])
+        if (g_usbd_SetupPacket[u32Count] != u8Buffer[u32Count])
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
     USBD_SwReset();
 }
@@ -802,11 +816,11 @@ void API_USBD_ProcessSetupPacket()
     USBD_Open(&gsInfo_MSC, NULL, NULL);
     USBD_CONFIG_EP(0, USBD_CFG_EPMODE_IN);
     USBD_CONFIG_EP(1, USBD_CFG_EPMODE_IN); /* Also set Endpoint buffer 1 as IN endpoint for control OUT endpoint. Just for CUnit test. */
-//    outp32(0x400C0500, EP0_BUF_OFFSET); /* EP[0]->BUFSEG */
-//    outp32(0x400C0510, EP1_BUF_OFFSET); /* EP[1]->BUFSEG */
+    //    outp32(0x400C0500, EP0_BUF_OFFSET); /* EP[0]->BUFSEG */
+    //    outp32(0x400C0510, EP1_BUF_OFFSET); /* EP[1]->BUFSEG */
     outp32(0x40250500, EP0_BUF_OFFSET); /* EP[0]->BUFSEG */
     outp32(0x40250510, EP1_BUF_OFFSET); /* EP[1]->BUFSEG */
-  	/* EP2 ==> Bulk IN endpoint, device endpoint number 2. */
+    /* EP2 ==> Bulk IN endpoint, device endpoint number 2. */
     USBD_CONFIG_EP(EP2, USBD_CFG_EPMODE_IN | 2);
     /* Buffer range for EP2 */
     USBD_SET_EP_BUF_ADDR(EP2, EP2_BUF_OFFSET);
@@ -966,12 +980,14 @@ void API_USBD_ProcessSetupPacket()
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == LEN_DEVICE);
+
     /* Check EP0 buffer */
-    for(u32Count = 0; u32Count < LEN_DEVICE; u32Count++)
+    for (u32Count = 0; u32Count < LEN_DEVICE; u32Count++)
     {
-        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8DeviceDescriptor[u32Count])
+        if (inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8DeviceDescriptor[u32Count])
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
     CU_ASSERT(USBD->EP[1].MXPLD == MAX_PACKET_SIZE);
 
@@ -987,23 +1003,27 @@ void API_USBD_ProcessSetupPacket()
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == MAX_PACKET_SIZE);
+
     /* Check EP0 buffer */
-    for(u32Count = 0; u32Count < MAX_PACKET_SIZE; u32Count++)
+    for (u32Count = 0; u32Count < MAX_PACKET_SIZE; u32Count++)
     {
-        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8ConfigDescriptorMSC[u32Count])
+        if (inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8ConfigDescriptorMSC[u32Count])
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
     CU_ASSERT(USBD->EP[1].MXPLD == MAX_PACKET_SIZE);
 
     USBD_CtrlIn();
     CU_ASSERT(USBD->EP[0].MXPLD == ((LEN_CONFIG + LEN_INTERFACE + LEN_ENDPOINT * 2) - MAX_PACKET_SIZE));
+
     /* Check EP0 buffer */
-    for(u32Count = 0; u32Count < (LEN_CONFIG + LEN_INTERFACE + LEN_ENDPOINT * 2) - MAX_PACKET_SIZE; u32Count++)
+    for (u32Count = 0; u32Count < (LEN_CONFIG + LEN_INTERFACE + LEN_ENDPOINT * 2) - MAX_PACKET_SIZE; u32Count++)
     {
-        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8ConfigDescriptorMSC[MAX_PACKET_SIZE + u32Count])
+        if (inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8ConfigDescriptorMSC[MAX_PACKET_SIZE + u32Count])
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
 
 
@@ -1020,33 +1040,39 @@ void API_USBD_ProcessSetupPacket()
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == MAX_PACKET_SIZE);
+
     /* Check EP0 buffer */
-    for(u32Count = 0; u32Count < MAX_PACKET_SIZE; u32Count++)
+    for (u32Count = 0; u32Count < MAX_PACKET_SIZE; u32Count++)
     {
-        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != HID_MouseReportDescriptor[u32Count])
+        if (inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != HID_MouseReportDescriptor[u32Count])
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
     CU_ASSERT(USBD->EP[1].MXPLD == MAX_PACKET_SIZE);
 
     USBD_CtrlIn();
     CU_ASSERT(USBD->EP[0].MXPLD == MAX_PACKET_SIZE);
+
     /* Check EP0 buffer */
-    for(u32Count = 0; u32Count < MAX_PACKET_SIZE; u32Count++)
+    for (u32Count = 0; u32Count < MAX_PACKET_SIZE; u32Count++)
     {
-        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != HID_MouseReportDescriptor[MAX_PACKET_SIZE + u32Count])
+        if (inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != HID_MouseReportDescriptor[MAX_PACKET_SIZE + u32Count])
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
 
     USBD_CtrlIn();
     CU_ASSERT(USBD->EP[0].MXPLD == (52 - MAX_PACKET_SIZE * 2));
+
     /* Check EP0 buffer */
-    for(u32Count = 0; u32Count < (52 - MAX_PACKET_SIZE * 2); u32Count++)
+    for (u32Count = 0; u32Count < (52 - MAX_PACKET_SIZE * 2); u32Count++)
     {
-        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != HID_MouseReportDescriptor[MAX_PACKET_SIZE * 2 + u32Count])
+        if (inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != HID_MouseReportDescriptor[MAX_PACKET_SIZE * 2 + u32Count])
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
 
 
@@ -1063,12 +1089,14 @@ void API_USBD_ProcessSetupPacket()
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == 4);
+
     /* Check EP0 buffer */
-    for(u32Count = 0; u32Count < 4; u32Count++)
+    for (u32Count = 0; u32Count < 4; u32Count++)
     {
-        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8StringLang[u32Count])
+        if (inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8StringLang[u32Count])
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
     CU_ASSERT(USBD->EP[1].MXPLD == MAX_PACKET_SIZE);
 
@@ -1084,12 +1112,14 @@ void API_USBD_ProcessSetupPacket()
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == 16);
+
     /* Check EP0 buffer */
-    for(u32Count = 0; u32Count < 16; u32Count++)
+    for (u32Count = 0; u32Count < 16; u32Count++)
     {
-        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8VendorStringDesc[u32Count])
+        if (inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8VendorStringDesc[u32Count])
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
     CU_ASSERT(USBD->EP[1].MXPLD == MAX_PACKET_SIZE);
 
@@ -1105,23 +1135,27 @@ void API_USBD_ProcessSetupPacket()
     USBD_ProcessSetupPacket();
     CU_ASSERT(USBD->EP[0].CFG & 0x80); /* DATA1 */
     CU_ASSERT(USBD->EP[0].MXPLD == MAX_PACKET_SIZE);
+
     /* Check EP0 buffer */
-    for(u32Count = 0; u32Count < MAX_PACKET_SIZE; u32Count++)
+    for (u32Count = 0; u32Count < MAX_PACKET_SIZE; u32Count++)
     {
-        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8ProductStringDesc[u32Count])
+        if (inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8ProductStringDesc[u32Count])
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
     CU_ASSERT(USBD->EP[1].MXPLD == MAX_PACKET_SIZE);
 
     USBD_CtrlIn();
     CU_ASSERT(USBD->EP[0].MXPLD == (gu8ProductStringDesc[0] - MAX_PACKET_SIZE));
+
     /* Check EP0 buffer */
-    for(u32Count = 0; u32Count < gu8ProductStringDesc[0] - MAX_PACKET_SIZE; u32Count++)
+    for (u32Count = 0; u32Count < gu8ProductStringDesc[0] - MAX_PACKET_SIZE; u32Count++)
     {
-        if(inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8ProductStringDesc[MAX_PACKET_SIZE + u32Count])
+        if (inp8(0x40250800 + EP0_BUF_OFFSET + u32Count) != gu8ProductStringDesc[MAX_PACKET_SIZE + u32Count])
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
 
 
@@ -1197,7 +1231,7 @@ void API_USBD_ProcessSetupPacket()
 
     USBD_SwReset();
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void API_USBD_CtrlIn()
@@ -1205,7 +1239,7 @@ void API_USBD_CtrlIn()
     uint32_t u32Count, u32ErrorCount = 0;
     uint8_t u8CtrlInBuffer[50];
 
-    for(u32Count = 0; u32Count < 50; u32Count++)
+    for (u32Count = 0; u32Count < 50; u32Count++)
         u8CtrlInBuffer[u32Count] = u32Count;
 
     USBD_Open(&gsInfo_MSC, NULL, NULL);
@@ -1215,44 +1249,49 @@ void API_USBD_CtrlIn()
     USBD_PrepareCtrlIn(u8CtrlInBuffer, 50);
     CU_ASSERT(USBD->EP[0].CFG & 0x80);
     CU_ASSERT(USBD->EP[0].MXPLD == 20);
-    for(u32Count = 0; u32Count < 20; u32Count++)
+
+    for (u32Count = 0; u32Count < 20; u32Count++)
     {
-        if(inp8(0x40250900 + u32Count) != u32Count)
+        if (inp8(0x40250900 + u32Count) != u32Count)
             u32ErrorCount++;
     }
 
     USBD_CtrlIn();
     CU_ASSERT(USBD->EP[0].MXPLD == 20);
-    for(u32Count = 0; u32Count < 20; u32Count++)
+
+    for (u32Count = 0; u32Count < 20; u32Count++)
     {
-        if(inp8(0x40250900 + u32Count) != u32Count + 20)
+        if (inp8(0x40250900 + u32Count) != u32Count + 20)
             u32ErrorCount++;
     }
 
     USBD_CtrlIn();
     CU_ASSERT(USBD->EP[0].MXPLD == 10);
-    for(u32Count = 0; u32Count < 10; u32Count++)
+
+    for (u32Count = 0; u32Count < 10; u32Count++)
     {
-        if(inp8(0x40250900 + u32Count) != u32Count + 40)
+        if (inp8(0x40250900 + u32Count) != u32Count + 40)
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
 
-    for(u32Count = 0; u32Count < 3; u32Count++)
+    for (u32Count = 0; u32Count < 3; u32Count++)
         u8CtrlInBuffer[u32Count] = 0xF | u32Count;
 
     USBD_PrepareCtrlIn(u8CtrlInBuffer, 3);
     CU_ASSERT(USBD->EP[0].CFG & 0x80);
     CU_ASSERT(USBD->EP[0].MXPLD == 3);
-    for(u32Count = 0; u32Count < 3; u32Count++)
+
+    for (u32Count = 0; u32Count < 3; u32Count++)
     {
-        if(inp8(0x40250900 + u32Count) != (0xF | u32Count))
+        if (inp8(0x40250900 + u32Count) != (0xF | u32Count))
             u32ErrorCount++;
     }
 
     USBD_SwReset();
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void API_USBD_CtrlOut()
@@ -1260,7 +1299,7 @@ void API_USBD_CtrlOut()
     uint32_t u32Count, u32ErrorCount = 0;
     uint8_t u8CtrlOutBuffer[50];
 
-    for(u32Count = 0; u32Count < 50; u32Count++)
+    for (u32Count = 0; u32Count < 50; u32Count++)
         u8CtrlOutBuffer[u32Count] = 0;
 
     USBD_Open(&gsInfo_MSC, NULL, NULL);
@@ -1268,29 +1307,34 @@ void API_USBD_CtrlOut()
     outp32(0x40250510, 0x100); /* EP[1]->BUFSEG */
     USBD_PrepareCtrlOut(u8CtrlOutBuffer, 50);
 
-    for(u32Count = 0; u32Count < 20; u32Count++)
+    for (u32Count = 0; u32Count < 20; u32Count++)
         outp8(0x40250900 + u32Count, u32Count);
+
     USBD_CtrlOut();
 
-    for(u32Count = 0; u32Count < 20; u32Count++)
+    for (u32Count = 0; u32Count < 20; u32Count++)
         outp8(0x40250900 + u32Count, u32Count + 20);
+
     USBD_CtrlOut();
 
     outp32(0x40250514, 10); /* EP[1]->MXPLD */
-    for(u32Count = 0; u32Count < 10; u32Count++)
+
+    for (u32Count = 0; u32Count < 10; u32Count++)
         outp8(0x40250900 + u32Count, u32Count + 40);
+
     USBD_CtrlOut();
 
-    for(u32Count = 0; u32Count < 50; u32Count++)
+    for (u32Count = 0; u32Count < 50; u32Count++)
     {
-        if(u8CtrlOutBuffer[u32Count] != u32Count)
+        if (u8CtrlOutBuffer[u32Count] != u32Count)
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
 
     USBD_SwReset();
     /* Reset USBD */
-  SYS_ResetModule(SYS_USBD0RST);
+    SYS_ResetModule(SYS_USBD0RST);
 }
 
 void API_USBD_SwReset()
@@ -1299,25 +1343,29 @@ void API_USBD_SwReset()
 
     USBD->FADDR = 0x55;
 
-    for(u32Count = 0; u32Count < 8; u32Count++)
+    for (u32Count = 0; u32Count < 8; u32Count++)
         g_usbd_SetupPacket[u32Count] = u32Count;
 
     USBD_SwReset();
 
     CU_ASSERT(USBD->FADDR == 0);
-    for(u32Count = 0; u32Count < 8; u32Count++)
+
+    for (u32Count = 0; u32Count < 8; u32Count++)
     {
-        if(g_usbd_SetupPacket[u32Count] != 0)
+        if (g_usbd_SetupPacket[u32Count] != 0)
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
 
     u32ErrorCount = 0;
-    for(u32Count = 0; u32Count < 8; u32Count++)
+
+    for (u32Count = 0; u32Count < 8; u32Count++)
     {
-        if((USBD->EP[u32Count].CFG & USBD_CFG_DSQSYNC_Msk) != 0)
+        if ((USBD->EP[u32Count].CFG & USBD_CFG_DSQSYNC_Msk) != 0)
             u32ErrorCount++;
     }
+
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
 }
 
@@ -1447,13 +1495,13 @@ CU_TestInfo USBD_MacroTests[] =
     {"Get minimum value", MACRO_USBD_Minimum},
     {"Enable/Disable USB", MACRO_USBD_ENABLE_DISABLE_USB},
     {"Enable/Disable USB PHY", MACRO_USBD_ENABLE_DISABLE_PHY},
-//    {"Set/Clear USB DRVSE0 bit", MACRO_USBD_SET_CLEAR_SE0},
-//    {"Set/Get USB device address", MACRO_USBD_SET_GET_ADDR},
-//    {"Enable USBD interrupt function", MACRO_USBD_ENABLE_INT},
-//    {"Get/Clear USB interrupt flag", MACRO_USBD_GET_CLR_INT_FLAG},
-//    {"Get/Clear USB endpoint interrupt flag", MACRO_USBD_GET_CLR_EP_INT_FLAG},
-//    {"Get USB endpoint status", MACRO_USBD_GET_EP_FLAG},
-//    {"Get USB bus state", MACRO_USBD_GET_BUS_STATE},
+    //    {"Set/Clear USB DRVSE0 bit", MACRO_USBD_SET_CLEAR_SE0},
+    //    {"Set/Get USB device address", MACRO_USBD_SET_GET_ADDR},
+    //    {"Enable USBD interrupt function", MACRO_USBD_ENABLE_INT},
+    //    {"Get/Clear USB interrupt flag", MACRO_USBD_GET_CLR_INT_FLAG},
+    //    {"Get/Clear USB endpoint interrupt flag", MACRO_USBD_GET_CLR_EP_INT_FLAG},
+    //    {"Get USB endpoint status", MACRO_USBD_GET_EP_FLAG},
+    //    {"Get USB bus state", MACRO_USBD_GET_BUS_STATE},
     {"Get USB bus connection state", MACRO_USBD_IS_ATTACHED},
     {"Stop USB transaction", MACRO_USBD_STOP_TRANSACTION},
     {"Set data sequence synchronization", MACRO_USBD_SET_DATA0_DATA1},

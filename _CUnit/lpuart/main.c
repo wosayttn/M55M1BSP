@@ -40,7 +40,7 @@ void SYS_Init(void)
 
     /* Set HCLK2 divide 2 */
     CLK_SET_HCLK2DIV(2);
-    
+
     /* Set PCLKx divide 2 */
     CLK_SET_PCLK0DIV(2);
     CLK_SET_PCLK1DIV(2);
@@ -61,7 +61,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(LPUART0_MODULE);
 
     /* Select UART module clock source as HXT and UART module clock divider as 1 */
-     CLK_SetModuleClock(LPUART0_MODULE, CLK_LPUARTSEL_LPUART0SEL_HIRC, CLK_LPUARTDIV_LPUART0DIV(1));
+    CLK_SetModuleClock(LPUART0_MODULE, CLK_LPUARTSEL_LPUART0SEL_HIRC, CLK_LPUARTDIV_LPUART0DIV(1));
 
 
     /* Enable GPA module clock */
@@ -72,13 +72,13 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOD_MODULE);
     /* Enable GPB module clock */
     CLK_EnableModuleClock(GPIOE_MODULE);
-     /* Enable GPA module clock */
+    /* Enable GPA module clock */
     CLK_EnableModuleClock(GPIOG_MODULE);
     /* Enable GPB module clock */
     CLK_EnableModuleClock(GPIOH_MODULE);
 
 
-   /* Update System Core Clock */
+    /* Update System Core Clock */
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -100,7 +100,7 @@ void AddTests(void)
 {
     assert((NULL != CU_get_registry()));
     assert(!CU_is_test_running());
- 
+
     if (CUE_SUCCESS != CU_register_suites(LPUART_suites))
     {
         fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
@@ -114,10 +114,10 @@ int main(int argc, char *argv[])
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
     /* Init DEBUG_PORT to 115200-8N1 for printf */
-//    UART_Open(DEBUG_PORT, 115200);
-//    DEBUG_PORT_Init(DEBUG_PORT, 115200);
+    //    UART_Open(DEBUG_PORT, 115200);
+    //    DEBUG_PORT_Init(DEBUG_PORT, 115200);
     InitDebugUart();
-  
+
     printf("\n\n");
     printf("+--------------------------------------+\n");
     printf("|       M55M1 LPUART CUnit Test        |\n");

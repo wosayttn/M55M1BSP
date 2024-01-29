@@ -47,9 +47,10 @@ int32_t CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
 
     /* Wait for Capture Falling Indicator */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2)
+
+    while (BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for BPWM Capture Falling Indicator time-out!\n");
             return -1;
@@ -61,13 +62,14 @@ int32_t CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
 
     u32i = 0;
 
-    while(u32i < 4)
+    while (u32i < 4)
     {
         /* Wait for Capture Falling Indicator */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while(BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2)
+
+        while (BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for BPWM Capture Falling Indicator time-out!\n");
                 return -1;
@@ -82,9 +84,10 @@ int32_t CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
 
         /* Wait for Capture Rising Indicator */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while(BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 1)
+
+        while (BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 1)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for BPWM Capture Rising Indicator time-out!\n");
                 return -1;
@@ -111,7 +114,8 @@ int32_t CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
     printf("\nBPWM generate: \nHigh Period=17999 ~ 18001, Low Period=41999 ~ 42001, Total Period=59999 ~ 60001\n");
     printf("\nCapture Result: Rising Time = %d, Falling Time = %d \nHigh Period = %d, Low Period = %d, Total Period = %d.\n\n",
            u16RisingTime, u16FallingTime, u16HighPeriod, u16LowPeriod, u16TotalPeriod);
-    if((u16HighPeriod < 17999) || (u16HighPeriod > 18001) || (u16LowPeriod < 41999) || (u16LowPeriod > 42001) || (u16TotalPeriod < 59999) || (u16TotalPeriod > 60001))
+
+    if ((u16HighPeriod < 17999) || (u16HighPeriod > 18001) || (u16LowPeriod < 41999) || (u16LowPeriod > 42001) || (u16TotalPeriod < 59999) || (u16TotalPeriod > 60001))
     {
         printf("Capture Test Fail!!\n");
         return -1;
@@ -184,7 +188,7 @@ int main(void)
     printf("    BPWM0_CH0(PE.2 BPWM0 channel 0) <--> BPWM1_CH0(PB.11 BPWM1 channel 0)\n\n");
     printf("Use BPWM0 Channel 0(PE.2) to capture the BPWM1 Channel 0(PB.11) Waveform\n");
 
-    while(1)
+    while (1)
     {
         printf("Press any key to start BPWM Capture Test\n");
         getchar();
@@ -208,7 +212,7 @@ int main(void)
         */
 
         /* Set BPWM1 channel 0 output configuration */
-        printf("Set 250Hz, real is %d\n",BPWM_ConfigOutputChannel(BPWM1, 0, 250, 30));
+        printf("Set 250Hz, real is %d\n", BPWM_ConfigOutputChannel(BPWM1, 0, 250, 30));
 
         /* Enable BPWM Output path for BPWM1 channel 0 */
         BPWM_EnableOutput(BPWM1, BPWM_CH_0_MASK);
@@ -247,9 +251,10 @@ int main(void)
 
         /* Wait until BPWM0 channel 0 Timer start to count */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while((BPWM0->CNT) == 0)
+
+        while ((BPWM0->CNT) == 0)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for BPWM channel 0 Timer start to count time-out!\n");
                 goto lexit;
@@ -257,7 +262,7 @@ int main(void)
         }
 
         /* Capture the Input Waveform Data */
-        if( CalPeriodTime(BPWM0, 0) < 0 )
+        if (CalPeriodTime(BPWM0, 0) < 0)
             goto lexit;
 
         /*------------------------------------------------------------------------------------------------------------*/
@@ -270,9 +275,10 @@ int main(void)
 
         /* Wait until BPWM1 channel 0 Timer Stop */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while((BPWM1->CNT & BPWM_CNT_CNT_Msk) != 0)
+
+        while ((BPWM1->CNT & BPWM_CNT_CNT_Msk) != 0)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for BPWM channel 0 Timer Stop time-out!\n");
                 goto lexit;
@@ -295,9 +301,10 @@ int main(void)
 
         /* Wait until BPWM0 channel 0 current counter reach to 0 */
         u32TimeOutCnt = SystemCoreClock;  /* 1 second time-out */
-        while((BPWM0->CNT & BPWM_CNT_CNT_Msk) != 0)
+
+        while ((BPWM0->CNT & BPWM_CNT_CNT_Msk) != 0)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for BPWM channel 0 current counter reach to 0 time-out!\n");
                 goto lexit;

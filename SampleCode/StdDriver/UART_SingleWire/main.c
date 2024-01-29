@@ -347,50 +347,50 @@ void UART_FunctionTest()
 
         switch (cmmd)
         {
-        case '1':
-        {
-            printf("SW1(UART1) --> SW2(UART2)Test :");
-            g_i32RecOK  = FALSE;
-            Build_Src_Pattern((uint32_t)g_u8TxData, UART_WORD_LEN_8, BUFSIZE);
+            case '1':
+            {
+                printf("SW1(UART1) --> SW2(UART2)Test :");
+                g_i32RecOK  = FALSE;
+                Build_Src_Pattern((uint32_t)g_u8TxData, UART_WORD_LEN_8, BUFSIZE);
 
-            /* Check the Rx status is Idel */
-            while (!UART_RX_IDLE(UART1)) {};
+                /* Check the Rx status is Idel */
+                while (!UART_RX_IDLE(UART1)) {};
 
-            UART_Write(UART1, g_u8TxData, BUFSIZE);
+                UART_Write(UART1, g_u8TxData, BUFSIZE);
 
-            while (g_i32RecOK != TRUE) {}
+                while (g_i32RecOK != TRUE) {}
 
-            Check_Pattern((uint32_t)g_u8TxData, (uint32_t)g_u8RecData, BUFSIZE) ? printf(" Pass\n") : printf(" Fail\n");
-            /* Clear the Tx and Rx data buffer */
-            memset((uint8_t *)g_u8TxData, 0, BUFSIZE);
-            memset((uint8_t *)g_u8RecData, 0, BUFSIZE);
-        }
-        break;
-
-        case '2':
-        {
-            printf("SW2(UART2) --> SW1(UART1)Test :");
-            g_i32RecOK  = FALSE;
-            Build_Src_Pattern((uint32_t)g_u8TxData, UART_WORD_LEN_8, BUFSIZE);
-
-            /* Check the Rx status is Idel */
-            while (!UART_RX_IDLE(UART2)) {};
-
-            UART_Write(UART2, g_u8TxData, BUFSIZE);
-
-            while (g_i32RecOK != TRUE) {};
-
-            Check_Pattern((uint32_t)g_u8TxData, (uint32_t)g_u8RecData, BUFSIZE) ? printf(" Pass\n") :   printf(" Fail\n");
-
-            /* Clear the Tx and Rx data buffer */
-            memset((uint8_t *)g_u8TxData, 0, BUFSIZE);
-
-            memset((uint8_t *)g_u8RecData, 0, BUFSIZE);
-        }
-        break;
-
-        default:
+                Check_Pattern((uint32_t)g_u8TxData, (uint32_t)g_u8RecData, BUFSIZE) ? printf(" Pass\n") : printf(" Fail\n");
+                /* Clear the Tx and Rx data buffer */
+                memset((uint8_t *)g_u8TxData, 0, BUFSIZE);
+                memset((uint8_t *)g_u8RecData, 0, BUFSIZE);
+            }
             break;
+
+            case '2':
+            {
+                printf("SW2(UART2) --> SW1(UART1)Test :");
+                g_i32RecOK  = FALSE;
+                Build_Src_Pattern((uint32_t)g_u8TxData, UART_WORD_LEN_8, BUFSIZE);
+
+                /* Check the Rx status is Idel */
+                while (!UART_RX_IDLE(UART2)) {};
+
+                UART_Write(UART2, g_u8TxData, BUFSIZE);
+
+                while (g_i32RecOK != TRUE) {};
+
+                Check_Pattern((uint32_t)g_u8TxData, (uint32_t)g_u8RecData, BUFSIZE) ? printf(" Pass\n") :   printf(" Fail\n");
+
+                /* Clear the Tx and Rx data buffer */
+                memset((uint8_t *)g_u8TxData, 0, BUFSIZE);
+
+                memset((uint8_t *)g_u8RecData, 0, BUFSIZE);
+            }
+            break;
+
+            default:
+                break;
         }
 
     } while ((cmmd != 'E') && (cmmd != 'e'));

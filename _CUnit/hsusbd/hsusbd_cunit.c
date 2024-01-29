@@ -80,7 +80,7 @@ void MACRO_Minimum()
     CU_ASSERT(Minimum(3, 5) == 3);
     CU_ASSERT(Minimum(3500, 1500) == 1500);
     /* Reset HSUSBD */
-   SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_ENABLE_DISABLE_USB()
@@ -88,16 +88,17 @@ void MACRO_HSUSBD_ENABLE_DISABLE_USB()
     CU_ASSERT_FALSE(HSUSBD->PHYCTL & 0x300);
     HSUSBD_ENABLE_USB();
 
-    /* wait PHY clock ready */ 
-   while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk)){};
-  
+    /* wait PHY clock ready */
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk)) {};
+
     CU_ASSERT((HSUSBD->PHYCTL & 0x300) == (HSUSBD_PHYCTL_PHYEN_Msk | HSUSBD_PHYCTL_DPPUEN_Msk));
 
     HSUSBD_DISABLE_USB();
+
     CU_ASSERT((HSUSBD->PHYCTL & 0x300) == 0x200);
 
     /* Reset HSUSBD */
-   SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_ENABLE_DISABLE_PHY()
@@ -119,8 +120,8 @@ void MACRO_HSUSBD_SET_CLEAR_SE0()
     CU_ASSERT(HSUSBD->PHYCTL & 0x100);
     HSUSBD_SET_SE0();
     CU_ASSERT_FALSE(HSUSBD->PHYCTL & 0x100);
-  
-  /* Reset HSUSBD */
+
+    /* Reset HSUSBD */
     SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
@@ -130,20 +131,27 @@ void MACRO_HSUSBD_SET_GET_ADDR()
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
 
-	for(i = 0; i < 0x1000; i++){};
-   
+    for (i = 0; i < 0x1000; i++) {};
+
     CU_ASSERT_FALSE(HSUSBD->FADDR);
+
     HSUSBD_SET_ADDR(0x55);
+
     CU_ASSERT((HSUSBD->FADDR & 0x7F) == 0x55);
+
     CU_ASSERT(HSUSBD_GET_ADDR() == 0x55);
+
     HSUSBD_SET_ADDR(0xAA);
+
     CU_ASSERT((HSUSBD->FADDR & 0x7F) == 0x2A);
+
     CU_ASSERT(HSUSBD_GET_ADDR() == 0x2A);
+
     /* Reset HSUSBD */
 
-   SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_ENABLE_INT()
@@ -151,17 +159,17 @@ void MACRO_HSUSBD_ENABLE_INT()
     uint32_t i;
 
     HSUSBD_ENABLE_PHY();
-  
+
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-  
-    for(i = 0; i < (HSUSBD_MAX_EP + 2); i++)
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+
+    for (i = 0; i < (HSUSBD_MAX_EP + 2); i++)
     {
         HSUSBD_ENABLE_USB_INT(1 << i);
         CU_ASSERT(HSUSBD->GINTEN & (1 << i));
     }
 
-    for(i = 0; i < 6; i++)
+    for (i = 0; i < 6; i++)
     {
         HSUSBD_ENABLE_BUS_INT(1 << i);
         CU_ASSERT(HSUSBD->BUSINTEN & (1 << i));
@@ -186,11 +194,11 @@ void MACRO_HSUSBD_ENABLE_CEP_INT()
     uint32_t i;
 
     HSUSBD_ENABLE_PHY();
-  
-  	/* wait PHY clock ready */
-     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-  
-	   for(i = 0; i < 13; i++)
+
+    /* wait PHY clock ready */
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+
+    for (i = 0; i < 13; i++)
     {
         HSUSBD_ENABLE_CEP_INT(1 << i);
         CU_ASSERT(HSUSBD->CEPINTEN & (1 << i));
@@ -212,9 +220,9 @@ void MACRO_HSUSBD_SET_CEP_STATE()
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-  
-	  HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+
+    HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
     CU_ASSERT((HSUSBD->CEPCTL & HSUSBD_CEPCTL_NAKCLR_Msk) == HSUSBD_CEPCTL_NAKCLR);
     HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALL);
     CU_ASSERT((HSUSBD->CEPCTL & HSUSBD_CEPCTL_STALLEN_Msk) == HSUSBD_CEPCTL_STALL);
@@ -224,7 +232,7 @@ void MACRO_HSUSBD_SET_CEP_STATE()
     CU_ASSERT((HSUSBD->CEPCTL & HSUSBD_CEPCTL_FLUSH_Msk) == 0);
     /* Reset HSUSBD */
 
-   SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_START_CEP_IN()
@@ -232,12 +240,12 @@ void MACRO_HSUSBD_START_CEP_IN()
     HSUSBD_ENABLE_PHY();
     /* wait PHY clock ready */
 
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-   
-	  HSUSBD_START_CEP_IN(0xff);
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+
+    HSUSBD_START_CEP_IN(0xff);
     CU_ASSERT(HSUSBD->CEPTXCNT == 0xff);
     /* Reset HSUSBD */
-   SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_SET_MAX_PAYLOAD()
@@ -246,18 +254,19 @@ void MACRO_HSUSBD_SET_MAX_PAYLOAD()
 
     HSUSBD_ENABLE_PHY();
 
-  /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+    /* wait PHY clock ready */
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
 
-    for(i = 0; i < HSUSBD_MAX_EP; i++)
+    for (i = 0; i < HSUSBD_MAX_EP; i++)
     {
         CU_ASSERT(HSUSBD->EP[i].EPMPS == 0);
         HSUSBD_SET_MAX_PAYLOAD(i, 0x7ff);
         CU_ASSERT(HSUSBD->EP[i].EPMPS == 0x7ff);
     }
+
     /* Reset HSUSBD */
 
-     SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_ENABLE_EP_INT()
@@ -267,18 +276,19 @@ void MACRO_HSUSBD_ENABLE_EP_INT()
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
- 
-  	for(i = 0; i < HSUSBD_MAX_EP; i++)
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+
+    for (i = 0; i < HSUSBD_MAX_EP; i++)
     {
-        for(j = 0; j < 13; j++)
+        for (j = 0; j < 13; j++)
         {
             HSUSBD_ENABLE_EP_INT(i, 1 << j);
             CU_ASSERT(HSUSBD->EP[i].EPINTEN & (1 << j));
         }
     }
+
     /* Reset HSUSBD */
-     SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_GET_CLR_EP_INT_FLAG()
@@ -288,17 +298,18 @@ void MACRO_HSUSBD_GET_CLR_EP_INT_FLAG()
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
 
-	  for(i = 0; i < HSUSBD_MAX_EP; i++)
+    for (i = 0; i < HSUSBD_MAX_EP; i++)
     {
         CU_ASSERT(HSUSBD_GET_EP_INT_FLAG(i) == 0x3);
         HSUSBD_CLR_EP_INT_FLAG(i, 0x1fff);
         CU_ASSERT(HSUSBD_GET_EP_INT_FLAG(i) == 0x3);
     }
+
     /* Reset HSUSBD */
 
-     SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_SET_DMA_LEN()
@@ -306,7 +317,7 @@ void MACRO_HSUSBD_SET_DMA_LEN()
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
 
     HSUSBD_SET_DMA_LEN(0xfffff);
     CU_ASSERT(HSUSBD->DMACNT == 0xfffff);
@@ -314,23 +325,23 @@ void MACRO_HSUSBD_SET_DMA_LEN()
     CU_ASSERT(HSUSBD->DMACNT == 0x0);
     /* Reset HSUSBD */
 
-   SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_SET_DMA_ADDR()
 {
     HSUSBD_ENABLE_PHY();
 
-  /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-  
+    /* wait PHY clock ready */
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+
     HSUSBD_SET_DMA_ADDR(0x20001000);
     CU_ASSERT(HSUSBD->DMAADDR == 0x20001000);
     HSUSBD_ResetDMA();
     CU_ASSERT(HSUSBD->DMAADDR == 0x20001000);
     /* Reset HSUSBD */
 
-   SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_SET_DMA_READ()
@@ -340,18 +351,20 @@ void MACRO_HSUSBD_SET_DMA_READ()
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-  
-	  for(i = 0; i < 0x1000; i++){};
-    for(i = 0; i < 0x10; i++)
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+
+    for (i = 0; i < 0x1000; i++) {};
+
+    for (i = 0; i < 0x10; i++)
     {
         HSUSBD_SET_DMA_READ(i);
         CU_ASSERT(HSUSBD->DMACTL == (0x110 | i));
     }
+
     HSUSBD_ResetDMA();
     CU_ASSERT(HSUSBD->DMACTL == 0);
     /* Reset HSUSBD */
-     SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_SET_DMA_WRITE()
@@ -361,18 +374,20 @@ void MACRO_HSUSBD_SET_DMA_WRITE()
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-   
-	  for(i = 0; i < 0x1000; i++){};
-    for(i = 0; i < 0x10; i++)
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+
+    for (i = 0; i < 0x1000; i++) {};
+
+    for (i = 0; i < 0x10; i++)
     {
         HSUSBD_SET_DMA_WRITE(i);
         CU_ASSERT(HSUSBD->DMACTL == (0x000 | i));
     }
+
     HSUSBD_ResetDMA();
     CU_ASSERT(HSUSBD->DMACTL == 0);
     /* Reset HSUSBD */
-     SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_ENABLE_DMA()
@@ -380,15 +395,20 @@ void MACRO_HSUSBD_ENABLE_DMA()
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk)){};
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk)) {};
 
     CU_ASSERT_FALSE(HSUSBD->DMACTL == HSUSBD_DMACTL_DMAEN_Msk);
+
     HSUSBD_ENABLE_DMA();
+
     CU_ASSERT(HSUSBD->DMACTL & HSUSBD_DMACTL_DMAEN_Msk);
+
     HSUSBD_ResetDMA();
+
     CU_ASSERT(HSUSBD->DMACTL == 0);
+
     /* Reset HSUSBD */
-   SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_IS_ATTACHED()
@@ -396,12 +416,13 @@ void MACRO_HSUSBD_IS_ATTACHED()
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk)){};
-  
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk)) {};
+
     CU_ASSERT(HSUSBD_IS_ATTACHED() == (HSUSBD->PHYCTL & 0x80000000)); // Plug-in to test
+
     /* Reset HSUSBD */
 
-   SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_ENABLE_DISABLE_BCD()
@@ -413,7 +434,7 @@ void MACRO_HSUSBD_ENABLE_DISABLE_BCD()
     HSUSBD_DISABLE_BCD();
     CU_ASSERT_FALSE(HSUSBD->BCDC & 0x1);
     /* Reset HSUSBD */
-   SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_ENABLE_DISABLE_LPM()
@@ -421,9 +442,9 @@ void MACRO_HSUSBD_ENABLE_DISABLE_LPM()
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
- 
-	  HSUSBD_DISABLE_LPM();
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+
+    HSUSBD_DISABLE_LPM();
     CU_ASSERT_FALSE(HSUSBD->LPMCSR & 0x1000);
     HSUSBD_ENABLE_LPM();
     CU_ASSERT((HSUSBD->LPMCSR & 0x1000) == 0x1000);
@@ -431,7 +452,7 @@ void MACRO_HSUSBD_ENABLE_DISABLE_LPM()
     CU_ASSERT_FALSE(HSUSBD->LPMCSR & 0x1000);
     /* Reset HSUSBD */
 
-   SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_MemCopy()
@@ -440,13 +461,15 @@ void MACRO_HSUSBD_MemCopy()
     uint8_t u8Dest[20];
     uint32_t u32Count;
 
-    for(u32Count = 0; u32Count < 20; u32Count++)
+    for (u32Count = 0; u32Count < 20; u32Count++)
     {
         u8Src[u32Count] = u32Count + 1;
         u8Dest[u32Count] = 0;
     }
+
     HSUSBD_MemCopy(u8Dest, u8Src, 20);
-    for(u32Count = 0; u32Count < 20; u32Count++)
+
+    for (u32Count = 0; u32Count < 20; u32Count++)
     {
         CU_ASSERT(u8Src[u32Count] == u8Dest[u32Count])
     }
@@ -459,12 +482,13 @@ void MACRO_HSUSBD_Set_Clear_Get_Ep_Stall()
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-  
-	  HSUSBD_SetEpStall(0xff);
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+
+    HSUSBD_SetEpStall(0xff);
     CU_ASSERT(HSUSBD->CEPCTL & 0x2);
     CU_ASSERT(HSUSBD->CEPCTL == HSUSBD_CEPCTL_STALL);
-    for(u32EpCount = 0; u32EpCount < HSUSBD_MAX_EP; u32EpCount++)
+
+    for (u32EpCount = 0; u32EpCount < HSUSBD_MAX_EP; u32EpCount++)
     {
         HSUSBD_SetEpStall(u32EpCount);
         CU_ASSERT(HSUSBD->EP[u32EpCount].EPRSPCTL == 0x10);
@@ -474,9 +498,10 @@ void MACRO_HSUSBD_Set_Clear_Get_Ep_Stall()
         CU_ASSERT(HSUSBD->EP[u32EpCount].EPRSPCTL == 0);
         CU_ASSERT_FALSE(HSUSBD_GetEpStall(u32EpCount));
     }
+
     /* Reset HSUSBD */
 
-     SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void MACRO_HSUSBD_SetStall_ClearStall_GetStall()
@@ -484,9 +509,9 @@ void MACRO_HSUSBD_SetStall_ClearStall_GetStall()
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
-  
-	  HSUSBD_SetStall(0x0);
+    while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+
+    HSUSBD_SetStall(0x0);
     CU_ASSERT(HSUSBD->CEPCTL & 0x2);
     CU_ASSERT(HSUSBD->CEPCTL == HSUSBD_CEPCTL_STALL);
 
@@ -550,14 +575,14 @@ __attribute__((aligned(4))) uint8_t gu8DeviceDescriptor[] =
     /* idVendor */
     0x0416 & 0x00FF,
     (0x0416 & 0xFF00) >> 8,
-    /* idProduct */
-    0x8248 & 0x00FF,
-    (0x8248 & 0xFF00) >> 8,
-    0x00, 0x00,     /* bcdDevice */
-    0x01,           /* iManufacture */
-    0x02,           /* iProduct */
-    0x03,           /* iSerialNumber */
-    0x01            /* bNumConfigurations */
+                      /* idProduct */
+                      0x8248 & 0x00FF,
+                      (0x8248 & 0xFF00) >> 8,
+                      0x00, 0x00,     /* bcdDevice */
+                      0x01,           /* iManufacture */
+                      0x02,           /* iProduct */
+                      0x03,           /* iSerialNumber */
+                      0x01            /* bNumConfigurations */
 };
 
 __attribute__((aligned(4))) uint8_t gu8QualifierDescriptor[] =
@@ -628,43 +653,43 @@ __attribute__((aligned(4))) uint8_t gu8ConfigDescriptorHID[] =
     /* wTotalLength */
     LEN_CONFIG_AND_SUBORDINATE & 0x00FF,
     (LEN_CONFIG_AND_SUBORDINATE & 0xFF00) >> 8,
-    0x01,           /* bNumInterfaces */
-    0x01,           /* bConfigurationValue */
-    0x00,           /* iConfiguration */
-    0x80 | (HSUSBD_SELF_POWERED << 6) | (HSUSBD_REMOTE_WAKEUP << 5),/* bmAttributes */
-    HSUSBD_MAX_POWER,         /* MaxPower */
+                                          0x01,           /* bNumInterfaces */
+                                          0x01,           /* bConfigurationValue */
+                                          0x00,           /* iConfiguration */
+                                          0x80 | (HSUSBD_SELF_POWERED << 6) | (HSUSBD_REMOTE_WAKEUP << 5),/* bmAttributes */
+                                          HSUSBD_MAX_POWER,         /* MaxPower */
 
-    /* I/F descr: HID */
-    LEN_INTERFACE,  /* bLength */
-    DESC_INTERFACE, /* bDescriptorType */
-    0x00,           /* bInterfaceNumber */
-    0x00,           /* bAlternateSetting */
-    0x01,           /* bNumEndpoints */
-    0x03,           /* bInterfaceClass */
-    0x01,           /* bInterfaceSubClass */
-    HID_MOUSE,      /* bInterfaceProtocol */
-    0x00,           /* iInterface */
+                                          /* I/F descr: HID */
+                                          LEN_INTERFACE,  /* bLength */
+                                          DESC_INTERFACE, /* bDescriptorType */
+                                          0x00,           /* bInterfaceNumber */
+                                          0x00,           /* bAlternateSetting */
+                                          0x01,           /* bNumEndpoints */
+                                          0x03,           /* bInterfaceClass */
+                                          0x01,           /* bInterfaceSubClass */
+                                          HID_MOUSE,      /* bInterfaceProtocol */
+                                          0x00,           /* iInterface */
 
-    /* HID Descriptor */
-    LEN_HID,        /* Size of this descriptor in UINT8s. */
-    DESC_HID,       /* HID descriptor type. */
-    0x10, 0x01,     /* HID Class Spec. release number. */
-    0x00,           /* H/W target country. */
-    0x01,           /* Number of HID class descriptors to follow. */
-    DESC_HID_RPT,   /* Descriptor type. */
-    /* Total length of report descriptor. */
-    sizeof(HID_MouseReportDescriptor) & 0x00FF,
-    (sizeof(HID_MouseReportDescriptor) & 0xFF00) >> 8,
+                                          /* HID Descriptor */
+                                          LEN_HID,        /* Size of this descriptor in UINT8s. */
+                                          DESC_HID,       /* HID descriptor type. */
+                                          0x10, 0x01,     /* HID Class Spec. release number. */
+                                          0x00,           /* H/W target country. */
+                                          0x01,           /* Number of HID class descriptors to follow. */
+                                          DESC_HID_RPT,   /* Descriptor type. */
+                                          /* Total length of report descriptor. */
+                                          sizeof(HID_MouseReportDescriptor) & 0x00FF,
+                                          (sizeof(HID_MouseReportDescriptor) & 0xFF00) >> 8,
 
-    /* EP Descriptor: interrupt in. */
-    LEN_ENDPOINT,   /* bLength */
-    DESC_ENDPOINT,  /* bDescriptorType */
-    (INT_IN_EP_NUM | EP_INPUT), /* bEndpointAddress */
-    EP_INT,         /* bmAttributes */
-    /* wMaxPacketSize */
-    EP2_MAX_PKT_SIZE & 0x00FF,
-    (EP2_MAX_PKT_SIZE & 0xFF00) >> 8,
-    HID_DEFAULT_INT_IN_INTERVAL     /* bInterval */
+                                          /* EP Descriptor: interrupt in. */
+                                          LEN_ENDPOINT,   /* bLength */
+                                          DESC_ENDPOINT,  /* bDescriptorType */
+                                          (INT_IN_EP_NUM | EP_INPUT), /* bEndpointAddress */
+                                          EP_INT,         /* bmAttributes */
+                                          /* wMaxPacketSize */
+                                          EP2_MAX_PKT_SIZE & 0x00FF,
+                                          (EP2_MAX_PKT_SIZE & 0xFF00) >> 8,
+                                          HID_DEFAULT_INT_IN_INTERVAL     /* bInterval */
 };
 
 __attribute__((aligned(4))) uint8_t gu8ConfigDescriptorFS_HID[] =
@@ -674,43 +699,43 @@ __attribute__((aligned(4))) uint8_t gu8ConfigDescriptorFS_HID[] =
     /* wTotalLength */
     LEN_CONFIG_AND_SUBORDINATE & 0x00FF,
     (LEN_CONFIG_AND_SUBORDINATE & 0xFF00) >> 8,
-    0x01,           /* bNumInterfaces */
-    0x01,           /* bConfigurationValue */
-    0x00,           /* iConfiguration */
-    0x80 | (HSUSBD_SELF_POWERED << 6) | (HSUSBD_REMOTE_WAKEUP << 5),/* bmAttributes */
-    HSUSBD_MAX_POWER,         /* MaxPower */
+                                          0x01,           /* bNumInterfaces */
+                                          0x01,           /* bConfigurationValue */
+                                          0x00,           /* iConfiguration */
+                                          0x80 | (HSUSBD_SELF_POWERED << 6) | (HSUSBD_REMOTE_WAKEUP << 5),/* bmAttributes */
+                                          HSUSBD_MAX_POWER,         /* MaxPower */
 
-    /* I/F descr: HID */
-    LEN_INTERFACE,  /* bLength */
-    DESC_INTERFACE, /* bDescriptorType */
-    0x00,           /* bInterfaceNumber */
-    0x00,           /* bAlternateSetting */
-    0x01,           /* bNumEndpoints */
-    0x03,           /* bInterfaceClass */
-    0x01,           /* bInterfaceSubClass */
-    HID_MOUSE,      /* bInterfaceProtocol */
-    0x00,           /* iInterface */
+                                          /* I/F descr: HID */
+                                          LEN_INTERFACE,  /* bLength */
+                                          DESC_INTERFACE, /* bDescriptorType */
+                                          0x00,           /* bInterfaceNumber */
+                                          0x00,           /* bAlternateSetting */
+                                          0x01,           /* bNumEndpoints */
+                                          0x03,           /* bInterfaceClass */
+                                          0x01,           /* bInterfaceSubClass */
+                                          HID_MOUSE,      /* bInterfaceProtocol */
+                                          0x00,           /* iInterface */
 
-    /* HID Descriptor */
-    LEN_HID,        /* Size of this descriptor in UINT8s. */
-    DESC_HID,       /* HID descriptor type. */
-    0x10, 0x01,     /* HID Class Spec. release number. */
-    0x00,           /* H/W target country. */
-    0x01,           /* Number of HID class descriptors to follow. */
-    DESC_HID_RPT,   /* Descriptor type. */
-    /* Total length of report descriptor. */
-    sizeof(HID_MouseReportDescriptor) & 0x00FF,
-    (sizeof(HID_MouseReportDescriptor) & 0xFF00) >> 8,
+                                          /* HID Descriptor */
+                                          LEN_HID,        /* Size of this descriptor in UINT8s. */
+                                          DESC_HID,       /* HID descriptor type. */
+                                          0x10, 0x01,     /* HID Class Spec. release number. */
+                                          0x00,           /* H/W target country. */
+                                          0x01,           /* Number of HID class descriptors to follow. */
+                                          DESC_HID_RPT,   /* Descriptor type. */
+                                          /* Total length of report descriptor. */
+                                          sizeof(HID_MouseReportDescriptor) & 0x00FF,
+                                          (sizeof(HID_MouseReportDescriptor) & 0xFF00) >> 8,
 
-    /* EP Descriptor: interrupt in. */
-    LEN_ENDPOINT,   /* bLength */
-    DESC_ENDPOINT,  /* bDescriptorType */
-    (INT_IN_EP_NUM | EP_INPUT), /* bEndpointAddress */
-    EP_INT,         /* bmAttributes */
-    /* wMaxPacketSize */
-    EP2_MAX_PKT_SIZE & 0x00FF,
-    (EP2_MAX_PKT_SIZE & 0xFF00) >> 8,
-    HID_DEFAULT_INT_IN_INTERVAL     /* bInterval */
+                                          /* EP Descriptor: interrupt in. */
+                                          LEN_ENDPOINT,   /* bLength */
+                                          DESC_ENDPOINT,  /* bDescriptorType */
+                                          (INT_IN_EP_NUM | EP_INPUT), /* bEndpointAddress */
+                                          EP_INT,         /* bmAttributes */
+                                          /* wMaxPacketSize */
+                                          EP2_MAX_PKT_SIZE & 0x00FF,
+                                          (EP2_MAX_PKT_SIZE & 0xFF00) >> 8,
+                                          HID_DEFAULT_INT_IN_INTERVAL     /* bInterval */
 };
 
 __attribute__((aligned(4))) uint8_t gu8OtherConfigDescriptorHS_HID[] =
@@ -720,43 +745,43 @@ __attribute__((aligned(4))) uint8_t gu8OtherConfigDescriptorHS_HID[] =
     /* wTotalLength */
     LEN_CONFIG_AND_SUBORDINATE & 0x00FF,
     (LEN_CONFIG_AND_SUBORDINATE & 0xFF00) >> 8,
-    0x01,           /* bNumInterfaces */
-    0x01,           /* bConfigurationValue */
-    0x00,           /* iConfiguration */
-    0x80 | (HSUSBD_SELF_POWERED << 6) | (HSUSBD_REMOTE_WAKEUP << 5),/* bmAttributes */
-    HSUSBD_MAX_POWER,         /* MaxPower */
+                                          0x01,           /* bNumInterfaces */
+                                          0x01,           /* bConfigurationValue */
+                                          0x00,           /* iConfiguration */
+                                          0x80 | (HSUSBD_SELF_POWERED << 6) | (HSUSBD_REMOTE_WAKEUP << 5),/* bmAttributes */
+                                          HSUSBD_MAX_POWER,         /* MaxPower */
 
-    /* I/F descr: HID */
-    LEN_INTERFACE,  /* bLength */
-    DESC_INTERFACE, /* bDescriptorType */
-    0x00,           /* bInterfaceNumber */
-    0x00,           /* bAlternateSetting */
-    0x01,           /* bNumEndpoints */
-    0x03,           /* bInterfaceClass */
-    0x01,           /* bInterfaceSubClass */
-    HID_MOUSE,      /* bInterfaceProtocol */
-    0x00,           /* iInterface */
+                                          /* I/F descr: HID */
+                                          LEN_INTERFACE,  /* bLength */
+                                          DESC_INTERFACE, /* bDescriptorType */
+                                          0x00,           /* bInterfaceNumber */
+                                          0x00,           /* bAlternateSetting */
+                                          0x01,           /* bNumEndpoints */
+                                          0x03,           /* bInterfaceClass */
+                                          0x01,           /* bInterfaceSubClass */
+                                          HID_MOUSE,      /* bInterfaceProtocol */
+                                          0x00,           /* iInterface */
 
-    /* HID Descriptor */
-    LEN_HID,        /* Size of this descriptor in UINT8s. */
-    DESC_HID,       /* HID descriptor type. */
-    0x10, 0x01,     /* HID Class Spec. release number. */
-    0x00,           /* H/W target country. */
-    0x01,           /* Number of HID class descriptors to follow. */
-    DESC_HID_RPT,   /* Descriptor type. */
-    /* Total length of report descriptor. */
-    sizeof(HID_MouseReportDescriptor) & 0x00FF,
-    (sizeof(HID_MouseReportDescriptor) & 0xFF00) >> 8,
+                                          /* HID Descriptor */
+                                          LEN_HID,        /* Size of this descriptor in UINT8s. */
+                                          DESC_HID,       /* HID descriptor type. */
+                                          0x10, 0x01,     /* HID Class Spec. release number. */
+                                          0x00,           /* H/W target country. */
+                                          0x01,           /* Number of HID class descriptors to follow. */
+                                          DESC_HID_RPT,   /* Descriptor type. */
+                                          /* Total length of report descriptor. */
+                                          sizeof(HID_MouseReportDescriptor) & 0x00FF,
+                                          (sizeof(HID_MouseReportDescriptor) & 0xFF00) >> 8,
 
-    /* EP Descriptor: interrupt in. */
-    LEN_ENDPOINT,   /* bLength */
-    DESC_ENDPOINT,  /* bDescriptorType */
-    (INT_IN_EP_NUM | EP_INPUT), /* bEndpointAddress */
-    EP_INT,         /* bmAttributes */
-    /* wMaxPacketSize */
-    EP2_MAX_PKT_SIZE & 0x00FF,
-    (EP2_MAX_PKT_SIZE & 0xFF00) >> 8,
-    HID_DEFAULT_INT_IN_INTERVAL     /* bInterval */
+                                          /* EP Descriptor: interrupt in. */
+                                          LEN_ENDPOINT,   /* bLength */
+                                          DESC_ENDPOINT,  /* bDescriptorType */
+                                          (INT_IN_EP_NUM | EP_INPUT), /* bEndpointAddress */
+                                          EP_INT,         /* bmAttributes */
+                                          /* wMaxPacketSize */
+                                          EP2_MAX_PKT_SIZE & 0x00FF,
+                                          (EP2_MAX_PKT_SIZE & 0xFF00) >> 8,
+                                          HID_DEFAULT_INT_IN_INTERVAL     /* bInterval */
 };
 
 __attribute__((aligned(4))) uint8_t gu8OtherConfigDescriptorFS_HID[] =
@@ -766,43 +791,43 @@ __attribute__((aligned(4))) uint8_t gu8OtherConfigDescriptorFS_HID[] =
     /* wTotalLength */
     LEN_CONFIG_AND_SUBORDINATE & 0x00FF,
     (LEN_CONFIG_AND_SUBORDINATE & 0xFF00) >> 8,
-    0x01,           /* bNumInterfaces */
-    0x01,           /* bConfigurationValue */
-    0x00,           /* iConfiguration */
-    0x80 | (HSUSBD_SELF_POWERED << 6) | (HSUSBD_REMOTE_WAKEUP << 5),/* bmAttributes */
-    HSUSBD_MAX_POWER,         /* MaxPower */
+                                          0x01,           /* bNumInterfaces */
+                                          0x01,           /* bConfigurationValue */
+                                          0x00,           /* iConfiguration */
+                                          0x80 | (HSUSBD_SELF_POWERED << 6) | (HSUSBD_REMOTE_WAKEUP << 5),/* bmAttributes */
+                                          HSUSBD_MAX_POWER,         /* MaxPower */
 
-    /* I/F descr: HID */
-    LEN_INTERFACE,  /* bLength */
-    DESC_INTERFACE, /* bDescriptorType */
-    0x00,           /* bInterfaceNumber */
-    0x00,           /* bAlternateSetting */
-    0x01,           /* bNumEndpoints */
-    0x03,           /* bInterfaceClass */
-    0x01,           /* bInterfaceSubClass */
-    HID_MOUSE,      /* bInterfaceProtocol */
-    0x00,           /* iInterface */
+                                          /* I/F descr: HID */
+                                          LEN_INTERFACE,  /* bLength */
+                                          DESC_INTERFACE, /* bDescriptorType */
+                                          0x00,           /* bInterfaceNumber */
+                                          0x00,           /* bAlternateSetting */
+                                          0x01,           /* bNumEndpoints */
+                                          0x03,           /* bInterfaceClass */
+                                          0x01,           /* bInterfaceSubClass */
+                                          HID_MOUSE,      /* bInterfaceProtocol */
+                                          0x00,           /* iInterface */
 
-    /* HID Descriptor */
-    LEN_HID,        /* Size of this descriptor in UINT8s. */
-    DESC_HID,       /* HID descriptor type. */
-    0x10, 0x01,     /* HID Class Spec. release number. */
-    0x00,           /* H/W target country. */
-    0x01,           /* Number of HID class descriptors to follow. */
-    DESC_HID_RPT,   /* Descriptor type. */
-    /* Total length of report descriptor. */
-    sizeof(HID_MouseReportDescriptor) & 0x00FF,
-    (sizeof(HID_MouseReportDescriptor) & 0xFF00) >> 8,
+                                          /* HID Descriptor */
+                                          LEN_HID,        /* Size of this descriptor in UINT8s. */
+                                          DESC_HID,       /* HID descriptor type. */
+                                          0x10, 0x01,     /* HID Class Spec. release number. */
+                                          0x00,           /* H/W target country. */
+                                          0x01,           /* Number of HID class descriptors to follow. */
+                                          DESC_HID_RPT,   /* Descriptor type. */
+                                          /* Total length of report descriptor. */
+                                          sizeof(HID_MouseReportDescriptor) & 0x00FF,
+                                          (sizeof(HID_MouseReportDescriptor) & 0xFF00) >> 8,
 
-    /* EP Descriptor: interrupt in. */
-    LEN_ENDPOINT,   /* bLength */
-    DESC_ENDPOINT,  /* bDescriptorType */
-    (INT_IN_EP_NUM | EP_INPUT), /* bEndpointAddress */
-    EP_INT,         /* bmAttributes */
-    /* wMaxPacketSize */
-    EP2_MAX_PKT_SIZE & 0x00FF,
-    (EP2_MAX_PKT_SIZE & 0xFF00) >> 8,
-    HID_DEFAULT_INT_IN_INTERVAL     /* bInterval */
+                                          /* EP Descriptor: interrupt in. */
+                                          LEN_ENDPOINT,   /* bLength */
+                                          DESC_ENDPOINT,  /* bDescriptorType */
+                                          (INT_IN_EP_NUM | EP_INPUT), /* bEndpointAddress */
+                                          EP_INT,         /* bmAttributes */
+                                          /* wMaxPacketSize */
+                                          EP2_MAX_PKT_SIZE & 0x00FF,
+                                          (EP2_MAX_PKT_SIZE & 0xFF00) >> 8,
+                                          HID_DEFAULT_INT_IN_INTERVAL     /* bInterval */
 };
 
 /*!<USB Configuration Descriptor for MSC */
@@ -1052,7 +1077,7 @@ void API_HSUSBD_Open()
     CU_ASSERT(HSUSBD->OPER == 0x0);
     CU_ASSERT(HSUSBD->PHYCTL == 0x08000200);
     /* Reset HSUSBD */
-   SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void API_HSUSBD_Start()
@@ -1061,7 +1086,7 @@ void API_HSUSBD_Start()
     CU_ASSERT(HSUSBD->OPER == 0x2);
     CU_ASSERT(HSUSBD->PHYCTL == 0x00000100);
     /* Reset HSUSBD */
-   SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 void API_HSUSBD_CtrlIn()
@@ -1069,7 +1094,7 @@ void API_HSUSBD_CtrlIn()
     uint32_t u32Count, u32ErrorCount = 0;
     uint8_t u8CtrlInBuffer[20];
 
-    for(u32Count = 0; u32Count < 20; u32Count++)
+    for (u32Count = 0; u32Count < 20; u32Count++)
         u8CtrlInBuffer[u32Count] = u32Count;
 
     HSUSBD_Open(&gsHSInfo_MSC, NULL, NULL);
@@ -1080,30 +1105,32 @@ void API_HSUSBD_CtrlIn()
 
     HSUSBD_CtrlIn();
     CU_ASSERT(HSUSBD->CEPTXCNT == 20);
-    for(u32Count = 0; u32Count < 20; u32Count++)
+
+    for (u32Count = 0; u32Count < 20; u32Count++)
     {
-        if(HSUSBD->CEPDAT_BYTE != u32Count)
+        if (HSUSBD->CEPDAT_BYTE != u32Count)
             u32ErrorCount++;
     }
 
     CU_ASSERT_EQUAL(u32ErrorCount, 0);
 
-    for(u32Count = 0; u32Count < 3; u32Count++)
+    for (u32Count = 0; u32Count < 3; u32Count++)
         u8CtrlInBuffer[u32Count] = 0xF | u32Count;
 
     HSUSBD_PrepareCtrlIn(u8CtrlInBuffer, 3);
     HSUSBD_CtrlIn();
     CU_ASSERT(HSUSBD->CEPTXCNT == 3);
-    for(u32Count = 0; u32Count < 3; u32Count++)
+
+    for (u32Count = 0; u32Count < 3; u32Count++)
     {
-        if(HSUSBD->CEPDAT_BYTE != (0xF | u32Count))
+        if (HSUSBD->CEPDAT_BYTE != (0xF | u32Count))
             u32ErrorCount++;
     }
 
     HSUSBD_SwReset();
     /* Reset HSUSBD */
 
-     SYS_ResetModule(SYS_HSUSBD0RST);
+    SYS_ResetModule(SYS_HSUSBD0RST);
 }
 
 
@@ -1177,7 +1204,7 @@ void CONST_HSUSBD_Constants()
     CU_ASSERT(EPO           == 14);
     CU_ASSERT(EPP           == 15);
     CU_ASSERT(EPQ           == 16);
-		CU_ASSERT(EPR           == 17);
+    CU_ASSERT(EPR           == 17);
     /* HSUSBD_EPxRSPCTL register check */
     CU_ASSERT(HSUSBD_EP_RSPCTL_FLUSH       == 0x00000001);
     CU_ASSERT(HSUSBD_EP_RSPCTL_MODE_AUTO   == 0x00000000);
@@ -1226,16 +1253,16 @@ CU_TestInfo HSUSBD_MacroTests[] =
     {"Enable/Disable USB PHY", MACRO_HSUSBD_ENABLE_DISABLE_PHY},
     {"Set/Clear USB DRVSE0 bit", MACRO_HSUSBD_SET_CLEAR_SE0},
     {"Set/Get USB device address", MACRO_HSUSBD_SET_GET_ADDR},
-//    {"Enable USBD interrupt function", MACRO_HSUSBD_ENABLE_INT},
-//    {"Get/Clear USB interrupt flag", MACRO_HSUSBD_GET_CLR_INT_FLAG},
+    //    {"Enable USBD interrupt function", MACRO_HSUSBD_ENABLE_INT},
+    //    {"Get/Clear USB interrupt flag", MACRO_HSUSBD_GET_CLR_INT_FLAG},
     {"Enable CEP interrupt function", MACRO_HSUSBD_ENABLE_CEP_INT},
-//    {"Clear CEP interrupt flag", MACRO_HSUSBD_CLR_CEP_INT_FLAG},
-//    {"Set CEP state", MACRO_HSUSBD_SET_CEP_STATE},
-//    {"Start CEP in transfer", MACRO_HSUSBD_START_CEP_IN},
-//    {"Set EP maximum packet size", MACRO_HSUSBD_SET_MAX_PAYLOAD},
-//    {"Enable EP interrupt function", MACRO_HSUSBD_ENABLE_EP_INT},
-//    {"Get/Clear EP interrupt flag", MACRO_HSUSBD_GET_CLR_EP_INT_FLAG},
-//    {"Set DMA length", MACRO_HSUSBD_SET_DMA_LEN},
+    //    {"Clear CEP interrupt flag", MACRO_HSUSBD_CLR_CEP_INT_FLAG},
+    //    {"Set CEP state", MACRO_HSUSBD_SET_CEP_STATE},
+    //    {"Start CEP in transfer", MACRO_HSUSBD_START_CEP_IN},
+    //    {"Set EP maximum packet size", MACRO_HSUSBD_SET_MAX_PAYLOAD},
+    //    {"Enable EP interrupt function", MACRO_HSUSBD_ENABLE_EP_INT},
+    //    {"Get/Clear EP interrupt flag", MACRO_HSUSBD_GET_CLR_EP_INT_FLAG},
+    //    {"Set DMA length", MACRO_HSUSBD_SET_DMA_LEN},
     {"Set DMA address", MACRO_HSUSBD_SET_DMA_ADDR},
     {"Set DMA read", MACRO_HSUSBD_SET_DMA_READ},
     {"Set DMA write", MACRO_HSUSBD_SET_DMA_WRITE},

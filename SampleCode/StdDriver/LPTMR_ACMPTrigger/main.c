@@ -28,9 +28,10 @@ NVT_ITCM void LPTMR0_IRQHandler(void)
     printf("ACMP triggered LPTMR0 reset while counter is at %d\n", LPTMR_GetCaptureData(LPTMR0));
     __DSB();
     __ISB();
-    while(LPTMR_GetCaptureIntFlag(LPTMR0))
+
+    while (LPTMR_GetCaptureIntFlag(LPTMR0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPTMR0 IntFlag time-out!\n");
         }
@@ -129,7 +130,7 @@ int main(void)
     LPTMR_EnableCaptureInt(LPTMR0);
     NVIC_EnableIRQ(LPTMR0_IRQn);
 
-    while(1)
+    while (1)
     {
         PB5 = 0;
         CLK_SysTickDelay(10000);

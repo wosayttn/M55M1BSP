@@ -10,7 +10,7 @@
 #define __CRYPTO_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 /**
     @addtogroup REGISTER Control Register
@@ -24,1592 +24,1592 @@
 */
 typedef struct
 {
-/**
- * @var CRYPTO_T::INTEN
- * Offset: 0x00  Crypto Interrupt Enable Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |AESIEN    |AES Interrupt Enable Bit
- * |        |          |0 = AES interrupt Disabled.
- * |        |          |1 = AES interrupt Enabled.
- * |        |          |Note: In DMA mode, an interrupt will be triggered when an amount of data set in AES_DMA_CNT is fed into the AES engine.
- * |        |          |In Non-DMA mode, an interrupt will be triggered when the AES engine finishes the operation.
- * |[1]     |AESEIEN   |AES Error Flag Enable Bit
- * |        |          |0 = AES error interrupt flag Disabled.
- * |        |          |1 = AES error interrupt flag Enabled.
- * |[6]     |CHAPOLYIEN|AES Interrupt Enable Bit
- * |        |          |0 = CHACHA20/POLY1305 interrupt Disabled.
- * |        |          |1 = CHACHA20/POLY1305 interrupt Enabled.
- * |        |          |Note: In DMA mode, an interrupt will be triggered when an amount of data set in CHAPOLY_DMA_CNT is fed into the CHACHA20/POLY1305 engine.
- * |        |          |In Non-DMA mode, an interrupt will be triggered when the CHACHA20/POLY1305 engine finishes the operation.
- * |[7]     |CHAPOLYEIEN|CHACHA20/POLY1305 Error Flag Enable Bit
- * |        |          |0 = CHACHA20/POLY1305 error interrupt flag Disabled.
- * |        |          |1 = CHACHA20/POLY1305 error interrupt flag Enabled.
- * |[16]    |PRNGIEN   |PRNG Interrupt Enable Bit
- * |        |          |0 = PRNG interrupt Disabled.
- * |        |          |1 = PRNG interrupt Enabled.
- * |[17]    |PRNGEIEN  |PRNG Error Flag Enable Bit
- * |        |          |0 = PRNG error interrupt flag Disabled.
- * |        |          |1 = PRNG error interrupt flag Enabled.
- * |[22]    |ECCIEN    |ECC Interrupt Enable Bit
- * |        |          |0 = ECC interrupt Disabled.
- * |        |          |1 = ECC interrupt Enabled.
- * |        |          |Note: In DMA mode, an interrupt will be triggered when an amount of data set in ECC_DMA_CNT is fed into the ECC engine
- * |        |          |In Non-DMA mode, an interrupt will be triggered when the ECC engine finishes the operation.
- * |[23]    |ECCEIEN   |ECC Error Interrupt Enable Bit
- * |        |          |0 = ECC error interrupt flag Disabled.
- * |        |          |1 = ECC error interrupt flag Enabled.
- * |[24]    |HMACIEN   |SHA/HMAC Interrupt Enable Bit
- * |        |          |0 = SHA/HMAC interrupt Disabled.
- * |        |          |1 = SHA/HMAC interrupt Enabled.
- * |        |          |Note: In DMA mode, an interrupt will be triggered when an amount of data set in HMAC_DMA_CNT is fed into the SHA/HMAC engine
- * |        |          |In Non-DMA mode, an interrupt will be triggered when the SHA/HMAC engine finishes the operation.
- * |[25]    |HMACEIEN  |SHA/HMAC Error Interrupt Enable Bit
- * |        |          |0 = SHA/HMAC error interrupt flag Disabled.
- * |        |          |1 = HMAC error interrupt flag Enabled.
- * |[30]    |RSAIEN    |RSA Interrupt Enable Bit
- * |        |          |0 = RSA interrupt Disabled.
- * |        |          |1 = RSA interrupt Enabled.
- * |[31]    |RSAEIEN   |RSA Error Interrupt Enable Bit
- * |        |          |0 = RSA error interrupt flag Disabled.
- * |        |          |1 = RSA error interrupt flag Enabled.
- * @var CRYPTO_T::INTSTS
- * Offset: 0x04  Crypto Interrupt Flag
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |AESIF     |AES Finish Interrupt Flag
- * |        |          |0 = No AES interrupt.
- * |        |          |1 = AES done interrupt.
- * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
- * |[1]     |AESEIF    |AES Error Flag
- * |        |          |This register includes operating and setting error
- * |        |          |The detail flag is shown in CRYPTO_AES_STS register.
- * |        |          |0 = No AES error.
- * |        |          |1 = AES error interrupt.
- * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
- * |[6]     |CHAPOLYIF |CHACHA20/POLY1305 Finish Interrupt Flag
- * |        |          |0 = No CHACHA20/POLY1305 interrupt.
- * |        |          |1 = CHACHA20/POLY1305 done interrupt.
- * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
- * |[7]     |CHAPOLYEIF|CHACHA20/POLY1305 Error Flag
- * |        |          |This register includes operating and setting error
- * |        |          |The detail flag is shown in CRYPTO_CHAPOLY_STS register.
- * |        |          |0 = No CHACHA20/POLY1305 error.
- * |        |          |1 = CHACHA20/POLY1305 error interrupt.
- * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
- * |[16]    |PRNGIF    |PRNG Finish Interrupt Flag
- * |        |          |0 = No PRNG interrupt.
- * |        |          |1 = PRNG done interrupt.
- * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
- * |[17]    |PRNGEIF   |PRNG Error Flag
- * |        |          |This register includes operating and setting error
- * |        |          |The detail flag is shown in CRYPTO_PRNG_STS register.
- * |        |          |0 = No PRNG error.
- * |        |          |1 = PRNG error interrupt.
- * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
- * |[22]    |ECCIF     |ECC Finish Interrupt Flag
- * |        |          |0 = No ECC interrupt.
- * |        |          |1 = ECC operation done interrupt.
- * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
- * |[23]    |ECCEIF    |ECC Error Flag
- * |        |          |This register includes operating and setting error
- * |        |          |The detail flag is shown in CRYPTO_ECC_STS register.
- * |        |          |0 = No ECC error.
- * |        |          |1 = ECC error interrupt.
- * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
- * |[24]    |HMACIF    |SHA/HMAC Finish Interrupt Flag
- * |        |          |0 = No SHA/HMAC interrupt.
- * |        |          |1 = SHA/HMAC operation done interrupt.
- * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
- * |[25]    |HMACEIF   |SHA/HMAC Error Flag
- * |        |          |This register includes operating and setting error
- * |        |          |The detail flag is shown in CRYPTO_HMAC_STS register.
- * |        |          |0 = No SHA/HMAC error.
- * |        |          |1 = SHA/HMAC error interrupt.
- * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
- * |[30]    |RSAIF     |RSA Finish Interrupt Flag
- * |        |          |0 = No RSA interrupt.
- * |        |          |1 = RSA operation done interrupt.
- * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
- * |[31]    |RSAEIF    |RSA Error Interrupt Flag
- * |        |          |This register includes operating and setting error
- * |        |          |The detail flag is shown in CRYPTO_RSA_STS register.
- * |        |          |0 = No RSA error.
- * |        |          |1 = RSA error interrupt.
- * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
- * @var CRYPTO_T::PRNG_CTL
- * Offset: 0x08  PRNG Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |START     |Start PRNG Engine
- * |        |          |0 = Stop PRNG engine.
- * |        |          |1 = Generate new key and store the new key to register CRYPTO_PRNG_KEYx, which will be cleared when the new key is generated.
- * |[1]     |SEEDRLD   |Reload New Seed for PRNG Engine
- * |        |          |0 = Generating key based on the current seed.
- * |        |          |1 = Reload new seed.
- * |[5:2]   |KEYSZ     |PRNG Generate Key Size
- * |        |          |0000 = 128 bits.
- * |        |          |0001 = 163 bits.
- * |        |          |0010 = 192 bits.
- * |        |          |0011 = 224 bits.
- * |        |          |0100 = 233 bits.
- * |        |          |0101 = 255 bits.
- * |        |          |0110 = 256 bits.
- * |        |          |0111 = 283 bits (only for Key Store).
- * |        |          |1000 = 384 bits (only for Key Store).
- * |        |          |1001 = 409 bits (only for Key Store).
- * |        |          |1010 = 512 bits (only for Key Store).
- * |        |          |1011 = 521 bits (only for Key Store).
- * |        |          |1100 = 571 bits (only for Key Store).
- * |        |          |1101 = Reserved.
- * |        |          |1110 = Reserved.
- * |        |          |1111 = Reserved.
- * |        |          |Note: 283~571 bits are only generated for Key Store.
- * |[8]     |BUSY      |PRNG Busy (Read Only)
- * |        |          |0 = PRNG engine is idle.
- * |        |          |1 = PRNG engine is generating CRYPTO_PRNG_KEYx.
- * |[16]    |SEEDSRC   |Seed Source
- * |        |          |0 = Seed is from TRNG.
- * |        |          |1 = Seed is from PRNG seed register.
- * |        |          |Note: When SEEDRLD is set to 0, this bit (SEEDSRC) is meaningless.
- * @var CRYPTO_T::PRNG_SEED
- * Offset: 0x0C  Seed for PRNG
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |SEED      |Seed for PRNG (Write Only)
- * |        |          |The bits store the seed for PRNG engine.
- * |        |          |Note: In TRNG+PRNG mode, the seed is from TRNG engine, and it will not be stored in this register.
- * @var CRYPTO_T::PRNG_KEY[8]
- * Offset: 0x10~0x2C  PRNG Generated Key Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEY       |Store PRNG Generated Key (Read Only)
- * |        |          |The bits store the key that is generated by PRNG.
- * @var CRYPTO_T::PRNG_STS
- * Offset: 0x30  PRNG Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |BUSY      |PRNG Busy Flag
- * |        |          |0 = PRNG engine is idle.
- * |        |          |1 = PRNG engine is generating CRYPTO_PRNG_KEYx.
- * |[16]    |KCTLERR   |PRNG Key Control Register Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = PRNG key control error
- * |        |          |When PRNG execute ECDSA or ECDH, but PRNG seed not from TRNG or key is not written to the SRAM of Key Store (WSDST, CRYPTO_PRNG_KSCTL[23:22] is not equal to u201900u2019).
- * |[17]    |KSERR     |PRNG Access Key Store Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Access Key Store failed.
- * |[18]    |TRNGERR   |True Random Number Generator Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Getting random number or seed failed.
- * @var CRYPTO_T::AES_FDBCK[4]
- * Offset: 0x50~0x5C  AES Engine Output Feedback Data Register After Cryptographic Operation
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |FDBCK     |AES Feedback Information
- * |        |          |The feedback value is 128 bits in size.
- * |        |          |The AES engine uses the data from CRYPTO_AES_FDBCKx as the data inputted to CRYPTO_AES_IVx for the next block in DMA cascade mode.
- * |        |          |The AES engine outputs feedback information for IV in the next blocku2019s operation
- * |        |          |Software can use this feedback information to implement more than four DMA channels
- * |        |          |Software can store that feedback value temporarily
- * |        |          |After switching back, fill the stored feedback value to CRYPTO_AES_IVx in the same channel operation, and then continue the operation with the original setting.
- 
- * @var CRYPTO_T::AES_GCM_IVCNT[2]
- * Offset: 0x80  AES GCM IV Byte Count Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |CNT       |AES GCM IV   Byte Count
- * |        |          |The bit   length of IV is 64 bits for AES GCM mode
- * |        |          |The CRYPTO_AES_GCM_IVCNT[0] keeps the   low weight byte count of initial vector (i.e., len(IV)[34:3]) of AES GCM mode   and can be read and written.
- * |        |          |The CRYPTO_AES_GCM_IVCNT[1] keeps the   high weight byte count of initial vector (i.e., len(IV)[64:35]) of AES GCM   mode and can be read and written.
- * @var CRYPTO_T::AES_GCM_ACNT[2]
- * Offset: 0x88  AES GCM A Byte Count Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |CNT       |AES GCM A Byte   Count
- * |        |          |The bit   length of A is 64 bits for AES GCM mode
- * |        |          |The CRYPTO_AES_GCM_ACNT[0] keeps the low   weight byte count of the additional authenticated data (i.e., len(A)[34:3]) of   AES GCM mode and can be read and written.
- * |        |          |The CRYPTO_AES_GCM_ACNT[1] keeps the high   weight byte count of the additional authenticated data (i.e., len(A)[63:35]) of   AES GCM mode and can be read and written.
- * @var CRYPTO_T::AES_GCM_PCNT[2]
- * Offset: 0x90  AES GCM P Byte Count Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |CNT       |AES GCM P Byte   Count
- * |        |          |The bit length of Por C is 39 bits for AES GCM mode
- * |        |          |The CRYPTO_AES_GCM_PCNT[0] keeps   the low weight byte count of the plaintext or ciphertext (i.e.,   len(P)[34:3] or len(C)[34:3]) of AES GCM mode and can be read and   written.
- * |        |          |The CRYPTO_AES_GCM_PCNT[1] keeps   the high weight byte count of the plaintext or ciphertext (i.e.,   len(P)[38:35] or len(C)[38:35]) of AES GCM mode and can be read and   written.
- * |        |          |The bit length of Por C is 64 bits for AES CCM mode
- * |        |          |The CRYPTO_AES_GCM_PCNT[0] keeps   the low weight byte count of the plaintext or ciphertext (i.e.,   len(P)[34:3] or len(C)[34:3]) of AES GCM mode and can be read and   written.
- * |        |          |The CRYPTO_AES_GCM_PCNT1   keeps   the high weight byte count of the plaintext or ciphertext (i.e., len(P)[63:35]   or len(C)[63:35]) of AES CCM mode and can be read and written.
- * @var CRYPTO_T::AES_FBADDR
- * Offset: 0xA0  AES DMA Feedback Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |FBADDR    |AES DMA Feedback Address
- * |        |          |In DMA cascade mode, software can update DMA feedback address register for automatically reading and writing feedback values via DMA
- * |        |          |The FBADDR keeps the feedback address of the feedback data for the next cascade operation
- * |        |          |Based on the feedback address, the AES accelerator can read the feedback data of the last cascade operation from SRAM memory space and write the feedback data of the current cascade operation to SRAM memory space
- * |        |          |The start of feedback address should be located at word boundary
- * |        |          |In other words, bit 1 and 0 of FBADDR are ignored.
- * |        |          |FBADDR can be read and written.
- * |        |          |In DMA mode, software can update the next CRYPTO_AES_FBADDR before triggering START.
- * @var CRYPTO_T::AES_CTL
- * Offset: 0x100  AES Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |START     |AES Engine Start
- * |        |          |0 = No effect.
- * |        |          |1 = Start AES engine. BUSY flag will be set.
- * |        |          |Note: This bit is always 0 when it is read back.
- * |[1]     |STOP      |AES Engine Stop
- * |        |          |0 = No effect.
- * |        |          |1 = Stop AES engine.
- * |        |          |Note: This bit is always 0 when it is read back. 
- * |[3:2]   |KEYSZ     |AES Key Size
- * |        |          |This bit defines three different key size for AES operation.
- * |        |          |2u2019b00 = 128 bits key.
- * |        |          |2u2019b01 = 192 bits key.
- * |        |          |2u2019b10 = 256 bits key.
- * |        |          |2u2019b11 = Reserved.
- * |        |          |If the AES accelerator is operating and the corresponding flag BUSY is 1, updating this register has no effect.
- * |        |          |Note: When SM4EN=1, the key size of AES must be 128.
- * |[5]     |DMALAST   |AES Last Block
- * |        |          |In DMA mode, this bit must be set as beginning the last DMA cascade round.
- * |        |          |In Non-DMA mode, this bit must be set when feeding in the last block of data in ECB, CBC, CTR, OFB, and CFB mode, and feeding in the (last-1) block of data at CBC-CS1, CBC-CS2, and CBC-CS3 mode.
- * |        |          |This bit is always 0 when it is read back, and must be written again once START is triggered.
- * |[6]     |DMACSCAD  |AES Engine DMA with Cascade Mode
- * |        |          |0 = DMA cascade function Disabled.
- * |        |          |1 = In DMA cascade mode, software can update DMA source address register, destination address register, and byte count register during a cascade operation, without finishing the accelerator operation.
- * |        |          |Note: The last two blocks of AES-CBC-CS1/2/3 must be in the last cascade operation.
- * |[7]     |DMAEN     |AES Engine DMA Enable Bit
- * |        |          |0 = AES DMA engine Disabled.
- * |        |          |The AES engine operates in Non-DMA mode. The data need to be written in CRYPTO_AES_DATIN.
- * |        |          |1 = AES_DMA engine Enabled.
- * |        |          |The AES engine operates in DMA mode, and data movement from/to the engine is done by DMA logic.
- * |[15:8]  |OPMODE    |AES Engine Operation Modes
- * |        |          |0x00 = ECB (Electronic Codebook Mode)  0x01 = CBC (Cipher Block Chaining Mode).
- * |        |          |0x02 = CFB (Cipher Feedback Mode).
- * |        |          |0x03 = OFB (Output Feedback Mode).
- * |        |          |0x04 = CTR (Counter Mode).
- * |        |          |0x10 = CBC-CS1 (CBC Ciphertext-Stealing 1 Mode).
- * |        |          |0x11 = CBC-CS2 (CBC Ciphertext-Stealing 2 Mode).
- * |        |          |0x12 = CBC-CS3 (CBC Ciphertext-Stealing 3 Mode).
- * |        |          |0x20 = GCM (Galois/Counter Mode).
- * |        |          |0x21 = GHASH (Galois Hash Function).
- * |        |          |0x22 = CCM (Counter with CBC-MAC Mode).
- * |[16]    |ENCRYPTO  |AES Encryption/Decryption
- * |        |          |0 = AES engine executes decryption operation.
- * |        |          |1 = AES engine executes encryption operation. 
- * |[17]    |SM4EN     |SM4 Engine Enable
- * |        |          |0 = AES engine Enabled.
- * |        |          |1 = SM4 engine Enabled. 
- * |[19]    |DFAPEN    |AES Differential Fault Attack Protection Enable
- * |        |          |0 = AES Differential Fault Attack Protection Disabled.
- * |        |          |1 = AES Differential Fault Attack Protection Enabled.
- * |[20]    |FBIN      |Feedback Input to AES Via DMA Automatically
- * |        |          |0 = DMA automatic feedback input function Disabled.
- * |        |          |1 = DMA automatic feedback input function Enabled when DMAEN = 1.
- * |[21]    |FBOUT     |Feedback Output From AES Via DMA Automatically
- * |        |          |0 = DMA automatic feedback output function Disabled.
- * |        |          |1 = DMA automatic feedback output function Enabled when DMAEN = 1.
- * |[22]    |OUTSWAP   |AES Engine Output Data Swap
- * |        |          |0 = Keep the original order.
- * |        |          |1 = The order that CPU reads data from the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
- * |[23]    |INSWAP    |AES Engine Input Data Swap
- * |        |          |0 = Keep the original order.
- * |        |          |1 = The order that CPU feeds data to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
- * |[24]    |KOUTSWAP  |AES Engine Output Key, Initial Vector and Feedback Swap
- * |        |          |0 = Keep the original order.
- * |        |          |1 = The order that CPU reads key, initial vector and feedback from the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
- * |[25]    |KINSWAP   |AES Engine Input Key and Initial Vector Swap
- * |        |          |0 = Keep the original order.
- * |        |          |1 = The order that CPU feeds key and initial vector to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
- * |[30:26] |KEYUNPRT  |Unprotect Key
- * |        |          |Writing 0 to CRYPTO_AES_CTL[31] and u201C10110u201D to CRYPTO_AES_CTL[30:26] is to unprotect the AES key.
- * |        |          |The KEYUNPRT can be read and written
- * |        |          |When it is written as the AES engine is operating, BUSY flag is 1, there would be no effect on KEYUNPRT.
- * |[31]    |KEYPRT    |Protect Key
- * |        |          |Read as a flag to reflect KEYPRT.
- * |        |          |0 = No effect.
- * |        |          |1 = Protect the content of the AES key from reading
- * |        |          |The return value for reading CRYPTO_AES_KEYx is not the content of the registers CRYPTO_AES_KEYx
- * |        |          |Once it is set, it can be cleared by asserting KEYUNPRT
- * |        |          |The key content would be cleared as well.
- * @var CRYPTO_T::AES_STS
- * Offset: 0x104  AES Engine Flag
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |BUSY      |AES Engine Busy
- * |        |          |0 = The AES engine is idle or finished.
- * |        |          |1 = The AES engine is under processing.
- * |[8]     |INBUFEMPTY|AES Input Buffer Empty
- * |        |          |0 = There are some data in input buffer waiting for the AES engine to process.
- * |        |          |1 = AES input buffer is empty
- * |        |          |Software needs to feed data to the AES engine
- * |        |          |Otherwise, the AES engine will be pending to wait for input data.
- * |[9]     |INBUFFULL |AES Input Buffer Full Flag
- * |        |          |0 = AES input buffer is not full. Software can feed the data into the AES engine.
- * |        |          |1 = AES input buffer is full
- * |        |          |Software cannot feed data to the AES engine
- * |        |          |Otherwise, the flag INBUFERR will be set to 1.
- * |[10]    |INBUFERR  |AES Input Buffer Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Error happened during feeding data to the AES engine. 
- * |[12]    |CNTERR    |CRYPTO_AES_CNT Setting Error
- * |        |          |0 = No error in CRYPTO_AES_CNT setting.
- * |        |          |1 = CRYPTO_AES_CNT is 0 if DMAEN (CRYPTO_AES_CTL[7]) is enabled.
- * |[16]    |OUTBUFEMPTY|AES Out Buffer Empty
- * |        |          |0 = AES output buffer is not empty. There are some valid data kept in output buffer.
- * |        |          |1 = AES output buffer is empty
- * |        |          |Software cannot get data from CRYPTO_AES_DATOUT
- * |        |          |Otherwise, the flag OUTBUFERR will be set to 1 since the output buffer is empty.
- * |[17]    |OUTBUFFULL|AES Out Buffer Full Flag
- * |        |          |0 = AES output buffer is not full.
- * |        |          |1 = AES output buffer is full, and software needs to get data from CRYPTO_AES_DATOUT
- * |        |          |Otherwise, the AES engine will be pending since the output buffer is full.
- * |[18]    |OUTBUFERR |AES Out Buffer Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Error happened during getting the result from AES engine. 
- * |[20]    |BUSERR    |AES DMA Access Bus Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Bus error will stop DMA operation and AES engine.
- * |[21]    |KSERR     |AES Engine Access Key Store Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Key Store access error will stop AES engine.
- * |[22]    |DFAERR    |AES Engine Differential Fault Attack Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Differential Fault Attack happened in AES engine. The results from AES engine are incorrect.
- * @var CRYPTO_T::AES_DATIN
- * Offset: 0x108  AES Engine Data Input Port Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |DATIN     |AES Engine Input Port
- * |        |          |CPU feeds data to AES engine through this port by checking CRYPTO_AES_STS. Feed data as INBUFFULL is 0.
- * @var CRYPTO_T::AES_DATOUT
- * Offset: 0x10C  AES Engine Data Output Port Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |DATOUT    |AES Engine Output Port
- * |        |          |CPU gets results from the AES engine through this port by checking CRYPTO_AES_STS
- * |        |          |Get data as OUTBUFEMPTY is 0.
- * @var CRYPTO_T::AES_KEY[8]
- * Offset: 0x110  AES Key Word Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEY       |CRYPTO_AES_KEYx
- * |        |          |The KEY keeps the security key for AES operation.
- * |        |          |x = 0, 1..7.
- * |        |          |The security key for AES accelerator can be 128, 192, or 256 bits and four, six, or eight 32-bit registers are to store each security key.
- * |        |          |{CRYPTO_AES_KEY3, CRYPTO_AES_KEY2, CRYPTO_AES_KEY1, CRYPTO_AES_KEY0} stores the 128-bit security key for AES operation.
- * |        |          |{CRYPTO_AES_KEY5, CRYPTO_AES_KEY4, CRYPTO_AES_KEY3, CRYPTO_AES_KEY2, CRYPTO_AES_KEY1, CRYPTO_AES_KEY0} stores the 192-bit security key for AES operation.
- * |        |          |{CRYPTO_AES_KEY7, CRYPTO_AES_KEY6, CRYPTO_AES_KEY5, CRYPTO_AES_KEY4, CRYPTO_AES_KEY3, CRYPTO_AES_KEY2, CRYPTO_AES_KEY1, CRYPTO_AES_KEY0} stores the 256-bit security key for AES operation.
- * @var CRYPTO_T::AES_IV[4]
- * Offset: 0x130  AES Initial Vector Word Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |IV        |AES Initial Vectors
- * |        |          |x = 0, 1..3.
- * |        |          |Four initial vectors (CRYPTO_AES_IV0, CRYPTO_AES_IV1, CRYPTO_AES_IV2, and CRYPTO_AES_IV3) are for AES operating in CBC, CFB, and OFB mode
- * |        |          |Four registers (CRYPTO_AES_IV0, CRYPTO_AES_IV1, CRYPTO_AES_IV2, and CRYPTO_AES_IV3) act as Nonce counter when the AES engine is operating in CTR mode.
- * @var CRYPTO_T::AES_SADDR
- * Offset: 0x140  AES DMA Source Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |SADDR     |AES DMA Source Address
- * |        |          |The AES accelerator supports DMA function to transfer the plain text between SRAM memory space and embedded FIFO
- * |        |          |The SADDR keeps the source address of the data buffer where the source text is stored
- * |        |          |Based on the source address, the AES accelerator can read the plain text (encryption) / cipher text (decryption) from SRAM memory space and do AES operation
- * |        |          |The start of source address should be located at word boundary
- * |        |          |In other words, bit 1 and 0 of SADDR are ignored.
- * |        |          |SADDR can be read and written
- * |        |          |Writing to SADDR while the AES accelerator is operating doesnu2019t affect the current AES operation
- * |        |          |But the value of SADDR will be updated later on
- * |        |          |Consequently, software can prepare the DMA source address for the next AES operation.
- * |        |          |In DMA mode, software can update the next CRYPTO_AES_SADDR before triggering START.
- * |        |          |The value of CRYPTO_AES_SADDR and CRYPTO_AES_DADDR can be the same.
- * @var CRYPTO_T::AES_DADDR
- * Offset: 0x144  AES DMA Destination Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |DADDR     |AES DMA Destination Address
- * |        |          |The AES accelerator supports DMA function to transfer the cipher text between SRAM memory space and embedded FIFO
- * |        |          |The DADDR keeps the destination address of the data buffer where the engine outputu2019s text will be stored
- * |        |          |Based on the destination address, the AES accelerator can write the cipher text (encryption) / plain text (decryption) back to SRAM memory space after the AES operation is finished
- * |        |          |The start of destination address should be located at word boundary
- * |        |          |In other words, bit 1 and 0 of DADDR are ignored.
- * |        |          |DADDR can be read and written
- * |        |          |Writing to DADDR while the AES accelerator is operating doesnu2019t affect the current AES operation
- * |        |          |But the value of DADDR will be updated later on
- * |        |          |Consequently, software can prepare the destination address for the next AES operation.
- * |        |          |In DMA mode, software can update the next CRYPTO_AES_DADDR before triggering START.
- * |        |          |The value of CRYPTO_AES_SADDR and CRYPTO_AES_DADDR can be the same.
- * @var CRYPTO_T::AES_CNT
- * Offset: 0x148  AES Byte Count Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |CNT       |AES Byte   Count
- * |        |          |The   CRYPTO_AES_CNT keeps the byte count of source text that is for the AES engine   operating in DMA mode
- * |        |          |The CRYPTO_AES_CNT is 32-bit and the maximum of byte   count is 4G bytes.
- * |        |          |CRYPTO_AES_CNT   can be read and written
- * |        |          |Writing to CRYPTO_AES_CNT while the AES accelerator   is operating doesnu2019t affect the current AES operation
- * |        |          |But the value of   CRYPTO_AES_CNT will be updated later on
- * |        |          |Consequently, software can prepare   the byte count of data for the next AES operation.
- * |        |          |According to   CBC-CS1, CBC-CS2, and CBC-CS3 standard, the count of operation data must be more   than 16 bytes
- * |        |          |Operations that are qual to or less than one block will output   unexpected result.
- * |        |          |In Non-DMA   ECB, CBC, CFB, OFB, CTR, CCM and GCM mode, CRYPTO_AES_CNT must be set as byte   count for the last block of data before feeding in the last block of data
- * |        |          |In   Non-DMA CBC-CS1, CBC-CS2, and CBC-CS3 mode, CRYPTO_AES_CNT must be set as   byte count for the last two blocks of data before feeding in the last two   blocks of data.
- * |        |          |In AES GCM   mode without DMA cascade function, the value of CRYPTO_AES_CNT is equal to   the total value of {CRYPTO_AES_GCM_IVCNT1, CRYPTO_AES_GCM_IVCNT0}, {CRYPTO_AES_GCM_ACNT1,   CRYPTO_AES_GCM_ACNT0} and {CRYPTO_AES_GCM_PCNT1, CRYPTO_AES_GCM_PCNT0}.
- * |        |          |In AES GCM   mode with DMA cascade function, the value of CRYPTO_AES_CNT represents the byte   count of source text in this cascade function
- * |        |          |Thus, the value of   CRYPTO_AES_CNT is less than or equal to the total value of {CRYPTO_AES_GCM_IVCNT1,   CRYPTO_AES_GCM_IVCNT0}, {CRYPTO_AES_GCM_ACNT1, CRYPTO_AES_GCM_ACNT0} and {CRYPTO_AES_GCM_PCNT1,   CRYPTO_AES_GCM_PCNT0} and must be block alignment.
- * |        |          |In AES CCM   mode without DMA cascade function, the value of CRYPTO_AES_CNT is equal to   the total value of {CRYPTO_AES_GCM_ACNT1, CRYPTO_AES_GCM_ACNT0} and {CRYPTO_AES_GCM_PCNT1,   CRYPTO_AES_GCM_PCNT0}.
- * |        |          |In AES CCM   mode with DMA cascade function, the value of CRYPTO_AES_CNT represents the byte   count of source text in this cascade function
- * |        |          |Thus, the value of   CRYPTO_AES_CNT is less than or equal to the total value of {CRYPTO_AES_GCM_ACNT1,   CRYPTO_AES_GCM_ACNT0} and {CRYPTO_AES_GCM_PCNT1, CRYPTO_AES_GCM_PCNT0} and   must be block alignment, except for the last block of plaintext or   ciphertext.
- * @var CRYPTO_T::HMAC_CTL
- * Offset: 0x300  SHA/HMAC Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |START     |SHA/HMAC Engine Start
- * |        |          |0 = No effect.
- * |        |          |1 = Start SHA/HMAC engine. BUSY flag will be set.
- * |        |          |Note: This bit is always 0 when it is read back.
- * |[1]     |STOP      |SHA/HMAC Engine Stop
- * |        |          |0 = No effect.
- * |        |          |1 = Stop SHA/HMAC engine.
- * |        |          |Note: This bit is always 0 when it is read back.
- * |[4]     |DMAFIRST  |SHA/HMAC First Block in Cascade function
- * |        |          |This bit must be set as feeding in first byte of data.
- * |[5]     |DMALAST   |SHA/HMAC Last Block
- * |        |          |This bit must be set as feeding in last byte of data.
- * |[6]     |DMACSCAD  |SHA/HMAC Engine DMA with Cascade Mode
- * |        |          |0 = DMA cascade function Disabled.
- * |        |          |1 = In DMA cascade mode, software can update DMA source address register, destination address register, and byte count register during a cascade operation, without finishing the accelerator operation.
- * |[7]     |DMAEN     |SHA/HMAC Engine DMA Enable Bit
- * |        |          |0 = SHA/HMAC DMA engine Disabled.
- * |        |          |SHA/HMAC engine operates in Non-DMA mode. The data need to be written in CRYPTO_HMAC_DATIN.
- * |        |          |1 = SHA/HMAC DMA engine Enabled.
- * |        |          |SHA/HMAC engine operates in DMA mode, and data movement from/to the engine is done by DMA logic.
- * |[10:8]  |OPMODE    |SHA/HMAC Engine Operation Modes
- * |        |          |When SHA3EN=0,.
- * |        |          |0x0xx: SHA1-160
- * |        |          |0x100: SHA2-256
- * |        |          |0x101: SHA2-224
- * |        |          |0x110: SHA2-512
- * |        |          |0x111: SHA2-384
- * |        |          |When SHA3EN=1,.
- * |        |          |0x100: SHA3-256
- * |        |          |0x101: SHA3-224
- * |        |          |0x110: SHA3-512
- * |        |          |0x111: SHA3-384
- * |        |          |0x000: SHAKE128
- * |        |          |0x001: SHAKE256
- * |        |          |Note: These bits can be read and written. But writing to them wouldnu2019t take effect as BUSY is 1.
- * |        |          |Note: When SM3EN=1, SHA/HMAC only execute SM3 and then generate 256 bits digest. 
- * |[11]    |HMACEN    |HMAC_SHA Engine Operating Mode
- * |        |          |0 = Execute SHA function.
- * |        |          |1 = Execute HMAC function.
- * |[12]    |SHA3EN    |SHA3 Engine Enable Bit
- * |        |          |0 = Execute other function.
- * |        |          |1 = Execute SHA3 function if SM3EN=0.
- * |[13]    |SM3EN     |SM3 Engine Enable Bit
- * |        |          |0 = Execute other function.
- * |        |          |1 = Execute SM3 function if SHA3EN=0.
- * |[20]    |FBIN      |Feedback Input to SHA/HMAC Via DMA Automatically
- * |        |          |0 = DMA automatic feedback input function Disabled.
- * |        |          |1 = DMA automatic feedback input function Enabled when DMAEN = 1.
- * |[21]    |FBOUT     |Feedback Output From SHA/HMAC Via DMA Automatically
- * |        |          |0 = DMA automatic feedback output function Disabled.
- * |        |          |1 = DMA automatic feedback output function Enabled when DMAEN = 1.
- * |[22]    |OUTSWAP   |SHA/HMAC Engine Output Data Swap
- * |        |          |0 = Keep the original order.
- * |        |          |1 = The order that CPU feeds data to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
- * |[23]    |INSWAP    |SHA/HMAC Engine Input Data Swap
- * |        |          |0 = Keep the original order.
- * |        |          |1 = The order that CPU feeds data to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
- * |[24]    |NEXTDGST  |SHAKE128/256 Next Digest Start
- * |        |          |0 = No effect.
- * |        |          |1 = Start SHAKE engine to generate the next digest only when SHAKEBUSY is 0
- * |        |          |BUSY and SHAKEBUSY flag will be set.
- * |[25]    |FINISHDGST|SHAKE128/256 Next Digest Finish
- * |        |          |0 = No effect.
- * |        |          |1 = finish generating the next digest.
- * @var CRYPTO_T::HMAC_STS
- * Offset: 0x304  SHA/HMAC Status Flag
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |BUSY      |SHA/HMAC Engine Busy
- * |        |          |0 = SHA/HMAC engine is idle or finished.
- * |        |          |1 = SHA/HMAC engine is busy.
- * |[1]     |DMABUSY   |SHA/HMAC Engine DMA Busy Flag
- * |        |          |0 = SHA/HMAC DMA engine is idle or finished.
- * |        |          |1 = SHA/HMAC DMA engine is busy.
- * |[2]     |SHAKEBUSY |SHAKE Engine Busy Flag
- * |        |          |0 = SHAKE engine is idle or finished.
- * |        |          |1 = SHAKE engine is busy.
- * |[8]     |DMAERR    |SHA/HMAC Engine DMA Error Flag
- * |        |          |0 = Show the SHA/HMAC engine access normal.
- * |        |          |1 = Show the SHA/HMAC engine access error.
- * |[9]     |KSERR     |HMAC Engine Access Key Store Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Access error will stop HMAC engine.
- * |[16]    |DATINREQ  |SHA/HMAC Non-DMA Mode Data Input Request
- * |        |          |0 = No effect.
- * |        |          |1 = Request SHA/HMAC Non-DMA mode data input.
- * @var CRYPTO_T::HMAC_DGST[16]
- * Offset: 0x308~0x344  SHA/HMAC Output Feedback Data 
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |DGST      |SHA/HMAC Output Feedback Data Output Register
- * |        |          |For SHA-160, the digest is stored in CRYPTO_HMAC_DGST0 ~ CRYPTO_HMAC_DGST4.
- * |        |          |For SHA-224, the digest is stored in CRYPTO_HMAC_DGST0 ~ CRYPTO_HMAC_DGST6.
- * |        |          |For SHA-256, the digest is stored in CRYPTO_HMAC_DGST0 ~ CRYPTO_HMAC_DGST7.
- * |        |          |For SHA-384, the digest is stored in CRYPTO_HMAC_DGST0 ~ CRYPTO_HMAC_DGST11.
- * |        |          |For SHA-512, the digest is stored in CRYPTO_HMAC_DGST0 ~ CRYPTO_HMAC_DGST15.
- * @var CRYPTO_T::HMAC_KEYCNT
- * Offset: 0x348  SHA/HMAC Key Byte Count Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEYCNT    |SHA/HMAC Key Byte Count
- * |        |          |The CRYPTO_HMAC_KEYCNT keeps the byte count of key that SHA/HMAC engine operates
- * |        |          |The register is 32-bit and the maximum byte count is 4G bytes
- * |        |          |It can be read and written.
- * |        |          |Writing to the register CRYPTO_HMAC_KEYCNT as the SHA/HMAC accelerator operating doesnu2019t affect the current SHA/HMAC operation
- * |        |          |But the value of CRYPTO_HMAC_KEYCNT will be updated later on
- * |        |          |Consequently, software can prepare the key count for the next SHA/HMAC operation.
- * @var CRYPTO_T::HMAC_SADDR
- * Offset: 0x34C  SHA/HMAC DMA Source Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |SADDR     |SHA/HMAC DMA Source Address
- * |        |          |The SHA/HMAC accelerator supports DMA function to transfer the plain text between SRAM memory space and embedded FIFO
- * |        |          |The CRYPTO_HMAC_SADDR keeps the source address of the data buffer where the source text is stored
- * |        |          |Based on the source address, the SHA/HMAC accelerator can read the plain text from SRAM memory space and do SHA/HMAC operation
- * |        |          |The start of source address should be located at word boundary
- * |        |          |In other words, bit 1 and 0 of CRYPTO_HMAC_SADDR are ignored.
- * |        |          |CRYPTO_HMAC_SADDR can be read and written
- * |        |          |Writing to CRYPTO_HMAC_SADDR while the SHA/HMAC accelerator is operating doesnu2019t affect the current SHA/HMAC operation
- * |        |          |But the value of CRYPTO_HMAC_SADDR will be updated later on
- * |        |          |Consequently, software can prepare the DMA source address for the next SHA/HMAC operation.
- * |        |          |In DMA mode, software can update the next CRYPTO_HMAC_SADDR before triggering START.
- * |        |          |CRYPTO_HMAC_SADDR and CRYPTO_HMAC_DADDR can be the same in the value.
- * @var CRYPTO_T::HMAC_DMACNT
- * Offset: 0x350  SHA/HMAC Byte Count Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |DMACNT    |SHA/HMAC Operation Byte Count
- * |        |          |The CRYPTO_HMAC_DMACNT keeps the byte count of source text that is for the SHA/HMAC engine operating in DMA mode
- * |        |          |The CRYPTO_HMAC_DMACNT is 32-bit and the maximum of byte count is 4G bytes.
- * |        |          |CRYPTO_HMAC_DMACNT can be read and written
- * |        |          |Writing to CRYPTO_HMAC_DMACNT while the SHA/HMAC accelerator is operating doesnu2019t affect the current SHA/HMAC operation
- * |        |          |But the value of CRYPTO_HMAC_DMACNT will be updated later on
- * |        |          |Consequently, software can prepare the byte count of data for the next SHA/HMAC operation.
- * |        |          |In Non-DMA mode, CRYPTO_HMAC_DMACNT must be set as the byte count of the last block before feeding in the last block of data.
- * @var CRYPTO_T::HMAC_DATIN
- * Offset: 0x354  SHA/HMAC Engine Non-DMA Mode Data Input Port Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |DATIN     |SHA/HMAC Engine Input Port
- * |        |          |CPU feeds data to SHA/HMAC engine through this port by checking CRYPTO_HMAC_STS
- * |        |          |Feed data as DATINREQ is 1.
- * @var CRYPTO_T::HMAC_FDBCK[88]
- * Offset: 0x358~0x4B4  SHA/HMAC Output Feedback Data After SHA/HMAC Operation
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |FDBCK     |SHA/HMAC Feedback Information
- * |        |          |The feedback value is 1728 bits in size for SHA1/2 and 2784 bits in size for SHA3.
- * |        |          |The SHA/HMAC engine uses the data from CRYPTO_HMAC_FDBCKx as the data inputted to CRYPTO_HMAC_FDBCKx for the next block in DMA cascade mode.
- * |        |          |The SHA/HMAC engine outputs feedback information for initial setting in the next blocku2019s operation
- * |        |          |Software can store that feedback value temporarily
- * |        |          |After switching back, fill the stored feedback value to CRYPTO_HMAC_FDBCKx in the same operation, and then continue the operation with the original setting.
- * @var CRYPTO_T::HMAC_SHA512T
- * Offset: 0x4F8  SHA/HMAC SHA512/t Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |SHA512TEN |SHA512/t Engine Enable Bit
- * |        |          |0 = Execute other function.
- * |        |          |1 = Execute SHA512/t function if SHA3EN=0, and SM3EN=0.
- * |        |          |Note: When SHA512TEN=1, SHA/HMAC only execute SHA2-512.
- * |[16:8]  |TLEN      |SHA512/t Output Digest Length
- * |        |          |The TLEN is equal to value t of SHA512/t. It also means the output digest length of SHA512 /t.
- * |        |          |Note: TLEN < 512, and TLEN is not 384
- * @var CRYPTO_T::HMAC_FBADDR
- * Offset: 0x4FC  SHA/HMAC DMA Feedback Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |FBADDR    |SHA/HMAC DMA Feedback Address
- * |        |          |In DMA cascade mode, software can update DMA feedback address register for automatically reading and writing feedback values via DMA
- * |        |          |The FBADDR keeps the feedback address of the feedback data for the next cascade operation
- * |        |          |Based on the feedback address, the SHA/HMAC accelerator can read the feedback data of the last cascade operation from SRAM memory space and write the feedback data of the current cascade operation to SRAM memory space
- * |        |          |The start of feedback address should be located at word boundary
- * |        |          |In other words, bit 1 and 0 of FBADDR are ignored.
- * |        |          |FBADDR can be read and written.
- * |        |          |In DMA mode, software can update the next CRYPTO_HMAC_FBADDR before triggering START.
- * @var CRYPTO_T::HMAC_SHAKEDGST[42]
- * Offset: 0x500~0x5A4  SHA/HMAC SHAKE Digest Message Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |DGST      |SHA/HMAC SHAKE Digest Message Register
- * |        |          |For SHAKE-128, the digest is stored in CRYPTO_HMAC_SHAKEDGST[0] ~ CRYPTO_HMAC_ SHAKEDGST[41].
- * |        |          |For SHAKE-256, the digest is stored in CRYPTO_HMAC_SHAKEDGST[0] ~ CRYPTO_HMAC_ SHAKEDGST[33].
- * @var CRYPTO_T::ECC_CTL
- * Offset: 0x800  ECC Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |START     |ECC Accelerator Start
- * |        |          |0 = No effect.
- * |        |          |1 = Start ECC accelerator. BUSY flag will be set.
- * |        |          |This bit is always 0 when it is read back.
- * |        |          |ECC accelerator will ignore this START signal when BUSY flag is 1.
- * |[1]     |STOP      |ECC Accelerator Stop
- * |        |          |0 = No effect.
- * |        |          |1 = Abort ECC accelerator and make it into idle state.
- * |        |          |This bit is always 0 when it is read back.
- * |        |          |Remember to clear ECC interrupt flag after stopping ECC accelerator.
- * |[2]     |SMOD      |Special Modulus Operation in Prime Field
- * |        |          |0 = Normal modulus operation.
- * |        |          |1 = Special modulus operation.
- * |[3]     |PFA2C     |Prime Field Adder with 2 Cycles
- * |        |          |0 = cost 1 cycle .
- * |        |          |1 = cost 2 cycles.
- * |[4]     |ECDSAS    |Generate S in ECDSA Signature Generation
- * |        |          |0 = No effect.
- * |        |          |1 = Formula for generating S.
- * |        |          |POINTX1 = ((POINTX2 * POINTY1 + POINTY2 ) / POINTX1) % CURVEN when SPCEN is not 1 or SPCSEL is not 1 in ECDSA.
- * |        |          |POINTX1 = (((POINTY1[543:0]*2544 + POINTX1[543:0]) % CURVEN) * POINTX2 + POINTY2) % CURVEN when SPCEN is 1 and SPCSEL is 1 in EdDSA..
- * |        |          |POINTX1 = ((POINTX1 - POINTX2 * POINTY1) / (POINTY1 + POINTY2) % CURVEN when SPCEN is not 1 and SPCSEL 1 in SM2 DSA.
- * |[5]     |ECDSAR    |Generate R in ECDSA Signature Generation
- * |        |          |0 = No effect.
- * |        |          |1 = Formula for generating R.
- * |        |          |(POINTX1, POINTY1) = SCALARK * (POINTX1, POINTY1).
- * |[6]     |DFAP      |Differential Fault Attack Protection
- * |        |          |0 = ECC engine differential fault attack protection Disabled.
- * |        |          |1 = ECC engine differential fault attack protection Enabled.
- * |[7]     |DMAEN     |ECC Accelerator DMA Enable Bit
- * |        |          |0 = ECC DMA engine Disabled.
- * |        |          |1 = ECC DMA engine Enabled.
- * |        |          |Only when START and DMAEN are 1, ECC DMA engine will be active.
- * |[8]     |FSEL      |Field Selection
- * |        |          |0 = Binary Field (GF(2m )).
- * |        |          |1 = Prime Field (GF(p)).
- * |[10:9]  |ECCOP     |Point Operation for BF and PF
- * |        |          |00 = Point multiplication:.
- * |        |          |(POINTX1, POINTY1) = SCALARK * (POINTX1, POINTY1).
- * |        |          |01 = Modulus operation: choose by MODOP (CRYPTO_ECC_CTL[12:11]).
- * |        |          |10 = Point addition:.
- * |        |          |(POINTX1, POINTY1) = (POINTX1, POINTY1) +.
- * |        |          |(POINTX2, POINTY2)
- * |        |          |11 = Point doubling:.
- * |        |          |(POINTX1, POINTY1) = 2 * (POINTX1, POINTY1).
- * |        |          |Besides above three input data, point operations still need the parameters of elliptic curve (CURVEA, CURVEB, CURVEN and CURVEM) as shown in Figure 6.27-11
- * |[12:11] |MODOP     |Modulus Operation for PF
- * |        |          |When SMOD is 0,
- * |        |          |00 = Division:.
- * |        |          |POINTX1 = (POINTY1 / POINTX1) % CURVEN.
- * |        |          |01 = Multiplication:.
- * |        |          |POINTX1 = (POINTX1 * POINTY1) % CURVEN.
- * |        |          |10 = Addition:.
- * |        |          |POINTX1 = (POINTX1 + POINTY1) % CURVEN.
- * |        |          |11 = Subtraction:.
- * |        |          |POINTX1 = (POINTX1 - POINTY1) % CURVEN.
- * |        |          |When SMOD is 1,
- * |        |          |00 = Modulo:.
- * |        |          |POINTX1 = (POINTY1[543:0]*2544 + POINTX1[543:0]) % CURVEN.
- * |        |          |01 = Exponential:.
- * |        |          |POINTX1 = (POINTX1(SCALARK)) % CURVEN.
- * |        |          |10 = Square root:.
- * |        |          |POINTX1 = (POINTX1(0.5)) % CURVEN.
- * |        |          |MODOP is active only when ECCOP = 01. 
- * |[13]    |SPCEN     |Special Curve Enable
- * |        |          |0 = NIST suggested or SM2 curve.
- * |        |          |1 = Montgomery curve or Edwards curve.
- * |[14]    |SCAP      |Side-channel Attack Protection
- * |        |          |0 = Full speed without side-channel protection.
- * |        |          |1 = Less speed with side-channel protection.
- * |[15]    |ASCAP     |Advance Side-channel Attack Protection
- * |        |          |0 = Advance side-channel protection Disabled.
- * |        |          |1 = Advance side-channel protection Enabled.
- * |        |          |ASCAP is active only when SCAP = 1.
- * |[16]    |SPCSEL    |Special Curve Selection
- * |        |          |0 = Montgomery curve when SPCEN is 1.
- * |        |          |1 = Edwards curve when SPCEN is 1.
- * |        |          |1 = SM2 curve when SPCEN is 0.
- * |[31:22] |CURVEM    |The key length of elliptic curve.
- * @var CRYPTO_T::ECC_STS
- * Offset: 0x804  ECC Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |BUSY      |ECC Accelerator Busy Flag
- * |        |          |0 = The ECC accelerator is idle or finished.
- * |        |          |1 = The ECC accelerator is under processing and protects all registers.
- * |        |          |Note: Remember to clear ECC interrupt flag after ECC accelerator is finished
- * |[1]     |DMABUSY   |ECC DMA Busy Flag
- * |        |          |0 = ECC DMA is idle or finished.
- * |        |          |1 = ECC DMA is busy.
- * |[16]    |BUSERR    |ECC DMA Access Bus Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Bus error will stop DMA operation and ECC accelerator.
- * |[17]    |KSERR     |ECC Engine Access Key Store Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Access error will stop ECC engine.
- * |[18]    |DFAERR    |ECC Engine Differential Fault Attack Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Differential Fault Attack happened in ECC engine. The results from ECC engine are incorrect.
- * @var CRYPTO_T::ECC_X1[18]
- * Offset: 0x808~0x84C  ECC the X-coordinate Word of the First Point
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |POINTX1   |ECC the X-coordinate Value of the First Point
- * |        |          |For B-163 or K-163, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[5]
- * |        |          |For B-233 or K-233, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[7]
- * |        |          |For B-283 or K-283, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[8]
- * |        |          |For B-409 or K-409, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[12]
- * |        |          |For B-571 or K-571, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[17]
- * |        |          |For P-192, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[5]
- * |        |          |For P-224, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[6]
- * |        |          |For P-256 or SM2, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[7]
- * |        |          |For P-384, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[11]
- * |        |          |For P-521, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[16]
- * @var CRYPTO_T::ECC_Y1[18]
- * Offset: 0x850~0x894 ECC the Y-coordinate Word of the First Point
- * ---------------------------------------------------------------------------------------------------
-  * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |POINTY1   |ECC the Y-coordinate Value of the First Point
- * |        |          |For B-163 or K-163, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[5]
- * |        |          |For B-233 or K-233, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[7]
- * |        |          |For B-283 or K-283, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[8]
- * |        |          |For B-409 or K-409, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[12]
- * |        |          |For B-571 or K-571, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[17]
- * |        |          |For P-192, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[5]
- * |        |          |For P-224, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[6]
- * |        |          |For P-256 or SM2, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[7]
- * |        |          |For P-384, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[11]
- * |        |          |For P-521, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[16]
- * @var CRYPTO_T::ECC_X2[18]
- * Offset: 0x0898~ 0x08dc ECC the X-coordinate Word of the Second Point
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |POINTX2   |ECC the X-coordinate Value of the Second Point
- * |        |          |For B-163 or K-163, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[5]
- * |        |          |For B-233 or K-233, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[7]
- * |        |          |For B-283 or K-283, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[8]
- * |        |          |For B-409 or K-409, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[12]
- * |        |          |For B-571 or K-571, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[17]
- * |        |          |For P-192, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[5]
- * |        |          |For P-224, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[6]
- * |        |          |For P-256 or SM2, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[7]
- * |        |          |For P-384, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[11]
- * |        |          |For P-521, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[16]
- * @var CRYPTO_T::ECC_Y2[18]
- * Offset: 0x8e0~0x924 ECC the Y-coordinate Word of the Second Point
- * ---------------------------------------------------------------------------------------------------
-  * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |POINTY2   |ECC the Y-coordinate Value of the Second Point
- * |        |          |For B-163 or K-163, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[5]
- * |        |          |For B-233 or K-233, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[7]
- * |        |          |For B-283 or K-283, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[8]
- * |        |          |For B-409 or K-409, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[12]
- * |        |          |For B-571 or K-571, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[17]
- * |        |          |For P-192, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[5]
- * |        |          |For P-224, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[6]
- * |        |          |For P-256 or SM2, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[7]
- * |        |          |For P-384, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[11]
- * |        |          |For P-521, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[16]
- * @var CRYPTO_T::ECC_A[18]
- * Offset: 0x92C~0x96C  ECC the Parameter CURVEA Word of Elliptic Curve
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |CURVEA    |ECC the Parameter CURVEA Value of Elliptic Curve
- * |        |          |The formula of elliptic curve is y2=x3+CURVEA*x+CURVEB in GF(p) and y2+x*y=x3+CURVEA*x2+CURVEB in GF(2m).
- * |        |          |For B-163 or K-163, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[5]
- * |        |          |For B-233 or K-233, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[7]
- * |        |          |For B-283 or K-283, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[8]
- * |        |          |For B-409 or K-409, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[12]
- * |        |          |For B-571 or K-571, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[17]
- * |        |          |For P-192, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[5]
- * |        |          |For P-224, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[6]
- * |        |          |For P-256 or SM2, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[7]
- * |        |          |For P-384, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[11]
- * |        |          |For P-521, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[16]
- * @var CRYPTO_T::ECC_B[18]
- * Offset: 0x970~0x9B4  ECC the Parameter CURVEB Word of Elliptic Curve
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |CURVEB    |ECC the Parameter CURVEB Value of Elliptic Curve
- * |        |          |The formula of elliptic curve is y2=x3+CURVEA*x+CURVEB in GF(p) and y2+x*y=x3+CURVEA*x2+CURVEB in GF(2m).
- * |        |          |For B-163 or K-163, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[5]
- * |        |          |For B-233 or K-233, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[7]
- * |        |          |For B-283 or K-283, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[8]
- * |        |          |For B-409 or K-409, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[12]
- * |        |          |For B-521 or K-521, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[17]
- * |        |          |For P-192, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[5]
- * |        |          |For P-224, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[6]
- * |        |          |For P-256 or SM2, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[7]
- * |        |          |For P-384, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[11]
- * |        |          |For P-521, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[16]
- * @var CRYPTO_T::ECC_N[18]
- * Offset: 0x9B8~0x9FC  ECC the Parameter CURVEN Word of Elliptic Curve
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |CURVEN    |ECC the Parameter CURVEN Value of Elliptic Curve
- * |        |          |In GF(p), CURVEN is the prime p.
- * |        |          |In GF(2m), CURVEN is the irreducible polynomial.
- * |        |          |For B-163 or K-163, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[5]
- * |        |          |For B-233 or K-233, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[7]
- * |        |          |For B-283 or K-283, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[8]
- * |        |          |For B-409 or K-409, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[12]
- * |        |          |For B-571 or K-571, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[17]
- * |        |          |For P-192, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[5]
- * |        |          |For P-224, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[6]
- * |        |          |For P-256 or SM2, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[7]
- * |        |          |For P-384, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[11]
- * |        |          |For P-521, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[16]
- * @var CRYPTO_T::ECC_K[18]
- * Offset: 0xA00~0xA44  ECC the Scalar SCALARK Word of Point Multiplication
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |SCALARK   |ECC the Scalar SCALARK Value of Point Multiplication
- * |        |          |Because the SCALARK usually stores the private key, ECC accelerator do not allow to read the register SCALARK.
- * |        |          |For B-163 or K-163, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[5]
- * |        |          |For B-233 or K-233, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[7]
- * |        |          |For B-283 or K-283, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[8]
- * |        |          |For B-409 or K-409, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[12]
- * |        |          |For B-571 or K-571, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[17]
- * |        |          |For P-192, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[5]
- * |        |          |For P-224, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[6]
- * |        |          |For P-256 or SM2, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[7]
- * |        |          |For P-384, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[11]
- * |        |          |For P-521, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[16]
- * @var CRYPTO_T::ECC_SADDR
- * Offset: 0xA48  ECC DMA Source Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * @var CRYPTO_T::ECC_DADDR
- * Offset: 0xA4C  ECC DMA Destination Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |DADDR     |ECC DMA Destination Address
- * |        |          |The ECC accelerator supports DMA function to transfer the DATA and PARAMETER between SRAM memory and ECC accelerator
- * |        |          |The DADDR keeps the destination address of the data buffer where output data of ECC engine will be stored
- * |        |          |Based on the destination address, the ECC accelerator can write the result data back to SRAM memory space after the ECC operation is finished
- * |        |          |The start of destination address should be located at word boundary
- * |        |          |That is, bit 1 and 0 of DADDR are ignored
- * |        |          |DADDR can be read and written
- * |        |          |In DMA mode, software must update the CRYPTO_ECC_DADDR before triggering START
- * @var CRYPTO_T::ECC_STARTREG
- * Offset: 0xA50  ECC Starting Address of Updated Registers
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |STARTREG  |ECC Starting Address of Updated Registers
- * |        |          |The address of the updated registers that DMA feeds the first data or parameter to ECC engine
- * |        |          |When ECC engine is active, ECC accelerator does not allow users to modify STARTRE.G
- * |        |          |For example, to update input data from register CRYPTO_ECC POINTX1
- * |        |          |Thus, the value of STARTREG is 0x808.
- * @var CRYPTO_T::ECC_WORDCNT
- * Offset: 0xA54  ECC DMA Word Count
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |WORDCNT   |ECC DMA Word Count
- * |        |          |The CRYPTO_ECC_WORDCNT keeps the word count of source data that is for the required input data of ECC accelerator with various operations in DMA mode
- * |        |          |Although CRYPTO_ECC_WORDCNT is 32-bit, the maximum of word count in ECC accelerator is 144 words
- * |        |          |CRYPTO_ECC_WORDCNT can be read and written
- * @var CRYPTO_T::ECC_DMA_CTL
- * Offset: 0xA58  ECC DMA Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |LDP1      |The Control Signal of Register POINTX1 and POINTY1 for the x and Y Coordinate of the First Point
- * |        |          |0 = The register for POINTX1 and POINTY1 is not modified by DMA or user.
- * |        |          |1 = The register for POINTX1 and POINTY1 is modified by DMA or user.
- * |[1]     |LDP2      |The Control Signal of Register POINTX2 and POINTY2 for the x and Y Coordinate of the Second Point
- * |        |          |0 = The register for POINTX2 and POINTY2 is not modified by DMA or user.
- * |        |          |1 = The register for POINTX2 and POINTY2 is modified by DMA or user.
- * |[2]     |LDA       |The Control Signal of Register for the Parameter CURVEA of Elliptic Curve
- * |        |          |0 = The register for CURVEA is not modified by DMA or user.
- * |        |          |1 = The register for CURVEA is modified by DMA or user.
- * |[3]     |LDB       |The Control Signal of Register for the Parameter CURVEB of Elliptic Curve
- * |        |          |0 = The register for CURVEB is not modified by DMA or user.
- * |        |          |1 = The register for CURVEB is modified by DMA or user.
- * |[4]     |LDN       |The Control Signal of Register for the Parameter CURVEN of Elliptic Curve
- * |        |          |0 = The register for CURVEN is not modified by DMA or user.
- * |        |          |1 = The register for CURVEN is modified by DMA or user.
- * |[5]     |LDK       |The Control Signal of Register for SCALARK
- * |        |          |0 = The register for SCALARK is not modified by DMA or user.
- * |        |          |1 = The register for SCALARK is modified by DMA or user.
- * @var CRYPTO_T::RSA_CTL
- * Offset: 0xB00  RSA Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |START     |RSA Accelerator Start
- * |        |          |0 = No effect.
- * |        |          |1 = Start RSA accelerator. BUSY flag will be set.
- * |        |          |This bit is always 0 when it is read back.
- * |        |          |RSA accelerator will ignore this START signal when BUSY flag is 1.
- * |[1]     |STOP      |RSA Accelerator Stop
- * |        |          |0 = No effect.
- * |        |          |1 = Abort RSA accelerator and make it into initial state.
- * |        |          |This bit is always 0 when it is read back.
- * |        |          |Remember to clear RSA interrupt flag after stopping RSA accelerator.
- * |[2]     |CRT       |CRT Enable Control
- * |        |          |0 = CRT Disabled.
- * |        |          |1 = CRT Enabled.
- * |        |          |CRT is only used in decryption with key length 2048, 3072,4096 bits.
- * |[3]     |CRTBYP    |CRT Bypass Enable Control
- * |        |          |0 = CRT Bypass Disabled.
- * |        |          |1 = CRT Bypass Enabled.
- * |        |          |CRT bypass is only used in CRT decryption with the same key.
- * |        |          |CRT mode saved the data when the first time CRT decryption (CRTBYP is 0), then users can use these already known data to bypass some operation when the second time to the latest time CRT decryption (CRTBYP is 1) for improve performance.
- * |        |          |Note: Users cannot set CRTBYP to 1 in non-CRT mode (CRT (CRYPTO_RSA_CTL[2]) is 0).
- * |[5:4]   |KEYLENG   |The Key Length of RSA Operation
- * |        |          |00 = 1024-bits.
- * |        |          |01 = 2048-bits.
- * |        |          |10 = 3072-bits.
- * |        |          |11 = 4096-bits.
- * |[8]     |SCAP      |Side Channel Attack Protection Enable Control
- * |        |          |0 = Side Channel Attack Protection Disabled.
- * |        |          |1 = Side Channel Attack Protection Enabled.
- * |[9]     |CFIAP     |CRT Fault Injection Attack Protection Enable Control
- * |        |          |0 = CRT Fault Injection Attack Protection Disabled.
- * |        |          |1 = CRT Fault Injection Attack Protection Enabled.
- * |        |          |Note: If users want to enable this bit (CFIAP), they must also enable CRT mode.
- * @var CRYPTO_T::RSA_STS
- * Offset: 0xB04  RSA Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |BUSY      |RSA Accelerator Busy Flag
- * |        |          |0 = The RSA accelerator is idle or finished.
- * |        |          |1 = The RSA accelerator is under processing and protects all registers.
- * |        |          |Remember to clear RSA interrupt flag after RSA accelerator finished.
- * |[1]     |DMABUSY   |RSA DMA Busy Flag
- * |        |          |0 = RSA DMA is idle or finished.
- * |        |          |1 = RSA DMA is busy.
- * |[8]     |CFIAF     |CRT Fault Injection Attack Flag
- * |        |          |0 = No CRT fault injection attack.
- * |        |          |1 = RSA is under CRT fault injection attack.
- * |[16]    |BUSERR    |RSA DMA Access Bus Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Bus error will stop DMA operation and RSA accelerator.
- * |[17]    |CTLERR    |RSA Control Register Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = RSA control error. RSA will not start in the unsupported situation.
- * |        |          |Note: If users use the error combination of control, even though they donu2019t set START(CRYPTO_RSA_CTL[0]) to 1, CTLERR still be set to 1.
- * |[18]    |KSERR     |RSA Engine Access Key Store Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Access error will stop RSA engine.
- * @var CRYPTO_T::RSA_SADDR[5]
- * Offset: 0xB08  RSA DMA Source Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |SADDRx    |RSA DMA Source Address Register
- * |        |          |The RSA accelerator supports DMA function to transfer the DATA and PARAMETER between SRAM memory space and RSA accelerator.
- * |        |          |RSA_SADDR[0] register is stored the address of RSA the Base of Exponentiation (M).
- * |        |          |RSA_SADDR[1] register is stored the address of RSA the Base of Modulus Operation (N).
- * |        |          |RSA_SADDR[2] register is stored the address of RSA the Exponent of Exponentiation (E).
- * |        |          |RSA_SADDR[3] register is stored the address of RSA the Factor of Modulus Operation (p).
- * |        |          |RSA_SADDR[4] register is stored the address of RSA the Factor of Modulus Operation (q).
- * @var CRYPTO_T::RSA_DADDR
- * Offset: 0xB1C  RSA DMA Destination Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |DADDR     |RSA DMA Destination Address Register
- * |        |          |The RSA accelerator supports DMA function to transfer the DATA and PARAMETER between SRAM memory space and RSA accelerator.
- * |        |          |This register is stored the address of RSA DMA Destination Address Register (Ans).
- * @var CRYPTO_T::RSA_MADDR[7]
- * Offset: 0xB20  RSA DMA Middle Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |MADDR0    |RSA DMA Middle Address Register0
- * |        |          |The RSA accelerator supports DMA function to transfer the DATA and PARAMETER between SRAM memory space and RSA accelerator.
- * |        |          |RSA_MADDR[0] register is stored the address of RSA CRT the Temporary Value (Cp -> Mp -> Sp).
- * |        |          |RSA_MADDR[1] register is stored the address of RSA CRT the Temporary Value (Cq -> Mq -> Sq).
- * |        |          |RSA_MADDR[2] register is stored the address of RSA CRT the Temporary Value (Dp).
- * |        |          |RSA_MADDR[3] register is stored the address of RSA CRT the Temporary Value (Dq).
- * |        |          |RSA_MADDR[4] register is stored the address of RSA CRT the Temporary Value (Rp).
- * |        |          |RSA_MADDR[5] register is stored the address of RSA CRT the Temporary Value (Rq).
- * |        |          |RSA_MADDR[6] register is stored the address of RSA SCAP the Temporary Value (Eu2019).
- * @var CRYPTO_T::RSA_PKADDR
- * Offset: 0xB3C  RSA Public Key Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |PKADDR    |RSA Public Key Address Register
- * |        |          |The RSA accelerator supports DMA function to transfer the DATA and PARAMETER between SRAM memory space and RSA accelerator.
- * |        |          |This register is stored the address of RSA public key for CRT fault injection attack protection mode.
- * |        |          |Note: This register is only for CRT FIAP mode.
- * @var CRYPTO_T::RSA_DEBUG
- * Offset: 0xBF0  RSA Debug Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[8:0]   |ENGFSMS   |RSA Engine FSM State
- * |        |          |RSA Engine FSM State.
- * |[16:9]  |DMAFSMS   |RSA DMA FSM State
- * |        |          |RSA DMA FSM State.
- * |[21:17] |BUSSEL    |RSA DMA Bus Address Selection
- * |        |          |00000 = M.
- * |        |          |00001 = N.
- * |        |          |00010 = E.
- * |        |          |00011 = p.
- * |        |          |00100 = q.
- * |        |          |00101 = Cp.
- * |        |          |00110 = Cq.
- * |        |          |00111 = Dp.
- * |        |          |01000 = Dq.
- * |        |          |01001 = Rp.
- * |        |          |01010 = Rq.
- * |        |          |01011 = E final.
- * |        |          |01100 = Dp final.
- * |        |          |01101 = Dq final.
- * |        |          |01110 = p final.
- * |        |          |01111 = q final.
- * |        |          |10000 = P or Answer.
- * |        |          |10001 = Eu2019 final.
- * |        |          |10010 = Eu2019.
- * |        |          |10011 = Public key.
- * |        |          |10100 = Public key p.
- * |        |          |10101 = Public key q.
- * |        |          |10110 = Public key p final.
- * |        |          |10111 = Public key q final.
- * |        |          |Others = Reserved.
- * |[26:22] |CRTFID    |RSA CRT Mode Function Index
- * |        |          |00010 = Cp.
- * |        |          |00011 = Cq.
- * |        |          |00100 = Dp.
- * |        |          |00101 = Dq.
- * |        |          |00110 = Mp.
- * |        |          |00111 = Mq.
- * |        |          |01000 = Rp.
- * |        |          |01001 = Rq.
- * |        |          |01010 = Sp.
- * |        |          |01011 = Sq.
- * |        |          |01100 = Su2019p.
- * |        |          |01101 = Su2019q.
- * |        |          |01110 = Ep.
- * |        |          |01111 = Eq.
- * |        |          |10000 = Su2019ep.
- * |        |          |10001 = Su2019eq.
- * |        |          |10010 = c1.
- * |        |          |10011 = c2.
- * |        |          |10100 = S.
- * |        |          |Others = Reserved.
- * @var CRYPTO_T::CHAPOLY_CTL
- * Offset: 0xC00  ChaCha20/Poly1305 Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |START     |ChaCha20/Poly1305 Engine Start
- * |        |          |0 = No effect.
- * |        |          |1 = Start ChaCha20/Poly1305 engine. BUSY flag will be set.
- * |        |          |Note: This bit is always 0 when it is read back.
- * |[1]     |STOP      |ChaCha20/Poly1305 Engine Stop
- * |        |          |0 = No effect.
- * |        |          |1 = Stop ChaCha20/Poly1305 engine.
- * |        |          |Note: This bit is always 0 when it is read back. 
- * |[5]     |DMALAST   |ChaCha20/Poly1305 Last Block
- * |        |          |In DMA mode, this bit must be set as beginning the last DMA cascade round.
- * |        |          |In Non-DMA mode, this bit must be set when feeding in the last block of data.
- * |        |          |This bit is always 0 when it is read back, and must be written again once START is triggered.
- * |[6]     |DMACSCAD  |ChaCha20/Poly1305 Engine DMA with Cascade Mode
- * |        |          |0 = DMA cascade function Disabled.
- * |        |          |1 = In DMA cascade mode, software can update DMA source address register, destination address register, and byte count register during a cascade operation, without finishing the accelerator operation.
- * |[7]     |DMAEN     |ChaCha20/Poly1305 Engine DMA Enable Bit
- * |        |          |0 = ChaCha20/Poly1305 DMA engine Disabled.
- * |        |          |The ChaCha20/Poly1305 DMA engine operates in Non-DMA mode
- * |        |          |The data need to be written in CRYPTO_CHAPOLY_DATIN.
- * |        |          |1 = ChaCha20/Poly1305 DMA engine Enabled.
- * |        |          |The ChaCha20/Poly1305 engine operates in DMA mode, and data movement from/to the engine is done by DMA logic.
- * |[9:8]   |OPMODE    |ChaCha20/Poly1305 Engine Operation Modes
- * |        |          |0x0 = ChaCha20.
- * |        |          |0x1 = Poly1305.
- * |        |          |0x2 = AEAD.
- * |[16]    |ENCRYPTO  |ChaCha20/Poly1305 Encryption/Decryption
- * |        |          |0 = ChaCha20/Poly1305 engine executes decryption operation.
- * |        |          |1 = ChaCha20/Poly1305 engine executes encryption operation. 
- * |[19]    |DFAPEN    |ChaCha20 Differential Fault Attack Protection Enable
- * |        |          |0 = ChaCha20 Differential Fault Attack Protection Disabled.
- * |        |          |1 = ChaCha20 Differential Fault Attack Protection Enabled.
- * |[20]    |FBIN      |Feedback Input to ChaCha20/Poly1305 Via DMA Automatically
- * |        |          |0 = DMA automatic feedback input function Disabled.
- * |        |          |1 = DMA automatic feedback input function Enabled when DMAEN = 1.
- * |[21]    |FBOUT     |Feedback Output From ChaCha20/Poly1305 Via DMA Automatically
- * |        |          |0 = DMA automatic feedback output function Disabled.
- * |        |          |1 = DMA automatic feedback output function Enabled when DMAEN = 1.
- * |[22]    |OUTSWAP   |ChaCha20/Poly1305 Engine Output Data Swap
- * |        |          |0 = Keep the original order.
- * |        |          |1 = The order that CPU reads data from the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
- * |[23]    |INSWAP    |ChaCha20/Poly1305 Engine Input Data Swap
- * |        |          |0 = Keep the original order.
- * |        |          |1 = The order that CPU feeds data to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
- * |[24]    |KOUTSWAP  |ChaCha20/Poly1305 Engine Output Key, Initial Vector and Feedback Swap
- * |        |          |0 = Keep the original order.
- * |        |          |1 = The order that CPU reads key, initial vector and feedback from the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
- * |[25]    |KINSWAP   |ChaCha20/Poly1305 Engine Input Key and Initial Vector Swap
- * |        |          |0 = Keep the original order.
- * |        |          |1 = The order that CPU feeds key and initial vector to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
- * @var CRYPTO_T::CHAPOLY_STS
- * Offset: 0xC04  ChaCha20/Poly1305 Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |BUSY      |ChaCha20/Poly1305 Engine Busy
- * |        |          |0 = The ChaCha20/Poly1305 engine is idle or finished.
- * |        |          |1 = The ChaCha20/Poly1305 engine is under processing.
- * |[8]     |INBUFEMPTY|ChaCha20/Poly1305 Input Buffer Empty
- * |        |          |0 = There are some data in input buffer waiting for the ChaCha20/Poly1305 engine to process.
- * |        |          |1 = ChaCha20/Poly1305 input buffer is empty
- * |        |          |Software needs to feed data to the ChaCha20/Poly1305 engine
- * |        |          |Otherwise, the ChaCha20/Poly1305 engine will be pending to wait for input data.
- * |[9]     |INBUFFULL |ChaCha20/Poly1305 Input Buffer Full Flag
- * |        |          |0 = ChaCha20/Poly1305 input buffer is not full
- * |        |          |Software can feed the data into the ChaCha20/Poly1305 engine.
- * |        |          |1 = ChaCha20/Poly1305 input buffer is full
- * |        |          |Software cannot feed data to the ChaCha20/Poly1305 engine
- * |        |          |Otherwise, the flag INBUFERR will be set to 1.
- * |[10]    |INBUFERR  |ChaCha20/Poly1305 Input Buffer Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Error happened during feeding data to the ChaCha20/Poly1305 engine. 
- * |[12]    |CNTERR    |CRYPTO_CHAPOLY_CNT Setting Error
- * |        |          |0 = No error in CRYPTO_CHAPOLY_CNT setting.
- * |        |          |1 = CRYPTO_CHAPOLY_CNT is 0 if DMAEN (CRYPTO_CHAPOLY_CTL[7]) is enabled.
- * |[16]    |OUTBUFEMPTY|ChaCha20/Poly1305 Out Buffer Empty
- * |        |          |0 = ChaCha20/Poly1305 output buffer is not empty. There are some valid data kept in output buffer.
- * |        |          |1 = ChaCha20/Poly1305 output buffer is empty
- * |        |          |Software cannot get data from CRYPTO_CHAPOLY_DATOUT
- * |        |          |Otherwise, the flag OUTBUFERR will be set to 1 since the output buffer is empty.
- * |[17]    |OUTBUFFULL|ChaCha20/Poly1305 Out Buffer Full Flag
- * |        |          |0 = ChaCha20/Poly1305 output buffer is not full.
- * |        |          |1 = ChaCha20/Poly1305 output buffer is full, and software needs to get data from CRYPTO_CHAPOLY_DATOUT
- * |        |          |Otherwise, the ChaCha20/Poly1305 engine will be pending since the output buffer is full.
- * |[18]    |OUTBUFERR |ChaCha20/Poly1305 Out Buffer Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Error happened during getting the result from ChaCha20/Poly1305 engine. 
- * |[20]    |BUSERR    |ChaCha20/Poly1305 DMA Access Bus Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Bus error will stop DMA operation and ChaCha20/Poly1305 engine.
- * |[21]    |KSERR     |ChaCha20/Poly1305 Engine Access Key Store Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = Key store access error will stop ChaCha20/Poly1305 engine.
- * @var CRYPTO_T::CHAPOLY_DATIN
- * Offset: 0xC08  ChaCha20/Poly1305 Engine Data Input Port Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |DATIN     |ChaCha20/Poly1305 Engine Input Port
- * |        |          |CPU feeds data to ChaCha20/Poly1305 engine through this port by checking CRYPTO_CHAPOLY_STS
- * |        |          |Feed data as INBUFFULL is 0.
- * @var CRYPTO_T::CHAPOLY_DATOUT
- * Offset: 0xC0C  ChaCha20/Poly1305 Engine Data Output Port Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |DATOUT    |ChaCha20/Poly1305 Engine Output Port
- * |        |          |CPU gets results from the ChaCha20/Poly1305 engine through this port by checking CRYPTO_CHAPOLY_STS
- * |        |          |Get data as OUTBUFEMPTY is 0.
- * @var CRYPTO_T::CHAPOLY_KEY[8]
- * Offset: 0xC10~0xC2C  ChaCha20/Poly1305 Key Word Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |KEY       |CRYPTO_CHAPOLY_KEYx
- * |        |          |The KEY keeps the security key for ChaCha20/Poly1305 operation.
- * |        |          |x = 0, 1..7.
- * |        |          |The security key for ChaCha20/Poly1305 accelerator must be 256 bits and eight 32-bit registers are to store each security key.
- * |        |          |{CRYPTO_CHAPOLY_KEY7, CRYPTO_CHAPOLY_KEY6, CRYPTO_CHAPOLY_KEY5, CRYPTO_CHAPOLY_KEY4, CRYPTO_CHAPOLY_KEY3, CRYPTO_CHAPOLY_KEY2, CRYPTO_CHAPOLY_KEY1, CRYPTO_CHAPOLY_KEY0} stores the 256-bit security key for ChaCha20/Poly1305 operation.
- * @var CRYPTO_T::CHAPOLY_BLOCKCNT
- * Offset: 0xC30  ChaCha20/Poly1305 Block Counter Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |BLOCKCNT  |ChaCha20/Poly1305 Block Count Register
- * |        |          |The block count parameter for ChaCha20 and AEAD.
- * @var CRYPTO_T::CHAPOLY_NONCE[3]
- * Offset: 0xC34~0xC3C  ChaCha20/Poly1305 Nonce Word Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |Nonce     |ChaCha20/Poly1305 Nonce
- * |        |          |x = 0, 1, 2.
- * |        |          |96-bit Nonce for ChaCha20 and AEAD modes
- * @var CRYPTO_T::CHAPOLY_SADDR
- * Offset: 0xC40  ChaCha20/Poly1305 DMA Source Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |SADDR     |ChaCha20/Poly1305 DMA Source Address
- * |        |          |The ChaCha20/Poly1305 accelerator supports DMA function to transfer the plain text between SRAM memory space and embedded FIFO
- * |        |          |The SADDR keeps the source address of the data buffer where the source text is stored
- * |        |          |Based on the source address, the ChaCha20/Poly1305 accelerator can read the plain text (encryption) / cipher text (decryption) from SRAM memory space and do ChaCha20/Poly1305 operation
- * |        |          |The start of source address should be located at word boundary
- * |        |          |In other words, bit 1 and 0 of SADDR are ignored.
- * |        |          |SADDR can be read and written
- * |        |          |Writing to SADDR while the ChaCha20/Poly1305 accelerator is operating doesnu2019t affect the current ChaCha20/Poly1305 operation
- * |        |          |But the value of SADDR will be updated later on
- * |        |          |Consequently, software can prepare the DMA source address for the next ChaCha20/Poly1305 operation.
- * |        |          |In DMA mode, software can update the next CRYPTO_CHAPOLY_SADDR before triggering START.
- * |        |          |The value of CRYPTO_CHAPOLY_SADDR and CRYPTO_CHAPOLY_DADDR can be the same.
- * @var CRYPTO_T::CHAPOLY_DADDR
- * Offset: 0xC44  ChaCha20/Poly1305 DMA Destination Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |DADDR     |ChaCha20/Poly1305 DMA Destination Address
- * |        |          |The ChaCha20/Poly1305 accelerator supports DMA function to transfer the cipher text between SRAM memory space and embedded FIFO
- * |        |          |The DADDR keeps the destination address of the data buffer where the engine outputu2019s text will be stored
- * |        |          |Based on the destination address, the ChaCha20/Poly1305 accelerator can write the cipher text (encryption) / plain text (decryption) back to SRAM memory space after the ChaCha20/Poly1305 operation is finished
- * |        |          |The start of destination address should be located at word boundary
- * |        |          |In other words, bit 1 and 0 of DADDR are ignored.
- * |        |          |DADDR can be read and written
- * |        |          |Writing to DADDR while the ChaCha20/Poly1305 accelerator is operating doesnu2019t affect the current ChaCha20/Poly1305 operation
- * |        |          |But the value of DADDR will be updated later on
- * |        |          |Consequently, software can prepare the destination address for the next ChaCha20/Poly1305 operation.
- * |        |          |In DMA mode, software can update the next CRYPTO_CHAPOLY_DADDR before triggering START.
- * |        |          |The value of CRYPTO_CHAPOLY_SADDR and CRYPTO_CHAPOLY_DADDR can be the same.
- * @var CRYPTO_T::CHAPOLY_CNT
- * Offset: 0xC48  ChaCha20/Poly1305 Byte Count Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |CNT       |ChaCha20/Poly1305   Byte Count
- * |        |          |The   CRYPTO_CHAPOLY_CNT keeps the byte count of source text that is for the ChaCha20/Poly1305   engine operating in DMA mode
- * |        |          |The CRYPTO_CHAPOLY_CNT is 32-bit and the   maximum of byte count is 4G bytes.
- * |        |          |CRYPTO_CHAPOLY_CNT   can be read and written
- * |        |          |Writing to CRYPTO_CHAPOLY_CNT while the ChaCha20/Poly1305   accelerator is operating doesnu2019t affect the current ChaCha20/Poly1305 operation
- * |        |          |But the value   of CRYPTO_CHAPOLY_CNT will be updated later on
- * |        |          |Consequently, software can   prepare the byte count of data for the next ChaCha20/Poly1305 operation.
- * |        |          |In Non-DMA   mode, CRYPTO_CHAPOLY_CNT must be set as byte count for the last block of data   before feeding in the last block of data.
- * |        |          |In AEAD mode   without DMA cascade function, the value of CRYPTO_CHAPOLY_CNT is equal to the   total value of {CRYPTO_CHAPOLY_ACNT1, CRYPTO_CHAPOLY_ACNT0} and   {CRYPTO_CHAPOLY_PCNT1, CRYPTO_CHAPOLY_PCNT0}.
- * |        |          |In AEAD mode   with DMA cascade function, the value of CRYPTO_CHAPOLY_CNT represents the   byte count of source text in this cascade function
- * |        |          |Thus, the value of   CRYPTO_CHAPOLY_CNT is less than or equal to the total value of   {CRYPTO_CHAPOLY_ACNT1, CRYPTO_CHAPOLY_ACNT0} and {CRYPTO_CHAPOLY_PCNT1,   CRYPTO_CHAPOLY_PCNT0} and must be block alignment
- * @var CRYPTO_T::CHAPOLY_FBADDR
- * Offset: 0xC4C  ChaCha20/Poly1305 DMA Feedback Address Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |FBADDR    |ChaCha20/Poly1305 DMA Feedback Address
- * |        |          |In DMA cascade mode, software can update DMA feedback address register for automatically reading and writing feedback values via DMA
- * |        |          |The FBADDR keeps the feedback address of the feedback data for the next cascade operation
- * |        |          |Based on the feedback address, the ChaCha20/Poly1305 accelerator can read the feedback data of the last cascade operation from SRAM memory space and write the feedback data of the current cascade operation to SRAM memory space
- * |        |          |The start of feedback address should be located at word boundary
- * |        |          |In other words, bit 1 and 0 of FBADDR are ignored.
- * |        |          |FBADDR can be read and written.
- * |        |          |In DMA mode, software can update the next CRYPTO_CHAPOLY_FBADDR before triggering START.
- * @var CRYPTO_T::CHAPOLY_ACNT[2]
- * Offset: 0xC50  ChaCha20/Poly1305 A Byte Count Register 
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |CNT       |ChaCha20/Poly1305   A Byte Count
- * |        |          |The bit   length of A is 64 bits for AEAD mode
- * |        |          |The CRYPTO_CHAPOLY_ACNT[0] keeps the low   weight byte count of the additional authenticated data (i.e., len(A)[34:3]) of   AEAD mode and can be read and written.
- * |        |          |The CRYPTO_CHAPOLY_ACNT[1] keeps the high  weight byte count of the additional authenticated data (i.e., len(A)[63:35]) of   AEAD mode and can be read and written.
- * @var CRYPTO_T::CHAPOLY_PCNT[2]
- * Offset: 0xC58  ChaCha20/Poly1305 P Byte Count Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |CNT       |ChaCha20/Poly1305   P Byte Count
- * |        |          |The bit   length of P or C is 64 bits for AEAD mode
- * |        |          |The CRYPTO_CHAPOLY_PCNT[0] keeps the low weight byte count of the plaintext or ciphertext (i.e., len(P)[34:3] or   len(C)[34:3]) of AEAD mode and can be read and written.
- * |        |          |The CRYPTO_CHAPOLY_PCNT[1] keeps the high weight byte count of the plaintext or ciphertext (i.e.,   len(P)[64:35] or len(C)[64:35]) of AEAD
- * |        |          |mode   and can be read and written.
- * @var CRYPTO_T::PRNG_KSCTL
- * Offset: 0xF00  PRNG Key Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |NUM       |Write Key Number
- * |        |          |The key number is sent to Key Store
- * |        |          |Note: Only for destination Is OTP of Key Store.
- * |[16]    |TRUST     |Write Key Trust Selection Bit
- * |        |          |0 = Set written key as the non-secure key.
- * |        |          |1 = Set written key as the secure key.
- * |[19]    |ECDH      |ECDH Control Bit
- * |        |          |0 = reserved.
- * |        |          |1 = key is written to Key Store and used in ECDH.
- * |        |          |Note: When ECDH was set to u20181u2019,  1
- * |        |          |PRNG seed must be from TRNG and key must be written to the SRAM of Key Store (WSDST, CRYPTO_PRNG_KSCTL[23:22] must set to u201800u2019)
- * |        |          |Otherwise, KCTLERR will become u20181u2019(CRYPTO_PRNG_KSSTS[16])
- * |        |          |2
- * |        |          |Key must in the interval [1, n-1] (the parameter n is from ECC)
- * |        |          |The value of n cannot be 0 or 1, otherwise, PRNG will always keep busy.
- * |[20]    |ECDSA     |ECDSA Control Bit
- * |        |          |0 = Reserved.
- * |        |          |1 = Key is written to Key Store and used in ECDSA.
- * |        |          |Note: When ECDSA was set to u20181u2019,  1
- * |        |          |PRNG seed must be from TRNG and key must be written to the SRAM of Key Store (WSDST, CRYPTO_PRNG_KSCTL[23:22] must set to u201800u2019)
- * |        |          |Otherwise, KCTLERR will become u20181u2019(CRYPTO_PRNG_KSSTS[16])
- * |        |          |2
- * |        |          |Key must in the interval [1, n-1] (the parameter n is from ECC)
- * |        |          |The value of n cannot be 0 or 1, otherwise, PRNG will always keep busy.
- * |[21]    |WDST      |Write Key Destination
- * |        |          |0 = Key is written to registers CRYPTO_PRNG_KEYx.
- * |        |          |1 = Key is written to Key Store.
- * |[23:22] |WSDST     |Write Key Store Destination
- * |        |          |00 = Key is written to the SRAM of Key Store.
- * |        |          |01 = Key is written to the FLASH of Key Store.
- * |        |          |10 = Key is written to the OTP of Key Store.
- * |        |          |Others = reserved.
- * |[26:24] |OWNER     |Write Key Owner Selection Bits
- * |        |          |000 = Only for AES use.
- * |        |          |001 = Only for HMAC engine use.
- * |        |          |100 = Only for ECC engine use.
- * |        |          |101 = Only for CPU engine use.
- * |        |          |Others = reserved.
- * @var CRYPTO_T::PRNG_KSSTS
- * Offset: 0xF04  PRNG Key Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |NUM       |Key Number
- * |        |          |The key number is generated by Key Store
- * |[16]    |KCTLERR   |PRNG Key Control Register Error Flag
- * |        |          |0 = No error.
- * |        |          |1 = PRNG key control error
- * |        |          |When PRNG execute ECDSA or ECDH, but PRNG seed not from TRNG or key is not written to the SRAM of Key Store (WSDST, CRYPTO_PRNG_KSCTL[23:22] is not equal to u201900u2019).
- * @var CRYPTO_T::AES_KSCTL
- * Offset: 0xF10  AES Key Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |NUM       |Read Key Number
- * |        |          |The key number is sent to Key Store
- * |[5]     |RSRC      |Read Key Source
- * |        |          |0 = Key is read from registers CRYPTO_AESx_KEYx.
- * |        |          |1 = Key is read from Key Store.
- * |[7:6]   |RSSRC     |Read Key Store Source
- * |        |          |RSSRC takes effect only when RSRC is 1 (the key is from Key Store).
- * |        |          |00 = Key is read from the SRAM of Key Store.
- * |        |          |01 = Key is read from the FLASH of Key Store.
- * |        |          |10 = Key is read from the OTP of Key Store.
- * |        |          |Others = reserved.
- * @var CRYPTO_T::HMAC_KSCTL
- * Offset: 0xF30  HMAC Key Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |NUM       |Read Key Number
- * |        |          |The key number is sent to Key Store
- * |[5]     |RSRC      |Read Key Source
- * |        |          |0 = Key is read from HMAC registers.
- * |        |          |1 = Key is read from Key Store.
- * |[7:6]   |RSSRC     |Read Key Store Source
- * |        |          |RSSRC takes effect only when RSRC is 1 (the key is from Key Store).
- * |        |          |00 = Key is read from the SRAM of Key Store.
- * |        |          |01 = Key is read from the FLASH of Key Store.
- * |        |          |Others = reserved.
- * @var CRYPTO_T::ECC_KSCTL
- * Offset: 0xF40  ECC Key Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |NUMK      |Read Key Number K
- * |        |          |The key number of CRYPTO_ECC_K is sent to Key Store when RSRCK =1.
- * |[5]     |RSRCK     |Read Key Source for Key Number K
- * |        |          |0 = Key is read from ECC registers.
- * |        |          |1 = Key is read from Key Store.
- * |[7:6]   |RSSRCK    |Read Key Store Source for Key Number K
- * |        |          |RSSRCK takes effect only when RSRCK is 1 (the key is from Key Store).
- * |        |          |00 = Key is read from the SRAM of Key Store.
- * |        |          |01 = Key is read from the FLASH of Key Store.
- * |        |          |10 = Key is read from the OTP of Key Store.
- * |        |          |Others = reserved.
- * |[14]    |ECDH      |ECDH Control Bit
- * |        |          |0 = Reserved.
- * |        |          |1 = Set ECC operation is in ECDH
- * |        |          |When this bit and RSRCK are equal to 0x1, ECC will read ECDH private key to CRYPTO_ECC_K from Key Store.
- * |[16]    |TRUST     |Write Key Trust Selection Bit
- * |        |          |0 = Set ECDH written key as the non-secure key.
- * |        |          |1 = Set ECDH written key as the secure key.
- * |[20]    |XY        |ECDH Output Select Bit
- * |        |          |0 = The ECDH written key is from X-coordinate Value.
- * |        |          |1 = The ECDH written key is from Y-coordinate Value.
- * |[21]    |WDST      |Write Key Destination
- * |        |          |0 = The ECDH written key is in registers CRYPTO_ECC_X1 and CRYPTO_ECC_Y.
- * |        |          |1 = The ECDH written key is written to Key Store.
- * |[23:22] |WSDST     |Write Key Store Destination
- * |        |          |WSDST takes effect only when WDST is 1 (the key is written to Key Store).
- * |        |          |00 = The ECDH written key is written to the SRAM of Key Store.
- * |        |          |01 = The ECDH written key is written to the FLASH of Key Store.
- * |        |          |10 = The ECDH written key is written to the OTP of Key Store.
- * |        |          |Others = reserved.
- * |[26:24] |OWNER     |Write Key Owner Selection Bits
- * |        |          |000 = The ECDH written key is only for AES used.
- * |        |          |001 = The ECDH written key is only for HMAC engine used.
- * |        |          |100 = The ECDH written key is only for ECC engine used.
- * |        |          |101 = The ECDH written key is only for CPU engine use.
- * |        |          |Others = reserved.
- * @var CRYPTO_T::ECC_KSSTS
- * Offset: 0xF44  ECC Key Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |NUM       |Key Number
- * |        |          |The key number is generated by Key Store after ECDH.
- * @var CRYPTO_T::ECC_KSXY
- * Offset: 0xF48  ECC XY Number Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |NUMX      |Read Key Number X
- * |        |          |The key number of CRYPTO_ECC_X1 is sent to Key Store when RSRCXY =1.
- * |[5]     |RSRCXY    |Read Key Source for Key Number X and Y
- * |        |          |0 = Key is read from ECC registers.
- * |        |          |1 = Key is read from Key Store.
- * |[7:6]   |RSSRCX    |Read Key Store Source for Key Number X
- * |        |          |RSSRCX takes effect only when RSRCXY is 1 (the key is from Key Store).
- * |        |          |00 = Key is read from the SRAM of Key Store.
- * |        |          |01 = Key is read from the FLASH of Key Store.
- * |        |          |10 = Key is read from the OTP of Key Store.
- * |        |          |Others = reserved.
- * |[12:8]  |NUMY      |Read Key Number Y
- * |        |          |The key number of CRYPTO_ECC_Y1 is sent to Key Store when RSRCXY =1.
- * |[15:14] |RSSRCY    |Read Key Store Source for Key Number Y
- * |        |          |RSSRCY takes effect only when RSRCXY is 1 (the key is from Key Store).
- * |        |          |00 = Key is read from the SRAM of Key Store.
- * |        |          |01 = Key is read from the FLASH of Key Store.
- * |        |          |10 = Key is read from the OTP of Key Store.
- * |        |          |Others = reserved.
- * @var CRYPTO_T::RSA_KSCTL
- * Offset: 0xF50  RSA Key Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |NUM       |Read Key Number
- * |        |          |The key number is sent to Key Store
- * |[5]     |RSRC      |Read Key Source
- * |        |          |0 = Key is read from RSA engine.
- * |        |          |1 = Key is read from Key Store.
- * |[7:6]   |RSSRC     |Read Key Store Source
- * |        |          |RSSRC takes effect only when RSRC is 1 (the key is from Key Store).
- * |        |          |00 = Key is read from the SRAM of Key Store.
- * |        |          |01 = Key is read from the FLASH of Key Store.
- * |        |          |Others = Reserved.
- * |[12:8]  |BKNUM     |Read Exponent Blind Key Number
- * |        |          |The key number is sent to Key Store, and its destination always be the SRAM of Key Store
- * |        |          |CPU cannot read the exponent blind key.
- * |        |          |Note: Use this key number, only when executing SCAP but no-CRT mode
- * |        |          |When allocate space of Key Store, key owner selection bits (KS_METADATA[18:16]) should be u2018010u2019.
- * @var CRYPTO_T::RSA_KSSTS0
- * Offset: 0xF54  RSA Key Status Register0
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |NUM0      |Key Number0
- * |        |          |The key number is generated by Key Store, RSA can get complete p by key number in Key Store while operating.
- * |        |          |Note: The size of this key as half key length.
- * |[12:8]  |NUM1      |Key Number1
- * |        |          |The key number is generated by Key Store, RSA can get complete q by key number in Key Store while operating.
- * |        |          |Note: The size of this key as half key length.
- * |[20:16] |NUM2      |Key Number2
- * |        |          |The key number is generated by Key Store, RSA can get or store the intermediate temporary value(Cp) by key number in the Key Store while operating.
- * |        |          |Note: The size of this key as key length.
- * |[28:24] |NUM3      |Key Number3
- * |        |          |The key number is generated by Key Store, RSA can get or store the intermediate temporary value(Cq) by key number in the Key Store while operating.
- * |        |          |Note: The size of this key as key length. 
- * @var CRYPTO_T::RSA_KSSTS1
- * Offset: 0xF58  RSA Key Status Register 1
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |NUM4      |Key Number4
- * |        |          |The key number is generated by Key Store, RSA can get or store the intermediate temporary value(Dp) by key number in Key Store while operating.
- * |        |          |Note: The size of this key as half key length.
- * |[12:8]  |NUM5      |Key Number5
- * |        |          |The key number is generated by Key Store, RSA can get or store the intermediate temporary value(Dq) by key number in Key Store while operating.
- * |        |          |Note: The size of this key as half key length.
- * |[20:16] |NUM6      |Key Number6
- * |        |          |The key number is generated by Key Store, RSA can get or store the intermediate temporary value(Rp) by key number in Key Store while operating.
- * |        |          |Note: The size of this key as key length.
- * |[28:24] |NUM7      |Key Number7
- * |        |          |The key number is generated by Key Store, RSA can get or store the intermediate temporary value(Rq) by key number in Key Store while operating.
- * |        |          |Note: The size of this key as key length.
- * @var CRYPTO_T::CHAPOLY_KSCTL
- * Offset: 0xF60  ChaCha20/Poly1305 Key Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[4:0]   |NUM       |Read Key Number
- * |        |          |The key number is sent to key store
- * |[5]     |RSRC      |Read Key Source
- * |        |          |0 = key is read from registers CRYPTO_CHAPOLY_KEYx.
- * |        |          |1 = key is read from key store.
- * |[7:6]   |RSSRC     |Read Key Store Source
- * |        |          |00 = key is read from the SRAM of key store.
- * |        |          |01 = Key is read from the FLASH of Key Store.
- * |        |          |10 = key is read from the OTP of key store.
- * |        |          |Others = reserved.
- * @var CRYPTO_T::PAP_CTL
- * Offset: 0xF80  CRYPTO Power Analysis Protection Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |PAPEN     |CRYPTO Power Analysis Protection Enable
- * |        |          |0 = CRYPTO Power Analysis Protection Disabled.
- * |        |          |1 = CRYPTO Power Analysis Protection Enabled.
- * |        |          |Note: The protected range of power analysis protection include AES, SHA/HMAC, ECC and RSA.
- * @var CRYPTO_T::VERSION
- * Offset: 0xFFC  Crypto RTL Design Version Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[15:0]  |MINOR     |RTL Design Minor Version Number
- * |        |          |Minor version number is dependent on moduleu2019s ECO version control.
- * |        |          |0x1000:(Current Minor Version Number)
- * |[23:16] |SUB       |RTL Design Sub Version Number
- * |        |          |Sub version number is correlated to moduleu2019s key feature.
- * |        |          |0x01:(Current Sub Version Number)
- * |[31:24] |MAJOR     |RTL Design Major Version Number
- * |        |          |Major version number is correlated to Product Line.
- * |        |          |0x03:(Current Major Version Number)
- */
+    /**
+     * @var CRYPTO_T::INTEN
+     * Offset: 0x00  Crypto Interrupt Enable Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |AESIEN    |AES Interrupt Enable Bit
+     * |        |          |0 = AES interrupt Disabled.
+     * |        |          |1 = AES interrupt Enabled.
+     * |        |          |Note: In DMA mode, an interrupt will be triggered when an amount of data set in AES_DMA_CNT is fed into the AES engine.
+     * |        |          |In Non-DMA mode, an interrupt will be triggered when the AES engine finishes the operation.
+     * |[1]     |AESEIEN   |AES Error Flag Enable Bit
+     * |        |          |0 = AES error interrupt flag Disabled.
+     * |        |          |1 = AES error interrupt flag Enabled.
+     * |[6]     |CHAPOLYIEN|AES Interrupt Enable Bit
+     * |        |          |0 = CHACHA20/POLY1305 interrupt Disabled.
+     * |        |          |1 = CHACHA20/POLY1305 interrupt Enabled.
+     * |        |          |Note: In DMA mode, an interrupt will be triggered when an amount of data set in CHAPOLY_DMA_CNT is fed into the CHACHA20/POLY1305 engine.
+     * |        |          |In Non-DMA mode, an interrupt will be triggered when the CHACHA20/POLY1305 engine finishes the operation.
+     * |[7]     |CHAPOLYEIEN|CHACHA20/POLY1305 Error Flag Enable Bit
+     * |        |          |0 = CHACHA20/POLY1305 error interrupt flag Disabled.
+     * |        |          |1 = CHACHA20/POLY1305 error interrupt flag Enabled.
+     * |[16]    |PRNGIEN   |PRNG Interrupt Enable Bit
+     * |        |          |0 = PRNG interrupt Disabled.
+     * |        |          |1 = PRNG interrupt Enabled.
+     * |[17]    |PRNGEIEN  |PRNG Error Flag Enable Bit
+     * |        |          |0 = PRNG error interrupt flag Disabled.
+     * |        |          |1 = PRNG error interrupt flag Enabled.
+     * |[22]    |ECCIEN    |ECC Interrupt Enable Bit
+     * |        |          |0 = ECC interrupt Disabled.
+     * |        |          |1 = ECC interrupt Enabled.
+     * |        |          |Note: In DMA mode, an interrupt will be triggered when an amount of data set in ECC_DMA_CNT is fed into the ECC engine
+     * |        |          |In Non-DMA mode, an interrupt will be triggered when the ECC engine finishes the operation.
+     * |[23]    |ECCEIEN   |ECC Error Interrupt Enable Bit
+     * |        |          |0 = ECC error interrupt flag Disabled.
+     * |        |          |1 = ECC error interrupt flag Enabled.
+     * |[24]    |HMACIEN   |SHA/HMAC Interrupt Enable Bit
+     * |        |          |0 = SHA/HMAC interrupt Disabled.
+     * |        |          |1 = SHA/HMAC interrupt Enabled.
+     * |        |          |Note: In DMA mode, an interrupt will be triggered when an amount of data set in HMAC_DMA_CNT is fed into the SHA/HMAC engine
+     * |        |          |In Non-DMA mode, an interrupt will be triggered when the SHA/HMAC engine finishes the operation.
+     * |[25]    |HMACEIEN  |SHA/HMAC Error Interrupt Enable Bit
+     * |        |          |0 = SHA/HMAC error interrupt flag Disabled.
+     * |        |          |1 = HMAC error interrupt flag Enabled.
+     * |[30]    |RSAIEN    |RSA Interrupt Enable Bit
+     * |        |          |0 = RSA interrupt Disabled.
+     * |        |          |1 = RSA interrupt Enabled.
+     * |[31]    |RSAEIEN   |RSA Error Interrupt Enable Bit
+     * |        |          |0 = RSA error interrupt flag Disabled.
+     * |        |          |1 = RSA error interrupt flag Enabled.
+     * @var CRYPTO_T::INTSTS
+     * Offset: 0x04  Crypto Interrupt Flag
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |AESIF     |AES Finish Interrupt Flag
+     * |        |          |0 = No AES interrupt.
+     * |        |          |1 = AES done interrupt.
+     * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
+     * |[1]     |AESEIF    |AES Error Flag
+     * |        |          |This register includes operating and setting error
+     * |        |          |The detail flag is shown in CRYPTO_AES_STS register.
+     * |        |          |0 = No AES error.
+     * |        |          |1 = AES error interrupt.
+     * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
+     * |[6]     |CHAPOLYIF |CHACHA20/POLY1305 Finish Interrupt Flag
+     * |        |          |0 = No CHACHA20/POLY1305 interrupt.
+     * |        |          |1 = CHACHA20/POLY1305 done interrupt.
+     * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
+     * |[7]     |CHAPOLYEIF|CHACHA20/POLY1305 Error Flag
+     * |        |          |This register includes operating and setting error
+     * |        |          |The detail flag is shown in CRYPTO_CHAPOLY_STS register.
+     * |        |          |0 = No CHACHA20/POLY1305 error.
+     * |        |          |1 = CHACHA20/POLY1305 error interrupt.
+     * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
+     * |[16]    |PRNGIF    |PRNG Finish Interrupt Flag
+     * |        |          |0 = No PRNG interrupt.
+     * |        |          |1 = PRNG done interrupt.
+     * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
+     * |[17]    |PRNGEIF   |PRNG Error Flag
+     * |        |          |This register includes operating and setting error
+     * |        |          |The detail flag is shown in CRYPTO_PRNG_STS register.
+     * |        |          |0 = No PRNG error.
+     * |        |          |1 = PRNG error interrupt.
+     * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
+     * |[22]    |ECCIF     |ECC Finish Interrupt Flag
+     * |        |          |0 = No ECC interrupt.
+     * |        |          |1 = ECC operation done interrupt.
+     * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
+     * |[23]    |ECCEIF    |ECC Error Flag
+     * |        |          |This register includes operating and setting error
+     * |        |          |The detail flag is shown in CRYPTO_ECC_STS register.
+     * |        |          |0 = No ECC error.
+     * |        |          |1 = ECC error interrupt.
+     * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
+     * |[24]    |HMACIF    |SHA/HMAC Finish Interrupt Flag
+     * |        |          |0 = No SHA/HMAC interrupt.
+     * |        |          |1 = SHA/HMAC operation done interrupt.
+     * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
+     * |[25]    |HMACEIF   |SHA/HMAC Error Flag
+     * |        |          |This register includes operating and setting error
+     * |        |          |The detail flag is shown in CRYPTO_HMAC_STS register.
+     * |        |          |0 = No SHA/HMAC error.
+     * |        |          |1 = SHA/HMAC error interrupt.
+     * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
+     * |[30]    |RSAIF     |RSA Finish Interrupt Flag
+     * |        |          |0 = No RSA interrupt.
+     * |        |          |1 = RSA operation done interrupt.
+     * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
+     * |[31]    |RSAEIF    |RSA Error Interrupt Flag
+     * |        |          |This register includes operating and setting error
+     * |        |          |The detail flag is shown in CRYPTO_RSA_STS register.
+     * |        |          |0 = No RSA error.
+     * |        |          |1 = RSA error interrupt.
+     * |        |          |Note: This bit is cleared by writing 1, and it has no effect by writing 0.
+     * @var CRYPTO_T::PRNG_CTL
+     * Offset: 0x08  PRNG Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |START     |Start PRNG Engine
+     * |        |          |0 = Stop PRNG engine.
+     * |        |          |1 = Generate new key and store the new key to register CRYPTO_PRNG_KEYx, which will be cleared when the new key is generated.
+     * |[1]     |SEEDRLD   |Reload New Seed for PRNG Engine
+     * |        |          |0 = Generating key based on the current seed.
+     * |        |          |1 = Reload new seed.
+     * |[5:2]   |KEYSZ     |PRNG Generate Key Size
+     * |        |          |0000 = 128 bits.
+     * |        |          |0001 = 163 bits.
+     * |        |          |0010 = 192 bits.
+     * |        |          |0011 = 224 bits.
+     * |        |          |0100 = 233 bits.
+     * |        |          |0101 = 255 bits.
+     * |        |          |0110 = 256 bits.
+     * |        |          |0111 = 283 bits (only for Key Store).
+     * |        |          |1000 = 384 bits (only for Key Store).
+     * |        |          |1001 = 409 bits (only for Key Store).
+     * |        |          |1010 = 512 bits (only for Key Store).
+     * |        |          |1011 = 521 bits (only for Key Store).
+     * |        |          |1100 = 571 bits (only for Key Store).
+     * |        |          |1101 = Reserved.
+     * |        |          |1110 = Reserved.
+     * |        |          |1111 = Reserved.
+     * |        |          |Note: 283~571 bits are only generated for Key Store.
+     * |[8]     |BUSY      |PRNG Busy (Read Only)
+     * |        |          |0 = PRNG engine is idle.
+     * |        |          |1 = PRNG engine is generating CRYPTO_PRNG_KEYx.
+     * |[16]    |SEEDSRC   |Seed Source
+     * |        |          |0 = Seed is from TRNG.
+     * |        |          |1 = Seed is from PRNG seed register.
+     * |        |          |Note: When SEEDRLD is set to 0, this bit (SEEDSRC) is meaningless.
+     * @var CRYPTO_T::PRNG_SEED
+     * Offset: 0x0C  Seed for PRNG
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |SEED      |Seed for PRNG (Write Only)
+     * |        |          |The bits store the seed for PRNG engine.
+     * |        |          |Note: In TRNG+PRNG mode, the seed is from TRNG engine, and it will not be stored in this register.
+     * @var CRYPTO_T::PRNG_KEY[8]
+     * Offset: 0x10~0x2C  PRNG Generated Key Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |KEY       |Store PRNG Generated Key (Read Only)
+     * |        |          |The bits store the key that is generated by PRNG.
+     * @var CRYPTO_T::PRNG_STS
+     * Offset: 0x30  PRNG Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |BUSY      |PRNG Busy Flag
+     * |        |          |0 = PRNG engine is idle.
+     * |        |          |1 = PRNG engine is generating CRYPTO_PRNG_KEYx.
+     * |[16]    |KCTLERR   |PRNG Key Control Register Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = PRNG key control error
+     * |        |          |When PRNG execute ECDSA or ECDH, but PRNG seed not from TRNG or key is not written to the SRAM of Key Store (WSDST, CRYPTO_PRNG_KSCTL[23:22] is not equal to u201900u2019).
+     * |[17]    |KSERR     |PRNG Access Key Store Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Access Key Store failed.
+     * |[18]    |TRNGERR   |True Random Number Generator Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Getting random number or seed failed.
+     * @var CRYPTO_T::AES_FDBCK[4]
+     * Offset: 0x50~0x5C  AES Engine Output Feedback Data Register After Cryptographic Operation
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |FDBCK     |AES Feedback Information
+     * |        |          |The feedback value is 128 bits in size.
+     * |        |          |The AES engine uses the data from CRYPTO_AES_FDBCKx as the data inputted to CRYPTO_AES_IVx for the next block in DMA cascade mode.
+     * |        |          |The AES engine outputs feedback information for IV in the next blocku2019s operation
+     * |        |          |Software can use this feedback information to implement more than four DMA channels
+     * |        |          |Software can store that feedback value temporarily
+     * |        |          |After switching back, fill the stored feedback value to CRYPTO_AES_IVx in the same channel operation, and then continue the operation with the original setting.
+
+     * @var CRYPTO_T::AES_GCM_IVCNT[2]
+     * Offset: 0x80  AES GCM IV Byte Count Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |CNT       |AES GCM IV   Byte Count
+     * |        |          |The bit   length of IV is 64 bits for AES GCM mode
+     * |        |          |The CRYPTO_AES_GCM_IVCNT[0] keeps the   low weight byte count of initial vector (i.e., len(IV)[34:3]) of AES GCM mode   and can be read and written.
+     * |        |          |The CRYPTO_AES_GCM_IVCNT[1] keeps the   high weight byte count of initial vector (i.e., len(IV)[64:35]) of AES GCM   mode and can be read and written.
+     * @var CRYPTO_T::AES_GCM_ACNT[2]
+     * Offset: 0x88  AES GCM A Byte Count Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |CNT       |AES GCM A Byte   Count
+     * |        |          |The bit   length of A is 64 bits for AES GCM mode
+     * |        |          |The CRYPTO_AES_GCM_ACNT[0] keeps the low   weight byte count of the additional authenticated data (i.e., len(A)[34:3]) of   AES GCM mode and can be read and written.
+     * |        |          |The CRYPTO_AES_GCM_ACNT[1] keeps the high   weight byte count of the additional authenticated data (i.e., len(A)[63:35]) of   AES GCM mode and can be read and written.
+     * @var CRYPTO_T::AES_GCM_PCNT[2]
+     * Offset: 0x90  AES GCM P Byte Count Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |CNT       |AES GCM P Byte   Count
+     * |        |          |The bit length of Por C is 39 bits for AES GCM mode
+     * |        |          |The CRYPTO_AES_GCM_PCNT[0] keeps   the low weight byte count of the plaintext or ciphertext (i.e.,   len(P)[34:3] or len(C)[34:3]) of AES GCM mode and can be read and   written.
+     * |        |          |The CRYPTO_AES_GCM_PCNT[1] keeps   the high weight byte count of the plaintext or ciphertext (i.e.,   len(P)[38:35] or len(C)[38:35]) of AES GCM mode and can be read and   written.
+     * |        |          |The bit length of Por C is 64 bits for AES CCM mode
+     * |        |          |The CRYPTO_AES_GCM_PCNT[0] keeps   the low weight byte count of the plaintext or ciphertext (i.e.,   len(P)[34:3] or len(C)[34:3]) of AES GCM mode and can be read and   written.
+     * |        |          |The CRYPTO_AES_GCM_PCNT1   keeps   the high weight byte count of the plaintext or ciphertext (i.e., len(P)[63:35]   or len(C)[63:35]) of AES CCM mode and can be read and written.
+     * @var CRYPTO_T::AES_FBADDR
+     * Offset: 0xA0  AES DMA Feedback Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |FBADDR    |AES DMA Feedback Address
+     * |        |          |In DMA cascade mode, software can update DMA feedback address register for automatically reading and writing feedback values via DMA
+     * |        |          |The FBADDR keeps the feedback address of the feedback data for the next cascade operation
+     * |        |          |Based on the feedback address, the AES accelerator can read the feedback data of the last cascade operation from SRAM memory space and write the feedback data of the current cascade operation to SRAM memory space
+     * |        |          |The start of feedback address should be located at word boundary
+     * |        |          |In other words, bit 1 and 0 of FBADDR are ignored.
+     * |        |          |FBADDR can be read and written.
+     * |        |          |In DMA mode, software can update the next CRYPTO_AES_FBADDR before triggering START.
+     * @var CRYPTO_T::AES_CTL
+     * Offset: 0x100  AES Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |START     |AES Engine Start
+     * |        |          |0 = No effect.
+     * |        |          |1 = Start AES engine. BUSY flag will be set.
+     * |        |          |Note: This bit is always 0 when it is read back.
+     * |[1]     |STOP      |AES Engine Stop
+     * |        |          |0 = No effect.
+     * |        |          |1 = Stop AES engine.
+     * |        |          |Note: This bit is always 0 when it is read back.
+     * |[3:2]   |KEYSZ     |AES Key Size
+     * |        |          |This bit defines three different key size for AES operation.
+     * |        |          |2u2019b00 = 128 bits key.
+     * |        |          |2u2019b01 = 192 bits key.
+     * |        |          |2u2019b10 = 256 bits key.
+     * |        |          |2u2019b11 = Reserved.
+     * |        |          |If the AES accelerator is operating and the corresponding flag BUSY is 1, updating this register has no effect.
+     * |        |          |Note: When SM4EN=1, the key size of AES must be 128.
+     * |[5]     |DMALAST   |AES Last Block
+     * |        |          |In DMA mode, this bit must be set as beginning the last DMA cascade round.
+     * |        |          |In Non-DMA mode, this bit must be set when feeding in the last block of data in ECB, CBC, CTR, OFB, and CFB mode, and feeding in the (last-1) block of data at CBC-CS1, CBC-CS2, and CBC-CS3 mode.
+     * |        |          |This bit is always 0 when it is read back, and must be written again once START is triggered.
+     * |[6]     |DMACSCAD  |AES Engine DMA with Cascade Mode
+     * |        |          |0 = DMA cascade function Disabled.
+     * |        |          |1 = In DMA cascade mode, software can update DMA source address register, destination address register, and byte count register during a cascade operation, without finishing the accelerator operation.
+     * |        |          |Note: The last two blocks of AES-CBC-CS1/2/3 must be in the last cascade operation.
+     * |[7]     |DMAEN     |AES Engine DMA Enable Bit
+     * |        |          |0 = AES DMA engine Disabled.
+     * |        |          |The AES engine operates in Non-DMA mode. The data need to be written in CRYPTO_AES_DATIN.
+     * |        |          |1 = AES_DMA engine Enabled.
+     * |        |          |The AES engine operates in DMA mode, and data movement from/to the engine is done by DMA logic.
+     * |[15:8]  |OPMODE    |AES Engine Operation Modes
+     * |        |          |0x00 = ECB (Electronic Codebook Mode)  0x01 = CBC (Cipher Block Chaining Mode).
+     * |        |          |0x02 = CFB (Cipher Feedback Mode).
+     * |        |          |0x03 = OFB (Output Feedback Mode).
+     * |        |          |0x04 = CTR (Counter Mode).
+     * |        |          |0x10 = CBC-CS1 (CBC Ciphertext-Stealing 1 Mode).
+     * |        |          |0x11 = CBC-CS2 (CBC Ciphertext-Stealing 2 Mode).
+     * |        |          |0x12 = CBC-CS3 (CBC Ciphertext-Stealing 3 Mode).
+     * |        |          |0x20 = GCM (Galois/Counter Mode).
+     * |        |          |0x21 = GHASH (Galois Hash Function).
+     * |        |          |0x22 = CCM (Counter with CBC-MAC Mode).
+     * |[16]    |ENCRYPTO  |AES Encryption/Decryption
+     * |        |          |0 = AES engine executes decryption operation.
+     * |        |          |1 = AES engine executes encryption operation.
+     * |[17]    |SM4EN     |SM4 Engine Enable
+     * |        |          |0 = AES engine Enabled.
+     * |        |          |1 = SM4 engine Enabled.
+     * |[19]    |DFAPEN    |AES Differential Fault Attack Protection Enable
+     * |        |          |0 = AES Differential Fault Attack Protection Disabled.
+     * |        |          |1 = AES Differential Fault Attack Protection Enabled.
+     * |[20]    |FBIN      |Feedback Input to AES Via DMA Automatically
+     * |        |          |0 = DMA automatic feedback input function Disabled.
+     * |        |          |1 = DMA automatic feedback input function Enabled when DMAEN = 1.
+     * |[21]    |FBOUT     |Feedback Output From AES Via DMA Automatically
+     * |        |          |0 = DMA automatic feedback output function Disabled.
+     * |        |          |1 = DMA automatic feedback output function Enabled when DMAEN = 1.
+     * |[22]    |OUTSWAP   |AES Engine Output Data Swap
+     * |        |          |0 = Keep the original order.
+     * |        |          |1 = The order that CPU reads data from the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
+     * |[23]    |INSWAP    |AES Engine Input Data Swap
+     * |        |          |0 = Keep the original order.
+     * |        |          |1 = The order that CPU feeds data to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
+     * |[24]    |KOUTSWAP  |AES Engine Output Key, Initial Vector and Feedback Swap
+     * |        |          |0 = Keep the original order.
+     * |        |          |1 = The order that CPU reads key, initial vector and feedback from the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
+     * |[25]    |KINSWAP   |AES Engine Input Key and Initial Vector Swap
+     * |        |          |0 = Keep the original order.
+     * |        |          |1 = The order that CPU feeds key and initial vector to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
+     * |[30:26] |KEYUNPRT  |Unprotect Key
+     * |        |          |Writing 0 to CRYPTO_AES_CTL[31] and u201C10110u201D to CRYPTO_AES_CTL[30:26] is to unprotect the AES key.
+     * |        |          |The KEYUNPRT can be read and written
+     * |        |          |When it is written as the AES engine is operating, BUSY flag is 1, there would be no effect on KEYUNPRT.
+     * |[31]    |KEYPRT    |Protect Key
+     * |        |          |Read as a flag to reflect KEYPRT.
+     * |        |          |0 = No effect.
+     * |        |          |1 = Protect the content of the AES key from reading
+     * |        |          |The return value for reading CRYPTO_AES_KEYx is not the content of the registers CRYPTO_AES_KEYx
+     * |        |          |Once it is set, it can be cleared by asserting KEYUNPRT
+     * |        |          |The key content would be cleared as well.
+     * @var CRYPTO_T::AES_STS
+     * Offset: 0x104  AES Engine Flag
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |BUSY      |AES Engine Busy
+     * |        |          |0 = The AES engine is idle or finished.
+     * |        |          |1 = The AES engine is under processing.
+     * |[8]     |INBUFEMPTY|AES Input Buffer Empty
+     * |        |          |0 = There are some data in input buffer waiting for the AES engine to process.
+     * |        |          |1 = AES input buffer is empty
+     * |        |          |Software needs to feed data to the AES engine
+     * |        |          |Otherwise, the AES engine will be pending to wait for input data.
+     * |[9]     |INBUFFULL |AES Input Buffer Full Flag
+     * |        |          |0 = AES input buffer is not full. Software can feed the data into the AES engine.
+     * |        |          |1 = AES input buffer is full
+     * |        |          |Software cannot feed data to the AES engine
+     * |        |          |Otherwise, the flag INBUFERR will be set to 1.
+     * |[10]    |INBUFERR  |AES Input Buffer Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Error happened during feeding data to the AES engine.
+     * |[12]    |CNTERR    |CRYPTO_AES_CNT Setting Error
+     * |        |          |0 = No error in CRYPTO_AES_CNT setting.
+     * |        |          |1 = CRYPTO_AES_CNT is 0 if DMAEN (CRYPTO_AES_CTL[7]) is enabled.
+     * |[16]    |OUTBUFEMPTY|AES Out Buffer Empty
+     * |        |          |0 = AES output buffer is not empty. There are some valid data kept in output buffer.
+     * |        |          |1 = AES output buffer is empty
+     * |        |          |Software cannot get data from CRYPTO_AES_DATOUT
+     * |        |          |Otherwise, the flag OUTBUFERR will be set to 1 since the output buffer is empty.
+     * |[17]    |OUTBUFFULL|AES Out Buffer Full Flag
+     * |        |          |0 = AES output buffer is not full.
+     * |        |          |1 = AES output buffer is full, and software needs to get data from CRYPTO_AES_DATOUT
+     * |        |          |Otherwise, the AES engine will be pending since the output buffer is full.
+     * |[18]    |OUTBUFERR |AES Out Buffer Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Error happened during getting the result from AES engine.
+     * |[20]    |BUSERR    |AES DMA Access Bus Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Bus error will stop DMA operation and AES engine.
+     * |[21]    |KSERR     |AES Engine Access Key Store Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Key Store access error will stop AES engine.
+     * |[22]    |DFAERR    |AES Engine Differential Fault Attack Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Differential Fault Attack happened in AES engine. The results from AES engine are incorrect.
+     * @var CRYPTO_T::AES_DATIN
+     * Offset: 0x108  AES Engine Data Input Port Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |DATIN     |AES Engine Input Port
+     * |        |          |CPU feeds data to AES engine through this port by checking CRYPTO_AES_STS. Feed data as INBUFFULL is 0.
+     * @var CRYPTO_T::AES_DATOUT
+     * Offset: 0x10C  AES Engine Data Output Port Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |DATOUT    |AES Engine Output Port
+     * |        |          |CPU gets results from the AES engine through this port by checking CRYPTO_AES_STS
+     * |        |          |Get data as OUTBUFEMPTY is 0.
+     * @var CRYPTO_T::AES_KEY[8]
+     * Offset: 0x110  AES Key Word Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |KEY       |CRYPTO_AES_KEYx
+     * |        |          |The KEY keeps the security key for AES operation.
+     * |        |          |x = 0, 1..7.
+     * |        |          |The security key for AES accelerator can be 128, 192, or 256 bits and four, six, or eight 32-bit registers are to store each security key.
+     * |        |          |{CRYPTO_AES_KEY3, CRYPTO_AES_KEY2, CRYPTO_AES_KEY1, CRYPTO_AES_KEY0} stores the 128-bit security key for AES operation.
+     * |        |          |{CRYPTO_AES_KEY5, CRYPTO_AES_KEY4, CRYPTO_AES_KEY3, CRYPTO_AES_KEY2, CRYPTO_AES_KEY1, CRYPTO_AES_KEY0} stores the 192-bit security key for AES operation.
+     * |        |          |{CRYPTO_AES_KEY7, CRYPTO_AES_KEY6, CRYPTO_AES_KEY5, CRYPTO_AES_KEY4, CRYPTO_AES_KEY3, CRYPTO_AES_KEY2, CRYPTO_AES_KEY1, CRYPTO_AES_KEY0} stores the 256-bit security key for AES operation.
+     * @var CRYPTO_T::AES_IV[4]
+     * Offset: 0x130  AES Initial Vector Word Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |IV        |AES Initial Vectors
+     * |        |          |x = 0, 1..3.
+     * |        |          |Four initial vectors (CRYPTO_AES_IV0, CRYPTO_AES_IV1, CRYPTO_AES_IV2, and CRYPTO_AES_IV3) are for AES operating in CBC, CFB, and OFB mode
+     * |        |          |Four registers (CRYPTO_AES_IV0, CRYPTO_AES_IV1, CRYPTO_AES_IV2, and CRYPTO_AES_IV3) act as Nonce counter when the AES engine is operating in CTR mode.
+     * @var CRYPTO_T::AES_SADDR
+     * Offset: 0x140  AES DMA Source Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |SADDR     |AES DMA Source Address
+     * |        |          |The AES accelerator supports DMA function to transfer the plain text between SRAM memory space and embedded FIFO
+     * |        |          |The SADDR keeps the source address of the data buffer where the source text is stored
+     * |        |          |Based on the source address, the AES accelerator can read the plain text (encryption) / cipher text (decryption) from SRAM memory space and do AES operation
+     * |        |          |The start of source address should be located at word boundary
+     * |        |          |In other words, bit 1 and 0 of SADDR are ignored.
+     * |        |          |SADDR can be read and written
+     * |        |          |Writing to SADDR while the AES accelerator is operating doesnu2019t affect the current AES operation
+     * |        |          |But the value of SADDR will be updated later on
+     * |        |          |Consequently, software can prepare the DMA source address for the next AES operation.
+     * |        |          |In DMA mode, software can update the next CRYPTO_AES_SADDR before triggering START.
+     * |        |          |The value of CRYPTO_AES_SADDR and CRYPTO_AES_DADDR can be the same.
+     * @var CRYPTO_T::AES_DADDR
+     * Offset: 0x144  AES DMA Destination Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |DADDR     |AES DMA Destination Address
+     * |        |          |The AES accelerator supports DMA function to transfer the cipher text between SRAM memory space and embedded FIFO
+     * |        |          |The DADDR keeps the destination address of the data buffer where the engine outputu2019s text will be stored
+     * |        |          |Based on the destination address, the AES accelerator can write the cipher text (encryption) / plain text (decryption) back to SRAM memory space after the AES operation is finished
+     * |        |          |The start of destination address should be located at word boundary
+     * |        |          |In other words, bit 1 and 0 of DADDR are ignored.
+     * |        |          |DADDR can be read and written
+     * |        |          |Writing to DADDR while the AES accelerator is operating doesnu2019t affect the current AES operation
+     * |        |          |But the value of DADDR will be updated later on
+     * |        |          |Consequently, software can prepare the destination address for the next AES operation.
+     * |        |          |In DMA mode, software can update the next CRYPTO_AES_DADDR before triggering START.
+     * |        |          |The value of CRYPTO_AES_SADDR and CRYPTO_AES_DADDR can be the same.
+     * @var CRYPTO_T::AES_CNT
+     * Offset: 0x148  AES Byte Count Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |CNT       |AES Byte   Count
+     * |        |          |The   CRYPTO_AES_CNT keeps the byte count of source text that is for the AES engine   operating in DMA mode
+     * |        |          |The CRYPTO_AES_CNT is 32-bit and the maximum of byte   count is 4G bytes.
+     * |        |          |CRYPTO_AES_CNT   can be read and written
+     * |        |          |Writing to CRYPTO_AES_CNT while the AES accelerator   is operating doesnu2019t affect the current AES operation
+     * |        |          |But the value of   CRYPTO_AES_CNT will be updated later on
+     * |        |          |Consequently, software can prepare   the byte count of data for the next AES operation.
+     * |        |          |According to   CBC-CS1, CBC-CS2, and CBC-CS3 standard, the count of operation data must be more   than 16 bytes
+     * |        |          |Operations that are qual to or less than one block will output   unexpected result.
+     * |        |          |In Non-DMA   ECB, CBC, CFB, OFB, CTR, CCM and GCM mode, CRYPTO_AES_CNT must be set as byte   count for the last block of data before feeding in the last block of data
+     * |        |          |In   Non-DMA CBC-CS1, CBC-CS2, and CBC-CS3 mode, CRYPTO_AES_CNT must be set as   byte count for the last two blocks of data before feeding in the last two   blocks of data.
+     * |        |          |In AES GCM   mode without DMA cascade function, the value of CRYPTO_AES_CNT is equal to   the total value of {CRYPTO_AES_GCM_IVCNT1, CRYPTO_AES_GCM_IVCNT0}, {CRYPTO_AES_GCM_ACNT1,   CRYPTO_AES_GCM_ACNT0} and {CRYPTO_AES_GCM_PCNT1, CRYPTO_AES_GCM_PCNT0}.
+     * |        |          |In AES GCM   mode with DMA cascade function, the value of CRYPTO_AES_CNT represents the byte   count of source text in this cascade function
+     * |        |          |Thus, the value of   CRYPTO_AES_CNT is less than or equal to the total value of {CRYPTO_AES_GCM_IVCNT1,   CRYPTO_AES_GCM_IVCNT0}, {CRYPTO_AES_GCM_ACNT1, CRYPTO_AES_GCM_ACNT0} and {CRYPTO_AES_GCM_PCNT1,   CRYPTO_AES_GCM_PCNT0} and must be block alignment.
+     * |        |          |In AES CCM   mode without DMA cascade function, the value of CRYPTO_AES_CNT is equal to   the total value of {CRYPTO_AES_GCM_ACNT1, CRYPTO_AES_GCM_ACNT0} and {CRYPTO_AES_GCM_PCNT1,   CRYPTO_AES_GCM_PCNT0}.
+     * |        |          |In AES CCM   mode with DMA cascade function, the value of CRYPTO_AES_CNT represents the byte   count of source text in this cascade function
+     * |        |          |Thus, the value of   CRYPTO_AES_CNT is less than or equal to the total value of {CRYPTO_AES_GCM_ACNT1,   CRYPTO_AES_GCM_ACNT0} and {CRYPTO_AES_GCM_PCNT1, CRYPTO_AES_GCM_PCNT0} and   must be block alignment, except for the last block of plaintext or   ciphertext.
+     * @var CRYPTO_T::HMAC_CTL
+     * Offset: 0x300  SHA/HMAC Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |START     |SHA/HMAC Engine Start
+     * |        |          |0 = No effect.
+     * |        |          |1 = Start SHA/HMAC engine. BUSY flag will be set.
+     * |        |          |Note: This bit is always 0 when it is read back.
+     * |[1]     |STOP      |SHA/HMAC Engine Stop
+     * |        |          |0 = No effect.
+     * |        |          |1 = Stop SHA/HMAC engine.
+     * |        |          |Note: This bit is always 0 when it is read back.
+     * |[4]     |DMAFIRST  |SHA/HMAC First Block in Cascade function
+     * |        |          |This bit must be set as feeding in first byte of data.
+     * |[5]     |DMALAST   |SHA/HMAC Last Block
+     * |        |          |This bit must be set as feeding in last byte of data.
+     * |[6]     |DMACSCAD  |SHA/HMAC Engine DMA with Cascade Mode
+     * |        |          |0 = DMA cascade function Disabled.
+     * |        |          |1 = In DMA cascade mode, software can update DMA source address register, destination address register, and byte count register during a cascade operation, without finishing the accelerator operation.
+     * |[7]     |DMAEN     |SHA/HMAC Engine DMA Enable Bit
+     * |        |          |0 = SHA/HMAC DMA engine Disabled.
+     * |        |          |SHA/HMAC engine operates in Non-DMA mode. The data need to be written in CRYPTO_HMAC_DATIN.
+     * |        |          |1 = SHA/HMAC DMA engine Enabled.
+     * |        |          |SHA/HMAC engine operates in DMA mode, and data movement from/to the engine is done by DMA logic.
+     * |[10:8]  |OPMODE    |SHA/HMAC Engine Operation Modes
+     * |        |          |When SHA3EN=0,.
+     * |        |          |0x0xx: SHA1-160
+     * |        |          |0x100: SHA2-256
+     * |        |          |0x101: SHA2-224
+     * |        |          |0x110: SHA2-512
+     * |        |          |0x111: SHA2-384
+     * |        |          |When SHA3EN=1,.
+     * |        |          |0x100: SHA3-256
+     * |        |          |0x101: SHA3-224
+     * |        |          |0x110: SHA3-512
+     * |        |          |0x111: SHA3-384
+     * |        |          |0x000: SHAKE128
+     * |        |          |0x001: SHAKE256
+     * |        |          |Note: These bits can be read and written. But writing to them wouldnu2019t take effect as BUSY is 1.
+     * |        |          |Note: When SM3EN=1, SHA/HMAC only execute SM3 and then generate 256 bits digest.
+     * |[11]    |HMACEN    |HMAC_SHA Engine Operating Mode
+     * |        |          |0 = Execute SHA function.
+     * |        |          |1 = Execute HMAC function.
+     * |[12]    |SHA3EN    |SHA3 Engine Enable Bit
+     * |        |          |0 = Execute other function.
+     * |        |          |1 = Execute SHA3 function if SM3EN=0.
+     * |[13]    |SM3EN     |SM3 Engine Enable Bit
+     * |        |          |0 = Execute other function.
+     * |        |          |1 = Execute SM3 function if SHA3EN=0.
+     * |[20]    |FBIN      |Feedback Input to SHA/HMAC Via DMA Automatically
+     * |        |          |0 = DMA automatic feedback input function Disabled.
+     * |        |          |1 = DMA automatic feedback input function Enabled when DMAEN = 1.
+     * |[21]    |FBOUT     |Feedback Output From SHA/HMAC Via DMA Automatically
+     * |        |          |0 = DMA automatic feedback output function Disabled.
+     * |        |          |1 = DMA automatic feedback output function Enabled when DMAEN = 1.
+     * |[22]    |OUTSWAP   |SHA/HMAC Engine Output Data Swap
+     * |        |          |0 = Keep the original order.
+     * |        |          |1 = The order that CPU feeds data to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
+     * |[23]    |INSWAP    |SHA/HMAC Engine Input Data Swap
+     * |        |          |0 = Keep the original order.
+     * |        |          |1 = The order that CPU feeds data to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
+     * |[24]    |NEXTDGST  |SHAKE128/256 Next Digest Start
+     * |        |          |0 = No effect.
+     * |        |          |1 = Start SHAKE engine to generate the next digest only when SHAKEBUSY is 0
+     * |        |          |BUSY and SHAKEBUSY flag will be set.
+     * |[25]    |FINISHDGST|SHAKE128/256 Next Digest Finish
+     * |        |          |0 = No effect.
+     * |        |          |1 = finish generating the next digest.
+     * @var CRYPTO_T::HMAC_STS
+     * Offset: 0x304  SHA/HMAC Status Flag
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |BUSY      |SHA/HMAC Engine Busy
+     * |        |          |0 = SHA/HMAC engine is idle or finished.
+     * |        |          |1 = SHA/HMAC engine is busy.
+     * |[1]     |DMABUSY   |SHA/HMAC Engine DMA Busy Flag
+     * |        |          |0 = SHA/HMAC DMA engine is idle or finished.
+     * |        |          |1 = SHA/HMAC DMA engine is busy.
+     * |[2]     |SHAKEBUSY |SHAKE Engine Busy Flag
+     * |        |          |0 = SHAKE engine is idle or finished.
+     * |        |          |1 = SHAKE engine is busy.
+     * |[8]     |DMAERR    |SHA/HMAC Engine DMA Error Flag
+     * |        |          |0 = Show the SHA/HMAC engine access normal.
+     * |        |          |1 = Show the SHA/HMAC engine access error.
+     * |[9]     |KSERR     |HMAC Engine Access Key Store Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Access error will stop HMAC engine.
+     * |[16]    |DATINREQ  |SHA/HMAC Non-DMA Mode Data Input Request
+     * |        |          |0 = No effect.
+     * |        |          |1 = Request SHA/HMAC Non-DMA mode data input.
+     * @var CRYPTO_T::HMAC_DGST[16]
+     * Offset: 0x308~0x344  SHA/HMAC Output Feedback Data
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |DGST      |SHA/HMAC Output Feedback Data Output Register
+     * |        |          |For SHA-160, the digest is stored in CRYPTO_HMAC_DGST0 ~ CRYPTO_HMAC_DGST4.
+     * |        |          |For SHA-224, the digest is stored in CRYPTO_HMAC_DGST0 ~ CRYPTO_HMAC_DGST6.
+     * |        |          |For SHA-256, the digest is stored in CRYPTO_HMAC_DGST0 ~ CRYPTO_HMAC_DGST7.
+     * |        |          |For SHA-384, the digest is stored in CRYPTO_HMAC_DGST0 ~ CRYPTO_HMAC_DGST11.
+     * |        |          |For SHA-512, the digest is stored in CRYPTO_HMAC_DGST0 ~ CRYPTO_HMAC_DGST15.
+     * @var CRYPTO_T::HMAC_KEYCNT
+     * Offset: 0x348  SHA/HMAC Key Byte Count Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |KEYCNT    |SHA/HMAC Key Byte Count
+     * |        |          |The CRYPTO_HMAC_KEYCNT keeps the byte count of key that SHA/HMAC engine operates
+     * |        |          |The register is 32-bit and the maximum byte count is 4G bytes
+     * |        |          |It can be read and written.
+     * |        |          |Writing to the register CRYPTO_HMAC_KEYCNT as the SHA/HMAC accelerator operating doesnu2019t affect the current SHA/HMAC operation
+     * |        |          |But the value of CRYPTO_HMAC_KEYCNT will be updated later on
+     * |        |          |Consequently, software can prepare the key count for the next SHA/HMAC operation.
+     * @var CRYPTO_T::HMAC_SADDR
+     * Offset: 0x34C  SHA/HMAC DMA Source Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |SADDR     |SHA/HMAC DMA Source Address
+     * |        |          |The SHA/HMAC accelerator supports DMA function to transfer the plain text between SRAM memory space and embedded FIFO
+     * |        |          |The CRYPTO_HMAC_SADDR keeps the source address of the data buffer where the source text is stored
+     * |        |          |Based on the source address, the SHA/HMAC accelerator can read the plain text from SRAM memory space and do SHA/HMAC operation
+     * |        |          |The start of source address should be located at word boundary
+     * |        |          |In other words, bit 1 and 0 of CRYPTO_HMAC_SADDR are ignored.
+     * |        |          |CRYPTO_HMAC_SADDR can be read and written
+     * |        |          |Writing to CRYPTO_HMAC_SADDR while the SHA/HMAC accelerator is operating doesnu2019t affect the current SHA/HMAC operation
+     * |        |          |But the value of CRYPTO_HMAC_SADDR will be updated later on
+     * |        |          |Consequently, software can prepare the DMA source address for the next SHA/HMAC operation.
+     * |        |          |In DMA mode, software can update the next CRYPTO_HMAC_SADDR before triggering START.
+     * |        |          |CRYPTO_HMAC_SADDR and CRYPTO_HMAC_DADDR can be the same in the value.
+     * @var CRYPTO_T::HMAC_DMACNT
+     * Offset: 0x350  SHA/HMAC Byte Count Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |DMACNT    |SHA/HMAC Operation Byte Count
+     * |        |          |The CRYPTO_HMAC_DMACNT keeps the byte count of source text that is for the SHA/HMAC engine operating in DMA mode
+     * |        |          |The CRYPTO_HMAC_DMACNT is 32-bit and the maximum of byte count is 4G bytes.
+     * |        |          |CRYPTO_HMAC_DMACNT can be read and written
+     * |        |          |Writing to CRYPTO_HMAC_DMACNT while the SHA/HMAC accelerator is operating doesnu2019t affect the current SHA/HMAC operation
+     * |        |          |But the value of CRYPTO_HMAC_DMACNT will be updated later on
+     * |        |          |Consequently, software can prepare the byte count of data for the next SHA/HMAC operation.
+     * |        |          |In Non-DMA mode, CRYPTO_HMAC_DMACNT must be set as the byte count of the last block before feeding in the last block of data.
+     * @var CRYPTO_T::HMAC_DATIN
+     * Offset: 0x354  SHA/HMAC Engine Non-DMA Mode Data Input Port Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |DATIN     |SHA/HMAC Engine Input Port
+     * |        |          |CPU feeds data to SHA/HMAC engine through this port by checking CRYPTO_HMAC_STS
+     * |        |          |Feed data as DATINREQ is 1.
+     * @var CRYPTO_T::HMAC_FDBCK[88]
+     * Offset: 0x358~0x4B4  SHA/HMAC Output Feedback Data After SHA/HMAC Operation
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |FDBCK     |SHA/HMAC Feedback Information
+     * |        |          |The feedback value is 1728 bits in size for SHA1/2 and 2784 bits in size for SHA3.
+     * |        |          |The SHA/HMAC engine uses the data from CRYPTO_HMAC_FDBCKx as the data inputted to CRYPTO_HMAC_FDBCKx for the next block in DMA cascade mode.
+     * |        |          |The SHA/HMAC engine outputs feedback information for initial setting in the next blocku2019s operation
+     * |        |          |Software can store that feedback value temporarily
+     * |        |          |After switching back, fill the stored feedback value to CRYPTO_HMAC_FDBCKx in the same operation, and then continue the operation with the original setting.
+     * @var CRYPTO_T::HMAC_SHA512T
+     * Offset: 0x4F8  SHA/HMAC SHA512/t Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |SHA512TEN |SHA512/t Engine Enable Bit
+     * |        |          |0 = Execute other function.
+     * |        |          |1 = Execute SHA512/t function if SHA3EN=0, and SM3EN=0.
+     * |        |          |Note: When SHA512TEN=1, SHA/HMAC only execute SHA2-512.
+     * |[16:8]  |TLEN      |SHA512/t Output Digest Length
+     * |        |          |The TLEN is equal to value t of SHA512/t. It also means the output digest length of SHA512 /t.
+     * |        |          |Note: TLEN < 512, and TLEN is not 384
+     * @var CRYPTO_T::HMAC_FBADDR
+     * Offset: 0x4FC  SHA/HMAC DMA Feedback Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |FBADDR    |SHA/HMAC DMA Feedback Address
+     * |        |          |In DMA cascade mode, software can update DMA feedback address register for automatically reading and writing feedback values via DMA
+     * |        |          |The FBADDR keeps the feedback address of the feedback data for the next cascade operation
+     * |        |          |Based on the feedback address, the SHA/HMAC accelerator can read the feedback data of the last cascade operation from SRAM memory space and write the feedback data of the current cascade operation to SRAM memory space
+     * |        |          |The start of feedback address should be located at word boundary
+     * |        |          |In other words, bit 1 and 0 of FBADDR are ignored.
+     * |        |          |FBADDR can be read and written.
+     * |        |          |In DMA mode, software can update the next CRYPTO_HMAC_FBADDR before triggering START.
+     * @var CRYPTO_T::HMAC_SHAKEDGST[42]
+     * Offset: 0x500~0x5A4  SHA/HMAC SHAKE Digest Message Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |DGST      |SHA/HMAC SHAKE Digest Message Register
+     * |        |          |For SHAKE-128, the digest is stored in CRYPTO_HMAC_SHAKEDGST[0] ~ CRYPTO_HMAC_ SHAKEDGST[41].
+     * |        |          |For SHAKE-256, the digest is stored in CRYPTO_HMAC_SHAKEDGST[0] ~ CRYPTO_HMAC_ SHAKEDGST[33].
+     * @var CRYPTO_T::ECC_CTL
+     * Offset: 0x800  ECC Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |START     |ECC Accelerator Start
+     * |        |          |0 = No effect.
+     * |        |          |1 = Start ECC accelerator. BUSY flag will be set.
+     * |        |          |This bit is always 0 when it is read back.
+     * |        |          |ECC accelerator will ignore this START signal when BUSY flag is 1.
+     * |[1]     |STOP      |ECC Accelerator Stop
+     * |        |          |0 = No effect.
+     * |        |          |1 = Abort ECC accelerator and make it into idle state.
+     * |        |          |This bit is always 0 when it is read back.
+     * |        |          |Remember to clear ECC interrupt flag after stopping ECC accelerator.
+     * |[2]     |SMOD      |Special Modulus Operation in Prime Field
+     * |        |          |0 = Normal modulus operation.
+     * |        |          |1 = Special modulus operation.
+     * |[3]     |PFA2C     |Prime Field Adder with 2 Cycles
+     * |        |          |0 = cost 1 cycle .
+     * |        |          |1 = cost 2 cycles.
+     * |[4]     |ECDSAS    |Generate S in ECDSA Signature Generation
+     * |        |          |0 = No effect.
+     * |        |          |1 = Formula for generating S.
+     * |        |          |POINTX1 = ((POINTX2 * POINTY1 + POINTY2 ) / POINTX1) % CURVEN when SPCEN is not 1 or SPCSEL is not 1 in ECDSA.
+     * |        |          |POINTX1 = (((POINTY1[543:0]*2544 + POINTX1[543:0]) % CURVEN) * POINTX2 + POINTY2) % CURVEN when SPCEN is 1 and SPCSEL is 1 in EdDSA..
+     * |        |          |POINTX1 = ((POINTX1 - POINTX2 * POINTY1) / (POINTY1 + POINTY2) % CURVEN when SPCEN is not 1 and SPCSEL 1 in SM2 DSA.
+     * |[5]     |ECDSAR    |Generate R in ECDSA Signature Generation
+     * |        |          |0 = No effect.
+     * |        |          |1 = Formula for generating R.
+     * |        |          |(POINTX1, POINTY1) = SCALARK * (POINTX1, POINTY1).
+     * |[6]     |DFAP      |Differential Fault Attack Protection
+     * |        |          |0 = ECC engine differential fault attack protection Disabled.
+     * |        |          |1 = ECC engine differential fault attack protection Enabled.
+     * |[7]     |DMAEN     |ECC Accelerator DMA Enable Bit
+     * |        |          |0 = ECC DMA engine Disabled.
+     * |        |          |1 = ECC DMA engine Enabled.
+     * |        |          |Only when START and DMAEN are 1, ECC DMA engine will be active.
+     * |[8]     |FSEL      |Field Selection
+     * |        |          |0 = Binary Field (GF(2m )).
+     * |        |          |1 = Prime Field (GF(p)).
+     * |[10:9]  |ECCOP     |Point Operation for BF and PF
+     * |        |          |00 = Point multiplication:.
+     * |        |          |(POINTX1, POINTY1) = SCALARK * (POINTX1, POINTY1).
+     * |        |          |01 = Modulus operation: choose by MODOP (CRYPTO_ECC_CTL[12:11]).
+     * |        |          |10 = Point addition:.
+     * |        |          |(POINTX1, POINTY1) = (POINTX1, POINTY1) +.
+     * |        |          |(POINTX2, POINTY2)
+     * |        |          |11 = Point doubling:.
+     * |        |          |(POINTX1, POINTY1) = 2 * (POINTX1, POINTY1).
+     * |        |          |Besides above three input data, point operations still need the parameters of elliptic curve (CURVEA, CURVEB, CURVEN and CURVEM) as shown in Figure 6.27-11
+     * |[12:11] |MODOP     |Modulus Operation for PF
+     * |        |          |When SMOD is 0,
+     * |        |          |00 = Division:.
+     * |        |          |POINTX1 = (POINTY1 / POINTX1) % CURVEN.
+     * |        |          |01 = Multiplication:.
+     * |        |          |POINTX1 = (POINTX1 * POINTY1) % CURVEN.
+     * |        |          |10 = Addition:.
+     * |        |          |POINTX1 = (POINTX1 + POINTY1) % CURVEN.
+     * |        |          |11 = Subtraction:.
+     * |        |          |POINTX1 = (POINTX1 - POINTY1) % CURVEN.
+     * |        |          |When SMOD is 1,
+     * |        |          |00 = Modulo:.
+     * |        |          |POINTX1 = (POINTY1[543:0]*2544 + POINTX1[543:0]) % CURVEN.
+     * |        |          |01 = Exponential:.
+     * |        |          |POINTX1 = (POINTX1(SCALARK)) % CURVEN.
+     * |        |          |10 = Square root:.
+     * |        |          |POINTX1 = (POINTX1(0.5)) % CURVEN.
+     * |        |          |MODOP is active only when ECCOP = 01.
+     * |[13]    |SPCEN     |Special Curve Enable
+     * |        |          |0 = NIST suggested or SM2 curve.
+     * |        |          |1 = Montgomery curve or Edwards curve.
+     * |[14]    |SCAP      |Side-channel Attack Protection
+     * |        |          |0 = Full speed without side-channel protection.
+     * |        |          |1 = Less speed with side-channel protection.
+     * |[15]    |ASCAP     |Advance Side-channel Attack Protection
+     * |        |          |0 = Advance side-channel protection Disabled.
+     * |        |          |1 = Advance side-channel protection Enabled.
+     * |        |          |ASCAP is active only when SCAP = 1.
+     * |[16]    |SPCSEL    |Special Curve Selection
+     * |        |          |0 = Montgomery curve when SPCEN is 1.
+     * |        |          |1 = Edwards curve when SPCEN is 1.
+     * |        |          |1 = SM2 curve when SPCEN is 0.
+     * |[31:22] |CURVEM    |The key length of elliptic curve.
+     * @var CRYPTO_T::ECC_STS
+     * Offset: 0x804  ECC Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |BUSY      |ECC Accelerator Busy Flag
+     * |        |          |0 = The ECC accelerator is idle or finished.
+     * |        |          |1 = The ECC accelerator is under processing and protects all registers.
+     * |        |          |Note: Remember to clear ECC interrupt flag after ECC accelerator is finished
+     * |[1]     |DMABUSY   |ECC DMA Busy Flag
+     * |        |          |0 = ECC DMA is idle or finished.
+     * |        |          |1 = ECC DMA is busy.
+     * |[16]    |BUSERR    |ECC DMA Access Bus Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Bus error will stop DMA operation and ECC accelerator.
+     * |[17]    |KSERR     |ECC Engine Access Key Store Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Access error will stop ECC engine.
+     * |[18]    |DFAERR    |ECC Engine Differential Fault Attack Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Differential Fault Attack happened in ECC engine. The results from ECC engine are incorrect.
+     * @var CRYPTO_T::ECC_X1[18]
+     * Offset: 0x808~0x84C  ECC the X-coordinate Word of the First Point
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |POINTX1   |ECC the X-coordinate Value of the First Point
+     * |        |          |For B-163 or K-163, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[5]
+     * |        |          |For B-233 or K-233, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[7]
+     * |        |          |For B-283 or K-283, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[8]
+     * |        |          |For B-409 or K-409, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[12]
+     * |        |          |For B-571 or K-571, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[17]
+     * |        |          |For P-192, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[5]
+     * |        |          |For P-224, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[6]
+     * |        |          |For P-256 or SM2, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[7]
+     * |        |          |For P-384, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[11]
+     * |        |          |For P-521, POINTX1 is stored in CRYPTO_ECC_X1[0]~CRYPTO_ECC_X1[16]
+     * @var CRYPTO_T::ECC_Y1[18]
+     * Offset: 0x850~0x894 ECC the Y-coordinate Word of the First Point
+     * ---------------------------------------------------------------------------------------------------
+      * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |POINTY1   |ECC the Y-coordinate Value of the First Point
+     * |        |          |For B-163 or K-163, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[5]
+     * |        |          |For B-233 or K-233, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[7]
+     * |        |          |For B-283 or K-283, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[8]
+     * |        |          |For B-409 or K-409, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[12]
+     * |        |          |For B-571 or K-571, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[17]
+     * |        |          |For P-192, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[5]
+     * |        |          |For P-224, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[6]
+     * |        |          |For P-256 or SM2, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[7]
+     * |        |          |For P-384, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[11]
+     * |        |          |For P-521, POINTY1 is stored in CRYPTO_ECC_Y1[0]~CRYPTO_ECC_Y1[16]
+     * @var CRYPTO_T::ECC_X2[18]
+     * Offset: 0x0898~ 0x08dc ECC the X-coordinate Word of the Second Point
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |POINTX2   |ECC the X-coordinate Value of the Second Point
+     * |        |          |For B-163 or K-163, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[5]
+     * |        |          |For B-233 or K-233, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[7]
+     * |        |          |For B-283 or K-283, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[8]
+     * |        |          |For B-409 or K-409, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[12]
+     * |        |          |For B-571 or K-571, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[17]
+     * |        |          |For P-192, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[5]
+     * |        |          |For P-224, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[6]
+     * |        |          |For P-256 or SM2, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[7]
+     * |        |          |For P-384, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[11]
+     * |        |          |For P-521, POINTX2 is stored in CRYPTO_ECC_X2[0]~CRYPTO_ECC_X2[16]
+     * @var CRYPTO_T::ECC_Y2[18]
+     * Offset: 0x8e0~0x924 ECC the Y-coordinate Word of the Second Point
+     * ---------------------------------------------------------------------------------------------------
+      * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |POINTY2   |ECC the Y-coordinate Value of the Second Point
+     * |        |          |For B-163 or K-163, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[5]
+     * |        |          |For B-233 or K-233, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[7]
+     * |        |          |For B-283 or K-283, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[8]
+     * |        |          |For B-409 or K-409, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[12]
+     * |        |          |For B-571 or K-571, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[17]
+     * |        |          |For P-192, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[5]
+     * |        |          |For P-224, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[6]
+     * |        |          |For P-256 or SM2, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[7]
+     * |        |          |For P-384, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[11]
+     * |        |          |For P-521, POINTY2 is stored in CRYPTO_ECC_Y2[0]~CRYPTO_ECC_Y2[16]
+     * @var CRYPTO_T::ECC_A[18]
+     * Offset: 0x92C~0x96C  ECC the Parameter CURVEA Word of Elliptic Curve
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |CURVEA    |ECC the Parameter CURVEA Value of Elliptic Curve
+     * |        |          |The formula of elliptic curve is y2=x3+CURVEA*x+CURVEB in GF(p) and y2+x*y=x3+CURVEA*x2+CURVEB in GF(2m).
+     * |        |          |For B-163 or K-163, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[5]
+     * |        |          |For B-233 or K-233, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[7]
+     * |        |          |For B-283 or K-283, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[8]
+     * |        |          |For B-409 or K-409, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[12]
+     * |        |          |For B-571 or K-571, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[17]
+     * |        |          |For P-192, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[5]
+     * |        |          |For P-224, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[6]
+     * |        |          |For P-256 or SM2, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[7]
+     * |        |          |For P-384, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[11]
+     * |        |          |For P-521, CURVEA is stored in CRYPTO_ECC_A[0]~CRYPTO_ECC_A[16]
+     * @var CRYPTO_T::ECC_B[18]
+     * Offset: 0x970~0x9B4  ECC the Parameter CURVEB Word of Elliptic Curve
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |CURVEB    |ECC the Parameter CURVEB Value of Elliptic Curve
+     * |        |          |The formula of elliptic curve is y2=x3+CURVEA*x+CURVEB in GF(p) and y2+x*y=x3+CURVEA*x2+CURVEB in GF(2m).
+     * |        |          |For B-163 or K-163, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[5]
+     * |        |          |For B-233 or K-233, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[7]
+     * |        |          |For B-283 or K-283, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[8]
+     * |        |          |For B-409 or K-409, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[12]
+     * |        |          |For B-521 or K-521, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[17]
+     * |        |          |For P-192, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[5]
+     * |        |          |For P-224, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[6]
+     * |        |          |For P-256 or SM2, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[7]
+     * |        |          |For P-384, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[11]
+     * |        |          |For P-521, CURVEB is stored in CRYPTO_ECC_B[0]~CRYPTO_ECC_B[16]
+     * @var CRYPTO_T::ECC_N[18]
+     * Offset: 0x9B8~0x9FC  ECC the Parameter CURVEN Word of Elliptic Curve
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |CURVEN    |ECC the Parameter CURVEN Value of Elliptic Curve
+     * |        |          |In GF(p), CURVEN is the prime p.
+     * |        |          |In GF(2m), CURVEN is the irreducible polynomial.
+     * |        |          |For B-163 or K-163, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[5]
+     * |        |          |For B-233 or K-233, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[7]
+     * |        |          |For B-283 or K-283, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[8]
+     * |        |          |For B-409 or K-409, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[12]
+     * |        |          |For B-571 or K-571, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[17]
+     * |        |          |For P-192, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[5]
+     * |        |          |For P-224, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[6]
+     * |        |          |For P-256 or SM2, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[7]
+     * |        |          |For P-384, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[11]
+     * |        |          |For P-521, CURVEN is stored in CRYPTO_ECC_N[0]~CRYPTO_ECC_N[16]
+     * @var CRYPTO_T::ECC_K[18]
+     * Offset: 0xA00~0xA44  ECC the Scalar SCALARK Word of Point Multiplication
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |SCALARK   |ECC the Scalar SCALARK Value of Point Multiplication
+     * |        |          |Because the SCALARK usually stores the private key, ECC accelerator do not allow to read the register SCALARK.
+     * |        |          |For B-163 or K-163, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[5]
+     * |        |          |For B-233 or K-233, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[7]
+     * |        |          |For B-283 or K-283, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[8]
+     * |        |          |For B-409 or K-409, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[12]
+     * |        |          |For B-571 or K-571, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[17]
+     * |        |          |For P-192, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[5]
+     * |        |          |For P-224, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[6]
+     * |        |          |For P-256 or SM2, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[7]
+     * |        |          |For P-384, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[11]
+     * |        |          |For P-521, SCALARK is stored in CRYPTO_ECC_K[0]~CRYPTO_ECC_K[16]
+     * @var CRYPTO_T::ECC_SADDR
+     * Offset: 0xA48  ECC DMA Source Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * @var CRYPTO_T::ECC_DADDR
+     * Offset: 0xA4C  ECC DMA Destination Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |DADDR     |ECC DMA Destination Address
+     * |        |          |The ECC accelerator supports DMA function to transfer the DATA and PARAMETER between SRAM memory and ECC accelerator
+     * |        |          |The DADDR keeps the destination address of the data buffer where output data of ECC engine will be stored
+     * |        |          |Based on the destination address, the ECC accelerator can write the result data back to SRAM memory space after the ECC operation is finished
+     * |        |          |The start of destination address should be located at word boundary
+     * |        |          |That is, bit 1 and 0 of DADDR are ignored
+     * |        |          |DADDR can be read and written
+     * |        |          |In DMA mode, software must update the CRYPTO_ECC_DADDR before triggering START
+     * @var CRYPTO_T::ECC_STARTREG
+     * Offset: 0xA50  ECC Starting Address of Updated Registers
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |STARTREG  |ECC Starting Address of Updated Registers
+     * |        |          |The address of the updated registers that DMA feeds the first data or parameter to ECC engine
+     * |        |          |When ECC engine is active, ECC accelerator does not allow users to modify STARTRE.G
+     * |        |          |For example, to update input data from register CRYPTO_ECC POINTX1
+     * |        |          |Thus, the value of STARTREG is 0x808.
+     * @var CRYPTO_T::ECC_WORDCNT
+     * Offset: 0xA54  ECC DMA Word Count
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |WORDCNT   |ECC DMA Word Count
+     * |        |          |The CRYPTO_ECC_WORDCNT keeps the word count of source data that is for the required input data of ECC accelerator with various operations in DMA mode
+     * |        |          |Although CRYPTO_ECC_WORDCNT is 32-bit, the maximum of word count in ECC accelerator is 144 words
+     * |        |          |CRYPTO_ECC_WORDCNT can be read and written
+     * @var CRYPTO_T::ECC_DMA_CTL
+     * Offset: 0xA58  ECC DMA Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |LDP1      |The Control Signal of Register POINTX1 and POINTY1 for the x and Y Coordinate of the First Point
+     * |        |          |0 = The register for POINTX1 and POINTY1 is not modified by DMA or user.
+     * |        |          |1 = The register for POINTX1 and POINTY1 is modified by DMA or user.
+     * |[1]     |LDP2      |The Control Signal of Register POINTX2 and POINTY2 for the x and Y Coordinate of the Second Point
+     * |        |          |0 = The register for POINTX2 and POINTY2 is not modified by DMA or user.
+     * |        |          |1 = The register for POINTX2 and POINTY2 is modified by DMA or user.
+     * |[2]     |LDA       |The Control Signal of Register for the Parameter CURVEA of Elliptic Curve
+     * |        |          |0 = The register for CURVEA is not modified by DMA or user.
+     * |        |          |1 = The register for CURVEA is modified by DMA or user.
+     * |[3]     |LDB       |The Control Signal of Register for the Parameter CURVEB of Elliptic Curve
+     * |        |          |0 = The register for CURVEB is not modified by DMA or user.
+     * |        |          |1 = The register for CURVEB is modified by DMA or user.
+     * |[4]     |LDN       |The Control Signal of Register for the Parameter CURVEN of Elliptic Curve
+     * |        |          |0 = The register for CURVEN is not modified by DMA or user.
+     * |        |          |1 = The register for CURVEN is modified by DMA or user.
+     * |[5]     |LDK       |The Control Signal of Register for SCALARK
+     * |        |          |0 = The register for SCALARK is not modified by DMA or user.
+     * |        |          |1 = The register for SCALARK is modified by DMA or user.
+     * @var CRYPTO_T::RSA_CTL
+     * Offset: 0xB00  RSA Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |START     |RSA Accelerator Start
+     * |        |          |0 = No effect.
+     * |        |          |1 = Start RSA accelerator. BUSY flag will be set.
+     * |        |          |This bit is always 0 when it is read back.
+     * |        |          |RSA accelerator will ignore this START signal when BUSY flag is 1.
+     * |[1]     |STOP      |RSA Accelerator Stop
+     * |        |          |0 = No effect.
+     * |        |          |1 = Abort RSA accelerator and make it into initial state.
+     * |        |          |This bit is always 0 when it is read back.
+     * |        |          |Remember to clear RSA interrupt flag after stopping RSA accelerator.
+     * |[2]     |CRT       |CRT Enable Control
+     * |        |          |0 = CRT Disabled.
+     * |        |          |1 = CRT Enabled.
+     * |        |          |CRT is only used in decryption with key length 2048, 3072,4096 bits.
+     * |[3]     |CRTBYP    |CRT Bypass Enable Control
+     * |        |          |0 = CRT Bypass Disabled.
+     * |        |          |1 = CRT Bypass Enabled.
+     * |        |          |CRT bypass is only used in CRT decryption with the same key.
+     * |        |          |CRT mode saved the data when the first time CRT decryption (CRTBYP is 0), then users can use these already known data to bypass some operation when the second time to the latest time CRT decryption (CRTBYP is 1) for improve performance.
+     * |        |          |Note: Users cannot set CRTBYP to 1 in non-CRT mode (CRT (CRYPTO_RSA_CTL[2]) is 0).
+     * |[5:4]   |KEYLENG   |The Key Length of RSA Operation
+     * |        |          |00 = 1024-bits.
+     * |        |          |01 = 2048-bits.
+     * |        |          |10 = 3072-bits.
+     * |        |          |11 = 4096-bits.
+     * |[8]     |SCAP      |Side Channel Attack Protection Enable Control
+     * |        |          |0 = Side Channel Attack Protection Disabled.
+     * |        |          |1 = Side Channel Attack Protection Enabled.
+     * |[9]     |CFIAP     |CRT Fault Injection Attack Protection Enable Control
+     * |        |          |0 = CRT Fault Injection Attack Protection Disabled.
+     * |        |          |1 = CRT Fault Injection Attack Protection Enabled.
+     * |        |          |Note: If users want to enable this bit (CFIAP), they must also enable CRT mode.
+     * @var CRYPTO_T::RSA_STS
+     * Offset: 0xB04  RSA Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |BUSY      |RSA Accelerator Busy Flag
+     * |        |          |0 = The RSA accelerator is idle or finished.
+     * |        |          |1 = The RSA accelerator is under processing and protects all registers.
+     * |        |          |Remember to clear RSA interrupt flag after RSA accelerator finished.
+     * |[1]     |DMABUSY   |RSA DMA Busy Flag
+     * |        |          |0 = RSA DMA is idle or finished.
+     * |        |          |1 = RSA DMA is busy.
+     * |[8]     |CFIAF     |CRT Fault Injection Attack Flag
+     * |        |          |0 = No CRT fault injection attack.
+     * |        |          |1 = RSA is under CRT fault injection attack.
+     * |[16]    |BUSERR    |RSA DMA Access Bus Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Bus error will stop DMA operation and RSA accelerator.
+     * |[17]    |CTLERR    |RSA Control Register Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = RSA control error. RSA will not start in the unsupported situation.
+     * |        |          |Note: If users use the error combination of control, even though they donu2019t set START(CRYPTO_RSA_CTL[0]) to 1, CTLERR still be set to 1.
+     * |[18]    |KSERR     |RSA Engine Access Key Store Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Access error will stop RSA engine.
+     * @var CRYPTO_T::RSA_SADDR[5]
+     * Offset: 0xB08  RSA DMA Source Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |SADDRx    |RSA DMA Source Address Register
+     * |        |          |The RSA accelerator supports DMA function to transfer the DATA and PARAMETER between SRAM memory space and RSA accelerator.
+     * |        |          |RSA_SADDR[0] register is stored the address of RSA the Base of Exponentiation (M).
+     * |        |          |RSA_SADDR[1] register is stored the address of RSA the Base of Modulus Operation (N).
+     * |        |          |RSA_SADDR[2] register is stored the address of RSA the Exponent of Exponentiation (E).
+     * |        |          |RSA_SADDR[3] register is stored the address of RSA the Factor of Modulus Operation (p).
+     * |        |          |RSA_SADDR[4] register is stored the address of RSA the Factor of Modulus Operation (q).
+     * @var CRYPTO_T::RSA_DADDR
+     * Offset: 0xB1C  RSA DMA Destination Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |DADDR     |RSA DMA Destination Address Register
+     * |        |          |The RSA accelerator supports DMA function to transfer the DATA and PARAMETER between SRAM memory space and RSA accelerator.
+     * |        |          |This register is stored the address of RSA DMA Destination Address Register (Ans).
+     * @var CRYPTO_T::RSA_MADDR[7]
+     * Offset: 0xB20  RSA DMA Middle Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |MADDR0    |RSA DMA Middle Address Register0
+     * |        |          |The RSA accelerator supports DMA function to transfer the DATA and PARAMETER between SRAM memory space and RSA accelerator.
+     * |        |          |RSA_MADDR[0] register is stored the address of RSA CRT the Temporary Value (Cp -> Mp -> Sp).
+     * |        |          |RSA_MADDR[1] register is stored the address of RSA CRT the Temporary Value (Cq -> Mq -> Sq).
+     * |        |          |RSA_MADDR[2] register is stored the address of RSA CRT the Temporary Value (Dp).
+     * |        |          |RSA_MADDR[3] register is stored the address of RSA CRT the Temporary Value (Dq).
+     * |        |          |RSA_MADDR[4] register is stored the address of RSA CRT the Temporary Value (Rp).
+     * |        |          |RSA_MADDR[5] register is stored the address of RSA CRT the Temporary Value (Rq).
+     * |        |          |RSA_MADDR[6] register is stored the address of RSA SCAP the Temporary Value (Eu2019).
+     * @var CRYPTO_T::RSA_PKADDR
+     * Offset: 0xB3C  RSA Public Key Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |PKADDR    |RSA Public Key Address Register
+     * |        |          |The RSA accelerator supports DMA function to transfer the DATA and PARAMETER between SRAM memory space and RSA accelerator.
+     * |        |          |This register is stored the address of RSA public key for CRT fault injection attack protection mode.
+     * |        |          |Note: This register is only for CRT FIAP mode.
+     * @var CRYPTO_T::RSA_DEBUG
+     * Offset: 0xBF0  RSA Debug Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[8:0]   |ENGFSMS   |RSA Engine FSM State
+     * |        |          |RSA Engine FSM State.
+     * |[16:9]  |DMAFSMS   |RSA DMA FSM State
+     * |        |          |RSA DMA FSM State.
+     * |[21:17] |BUSSEL    |RSA DMA Bus Address Selection
+     * |        |          |00000 = M.
+     * |        |          |00001 = N.
+     * |        |          |00010 = E.
+     * |        |          |00011 = p.
+     * |        |          |00100 = q.
+     * |        |          |00101 = Cp.
+     * |        |          |00110 = Cq.
+     * |        |          |00111 = Dp.
+     * |        |          |01000 = Dq.
+     * |        |          |01001 = Rp.
+     * |        |          |01010 = Rq.
+     * |        |          |01011 = E final.
+     * |        |          |01100 = Dp final.
+     * |        |          |01101 = Dq final.
+     * |        |          |01110 = p final.
+     * |        |          |01111 = q final.
+     * |        |          |10000 = P or Answer.
+     * |        |          |10001 = Eu2019 final.
+     * |        |          |10010 = Eu2019.
+     * |        |          |10011 = Public key.
+     * |        |          |10100 = Public key p.
+     * |        |          |10101 = Public key q.
+     * |        |          |10110 = Public key p final.
+     * |        |          |10111 = Public key q final.
+     * |        |          |Others = Reserved.
+     * |[26:22] |CRTFID    |RSA CRT Mode Function Index
+     * |        |          |00010 = Cp.
+     * |        |          |00011 = Cq.
+     * |        |          |00100 = Dp.
+     * |        |          |00101 = Dq.
+     * |        |          |00110 = Mp.
+     * |        |          |00111 = Mq.
+     * |        |          |01000 = Rp.
+     * |        |          |01001 = Rq.
+     * |        |          |01010 = Sp.
+     * |        |          |01011 = Sq.
+     * |        |          |01100 = Su2019p.
+     * |        |          |01101 = Su2019q.
+     * |        |          |01110 = Ep.
+     * |        |          |01111 = Eq.
+     * |        |          |10000 = Su2019ep.
+     * |        |          |10001 = Su2019eq.
+     * |        |          |10010 = c1.
+     * |        |          |10011 = c2.
+     * |        |          |10100 = S.
+     * |        |          |Others = Reserved.
+     * @var CRYPTO_T::CHAPOLY_CTL
+     * Offset: 0xC00  ChaCha20/Poly1305 Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |START     |ChaCha20/Poly1305 Engine Start
+     * |        |          |0 = No effect.
+     * |        |          |1 = Start ChaCha20/Poly1305 engine. BUSY flag will be set.
+     * |        |          |Note: This bit is always 0 when it is read back.
+     * |[1]     |STOP      |ChaCha20/Poly1305 Engine Stop
+     * |        |          |0 = No effect.
+     * |        |          |1 = Stop ChaCha20/Poly1305 engine.
+     * |        |          |Note: This bit is always 0 when it is read back.
+     * |[5]     |DMALAST   |ChaCha20/Poly1305 Last Block
+     * |        |          |In DMA mode, this bit must be set as beginning the last DMA cascade round.
+     * |        |          |In Non-DMA mode, this bit must be set when feeding in the last block of data.
+     * |        |          |This bit is always 0 when it is read back, and must be written again once START is triggered.
+     * |[6]     |DMACSCAD  |ChaCha20/Poly1305 Engine DMA with Cascade Mode
+     * |        |          |0 = DMA cascade function Disabled.
+     * |        |          |1 = In DMA cascade mode, software can update DMA source address register, destination address register, and byte count register during a cascade operation, without finishing the accelerator operation.
+     * |[7]     |DMAEN     |ChaCha20/Poly1305 Engine DMA Enable Bit
+     * |        |          |0 = ChaCha20/Poly1305 DMA engine Disabled.
+     * |        |          |The ChaCha20/Poly1305 DMA engine operates in Non-DMA mode
+     * |        |          |The data need to be written in CRYPTO_CHAPOLY_DATIN.
+     * |        |          |1 = ChaCha20/Poly1305 DMA engine Enabled.
+     * |        |          |The ChaCha20/Poly1305 engine operates in DMA mode, and data movement from/to the engine is done by DMA logic.
+     * |[9:8]   |OPMODE    |ChaCha20/Poly1305 Engine Operation Modes
+     * |        |          |0x0 = ChaCha20.
+     * |        |          |0x1 = Poly1305.
+     * |        |          |0x2 = AEAD.
+     * |[16]    |ENCRYPTO  |ChaCha20/Poly1305 Encryption/Decryption
+     * |        |          |0 = ChaCha20/Poly1305 engine executes decryption operation.
+     * |        |          |1 = ChaCha20/Poly1305 engine executes encryption operation.
+     * |[19]    |DFAPEN    |ChaCha20 Differential Fault Attack Protection Enable
+     * |        |          |0 = ChaCha20 Differential Fault Attack Protection Disabled.
+     * |        |          |1 = ChaCha20 Differential Fault Attack Protection Enabled.
+     * |[20]    |FBIN      |Feedback Input to ChaCha20/Poly1305 Via DMA Automatically
+     * |        |          |0 = DMA automatic feedback input function Disabled.
+     * |        |          |1 = DMA automatic feedback input function Enabled when DMAEN = 1.
+     * |[21]    |FBOUT     |Feedback Output From ChaCha20/Poly1305 Via DMA Automatically
+     * |        |          |0 = DMA automatic feedback output function Disabled.
+     * |        |          |1 = DMA automatic feedback output function Enabled when DMAEN = 1.
+     * |[22]    |OUTSWAP   |ChaCha20/Poly1305 Engine Output Data Swap
+     * |        |          |0 = Keep the original order.
+     * |        |          |1 = The order that CPU reads data from the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
+     * |[23]    |INSWAP    |ChaCha20/Poly1305 Engine Input Data Swap
+     * |        |          |0 = Keep the original order.
+     * |        |          |1 = The order that CPU feeds data to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
+     * |[24]    |KOUTSWAP  |ChaCha20/Poly1305 Engine Output Key, Initial Vector and Feedback Swap
+     * |        |          |0 = Keep the original order.
+     * |        |          |1 = The order that CPU reads key, initial vector and feedback from the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
+     * |[25]    |KINSWAP   |ChaCha20/Poly1305 Engine Input Key and Initial Vector Swap
+     * |        |          |0 = Keep the original order.
+     * |        |          |1 = The order that CPU feeds key and initial vector to the accelerator will be changed from {byte3, byte2, byte1, byte0} to {byte0, byte1, byte2, byte3}.
+     * @var CRYPTO_T::CHAPOLY_STS
+     * Offset: 0xC04  ChaCha20/Poly1305 Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |BUSY      |ChaCha20/Poly1305 Engine Busy
+     * |        |          |0 = The ChaCha20/Poly1305 engine is idle or finished.
+     * |        |          |1 = The ChaCha20/Poly1305 engine is under processing.
+     * |[8]     |INBUFEMPTY|ChaCha20/Poly1305 Input Buffer Empty
+     * |        |          |0 = There are some data in input buffer waiting for the ChaCha20/Poly1305 engine to process.
+     * |        |          |1 = ChaCha20/Poly1305 input buffer is empty
+     * |        |          |Software needs to feed data to the ChaCha20/Poly1305 engine
+     * |        |          |Otherwise, the ChaCha20/Poly1305 engine will be pending to wait for input data.
+     * |[9]     |INBUFFULL |ChaCha20/Poly1305 Input Buffer Full Flag
+     * |        |          |0 = ChaCha20/Poly1305 input buffer is not full
+     * |        |          |Software can feed the data into the ChaCha20/Poly1305 engine.
+     * |        |          |1 = ChaCha20/Poly1305 input buffer is full
+     * |        |          |Software cannot feed data to the ChaCha20/Poly1305 engine
+     * |        |          |Otherwise, the flag INBUFERR will be set to 1.
+     * |[10]    |INBUFERR  |ChaCha20/Poly1305 Input Buffer Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Error happened during feeding data to the ChaCha20/Poly1305 engine.
+     * |[12]    |CNTERR    |CRYPTO_CHAPOLY_CNT Setting Error
+     * |        |          |0 = No error in CRYPTO_CHAPOLY_CNT setting.
+     * |        |          |1 = CRYPTO_CHAPOLY_CNT is 0 if DMAEN (CRYPTO_CHAPOLY_CTL[7]) is enabled.
+     * |[16]    |OUTBUFEMPTY|ChaCha20/Poly1305 Out Buffer Empty
+     * |        |          |0 = ChaCha20/Poly1305 output buffer is not empty. There are some valid data kept in output buffer.
+     * |        |          |1 = ChaCha20/Poly1305 output buffer is empty
+     * |        |          |Software cannot get data from CRYPTO_CHAPOLY_DATOUT
+     * |        |          |Otherwise, the flag OUTBUFERR will be set to 1 since the output buffer is empty.
+     * |[17]    |OUTBUFFULL|ChaCha20/Poly1305 Out Buffer Full Flag
+     * |        |          |0 = ChaCha20/Poly1305 output buffer is not full.
+     * |        |          |1 = ChaCha20/Poly1305 output buffer is full, and software needs to get data from CRYPTO_CHAPOLY_DATOUT
+     * |        |          |Otherwise, the ChaCha20/Poly1305 engine will be pending since the output buffer is full.
+     * |[18]    |OUTBUFERR |ChaCha20/Poly1305 Out Buffer Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Error happened during getting the result from ChaCha20/Poly1305 engine.
+     * |[20]    |BUSERR    |ChaCha20/Poly1305 DMA Access Bus Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Bus error will stop DMA operation and ChaCha20/Poly1305 engine.
+     * |[21]    |KSERR     |ChaCha20/Poly1305 Engine Access Key Store Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = Key store access error will stop ChaCha20/Poly1305 engine.
+     * @var CRYPTO_T::CHAPOLY_DATIN
+     * Offset: 0xC08  ChaCha20/Poly1305 Engine Data Input Port Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |DATIN     |ChaCha20/Poly1305 Engine Input Port
+     * |        |          |CPU feeds data to ChaCha20/Poly1305 engine through this port by checking CRYPTO_CHAPOLY_STS
+     * |        |          |Feed data as INBUFFULL is 0.
+     * @var CRYPTO_T::CHAPOLY_DATOUT
+     * Offset: 0xC0C  ChaCha20/Poly1305 Engine Data Output Port Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |DATOUT    |ChaCha20/Poly1305 Engine Output Port
+     * |        |          |CPU gets results from the ChaCha20/Poly1305 engine through this port by checking CRYPTO_CHAPOLY_STS
+     * |        |          |Get data as OUTBUFEMPTY is 0.
+     * @var CRYPTO_T::CHAPOLY_KEY[8]
+     * Offset: 0xC10~0xC2C  ChaCha20/Poly1305 Key Word Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |KEY       |CRYPTO_CHAPOLY_KEYx
+     * |        |          |The KEY keeps the security key for ChaCha20/Poly1305 operation.
+     * |        |          |x = 0, 1..7.
+     * |        |          |The security key for ChaCha20/Poly1305 accelerator must be 256 bits and eight 32-bit registers are to store each security key.
+     * |        |          |{CRYPTO_CHAPOLY_KEY7, CRYPTO_CHAPOLY_KEY6, CRYPTO_CHAPOLY_KEY5, CRYPTO_CHAPOLY_KEY4, CRYPTO_CHAPOLY_KEY3, CRYPTO_CHAPOLY_KEY2, CRYPTO_CHAPOLY_KEY1, CRYPTO_CHAPOLY_KEY0} stores the 256-bit security key for ChaCha20/Poly1305 operation.
+     * @var CRYPTO_T::CHAPOLY_BLOCKCNT
+     * Offset: 0xC30  ChaCha20/Poly1305 Block Counter Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |BLOCKCNT  |ChaCha20/Poly1305 Block Count Register
+     * |        |          |The block count parameter for ChaCha20 and AEAD.
+     * @var CRYPTO_T::CHAPOLY_NONCE[3]
+     * Offset: 0xC34~0xC3C  ChaCha20/Poly1305 Nonce Word Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |Nonce     |ChaCha20/Poly1305 Nonce
+     * |        |          |x = 0, 1, 2.
+     * |        |          |96-bit Nonce for ChaCha20 and AEAD modes
+     * @var CRYPTO_T::CHAPOLY_SADDR
+     * Offset: 0xC40  ChaCha20/Poly1305 DMA Source Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |SADDR     |ChaCha20/Poly1305 DMA Source Address
+     * |        |          |The ChaCha20/Poly1305 accelerator supports DMA function to transfer the plain text between SRAM memory space and embedded FIFO
+     * |        |          |The SADDR keeps the source address of the data buffer where the source text is stored
+     * |        |          |Based on the source address, the ChaCha20/Poly1305 accelerator can read the plain text (encryption) / cipher text (decryption) from SRAM memory space and do ChaCha20/Poly1305 operation
+     * |        |          |The start of source address should be located at word boundary
+     * |        |          |In other words, bit 1 and 0 of SADDR are ignored.
+     * |        |          |SADDR can be read and written
+     * |        |          |Writing to SADDR while the ChaCha20/Poly1305 accelerator is operating doesnu2019t affect the current ChaCha20/Poly1305 operation
+     * |        |          |But the value of SADDR will be updated later on
+     * |        |          |Consequently, software can prepare the DMA source address for the next ChaCha20/Poly1305 operation.
+     * |        |          |In DMA mode, software can update the next CRYPTO_CHAPOLY_SADDR before triggering START.
+     * |        |          |The value of CRYPTO_CHAPOLY_SADDR and CRYPTO_CHAPOLY_DADDR can be the same.
+     * @var CRYPTO_T::CHAPOLY_DADDR
+     * Offset: 0xC44  ChaCha20/Poly1305 DMA Destination Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |DADDR     |ChaCha20/Poly1305 DMA Destination Address
+     * |        |          |The ChaCha20/Poly1305 accelerator supports DMA function to transfer the cipher text between SRAM memory space and embedded FIFO
+     * |        |          |The DADDR keeps the destination address of the data buffer where the engine outputu2019s text will be stored
+     * |        |          |Based on the destination address, the ChaCha20/Poly1305 accelerator can write the cipher text (encryption) / plain text (decryption) back to SRAM memory space after the ChaCha20/Poly1305 operation is finished
+     * |        |          |The start of destination address should be located at word boundary
+     * |        |          |In other words, bit 1 and 0 of DADDR are ignored.
+     * |        |          |DADDR can be read and written
+     * |        |          |Writing to DADDR while the ChaCha20/Poly1305 accelerator is operating doesnu2019t affect the current ChaCha20/Poly1305 operation
+     * |        |          |But the value of DADDR will be updated later on
+     * |        |          |Consequently, software can prepare the destination address for the next ChaCha20/Poly1305 operation.
+     * |        |          |In DMA mode, software can update the next CRYPTO_CHAPOLY_DADDR before triggering START.
+     * |        |          |The value of CRYPTO_CHAPOLY_SADDR and CRYPTO_CHAPOLY_DADDR can be the same.
+     * @var CRYPTO_T::CHAPOLY_CNT
+     * Offset: 0xC48  ChaCha20/Poly1305 Byte Count Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |CNT       |ChaCha20/Poly1305   Byte Count
+     * |        |          |The   CRYPTO_CHAPOLY_CNT keeps the byte count of source text that is for the ChaCha20/Poly1305   engine operating in DMA mode
+     * |        |          |The CRYPTO_CHAPOLY_CNT is 32-bit and the   maximum of byte count is 4G bytes.
+     * |        |          |CRYPTO_CHAPOLY_CNT   can be read and written
+     * |        |          |Writing to CRYPTO_CHAPOLY_CNT while the ChaCha20/Poly1305   accelerator is operating doesnu2019t affect the current ChaCha20/Poly1305 operation
+     * |        |          |But the value   of CRYPTO_CHAPOLY_CNT will be updated later on
+     * |        |          |Consequently, software can   prepare the byte count of data for the next ChaCha20/Poly1305 operation.
+     * |        |          |In Non-DMA   mode, CRYPTO_CHAPOLY_CNT must be set as byte count for the last block of data   before feeding in the last block of data.
+     * |        |          |In AEAD mode   without DMA cascade function, the value of CRYPTO_CHAPOLY_CNT is equal to the   total value of {CRYPTO_CHAPOLY_ACNT1, CRYPTO_CHAPOLY_ACNT0} and   {CRYPTO_CHAPOLY_PCNT1, CRYPTO_CHAPOLY_PCNT0}.
+     * |        |          |In AEAD mode   with DMA cascade function, the value of CRYPTO_CHAPOLY_CNT represents the   byte count of source text in this cascade function
+     * |        |          |Thus, the value of   CRYPTO_CHAPOLY_CNT is less than or equal to the total value of   {CRYPTO_CHAPOLY_ACNT1, CRYPTO_CHAPOLY_ACNT0} and {CRYPTO_CHAPOLY_PCNT1,   CRYPTO_CHAPOLY_PCNT0} and must be block alignment
+     * @var CRYPTO_T::CHAPOLY_FBADDR
+     * Offset: 0xC4C  ChaCha20/Poly1305 DMA Feedback Address Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |FBADDR    |ChaCha20/Poly1305 DMA Feedback Address
+     * |        |          |In DMA cascade mode, software can update DMA feedback address register for automatically reading and writing feedback values via DMA
+     * |        |          |The FBADDR keeps the feedback address of the feedback data for the next cascade operation
+     * |        |          |Based on the feedback address, the ChaCha20/Poly1305 accelerator can read the feedback data of the last cascade operation from SRAM memory space and write the feedback data of the current cascade operation to SRAM memory space
+     * |        |          |The start of feedback address should be located at word boundary
+     * |        |          |In other words, bit 1 and 0 of FBADDR are ignored.
+     * |        |          |FBADDR can be read and written.
+     * |        |          |In DMA mode, software can update the next CRYPTO_CHAPOLY_FBADDR before triggering START.
+     * @var CRYPTO_T::CHAPOLY_ACNT[2]
+     * Offset: 0xC50  ChaCha20/Poly1305 A Byte Count Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |CNT       |ChaCha20/Poly1305   A Byte Count
+     * |        |          |The bit   length of A is 64 bits for AEAD mode
+     * |        |          |The CRYPTO_CHAPOLY_ACNT[0] keeps the low   weight byte count of the additional authenticated data (i.e., len(A)[34:3]) of   AEAD mode and can be read and written.
+     * |        |          |The CRYPTO_CHAPOLY_ACNT[1] keeps the high  weight byte count of the additional authenticated data (i.e., len(A)[63:35]) of   AEAD mode and can be read and written.
+     * @var CRYPTO_T::CHAPOLY_PCNT[2]
+     * Offset: 0xC58  ChaCha20/Poly1305 P Byte Count Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |CNT       |ChaCha20/Poly1305   P Byte Count
+     * |        |          |The bit   length of P or C is 64 bits for AEAD mode
+     * |        |          |The CRYPTO_CHAPOLY_PCNT[0] keeps the low weight byte count of the plaintext or ciphertext (i.e., len(P)[34:3] or   len(C)[34:3]) of AEAD mode and can be read and written.
+     * |        |          |The CRYPTO_CHAPOLY_PCNT[1] keeps the high weight byte count of the plaintext or ciphertext (i.e.,   len(P)[64:35] or len(C)[64:35]) of AEAD
+     * |        |          |mode   and can be read and written.
+     * @var CRYPTO_T::PRNG_KSCTL
+     * Offset: 0xF00  PRNG Key Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |NUM       |Write Key Number
+     * |        |          |The key number is sent to Key Store
+     * |        |          |Note: Only for destination Is OTP of Key Store.
+     * |[16]    |TRUST     |Write Key Trust Selection Bit
+     * |        |          |0 = Set written key as the non-secure key.
+     * |        |          |1 = Set written key as the secure key.
+     * |[19]    |ECDH      |ECDH Control Bit
+     * |        |          |0 = reserved.
+     * |        |          |1 = key is written to Key Store and used in ECDH.
+     * |        |          |Note: When ECDH was set to u20181u2019,  1
+     * |        |          |PRNG seed must be from TRNG and key must be written to the SRAM of Key Store (WSDST, CRYPTO_PRNG_KSCTL[23:22] must set to u201800u2019)
+     * |        |          |Otherwise, KCTLERR will become u20181u2019(CRYPTO_PRNG_KSSTS[16])
+     * |        |          |2
+     * |        |          |Key must in the interval [1, n-1] (the parameter n is from ECC)
+     * |        |          |The value of n cannot be 0 or 1, otherwise, PRNG will always keep busy.
+     * |[20]    |ECDSA     |ECDSA Control Bit
+     * |        |          |0 = Reserved.
+     * |        |          |1 = Key is written to Key Store and used in ECDSA.
+     * |        |          |Note: When ECDSA was set to u20181u2019,  1
+     * |        |          |PRNG seed must be from TRNG and key must be written to the SRAM of Key Store (WSDST, CRYPTO_PRNG_KSCTL[23:22] must set to u201800u2019)
+     * |        |          |Otherwise, KCTLERR will become u20181u2019(CRYPTO_PRNG_KSSTS[16])
+     * |        |          |2
+     * |        |          |Key must in the interval [1, n-1] (the parameter n is from ECC)
+     * |        |          |The value of n cannot be 0 or 1, otherwise, PRNG will always keep busy.
+     * |[21]    |WDST      |Write Key Destination
+     * |        |          |0 = Key is written to registers CRYPTO_PRNG_KEYx.
+     * |        |          |1 = Key is written to Key Store.
+     * |[23:22] |WSDST     |Write Key Store Destination
+     * |        |          |00 = Key is written to the SRAM of Key Store.
+     * |        |          |01 = Key is written to the FLASH of Key Store.
+     * |        |          |10 = Key is written to the OTP of Key Store.
+     * |        |          |Others = reserved.
+     * |[26:24] |OWNER     |Write Key Owner Selection Bits
+     * |        |          |000 = Only for AES use.
+     * |        |          |001 = Only for HMAC engine use.
+     * |        |          |100 = Only for ECC engine use.
+     * |        |          |101 = Only for CPU engine use.
+     * |        |          |Others = reserved.
+     * @var CRYPTO_T::PRNG_KSSTS
+     * Offset: 0xF04  PRNG Key Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |NUM       |Key Number
+     * |        |          |The key number is generated by Key Store
+     * |[16]    |KCTLERR   |PRNG Key Control Register Error Flag
+     * |        |          |0 = No error.
+     * |        |          |1 = PRNG key control error
+     * |        |          |When PRNG execute ECDSA or ECDH, but PRNG seed not from TRNG or key is not written to the SRAM of Key Store (WSDST, CRYPTO_PRNG_KSCTL[23:22] is not equal to u201900u2019).
+     * @var CRYPTO_T::AES_KSCTL
+     * Offset: 0xF10  AES Key Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |NUM       |Read Key Number
+     * |        |          |The key number is sent to Key Store
+     * |[5]     |RSRC      |Read Key Source
+     * |        |          |0 = Key is read from registers CRYPTO_AESx_KEYx.
+     * |        |          |1 = Key is read from Key Store.
+     * |[7:6]   |RSSRC     |Read Key Store Source
+     * |        |          |RSSRC takes effect only when RSRC is 1 (the key is from Key Store).
+     * |        |          |00 = Key is read from the SRAM of Key Store.
+     * |        |          |01 = Key is read from the FLASH of Key Store.
+     * |        |          |10 = Key is read from the OTP of Key Store.
+     * |        |          |Others = reserved.
+     * @var CRYPTO_T::HMAC_KSCTL
+     * Offset: 0xF30  HMAC Key Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |NUM       |Read Key Number
+     * |        |          |The key number is sent to Key Store
+     * |[5]     |RSRC      |Read Key Source
+     * |        |          |0 = Key is read from HMAC registers.
+     * |        |          |1 = Key is read from Key Store.
+     * |[7:6]   |RSSRC     |Read Key Store Source
+     * |        |          |RSSRC takes effect only when RSRC is 1 (the key is from Key Store).
+     * |        |          |00 = Key is read from the SRAM of Key Store.
+     * |        |          |01 = Key is read from the FLASH of Key Store.
+     * |        |          |Others = reserved.
+     * @var CRYPTO_T::ECC_KSCTL
+     * Offset: 0xF40  ECC Key Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |NUMK      |Read Key Number K
+     * |        |          |The key number of CRYPTO_ECC_K is sent to Key Store when RSRCK =1.
+     * |[5]     |RSRCK     |Read Key Source for Key Number K
+     * |        |          |0 = Key is read from ECC registers.
+     * |        |          |1 = Key is read from Key Store.
+     * |[7:6]   |RSSRCK    |Read Key Store Source for Key Number K
+     * |        |          |RSSRCK takes effect only when RSRCK is 1 (the key is from Key Store).
+     * |        |          |00 = Key is read from the SRAM of Key Store.
+     * |        |          |01 = Key is read from the FLASH of Key Store.
+     * |        |          |10 = Key is read from the OTP of Key Store.
+     * |        |          |Others = reserved.
+     * |[14]    |ECDH      |ECDH Control Bit
+     * |        |          |0 = Reserved.
+     * |        |          |1 = Set ECC operation is in ECDH
+     * |        |          |When this bit and RSRCK are equal to 0x1, ECC will read ECDH private key to CRYPTO_ECC_K from Key Store.
+     * |[16]    |TRUST     |Write Key Trust Selection Bit
+     * |        |          |0 = Set ECDH written key as the non-secure key.
+     * |        |          |1 = Set ECDH written key as the secure key.
+     * |[20]    |XY        |ECDH Output Select Bit
+     * |        |          |0 = The ECDH written key is from X-coordinate Value.
+     * |        |          |1 = The ECDH written key is from Y-coordinate Value.
+     * |[21]    |WDST      |Write Key Destination
+     * |        |          |0 = The ECDH written key is in registers CRYPTO_ECC_X1 and CRYPTO_ECC_Y.
+     * |        |          |1 = The ECDH written key is written to Key Store.
+     * |[23:22] |WSDST     |Write Key Store Destination
+     * |        |          |WSDST takes effect only when WDST is 1 (the key is written to Key Store).
+     * |        |          |00 = The ECDH written key is written to the SRAM of Key Store.
+     * |        |          |01 = The ECDH written key is written to the FLASH of Key Store.
+     * |        |          |10 = The ECDH written key is written to the OTP of Key Store.
+     * |        |          |Others = reserved.
+     * |[26:24] |OWNER     |Write Key Owner Selection Bits
+     * |        |          |000 = The ECDH written key is only for AES used.
+     * |        |          |001 = The ECDH written key is only for HMAC engine used.
+     * |        |          |100 = The ECDH written key is only for ECC engine used.
+     * |        |          |101 = The ECDH written key is only for CPU engine use.
+     * |        |          |Others = reserved.
+     * @var CRYPTO_T::ECC_KSSTS
+     * Offset: 0xF44  ECC Key Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |NUM       |Key Number
+     * |        |          |The key number is generated by Key Store after ECDH.
+     * @var CRYPTO_T::ECC_KSXY
+     * Offset: 0xF48  ECC XY Number Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |NUMX      |Read Key Number X
+     * |        |          |The key number of CRYPTO_ECC_X1 is sent to Key Store when RSRCXY =1.
+     * |[5]     |RSRCXY    |Read Key Source for Key Number X and Y
+     * |        |          |0 = Key is read from ECC registers.
+     * |        |          |1 = Key is read from Key Store.
+     * |[7:6]   |RSSRCX    |Read Key Store Source for Key Number X
+     * |        |          |RSSRCX takes effect only when RSRCXY is 1 (the key is from Key Store).
+     * |        |          |00 = Key is read from the SRAM of Key Store.
+     * |        |          |01 = Key is read from the FLASH of Key Store.
+     * |        |          |10 = Key is read from the OTP of Key Store.
+     * |        |          |Others = reserved.
+     * |[12:8]  |NUMY      |Read Key Number Y
+     * |        |          |The key number of CRYPTO_ECC_Y1 is sent to Key Store when RSRCXY =1.
+     * |[15:14] |RSSRCY    |Read Key Store Source for Key Number Y
+     * |        |          |RSSRCY takes effect only when RSRCXY is 1 (the key is from Key Store).
+     * |        |          |00 = Key is read from the SRAM of Key Store.
+     * |        |          |01 = Key is read from the FLASH of Key Store.
+     * |        |          |10 = Key is read from the OTP of Key Store.
+     * |        |          |Others = reserved.
+     * @var CRYPTO_T::RSA_KSCTL
+     * Offset: 0xF50  RSA Key Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |NUM       |Read Key Number
+     * |        |          |The key number is sent to Key Store
+     * |[5]     |RSRC      |Read Key Source
+     * |        |          |0 = Key is read from RSA engine.
+     * |        |          |1 = Key is read from Key Store.
+     * |[7:6]   |RSSRC     |Read Key Store Source
+     * |        |          |RSSRC takes effect only when RSRC is 1 (the key is from Key Store).
+     * |        |          |00 = Key is read from the SRAM of Key Store.
+     * |        |          |01 = Key is read from the FLASH of Key Store.
+     * |        |          |Others = Reserved.
+     * |[12:8]  |BKNUM     |Read Exponent Blind Key Number
+     * |        |          |The key number is sent to Key Store, and its destination always be the SRAM of Key Store
+     * |        |          |CPU cannot read the exponent blind key.
+     * |        |          |Note: Use this key number, only when executing SCAP but no-CRT mode
+     * |        |          |When allocate space of Key Store, key owner selection bits (KS_METADATA[18:16]) should be u2018010u2019.
+     * @var CRYPTO_T::RSA_KSSTS0
+     * Offset: 0xF54  RSA Key Status Register0
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |NUM0      |Key Number0
+     * |        |          |The key number is generated by Key Store, RSA can get complete p by key number in Key Store while operating.
+     * |        |          |Note: The size of this key as half key length.
+     * |[12:8]  |NUM1      |Key Number1
+     * |        |          |The key number is generated by Key Store, RSA can get complete q by key number in Key Store while operating.
+     * |        |          |Note: The size of this key as half key length.
+     * |[20:16] |NUM2      |Key Number2
+     * |        |          |The key number is generated by Key Store, RSA can get or store the intermediate temporary value(Cp) by key number in the Key Store while operating.
+     * |        |          |Note: The size of this key as key length.
+     * |[28:24] |NUM3      |Key Number3
+     * |        |          |The key number is generated by Key Store, RSA can get or store the intermediate temporary value(Cq) by key number in the Key Store while operating.
+     * |        |          |Note: The size of this key as key length.
+     * @var CRYPTO_T::RSA_KSSTS1
+     * Offset: 0xF58  RSA Key Status Register 1
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |NUM4      |Key Number4
+     * |        |          |The key number is generated by Key Store, RSA can get or store the intermediate temporary value(Dp) by key number in Key Store while operating.
+     * |        |          |Note: The size of this key as half key length.
+     * |[12:8]  |NUM5      |Key Number5
+     * |        |          |The key number is generated by Key Store, RSA can get or store the intermediate temporary value(Dq) by key number in Key Store while operating.
+     * |        |          |Note: The size of this key as half key length.
+     * |[20:16] |NUM6      |Key Number6
+     * |        |          |The key number is generated by Key Store, RSA can get or store the intermediate temporary value(Rp) by key number in Key Store while operating.
+     * |        |          |Note: The size of this key as key length.
+     * |[28:24] |NUM7      |Key Number7
+     * |        |          |The key number is generated by Key Store, RSA can get or store the intermediate temporary value(Rq) by key number in Key Store while operating.
+     * |        |          |Note: The size of this key as key length.
+     * @var CRYPTO_T::CHAPOLY_KSCTL
+     * Offset: 0xF60  ChaCha20/Poly1305 Key Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[4:0]   |NUM       |Read Key Number
+     * |        |          |The key number is sent to key store
+     * |[5]     |RSRC      |Read Key Source
+     * |        |          |0 = key is read from registers CRYPTO_CHAPOLY_KEYx.
+     * |        |          |1 = key is read from key store.
+     * |[7:6]   |RSSRC     |Read Key Store Source
+     * |        |          |00 = key is read from the SRAM of key store.
+     * |        |          |01 = Key is read from the FLASH of Key Store.
+     * |        |          |10 = key is read from the OTP of key store.
+     * |        |          |Others = reserved.
+     * @var CRYPTO_T::PAP_CTL
+     * Offset: 0xF80  CRYPTO Power Analysis Protection Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |PAPEN     |CRYPTO Power Analysis Protection Enable
+     * |        |          |0 = CRYPTO Power Analysis Protection Disabled.
+     * |        |          |1 = CRYPTO Power Analysis Protection Enabled.
+     * |        |          |Note: The protected range of power analysis protection include AES, SHA/HMAC, ECC and RSA.
+     * @var CRYPTO_T::VERSION
+     * Offset: 0xFFC  Crypto RTL Design Version Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[15:0]  |MINOR     |RTL Design Minor Version Number
+     * |        |          |Minor version number is dependent on moduleu2019s ECO version control.
+     * |        |          |0x1000:(Current Minor Version Number)
+     * |[23:16] |SUB       |RTL Design Sub Version Number
+     * |        |          |Sub version number is correlated to moduleu2019s key feature.
+     * |        |          |0x01:(Current Sub Version Number)
+     * |[31:24] |MAJOR     |RTL Design Major Version Number
+     * |        |          |Major version number is correlated to Product Line.
+     * |        |          |0x03:(Current Major Version Number)
+     */
     __IO uint32_t INTEN;                 /*!< [0x0000] Crypto Interrupt Enable Control Register                         */
     __IO uint32_t INTSTS;                /*!< [0x0004] Crypto Interrupt Flag                                            */
     __IO uint32_t PRNG_CTL;              /*!< [0x0008] PRNG Control Register                                            */
@@ -3442,6 +3442,6 @@ typedef struct
 /** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 #endif /* __CRYPTO_REG_H__ */

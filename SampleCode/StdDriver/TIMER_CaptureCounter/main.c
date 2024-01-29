@@ -27,18 +27,20 @@ NVT_ITCM void TIMER2_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
-    if(TIMER_GetCaptureIntFlag(TIMER2) == 1)
+    if (TIMER_GetCaptureIntFlag(TIMER2) == 1)
     {
         /* Clear Timer2 capture trigger interrupt flag */
         TIMER_ClearCaptureIntFlag(TIMER2);
 
         g_au32TMRINTCount++;
     }
+
     __DSB();
     __ISB();
-    while(TIMER_GetCaptureIntFlag(TIMER2))
+
+    while (TIMER_GetCaptureIntFlag(TIMER2))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TIMER2 IntFlag time-out!\n");
         }
@@ -168,24 +170,27 @@ int main(void)
     TIMER_Start(TIMER2);
 
     /* Check Timer2 capture trigger interrupt counts */
-    while(g_au32TMRINTCount < 10)
+    while (g_au32TMRINTCount < 10)
     {
-        if(g_au32TMRINTCount != u32InitCount)
+        if (g_au32TMRINTCount != u32InitCount)
         {
             au32CAPValue[u32InitCount] = TIMER_GetCaptureData(TIMER2);
-            if(u32InitCount ==  0)
+
+            if (u32InitCount ==  0)
             {
                 printf("    [%2d]: %4d. (1st captured value)\n", g_au32TMRINTCount, au32CAPValue[u32InitCount]);
-                if(au32CAPValue[u32InitCount] != 0)   // First capture event will reset counter value
+
+                if (au32CAPValue[u32InitCount] != 0)  // First capture event will reset counter value
                 {
                     printf("*** FAIL ***\n");
                     goto lexit;
                 }
             }
-            else if(u32InitCount ==  1)
+            else if (u32InitCount ==  1)
             {
                 printf("    [%2d]: %4d. (2nd captured value) \n", g_au32TMRINTCount, au32CAPValue[u32InitCount]);
-                if(au32CAPValue[u32InitCount] != 500)   // Second event gets two capture event duration counts directly
+
+                if (au32CAPValue[u32InitCount] != 500)  // Second event gets two capture event duration counts directly
                 {
                     printf("*** FAIL ***\n");
                     goto lexit;
@@ -195,15 +200,18 @@ int main(void)
             {
                 u32CAPDiff = au32CAPValue[u32InitCount] - au32CAPValue[u32InitCount - 1];
                 printf("    [%2d]: %4d. Diff: %d.\n", g_au32TMRINTCount, au32CAPValue[u32InitCount], u32CAPDiff);
-                if(u32CAPDiff != 500)
+
+                if (u32CAPDiff != 500)
                 {
                     printf("*** FAIL ***\n");
                     goto lexit;
                 }
             }
+
             u32InitCount = g_au32TMRINTCount;
         }
     }
+
     printf("*** PASS ***\n\n");
 
 
@@ -211,8 +219,10 @@ int main(void)
     TIMER_StopCapture(TIMER2);
     TIMER_Stop(TIMER2);
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(TIMER_IS_ACTIVE(TIMER2))
-        if(--u32TimeOutCnt == 0) break;
+
+    while (TIMER_IS_ACTIVE(TIMER2))
+        if (--u32TimeOutCnt == 0) break;
+
     TIMER_ClearIntFlag(TIMER2);
     TIMER_ClearCaptureIntFlag(TIMER2);
     /* Enable Timer2 event counter input and external capture function */
@@ -237,24 +247,27 @@ int main(void)
     TIMER2->EXTCTL = TIMER_EXTCTL_CAPEN_Msk | TIMER_CAPTURE_FREE_COUNTING_MODE | TIMER_CAPTURE_EVENT_GET_LOW_PERIOD | TIMER_EXTCTL_CAPIEN_Msk;
 
     /* Check Timer2 capture trigger interrupt counts */
-    while(g_au32TMRINTCount <= 10)
+    while (g_au32TMRINTCount <= 10)
     {
-        if(g_au32TMRINTCount != u32InitCount)
+        if (g_au32TMRINTCount != u32InitCount)
         {
             au32CAPValue[u32InitCount] = TIMER_GetCaptureData(TIMER2);
-            if(u32InitCount ==  0)
+
+            if (u32InitCount ==  0)
             {
                 printf("    [%2d]: %4d. (1st captured value)\n", g_au32TMRINTCount, au32CAPValue[u32InitCount]);
-                if(au32CAPValue[u32InitCount] != 0)   // First capture event will reset counter value
+
+                if (au32CAPValue[u32InitCount] != 0)  // First capture event will reset counter value
                 {
                     printf("*** FAIL ***\n");
                     goto lexit;
                 }
             }
-            else if(u32InitCount ==  1)
+            else if (u32InitCount ==  1)
             {
                 printf("    [%2d]: %4d. (2nd captured value)\n", g_au32TMRINTCount, au32CAPValue[u32InitCount]);
-                if(au32CAPValue[u32InitCount] != 250)   // Get low duration counts directly
+
+                if (au32CAPValue[u32InitCount] != 250)  // Get low duration counts directly
                 {
                     printf("*** FAIL ***\n");
                     goto lexit;
@@ -264,12 +277,14 @@ int main(void)
             {
                 u32CAPDiff = au32CAPValue[u32InitCount] - au32CAPValue[u32InitCount - 1];
                 printf("    [%2d]: %4d. Diff: %d.\n", g_au32TMRINTCount, au32CAPValue[u32InitCount], u32CAPDiff);
-                if(u32CAPDiff != 500)
+
+                if (u32CAPDiff != 500)
                 {
                     printf("*** FAIL ***\n");
                     goto lexit;
                 }
             }
+
             u32InitCount = g_au32TMRINTCount;
         }
     }

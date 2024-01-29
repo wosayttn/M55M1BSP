@@ -150,7 +150,7 @@ void LPADC_FunctionTest()
                 /* Get the conversion result of LPADC channel 1 */
                 u32COVNUMFlag = g_u32COVNUMFlag - 1;
                 i32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 1);
-          
+
                 if (g_u32COVNUMFlag >= 6)
                     break;
             }
@@ -198,7 +198,7 @@ void LPADC_FunctionTest()
 
                 if (g_u32COVNUMFlag >= 6)
                     break;
- 
+
             }
 
             /* Disable the sample module interrupt */

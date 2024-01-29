@@ -27,9 +27,10 @@ NVT_ITCM void TIMER0_IRQHandler(void)
     printf("Count 1000 falling events! Test complete\n");
     __DSB();
     __ISB();
-    while(TIMER_GetIntFlag(TIMER0))
+
+    while (TIMER_GetIntFlag(TIMER0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TIMER0 IntFlag time-out!\n");
         }
@@ -111,7 +112,7 @@ int main(void)
     // Start Timer 0
     TIMER_Start(TIMER0);
 
-    for(i = 0; i < 1000; i++)
+    for (i = 0; i < 1000; i++)
     {
         PB4 = 0; // low
         CLK_SysTickDelay(1);

@@ -45,12 +45,14 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
             EPWM_ForceStop(EPWM0, BIT0); /* EPWM0 counter stop running. */
             g_u32IsTestOver = 1;
         }
+
         LPPDMA_CLR_TD_FLAG(LPPDMA, LPPDMA_TDSTS_TDIF1_Msk);
     }
     else
         printf("unknown LPPDMA interrupt !!\n");
+
     /*Confirm that the Flag has been cleared.*/
-    LPPDMA_GET_INT_STATUS(LPPDMA); 
+    LPPDMA_GET_INT_STATUS(LPPDMA);
 }
 
 void SYS_Init(void)
@@ -186,7 +188,7 @@ void LPADC_FunctionTest()
 
     /* Calibration LPADC */
     LPADC_Calibration(LPADC0);
-  
+
     while (1)
     {
         /* reload LPPDMA configuration for next transmission */

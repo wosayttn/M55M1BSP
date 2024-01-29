@@ -1,7 +1,7 @@
 #ifndef _SPIM_PIN_CONFIG_H_
 #define _SPIM_PIN_CONFIG_H_
 
-#define SPIM_SLEW_RATE						3
+#define SPIM_SLEW_RATE                      3
 
 #define SPIM0_RST_PIN_INIT()                SPIM0_RST_PIN
 #define SPIM0_CLK_PIN_INIT()                SPIM0_CLK_PIN
@@ -94,7 +94,7 @@
         PD->SMTEN |= (GPIO_SMTEN_SMTEN5_Msk |  \
                       GPIO_SMTEN_SMTEN6_Msk |  \
                       GPIO_SMTEN_SMTEN7_Msk);  \
-		PH->SLEWCTL |= ((SPIM_SLEW_RATE << GPIO_SLEWCTL_HSREN12_Pos) | \
+        PH->SLEWCTL |= ((SPIM_SLEW_RATE << GPIO_SLEWCTL_HSREN12_Pos) | \
                         (SPIM_SLEW_RATE << GPIO_SLEWCTL_HSREN13_Pos) | \
                         (SPIM_SLEW_RATE << GPIO_SLEWCTL_HSREN14_Pos) | \
                         (SPIM_SLEW_RATE << GPIO_SLEWCTL_HSREN15_Pos)); \
@@ -109,6 +109,6 @@
                         (SPIM_SLEW_RATE << GPIO_SLEWCTL_HSREN7_Pos));  \
     } while (0)
 
-	
-	
+
+
 #endif /* _PIN_CONFIG_H_ */

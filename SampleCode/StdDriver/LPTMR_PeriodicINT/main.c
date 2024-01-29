@@ -28,18 +28,20 @@ NVT_ITCM void LPTMR0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
-    if(LPTMR_GetIntFlag(LPTMR0) == 1)
+    if (LPTMR_GetIntFlag(LPTMR0) == 1)
     {
         /* Clear LPTMR0 time-out interrupt flag */
         LPTMR_ClearIntFlag(LPTMR0);
 
         g_au32LPTMRINTCount[0]++;
     }
+
     __DSB();
     __ISB();
-    while(LPTMR_GetIntFlag(LPTMR0))
+
+    while (LPTMR_GetIntFlag(LPTMR0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPTMR0 IntFlag time-out!\n");
         }
@@ -50,18 +52,20 @@ NVT_ITCM void LPTMR1_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
-    if(LPTMR_GetIntFlag(LPTMR1) == 1)
+    if (LPTMR_GetIntFlag(LPTMR1) == 1)
     {
         /* Clear LPTMR1 time-out interrupt flag */
         LPTMR_ClearIntFlag(LPTMR1);
 
         g_au32LPTMRINTCount[1]++;
     }
+
     __DSB();
     __ISB();
-    while(LPTMR_GetIntFlag(LPTMR1))
+
+    while (LPTMR_GetIntFlag(LPTMR1))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPTMR1 IntFlag time-out!\n");
         }
@@ -157,9 +161,10 @@ int main(void)
 
     /* Check LPTMR0 ~ LPTMR1 interrupt counts */
     printf("# LPTMR interrupt counts :\n");
-    while(u32InitCount < 20)
+
+    while (u32InitCount < 20)
     {
-        if(g_au32LPTMRINTCount[0] != u32InitCount)
+        if (g_au32LPTMRINTCount[0] != u32InitCount)
         {
             au32Counts[0] = g_au32LPTMRINTCount[0];
             au32Counts[1] = g_au32LPTMRINTCount[1];
@@ -167,10 +172,11 @@ int main(void)
                    au32Counts[0], au32Counts[1]);
             u32InitCount = g_au32LPTMRINTCount[0];
 
-            if((au32Counts[1] > (au32Counts[0] * 2 + 1)) || (au32Counts[1] < (au32Counts[0] * 2 - 1)))
+            if ((au32Counts[1] > (au32Counts[0] * 2 + 1)) || (au32Counts[1] < (au32Counts[0] * 2 - 1)))
             {
                 printf("*** FAIL ***\n");
-                while(1);
+
+                while (1);
             }
         }
     }

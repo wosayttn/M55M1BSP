@@ -76,7 +76,7 @@ void Timer0_Init(uint32_t u32ClkSrc)
         //CLK->CLKSEL1 = (CLK->CLKSEL1&~CLK_CLKSEL1_TMR0SEL_Msk) | u32ClkSrc;
         CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_LIRC, 0);
     }
-    else if(u32ClkSrc == CLK_TMRSEL_TMR0SEL_HIRC)
+    else if (u32ClkSrc == CLK_TMRSEL_TMR0SEL_HIRC)
     {
         //CLK->CLKSEL1 = (CLK->CLKSEL1&~CLK_CLKSEL1_TMR0SEL_Msk) | CLK_CLKSEL1_TMR0SEL_HXT;
         CLK_SetModuleClock(TMR0_MODULE, CLK_TMRSEL_TMR0SEL_HIRC, 0);
@@ -1040,8 +1040,8 @@ void API_RTC_DataTime_Func(void)
     CU_ASSERT_EQUAL(sReadRTC.u32Minute, 5);
     CU_ASSERT_EQUAL(sReadRTC.u32Second, 6);
     CU_ASSERT_EQUAL(sReadRTC.u32TimeScale, RTC_CLOCK_24);
-    
-    
+
+
     /* Check RTC_32KCalibration() */
     RTC_WaitAccessEnable();
     RTC_32KCalibration(327736500);
@@ -1057,7 +1057,7 @@ void API_RTC_DataTime_Func(void)
     CU_ASSERT_EQUAL(pRTC->FREQADJ, 0x1000);
     RTC_WaitAccessEnable();
 
-     /*
+    /*
     TAMPER_IRQn
     NVIC_EnableIRQ(TAMPER_IRQn);
     */
@@ -1071,8 +1071,8 @@ void API_RTC_DataTime_Func(void)
     NVIC_EnableIRQ(RTC_IRQn);
     D_msg("===>P0\n");
     //RTC_WaitAccessEnable();
-    
-    
+
+
     u32Timeout = SystemCoreClock / 100;
 
     while (gu32TickINT == 0)
@@ -1084,7 +1084,7 @@ void API_RTC_DataTime_Func(void)
             return ;
         }
     }
-    
+
     D_msg("===>P1\n");
 
     RTC_DisableInt(RTC_INTEN_TICKIEN_Msk);
@@ -1117,7 +1117,7 @@ void API_RTC_DataTime_Func(void)
     pRTC->INTSTS |= pRTC->INTSTS;
 
     RTC_Close();
-    
+
     D_msg("===>P2\n");
 }
 
@@ -1383,7 +1383,7 @@ void API_RTC_ClockDetector_Func(void)
         if (RTC_GET_CLKFAIL_INT_FLAG(pRTC) == 1)
         {
             printf("CLKDCTL:%x\r\n", pRTC->CLKDCTL);
-            printf("INTSTS:0x%x\r\n",pRTC->INTSTS);
+            printf("INTSTS:0x%x\r\n", pRTC->INTSTS);
             CU_ASSERT_EQUAL((pRTC->CLKDCTL & RTC_CLKDCTL_SWLIRCF_Msk), RTC_CLKDCTL_SWLIRCF_Msk);
             CU_ASSERT_EQUAL((pRTC->CLKDCTL & RTC_CLKDCTL_LXTSLOWF_Msk), RTC_CLKDCTL_LXTSLOWF_Msk);
 
@@ -1416,7 +1416,7 @@ void API_RTC_ClockDetector_Func(void)
             return ;
         }
     }
-    
+
     CU_ASSERT_EQUAL(RTC_GET_CLKSTOP_INT_FLAG(pRTC), 0);
 
     RTC_DisableClockFrequencyDetector();

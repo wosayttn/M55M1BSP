@@ -9,7 +9,8 @@
 #include "NuMicro.h"
 #include "kdf_test_pattern.h"
 
-const S_KDF_TEST_PATTERN gc_sHKDF_TestPattern[] = {
+const S_KDF_TEST_PATTERN gc_sHKDF_TestPattern[] =
+{
     {
         .strIKM         = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
         .strSalt        = "606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f",
@@ -129,7 +130,8 @@ const S_KDF_TEST_PATTERN gc_sHKDF_TestPattern[] = {
     },
 };
 
-const S_KDF_TEST_PATTERN gc_sKBKDF_TestPattern[] = {
+const S_KDF_TEST_PATTERN gc_sKBKDF_TestPattern[] =
+{
     {
         .strIKM         = "664437e754a18261523a86f720584bf184559688349f44fd0d7f8c3275dc12be",
         .strLabel       = "f0f1f2f3f4f5f6f7f8f90000",
@@ -162,7 +164,7 @@ const S_KDF_TEST_PATTERN gc_sKBKDF_TestPattern[] = {
         .u32KeyByteSize = 16,
         .u32KeyBitSize  = 128,
     },
-	{
+    {
         .strIKM         = "664437e754a18261523a86f720584bf184559688349f44fd0d7f8c3275dc12be",
         .strLabel       = "f0f1f2f3f4f5f6f7f8f90000",
         .strContext     = "f0f1f2f3f4f5f6f7f8f9000000000000",

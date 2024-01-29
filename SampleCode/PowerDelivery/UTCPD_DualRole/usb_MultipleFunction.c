@@ -169,12 +169,12 @@ void power_enable_auto_discharge(void)
 void frs_tx_polarity_active_low()
 {
     /* Set VBUS discharge Polarity Active low */
-    outp32(UTCPD0_BASE+TCPC_REG_PINPL, inp32(UTCPD0_BASE+TCPC_REG_PINPL) & ~TCPC_REG_PINPL_FRSTX);
+    outp32(UTCPD0_BASE + TCPC_REG_PINPL, inp32(UTCPD0_BASE + TCPC_REG_PINPL) & ~TCPC_REG_PINPL_FRSTX);
 }
 void frs_tx_polarity_active_high()
 {
     /* Set VBUS discharge Polarity Active high */
-    outp32(UTCPD0_BASE+TCPC_REG_PINPL, inp32(UTCPD0_BASE+TCPC_REG_PINPL) | TCPC_REG_PINPL_FRSTX);
+    outp32(UTCPD0_BASE + TCPC_REG_PINPL, inp32(UTCPD0_BASE + TCPC_REG_PINPL) | TCPC_REG_PINPL_FRSTX);
 }
 
 void frs_mux_selection(uint32_t cc1frssel, uint32_t cc2frssel)

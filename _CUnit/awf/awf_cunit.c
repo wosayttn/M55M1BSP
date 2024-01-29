@@ -28,42 +28,42 @@ int AWF_Test_Clean(void)
 void TestFunc_AWF_EnableInt(void)
 {
     AWF_EnableInt(AWF_CTL_HTIEN_Msk);
-    CU_ASSERT((AWF->CTL & AWF_CTL_HTIEN_Msk)>>AWF_CTL_HTIEN_Pos == 1UL);
+    CU_ASSERT((AWF->CTL & AWF_CTL_HTIEN_Msk) >> AWF_CTL_HTIEN_Pos == 1UL);
     AWF_DisableInt(AWF_CTL_HTIEN_Msk);
-    CU_ASSERT((AWF->CTL & AWF_CTL_HTIEN_Msk)>>AWF_CTL_HTIEN_Pos == 0UL);
+    CU_ASSERT((AWF->CTL & AWF_CTL_HTIEN_Msk) >> AWF_CTL_HTIEN_Pos == 0UL);
     AWF_EnableInt(AWF_CTL_LTIEN_Msk);
-    CU_ASSERT((AWF->CTL & AWF_CTL_LTIEN_Msk)>>AWF_CTL_LTIEN_Pos == 1UL);
+    CU_ASSERT((AWF->CTL & AWF_CTL_LTIEN_Msk) >> AWF_CTL_LTIEN_Pos == 1UL);
     AWF_DisableInt(AWF_CTL_LTIEN_Msk);
-    CU_ASSERT((AWF->CTL & AWF_CTL_LTIEN_Msk)>>AWF_CTL_LTIEN_Pos == 0UL);    
+    CU_ASSERT((AWF->CTL & AWF_CTL_LTIEN_Msk) >> AWF_CTL_LTIEN_Pos == 0UL);
 }
 
 void TestFunc_AWF_EnableWakeup(void)
 {
     AWF_EnableWakeup(AWF_CTL_HTWKEN_Msk);
-    CU_ASSERT((AWF->CTL & AWF_CTL_HTWKEN_Msk)>>AWF_CTL_HTWKEN_Pos == 1UL);
+    CU_ASSERT((AWF->CTL & AWF_CTL_HTWKEN_Msk) >> AWF_CTL_HTWKEN_Pos == 1UL);
     AWF_DisableWakeup(AWF_CTL_HTWKEN_Msk);
-    CU_ASSERT((AWF->CTL & AWF_CTL_HTWKEN_Msk)>>AWF_CTL_HTWKEN_Pos == 0UL);
+    CU_ASSERT((AWF->CTL & AWF_CTL_HTWKEN_Msk) >> AWF_CTL_HTWKEN_Pos == 0UL);
     AWF_EnableWakeup(AWF_CTL_LTWKEN_Msk);
-    CU_ASSERT((AWF->CTL & AWF_CTL_LTWKEN_Msk)>>AWF_CTL_LTWKEN_Pos == 1UL);
+    CU_ASSERT((AWF->CTL & AWF_CTL_LTWKEN_Msk) >> AWF_CTL_LTWKEN_Pos == 1UL);
     AWF_DisableWakeup(AWF_CTL_LTWKEN_Msk);
-    CU_ASSERT((AWF->CTL & AWF_CTL_LTWKEN_Msk)>>AWF_CTL_LTWKEN_Pos == 0UL);
+    CU_ASSERT((AWF->CTL & AWF_CTL_LTWKEN_Msk) >> AWF_CTL_LTWKEN_Pos == 0UL);
 }
 
 void TestFunc_AWF_SET_ACC_COUNT(void)
 {
     uint32_t TempValue;
-    
-    for(TempValue = 0; TempValue <= 0xF ; TempValue++)
+
+    for (TempValue = 0; TempValue <= 0xF ; TempValue++)
     {
         AWF_SET_ACC_COUNT(TempValue);
 
-        if(TempValue <= 8)
+        if (TempValue <= 8)
         {
-            CU_ASSERT((AWF->CTL&AWF_CTL_ACUCNT_Msk)>>AWF_CTL_ACUCNT_Pos == TempValue);
+            CU_ASSERT((AWF->CTL & AWF_CTL_ACUCNT_Msk) >> AWF_CTL_ACUCNT_Pos == TempValue);
         }
         else
         {
-            CU_ASSERT((AWF->CTL&AWF_CTL_ACUCNT_Msk)>>AWF_CTL_ACUCNT_Pos == 0UL);
+            CU_ASSERT((AWF->CTL & AWF_CTL_ACUCNT_Msk) >> AWF_CTL_ACUCNT_Pos == 0UL);
         }
     }
 }
@@ -71,34 +71,34 @@ void TestFunc_AWF_SET_ACC_COUNT(void)
 void TestFunc_AWF_SET_HTH(void)
 {
     uint32_t TempValue;
-    
-    for(TempValue = 1; TempValue <= 0x7FFFF ; TempValue = TempValue << 1)
+
+    for (TempValue = 1; TempValue <= 0x7FFFF ; TempValue = TempValue << 1)
     {
         AWF_SET_HTH(TempValue);
-        CU_ASSERT((AWF->HTH&AWF_HTH_AWFHTH_Msk)>>AWF_HTH_AWFHTH_Pos == TempValue);
+        CU_ASSERT((AWF->HTH & AWF_HTH_AWFHTH_Msk) >> AWF_HTH_AWFHTH_Pos == TempValue);
     }
 }
 
 void TestFunc_AWF_SET_LTH(void)
 {
     uint32_t TempValue;
-    
-    for(TempValue = 1; TempValue <= 0x7FFFF ; TempValue = TempValue << 1)
+
+    for (TempValue = 1; TempValue <= 0x7FFFF ; TempValue = TempValue << 1)
     {
         AWF_SET_LTH(TempValue);
-        CU_ASSERT((AWF->LTH&AWF_LTH_AWFLTH_Msk)>>AWF_LTH_AWFLTH_Pos == TempValue);
+        CU_ASSERT((AWF->LTH & AWF_LTH_AWFLTH_Msk) >> AWF_LTH_AWFLTH_Pos == TempValue);
     }
 }
 
 void TestFunc_AWF_GET_ACUVAL(void)
 {
-    uint32_t TempValue,AccmTempValue;
+    uint32_t TempValue, AccmTempValue;
     AWF_SET_WBINIT(0);
     AWF_SET_ACC_COUNT(8);
-    
-    for(TempValue = 1; TempValue <= 0xFFFF ; TempValue = TempValue << 1)
+
+    for (TempValue = 1; TempValue <= 0xFFFF ; TempValue = TempValue << 1)
     {
-        AWF_WRITE_DAT(TempValue);       
+        AWF_WRITE_DAT(TempValue);
         AccmTempValue = (AWF->W0 + AWF->W1 + AWF->W2 + AWF->W3 + AWF->W4 + AWF->W5 + AWF->W6 + AWF->W7);
         CU_ASSERT(AWF_GET_ACUVAL() == AccmTempValue);
     }
@@ -106,10 +106,10 @@ void TestFunc_AWF_GET_ACUVAL(void)
 
 void TestFunc_AWF_SET_WBINIT(void)
 {
-    uint32_t TempValue,AccmTempValue;
+    uint32_t TempValue, AccmTempValue;
     AWF_SET_ACC_COUNT(8);
-    
-    for(TempValue = 1; TempValue <= 0xFFFF ; TempValue = TempValue << 1)
+
+    for (TempValue = 1; TempValue <= 0xFFFF ; TempValue = TempValue << 1)
     {
         AWF_SET_WBINIT(TempValue);
         CU_ASSERT(AWF->W0 == TempValue);
@@ -126,24 +126,24 @@ void TestFunc_AWF_SET_WBINIT(void)
 void TestFunc_AWF_TestMacro(void)
 {
     AWF_Close();
-    
+
     AWF_CLEAR_HTH_INTFLAG();
     AWF_CLEAR_LTH_INTFLAG();
     CU_ASSERT(AWF_GET_HTH_INTFLAG() == 0UL);
     CU_ASSERT(AWF_GET_LTH_INTFLAG() == 0UL);
-    
-    AWF_Open(AWF_BOTHINT_DISABLE,AWF_BOTHWK_DISABLE,0,100,0,8);
-    
+
+    AWF_Open(AWF_BOTHINT_DISABLE, AWF_BOTHWK_DISABLE, 0, 100, 0, 8);
+
     AWF_WRITE_DAT(50);
 
     CU_ASSERT(AWF_GET_HTH_INTFLAG() == 1UL);
     CU_ASSERT(AWF_GET_LTH_INTFLAG() == 1UL);
-    
+
     AWF_SET_WBINIT(0);
     AWF_SET_HTH(0);
-    AWF_SET_LTH(0);    
+    AWF_SET_LTH(0);
     AWF_CLEAR_HTH_INTFLAG();
-    AWF_CLEAR_LTH_INTFLAG();    
+    AWF_CLEAR_LTH_INTFLAG();
     CU_ASSERT(AWF_GET_HTH_INTFLAG() == 0UL);
     CU_ASSERT(AWF_GET_LTH_INTFLAG() == 0UL);
 }
@@ -151,50 +151,50 @@ void TestFunc_AWF_TestMacro(void)
 void TestFunc_AWF_Open(void)
 {
     uint32_t TempValue;
-  
-    AWF_Open(AWF_BOTHINT_ENABLE,AWF_BOTHWK_DISABLE,0,0,0,0);
-    CU_ASSERT((AWF->CTL & AWF_CTL_HTIEN_Msk)>>AWF_CTL_HTIEN_Pos == 1UL);    
-    CU_ASSERT((AWF->CTL & AWF_CTL_LTIEN_Msk)>>AWF_CTL_LTIEN_Pos == 1UL);
-    
-    AWF_Open(AWF_BOTHINT_DISABLE,AWF_BOTHWK_DISABLE,0,0,0,0);
-    CU_ASSERT((AWF->CTL & AWF_CTL_LTIEN_Msk)>>AWF_CTL_LTIEN_Pos == 0UL);
-    CU_ASSERT((AWF->CTL & AWF_CTL_HTIEN_Msk)>>AWF_CTL_HTIEN_Pos == 0UL); 
-    
-    AWF_Open(AWF_HTINT_ENABLE,AWF_BOTHWK_DISABLE,0,0,0,0);
-    CU_ASSERT((AWF->CTL & AWF_CTL_HTIEN_Msk)>>AWF_CTL_HTIEN_Pos == 1UL);
-    
-    AWF_Open(AWF_LTINT_ENABLE,AWF_BOTHWK_DISABLE,0,0,0,0);
-    CU_ASSERT((AWF->CTL & AWF_CTL_LTIEN_Msk)>>AWF_CTL_LTIEN_Pos == 1UL);
+
+    AWF_Open(AWF_BOTHINT_ENABLE, AWF_BOTHWK_DISABLE, 0, 0, 0, 0);
+    CU_ASSERT((AWF->CTL & AWF_CTL_HTIEN_Msk) >> AWF_CTL_HTIEN_Pos == 1UL);
+    CU_ASSERT((AWF->CTL & AWF_CTL_LTIEN_Msk) >> AWF_CTL_LTIEN_Pos == 1UL);
+
+    AWF_Open(AWF_BOTHINT_DISABLE, AWF_BOTHWK_DISABLE, 0, 0, 0, 0);
+    CU_ASSERT((AWF->CTL & AWF_CTL_LTIEN_Msk) >> AWF_CTL_LTIEN_Pos == 0UL);
+    CU_ASSERT((AWF->CTL & AWF_CTL_HTIEN_Msk) >> AWF_CTL_HTIEN_Pos == 0UL);
+
+    AWF_Open(AWF_HTINT_ENABLE, AWF_BOTHWK_DISABLE, 0, 0, 0, 0);
+    CU_ASSERT((AWF->CTL & AWF_CTL_HTIEN_Msk) >> AWF_CTL_HTIEN_Pos == 1UL);
+
+    AWF_Open(AWF_LTINT_ENABLE, AWF_BOTHWK_DISABLE, 0, 0, 0, 0);
+    CU_ASSERT((AWF->CTL & AWF_CTL_LTIEN_Msk) >> AWF_CTL_LTIEN_Pos == 1UL);
 
 
-    AWF_Open(AWF_BOTHINT_DISABLE,AWF_BOTHWK_ENABLE,0,0,0,0);
-    CU_ASSERT((AWF->CTL & AWF_CTL_HTWKEN_Msk)>>AWF_CTL_HTWKEN_Pos == 1UL);
-    CU_ASSERT((AWF->CTL & AWF_CTL_LTWKEN_Msk)>>AWF_CTL_LTWKEN_Pos == 1UL);
+    AWF_Open(AWF_BOTHINT_DISABLE, AWF_BOTHWK_ENABLE, 0, 0, 0, 0);
+    CU_ASSERT((AWF->CTL & AWF_CTL_HTWKEN_Msk) >> AWF_CTL_HTWKEN_Pos == 1UL);
+    CU_ASSERT((AWF->CTL & AWF_CTL_LTWKEN_Msk) >> AWF_CTL_LTWKEN_Pos == 1UL);
 
-    AWF_Open(AWF_BOTHINT_DISABLE,AWF_BOTHWK_DISABLE,0,0,0,0);
-    CU_ASSERT((AWF->CTL & AWF_CTL_HTWKEN_Msk)>>AWF_CTL_HTWKEN_Pos == 0UL);
-    CU_ASSERT((AWF->CTL & AWF_CTL_LTWKEN_Msk)>>AWF_CTL_LTWKEN_Pos == 0UL);
+    AWF_Open(AWF_BOTHINT_DISABLE, AWF_BOTHWK_DISABLE, 0, 0, 0, 0);
+    CU_ASSERT((AWF->CTL & AWF_CTL_HTWKEN_Msk) >> AWF_CTL_HTWKEN_Pos == 0UL);
+    CU_ASSERT((AWF->CTL & AWF_CTL_LTWKEN_Msk) >> AWF_CTL_LTWKEN_Pos == 0UL);
 
-    AWF_Open(AWF_BOTHINT_DISABLE,AWF_HTWK_ENABLE,0,0,0,0);
-    CU_ASSERT((AWF->CTL & AWF_CTL_HTWKEN_Msk)>>AWF_CTL_HTWKEN_Pos == 1UL);    
-    AWF_Open(AWF_BOTHINT_DISABLE,AWF_LTWK_ENABLE,0,0,0,0);
-    CU_ASSERT((AWF->CTL & AWF_CTL_LTWKEN_Msk)>>AWF_CTL_LTWKEN_Pos == 1UL);
- 
-    for(TempValue = 1; TempValue <= 0x7FFFF ; TempValue = TempValue << 1)
+    AWF_Open(AWF_BOTHINT_DISABLE, AWF_HTWK_ENABLE, 0, 0, 0, 0);
+    CU_ASSERT((AWF->CTL & AWF_CTL_HTWKEN_Msk) >> AWF_CTL_HTWKEN_Pos == 1UL);
+    AWF_Open(AWF_BOTHINT_DISABLE, AWF_LTWK_ENABLE, 0, 0, 0, 0);
+    CU_ASSERT((AWF->CTL & AWF_CTL_LTWKEN_Msk) >> AWF_CTL_LTWKEN_Pos == 1UL);
+
+    for (TempValue = 1; TempValue <= 0x7FFFF ; TempValue = TempValue << 1)
     {
-        AWF_Open(AWF_BOTHINT_DISABLE,AWF_BOTHWK_DISABLE,TempValue,0,0,0);
-        CU_ASSERT((AWF->HTH&AWF_HTH_AWFHTH_Msk)>>AWF_HTH_AWFHTH_Pos == TempValue);
+        AWF_Open(AWF_BOTHINT_DISABLE, AWF_BOTHWK_DISABLE, TempValue, 0, 0, 0);
+        CU_ASSERT((AWF->HTH & AWF_HTH_AWFHTH_Msk) >> AWF_HTH_AWFHTH_Pos == TempValue);
     }
 
-    for(TempValue = 1; TempValue <= 0x7FFFF ; TempValue = TempValue << 1)
+    for (TempValue = 1; TempValue <= 0x7FFFF ; TempValue = TempValue << 1)
     {
-        AWF_Open(AWF_BOTHINT_DISABLE,AWF_BOTHWK_DISABLE,0,TempValue,0,0);
-        CU_ASSERT((AWF->LTH&AWF_LTH_AWFLTH_Msk)>>AWF_LTH_AWFLTH_Pos == TempValue);
+        AWF_Open(AWF_BOTHINT_DISABLE, AWF_BOTHWK_DISABLE, 0, TempValue, 0, 0);
+        CU_ASSERT((AWF->LTH & AWF_LTH_AWFLTH_Msk) >> AWF_LTH_AWFLTH_Pos == TempValue);
     }
 
-    for(TempValue = 1; TempValue <= 0xFFFF ; TempValue = TempValue << 1)
+    for (TempValue = 1; TempValue <= 0xFFFF ; TempValue = TempValue << 1)
     {
-        AWF_Open(AWF_BOTHINT_DISABLE,AWF_BOTHWK_DISABLE,0,0,TempValue,0);
+        AWF_Open(AWF_BOTHINT_DISABLE, AWF_BOTHWK_DISABLE, 0, 0, TempValue, 0);
         CU_ASSERT(AWF->W0 == TempValue);
         CU_ASSERT(AWF->W1 == TempValue);
         CU_ASSERT(AWF->W2 == TempValue);
@@ -205,27 +205,27 @@ void TestFunc_AWF_Open(void)
         CU_ASSERT(AWF->W7 == TempValue);
     }
 
-    for(TempValue = 0; TempValue <= 0xF ; TempValue++)
+    for (TempValue = 0; TempValue <= 0xF ; TempValue++)
     {
-        AWF_Open(AWF_BOTHINT_DISABLE,AWF_BOTHWK_DISABLE,0,0,0,TempValue);
+        AWF_Open(AWF_BOTHINT_DISABLE, AWF_BOTHWK_DISABLE, 0, 0, 0, TempValue);
 
-        if(TempValue <= 8)
+        if (TempValue <= 8)
         {
-            CU_ASSERT((AWF->CTL&AWF_CTL_ACUCNT_Msk)>>AWF_CTL_ACUCNT_Pos == TempValue);
+            CU_ASSERT((AWF->CTL & AWF_CTL_ACUCNT_Msk) >> AWF_CTL_ACUCNT_Pos == TempValue);
         }
         else
         {
-            CU_ASSERT((AWF->CTL&AWF_CTL_ACUCNT_Msk)>>AWF_CTL_ACUCNT_Pos == 0UL);
+            CU_ASSERT((AWF->CTL & AWF_CTL_ACUCNT_Msk) >> AWF_CTL_ACUCNT_Pos == 0UL);
         }
     }
 
     AWF_Close();
-    CU_ASSERT((AWF->CTL & AWF_CTL_LTIEN_Msk)>>AWF_CTL_LTIEN_Pos == 0UL);
-    CU_ASSERT((AWF->CTL & AWF_CTL_HTIEN_Msk)>>AWF_CTL_HTIEN_Pos == 0UL);
-    CU_ASSERT((AWF->CTL & AWF_CTL_HTWKEN_Msk)>>AWF_CTL_HTWKEN_Pos == 0UL);
-    CU_ASSERT((AWF->CTL & AWF_CTL_LTWKEN_Msk)>>AWF_CTL_LTWKEN_Pos == 0UL);
-    CU_ASSERT((AWF->HTH&AWF_HTH_AWFHTH_Msk)>>AWF_HTH_AWFHTH_Pos == 0UL);
-    CU_ASSERT((AWF->LTH&AWF_LTH_AWFLTH_Msk)>>AWF_LTH_AWFLTH_Pos == 0UL);  
+    CU_ASSERT((AWF->CTL & AWF_CTL_LTIEN_Msk) >> AWF_CTL_LTIEN_Pos == 0UL);
+    CU_ASSERT((AWF->CTL & AWF_CTL_HTIEN_Msk) >> AWF_CTL_HTIEN_Pos == 0UL);
+    CU_ASSERT((AWF->CTL & AWF_CTL_HTWKEN_Msk) >> AWF_CTL_HTWKEN_Pos == 0UL);
+    CU_ASSERT((AWF->CTL & AWF_CTL_LTWKEN_Msk) >> AWF_CTL_LTWKEN_Pos == 0UL);
+    CU_ASSERT((AWF->HTH & AWF_HTH_AWFHTH_Msk) >> AWF_HTH_AWFHTH_Pos == 0UL);
+    CU_ASSERT((AWF->LTH & AWF_LTH_AWFLTH_Msk) >> AWF_LTH_AWFLTH_Pos == 0UL);
     CU_ASSERT(AWF->W0 == 0UL);
     CU_ASSERT(AWF->W1 == 0UL);
     CU_ASSERT(AWF->W2 == 0UL);
@@ -234,21 +234,24 @@ void TestFunc_AWF_Open(void)
     CU_ASSERT(AWF->W5 == 0UL);
     CU_ASSERT(AWF->W6 == 0UL);
     CU_ASSERT(AWF->W7 == 0UL);
-    CU_ASSERT((AWF->CTL&AWF_CTL_ACUCNT_Msk)>>AWF_CTL_ACUCNT_Pos == 0UL);    
+    CU_ASSERT((AWF->CTL & AWF_CTL_ACUCNT_Msk) >> AWF_CTL_ACUCNT_Pos == 0UL);
 }
 
-CU_SuiteInfo AWFSuites[] = {
+CU_SuiteInfo AWFSuites[] =
+{
     { "AWF Macro Test", AWF_Test_Init, AWF_Test_Clean, NULL, NULL, AWF_MacroTest },
     { "AWF Func  Test", AWF_Test_Init, AWF_Test_Clean, NULL, NULL, AWF_FuncTest },
     CU_SUITE_INFO_NULL
 };
 
-CU_TestInfo  AWF_MacroTest[] = {
+CU_TestInfo  AWF_MacroTest[] =
+{
     { "Macro",  TestFunc_AWF_TestMacro },
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo  AWF_FuncTest[] = {
+CU_TestInfo  AWF_FuncTest[] =
+{
     { "AWF_Enable/DisableInterrupt", TestFunc_AWF_EnableInt },
     { "AWF_Enable/DisableThresholdWakeup", TestFunc_AWF_EnableWakeup },
     { "AWF_SET_ACC_COUNT", TestFunc_AWF_SET_ACC_COUNT },

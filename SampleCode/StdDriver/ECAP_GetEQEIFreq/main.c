@@ -28,7 +28,7 @@ NVT_ITCM void TIMER0_IRQHandler(void)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
-    if(TIMER_GetIntFlag(TIMER0) == 1)
+    if (TIMER_GetIntFlag(TIMER0) == 1)
     {
         /* Clear Timer0 time-out interrupt flag */
         TIMER_ClearIntFlag(TIMER0);
@@ -36,11 +36,13 @@ NVT_ITCM void TIMER0_IRQHandler(void)
         /*PA.0 gpio toggle */
         PA0 ^= 1;
     }
+
     __DSB();
     __ISB();
-    while(TIMER_GetIntFlag(TIMER0))
+
+    while (TIMER_GetIntFlag(TIMER0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TIMER0 IntFlag time-out!\n");
         }
@@ -55,7 +57,7 @@ NVT_ITCM void ECAP0_IRQHandler(void)
     u32Status = ECAP_GET_INT_STATUS(ECAP0);
 
     /* Check input capture channel 0 flag */
-    if((u32Status & ECAP_STATUS_CAPTF0_Msk) == ECAP_STATUS_CAPTF0_Msk)
+    if ((u32Status & ECAP_STATUS_CAPTF0_Msk) == ECAP_STATUS_CAPTF0_Msk)
     {
         /* Clear input capture channel 0 flag */
         ECAP_CLR_CAPTURE_FLAG(ECAP0, ECAP_STATUS_CAPTF0_Msk);
@@ -65,37 +67,39 @@ NVT_ITCM void ECAP0_IRQHandler(void)
     }
 
     /* Check input capture channel 1 flag */
-    if((u32Status & ECAP_STATUS_CAPTF1_Msk) == ECAP_STATUS_CAPTF1_Msk)
+    if ((u32Status & ECAP_STATUS_CAPTF1_Msk) == ECAP_STATUS_CAPTF1_Msk)
     {
         /* Clear input capture channel 1 flag */
         ECAP_CLR_CAPTURE_FLAG(ECAP0, ECAP_STATUS_CAPTF1_Msk);
     }
 
     /* Check input capture channel 2 flag */
-    if((u32Status & ECAP_STATUS_CAPTF2_Msk) == ECAP_STATUS_CAPTF2_Msk)
+    if ((u32Status & ECAP_STATUS_CAPTF2_Msk) == ECAP_STATUS_CAPTF2_Msk)
     {
         /* Clear input capture channel 2 flag */
         ECAP_CLR_CAPTURE_FLAG(ECAP0, ECAP_STATUS_CAPTF2_Msk);
     }
 
     /* Check input capture compare-match flag */
-    if((u32Status & ECAP_STATUS_CAPCMPF_Msk) == ECAP_STATUS_CAPCMPF_Msk)
+    if ((u32Status & ECAP_STATUS_CAPCMPF_Msk) == ECAP_STATUS_CAPCMPF_Msk)
     {
         /* Clear input capture compare-match flag */
-        ECAP_CLR_CAPTURE_FLAG(ECAP0,ECAP_STATUS_CAPCMPF_Msk);
+        ECAP_CLR_CAPTURE_FLAG(ECAP0, ECAP_STATUS_CAPCMPF_Msk);
     }
 
     /* Check input capture overflow flag */
-    if((u32Status & ECAP_STATUS_CAPOVF_Msk) == ECAP_STATUS_CAPOVF_Msk)
+    if ((u32Status & ECAP_STATUS_CAPOVF_Msk) == ECAP_STATUS_CAPOVF_Msk)
     {
         /* Clear input capture overflow flag */
-        ECAP_CLR_CAPTURE_FLAG(ECAP0,ECAP_STATUS_CAPOVF_Msk);
+        ECAP_CLR_CAPTURE_FLAG(ECAP0, ECAP_STATUS_CAPOVF_Msk);
     }
+
     __DSB();
     __ISB();
-    while(ECAP_GET_INT_STATUS(ECAP0) & 0xFF)
+
+    while (ECAP_GET_INT_STATUS(ECAP0) & 0xFF)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for ECAP0 IntFlag time-out!\n");
         }
@@ -155,7 +159,7 @@ void ECAP0_Init(void)
     ECAP_Open(ECAP0, ECAP_DISABLE_COMPARE);
 
     /* Select Reload function */
-    ECAP_SET_CNT_CLEAR_EVENT(ECAP0, (ECAP_CTL1_CAP0RLDEN_Msk|ECAP_CTL1_CAP1RLDEN_Msk));
+    ECAP_SET_CNT_CLEAR_EVENT(ECAP0, (ECAP_CTL1_CAP0RLDEN_Msk | ECAP_CTL1_CAP1RLDEN_Msk));
 
     /* Enable ECAP0 Input Channel 0*/
     ECAP_ENABLE_INPUT_CHANNEL(ECAP0, ECAP_CTL0_IC0EN_Msk);
@@ -173,14 +177,14 @@ void ECAP0_Init(void)
 
 void EQEI0_Init(void)
 {
-    EQEI_Open(EQEI0,EQEI_CTL_X4_FREE_COUNTING_MODE,0);
+    EQEI_Open(EQEI0, EQEI_CTL_X4_FREE_COUNTING_MODE, 0);
     EQEI_Start(EQEI0);
 }
 
 void Timer0_Init(void)
 {
     /* Open Timer0 in periodic mode, enable interrupt and 1000 interrupt tick per second */
-    TIMER_Open(TIMER0,TIMER_PERIODIC_MODE,1000);
+    TIMER_Open(TIMER0, TIMER_PERIODIC_MODE, 1000);
     TIMER_EnableInt(TIMER0);
 
     /* Enable Timer0 NVIC */
@@ -189,7 +193,7 @@ void Timer0_Init(void)
 
 int main(void)
 {
-    uint32_t u32Hz=0, u32Hz_DET=0;
+    uint32_t u32Hz = 0, u32Hz_DET = 0;
 
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
@@ -235,29 +239,30 @@ int main(void)
     /* ECAP_CNT starts up-counting */
     ECAP_CNT_START(ECAP0);
 
-    while(1)
+    while (1)
     {
-        if(u32Status != 0)
+        if (u32Status != 0)
         {
             /* Input Capture status is changed, and get a new hold value of input capture counter */
             u32Status = 0;
 
             /* Calculate the IC0 input frequency */
-            u32Hz_DET = (SystemCoreClock/2) / (u32IC0Hold + 1);
+            u32Hz_DET = (SystemCoreClock / 2) / (u32IC0Hold + 1);
 
-            if(u32Hz != u32Hz_DET)
+            if (u32Hz != u32Hz_DET)
             {
                 /* If IC0 input frequency is changed, Update frequency */
                 u32Hz = u32Hz_DET;
             }
             else
             {
-                printf("\nECAP0_IC0 input frequency is %d (Hz),u32IC0Hold=0x%08x\n", u32Hz,u32IC0Hold);
+                printf("\nECAP0_IC0 input frequency is %d (Hz),u32IC0Hold=0x%08x\n", u32Hz, u32IC0Hold);
                 TIMER_Stop(TIMER0); //Disable timer Counting.
                 break;
             }
         }
     }
+
     /* Disable External Interrupt */
     NVIC_DisableIRQ(ECAP0_IRQn);
     NVIC_DisableIRQ(TIMER0_IRQn);

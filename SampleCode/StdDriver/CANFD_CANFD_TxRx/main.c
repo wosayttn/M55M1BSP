@@ -304,8 +304,7 @@ void CANFD_TxRxTest(void)
                 u8RxTestNum++;
 
             }
-        }
-        while (u8RxTestNum < 6);
+        } while (u8RxTestNum < 6);
 
         printf("\n Receive OK & Check OK\n");
     }

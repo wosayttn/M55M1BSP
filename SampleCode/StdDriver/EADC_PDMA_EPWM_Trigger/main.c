@@ -110,7 +110,7 @@ void SYS_Init(void)
     SetDebugUartMFP();
 
     /* Set PB.1 to input mode */
-    GPIO_SetMode(PB,BIT1, GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT1, GPIO_MODE_INPUT);
     /* Configure the PB.1 ADC analog input pins. */
     SET_EADC0_CH1_PB1();
     /* Disable the PB.1 digital input path to avoid the leakage current. */
@@ -243,7 +243,7 @@ void EADC_FunctionTest()
             EADC_Open(EADC0, EADC_CTL_DIFFEN_DIFFERENTIAL);
 
             /* Configure the sample module 0 for analog input channel 8 and software trigger source.*/
-            EADC_ConfigSampleModule(EADC0, g_u32SampleModuleNum , EADC_EPWM0TG0_TRIGGER, 8);
+            EADC_ConfigSampleModule(EADC0, g_u32SampleModuleNum, EADC_EPWM0TG0_TRIGGER, 8);
 
             EADC_ENABLE_SAMPLE_MODULE_PDMA(EADC0, BIT0 << g_u32SampleModuleNum);
 

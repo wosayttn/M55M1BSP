@@ -55,7 +55,7 @@ static void SYS_Init(void)
     /* Enable GPIO clock */
     CLK_EnableModuleClock(GPIOE_MODULE);
     CLK_EnableModuleClock(GPIOC_MODULE);
-		/* Set multi-function pin for EPWM */
+    /* Set multi-function pin for EPWM */
     SET_EPWM0_CH0_PE7();
     SET_EPWM0_CH1_PE6();
     SET_EPWM0_CH2_PE5();

@@ -52,7 +52,8 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
         LPPDMA_CLR_TD_FLAG(LPPDMA, (LPPDMA_TDSTS_TDIF0_Msk << LPTMR_LPPDMA_CH));
     }
     else
-        printf("unknown interrupt %x!!\n",status);
+        printf("unknown interrupt %x!!\n", status);
+
     if (status & LPPDMA_INTSTS_WKF_Msk)     /* wake up */
     {
         printf("wake up !!\n");
@@ -60,11 +61,13 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
         /* Clear wake up flag */
         LPPDMA->INTSTS = status;
     }
+
     __DSB();
     __ISB();
-    while(LPPDMA_GET_INT_STATUS(LPPDMA))
+
+    while (LPPDMA_GET_INT_STATUS(LPPDMA))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPPDMA IntFlag time-out!\n");
         }
@@ -78,11 +81,13 @@ void LPTMR_PWM_Trigger_Init(void)
 {
     /* Change Low Power Timer to PWM counter mode */
     LPTPWM_ENABLE_PWM_MODE(LPTMR0);
+
     /* Set Low Power TMR0 PWM output frequency is 1000 Hz, duty 50% in up count type */
     if (LPTPWM_ConfigOutputFreqAndDuty(LPTMR0, 1000, 50) != 1000)
     {
         printf("Set the frequency different from the user\n");
     }
+
     /* Enable output of LPTPWM_CH0 */
     LPTPWM_ENABLE_OUTPUT(LPTMR0, TPWM_CH0);
     /* Enable LPTPWM0 to trigger LPPDMA */
@@ -215,17 +220,21 @@ int main(void)
     NVIC_DisableIRQ(LPPDMA_IRQn);
     LPPDMA_DisableInt(LPPDMA, LPTMR_LPPDMA_CH, LPPDMA_INT_TRANS_DONE);
     LPTPWM_DisableCounter(LPTMR0);
+
     /* Waiting for LPPDMA transfer done.  g_u32IsTestOver is set by LPPDMA interrupt handler */
     while (s_u32IsTestOver == 0);
+
     /* Check transfer result */
     if (s_u32IsTestOver == 1)
         printf("LPPDMA trasnfer LPTPWM done.\n");
     else if (s_u32IsTestOver == 2)
         printf("LPPDMA trasnfer LPTPWM abort...\n");
+
     if (s_au32CAPValue[0] == LPTMR0->PWMCMPDAT)
         printf("LPTPWM Auto Operation PASS.\n");
     else
         printf("LPTPWM Auto Operation FAIL.\n");
+
     /* Got no where to go, just loop forever */
     while (1) ;
 }

@@ -30,9 +30,10 @@ NVT_ITCM void TIMER0_IRQHandler(void)
     printf("%d sec\n", sec++);
     __DSB();
     __ISB();
-    while(TIMER_GetIntFlag(TIMER0))
+
+    while (TIMER_GetIntFlag(TIMER0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TIMER0 IntFlag time-out!\n");
         }

@@ -35,20 +35,23 @@ NVT_ITCM void EPWM0P0_IRQHandler(void)
     EPWM_ClearPeriodIntFlag(EPWM0, 0);
 
     /* Channel 0 frequency is 100Hz, every 1 second enter this IRQ handler 100 times. */
-    if(++cnt == 100)
+    if (++cnt == 100)
     {
-        if(out)
+        if (out)
             EPWM_EnableOutput(EPWM0, EPWM_CH_0_MASK | EPWM_CH_1_MASK | EPWM_CH_2_MASK | EPWM_CH_3_MASK);
         else
             EPWM_DisableOutput(EPWM0, EPWM_CH_0_MASK | EPWM_CH_1_MASK | EPWM_CH_2_MASK | EPWM_CH_3_MASK);
+
         out ^= 1;
         cnt = 0;
     }
+
     __DSB();
     __ISB();
-    while(EPWM_GetPeriodIntFlag(EPWM0, 0))
+
+    while (EPWM_GetPeriodIntFlag(EPWM0, 0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for EPWM PeriodIntFlag time-out!\n");
         }

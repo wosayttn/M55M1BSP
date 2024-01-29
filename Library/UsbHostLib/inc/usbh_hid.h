@@ -329,9 +329,9 @@ int32_t  usbh_hid_set_report_non_blocking(HID_DEV_T *hdev, int rtp_typ, int rtp_
 /// @endcond HIDDEN_SYMBOLS
 
 /** @} end of group USBH_EXPORTED_FUNCTIONS */
-       
+
 /** @} end of group USBH_Library */
-       
+
 /** @} end of group Library */
 
 #ifdef __cplusplus

@@ -136,6 +136,7 @@ NVT_ITCM void SDH0_IRQHandler(void)
         printf("***** ISR: response in timeout !\n");
         SDH0->INTSTS |= SDH_INTSTS_RTOIF_Msk;
     }
+
     __DSB();
     __ISB();
 }
@@ -154,11 +155,13 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
         if ((psDMIC_BufCtrl->u16WriteIdx += (psDMIC_BufCtrl->u16BufCount / 2)) >= psDMIC_BufCtrl->u16BufCount)
             psDMIC_BufCtrl->u16WriteIdx = 0;
     }
+
     __DSB();
     __ISB();
-    while(LPPDMA_GET_TD_STS(LPPDMA))
+
+    while (LPPDMA_GET_TD_STS(LPPDMA))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPPDMA IntFlag time-out!\n");
         }
@@ -225,11 +228,11 @@ void DMIC_Init(S_BUFCTRL *psInBufCtrl)
     SET_DMIC0_DAT_PB5();
     SET_DMIC0_CLK_PB4();
     SYS->GPB_MFOS = BIT5;
-		PB5 = 1;
-//    SET_DMIC0_DAT_PE8();
-//    SET_DMIC0_CLK_PE9();
-//    SYS->GPE_MFOS = BIT8;
-//    PE8 = 1;
+    PB5 = 1;
+    //    SET_DMIC0_DAT_PE8();
+    //    SET_DMIC0_CLK_PE9();
+    //    SYS->GPE_MFOS = BIT8;
+    //    PE8 = 1;
     // Config DMIC buffer control
     psDMIC_BufCtrl = psInBufCtrl;
 }
@@ -422,7 +425,9 @@ int main(void)
     };
 
     DMIC_Stop();
+
     WAVWrite_Close();
+
     SDH_Close_Disk(SDH0);
 
     while (1);

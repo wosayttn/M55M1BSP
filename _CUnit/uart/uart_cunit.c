@@ -88,43 +88,51 @@ UART_T *UartCh[10] =
 void UART_IPReset(UART_T *psUART)
 {
     /* Unlock protected registers */
-    SYS_UnlockReg(); 
+    SYS_UnlockReg();
+
     switch ((uint32_t)psUART)
     {
         case (uint32_t)UART0:
-             SYS_ResetModule(SYS_UART0RST);  // Reset UART0 IP
+            SYS_ResetModule(SYS_UART0RST);  // Reset UART0 IP
             break;
 
         case (uint32_t)UART1:
-             SYS_ResetModule(SYS_UART1RST);  // Reset UART1 IP
+            SYS_ResetModule(SYS_UART1RST);  // Reset UART1 IP
             break;
 
         case (uint32_t)UART2:
-             SYS_ResetModule(SYS_UART2RST);  // Reset UART2 IP
+            SYS_ResetModule(SYS_UART2RST);  // Reset UART2 IP
             break;
 
         case (uint32_t)UART3:
-             SYS_ResetModule(SYS_UART3RST);  // Reset UART3 IP
+            SYS_ResetModule(SYS_UART3RST);  // Reset UART3 IP
             break;
+
         case (uint32_t)UART4:
-             SYS_ResetModule(SYS_UART4RST);  // Reset UART4 IP
+            SYS_ResetModule(SYS_UART4RST);  // Reset UART4 IP
             break;
+
         case (uint32_t)UART5:
-             SYS_ResetModule(SYS_UART5RST);  // Reset UART5 IP
+            SYS_ResetModule(SYS_UART5RST);  // Reset UART5 IP
             break;
+
         case (uint32_t)UART6:
-             SYS_ResetModule(SYS_UART6RST);  // Reset UART6 IP
+            SYS_ResetModule(SYS_UART6RST);  // Reset UART6 IP
             break;
+
         case (uint32_t)UART7:
-             SYS_ResetModule(SYS_UART7RST);  // Reset UART7 IP
+            SYS_ResetModule(SYS_UART7RST);  // Reset UART7 IP
             break;
+
         case (uint32_t)UART8:
-             SYS_ResetModule(SYS_UART8RST);  // Reset UART8 IP
+            SYS_ResetModule(SYS_UART8RST);  // Reset UART8 IP
             break;
+
         case (uint32_t)UART9:
-             SYS_ResetModule(SYS_UART9RST);  // Reset UART9 IP
+            SYS_ResetModule(SYS_UART9RST);  // Reset UART9 IP
             break;
     }
+
     /* Lock protected registers */
     SYS_LockReg();
 }
@@ -200,17 +208,18 @@ void TestFunc_UART_EnableInt()
 
     }
 
-//    NVIC_DisableIRQ(UART0_IRQn);
-//    NVIC_DisableIRQ(UART1_IRQn);
-//    NVIC_DisableIRQ(UART2_IRQn);
-//    NVIC_DisableIRQ(UART3_IRQn);
-//    NVIC_DisableIRQ(UART4_IRQn);
+    //    NVIC_DisableIRQ(UART0_IRQn);
+    //    NVIC_DisableIRQ(UART1_IRQn);
+    //    NVIC_DisableIRQ(UART2_IRQn);
+    //    NVIC_DisableIRQ(UART3_IRQn);
+    //    NVIC_DisableIRQ(UART4_IRQn);
 }
 
 void SetUARTClockSource(UART_T *uart, uint32_t u32Source, uint32_t u32Div)
 {
-	   /* Lock protected registers */
+    /* Lock protected registers */
     SYS_UnlockReg();
+
     if (uart == UART0)
     {
         /* Set UART clock source selection */
@@ -246,42 +255,43 @@ void SetUARTClockSource(UART_T *uart, uint32_t u32Source, uint32_t u32Div)
         /* Set UART clock divider number */
         CLK->UARTDIV0 = (CLK->UARTDIV0 & ~ CLK_UARTDIV0_UART4DIV_Msk) | (u32Div << CLK_UARTDIV0_UART4DIV_Pos);
     }
-     else if (uart == UART5)
+    else if (uart == UART5)
     {
         /* Set UART clock source selection */
         CLK->UARTSEL0 = (CLK->UARTSEL0 & ~ CLK_UARTSEL0_UART5SEL_Msk) | (u32Source << CLK_UARTSEL0_UART5SEL_Pos);
         /* Set UART clock divider number */
         CLK->UARTDIV0 = (CLK->UARTDIV0 & ~ CLK_UARTDIV0_UART5DIV_Msk) | (u32Div << CLK_UARTDIV0_UART5DIV_Pos);
     }
-     else if (uart == UART6)
+    else if (uart == UART6)
     {
         /* Set UART clock source selection */
         CLK->UARTSEL0 = (CLK->UARTSEL0 & ~ CLK_UARTSEL0_UART6SEL_Msk) | (u32Source << CLK_UARTSEL0_UART6SEL_Pos);
         /* Set UART clock divider number */
         CLK->UARTDIV0 = (CLK->UARTDIV0 & ~ CLK_UARTDIV0_UART6DIV_Msk) | (u32Div << CLK_UARTDIV0_UART6DIV_Pos);
     }
-     else if (uart == UART7)
+    else if (uart == UART7)
     {
         /* Set UART clock source selection */
         CLK->UARTSEL0 = (CLK->UARTSEL0 & ~ CLK_UARTSEL0_UART7SEL_Msk) | (u32Source << CLK_UARTSEL0_UART7SEL_Pos);
         /* Set UART clock divider number */
         CLK->UARTDIV0 = (CLK->UARTDIV0 & ~ CLK_UARTDIV0_UART7DIV_Msk) | (u32Div << CLK_UARTDIV0_UART7DIV_Pos);
     }
-     else if (uart == UART8)
+    else if (uart == UART8)
     {
         /* Set UART clock source selection */
         CLK->UARTSEL1 = (CLK->UARTSEL1 & ~ CLK_UARTSEL1_UART8SEL_Msk) | (u32Source << CLK_UARTSEL1_UART8SEL_Pos);
         /* Set UART clock divider number */
         CLK->UARTDIV1 = (CLK->UARTDIV1 & ~ CLK_UARTDIV1_UART8DIV_Msk) | (u32Div << CLK_UARTDIV1_UART8DIV_Pos);
     }
-     else if (uart == UART9)
+    else if (uart == UART9)
     {
         /* Set UART clock source selection */
         CLK->UARTSEL1 = (CLK->UARTSEL1 & ~ CLK_UARTSEL1_UART9SEL_Msk) | (u32Source << CLK_UARTSEL1_UART9SEL_Pos);
         /* Set UART clock divider number */
         CLK->UARTDIV1 = (CLK->UARTDIV1 & ~ CLK_UARTDIV1_UART9DIV_Msk) | (u32Div << CLK_UARTDIV1_UART9DIV_Pos);
     }
-		   /* Lock protected registers */
+
+    /* Lock protected registers */
     SYS_LockReg();
 }
 
@@ -290,17 +300,17 @@ void SetUARTClockSource(UART_T *uart, uint32_t u32Source, uint32_t u32Div)
 uint32_t GetUartBaudrate(UART_T *uart)
 {
     uint32_t u32UartClkSrcSel = 0, u32UartClkDivNum = 0;
-    uint32_t au32ClkTbl[5] = {__HXT,__HIRC, __LXT, 0,__HIRC48M};
+    uint32_t au32ClkTbl[5] = {__HXT, __HIRC, __LXT, 0, __HIRC48M};
     uint32_t u32Baud_Div;
 
-    if(uart==(UART_T*)UART0)
+    if (uart == (UART_T *)UART0)
     {
         /* Get UART clock source selection */
         u32UartClkSrcSel = (CLK->UARTSEL0 & CLK_UARTSEL0_UART0SEL_Msk) >> CLK_UARTSEL0_UART0SEL_Pos;
         /* Get UART clock divider number */
         u32UartClkDivNum = (CLK->UARTDIV0 & CLK_UARTDIV0_UART0DIV_Msk) >> CLK_UARTDIV0_UART0DIV_Pos;
     }
-    else if(uart==(UART_T*)UART1)
+    else if (uart == (UART_T *)UART1)
     {
 
         /* Get UART clock source selection */
@@ -308,67 +318,67 @@ uint32_t GetUartBaudrate(UART_T *uart)
         /* Get UART clock divider number */
         u32UartClkDivNum = (CLK->UARTDIV0 & CLK_UARTDIV0_UART1DIV_Msk) >> CLK_UARTDIV0_UART1DIV_Pos;
     }
-    else if(uart==(UART_T*)UART2)
+    else if (uart == (UART_T *)UART2)
     {
         /* Get UART clock source selection */
         u32UartClkSrcSel = (CLK->UARTSEL0 & CLK_UARTSEL0_UART2SEL_Msk) >> CLK_UARTSEL0_UART2SEL_Pos;
         /* Get UART clock divider number */
         u32UartClkDivNum = (CLK->UARTDIV0 & CLK_UARTDIV0_UART2DIV_Msk) >> CLK_UARTDIV0_UART2DIV_Pos;
     }
-    else if(uart==(UART_T*)UART3)
+    else if (uart == (UART_T *)UART3)
     {
         /* Get UART clock source selection */
         u32UartClkSrcSel = (CLK->UARTSEL0 & CLK_UARTSEL0_UART3SEL_Msk) >> CLK_UARTSEL0_UART3SEL_Pos;
         /* Get UART clock divider number */
         u32UartClkDivNum = (CLK->UARTDIV0 & CLK_UARTDIV0_UART3DIV_Msk) >> CLK_UARTDIV0_UART3DIV_Pos;
     }
-    else if(uart==(UART_T*)UART4)
+    else if (uart == (UART_T *)UART4)
     {
         /* Get UART clock source selection */
         u32UartClkSrcSel = (CLK->UARTSEL0 & CLK_UARTSEL0_UART4SEL_Msk) >> CLK_UARTSEL0_UART4SEL_Pos;
         /* Get UART clock divider number */
         u32UartClkDivNum = (CLK->UARTDIV0 & CLK_UARTDIV0_UART4DIV_Msk) >> CLK_UARTDIV0_UART4DIV_Pos;
     }
-    else if(uart==(UART_T*)UART5)
+    else if (uart == (UART_T *)UART5)
     {
 
         /* Get UART clock source selection */
         u32UartClkSrcSel = (CLK->UARTSEL0 & CLK_UARTSEL0_UART5SEL_Msk) >> CLK_UARTSEL0_UART5SEL_Pos;
         /* Get UART clock divider number */
         u32UartClkDivNum = (CLK->UARTDIV0 & CLK_UARTDIV0_UART5DIV_Msk) >> CLK_UARTDIV0_UART5DIV_Pos;
-   }
-   else if(uart==(UART_T*)UART6)
-   {
+    }
+    else if (uart == (UART_T *)UART6)
+    {
         /* Get UART clock source selection */
         u32UartClkSrcSel = (CLK->UARTSEL0 & CLK_UARTSEL0_UART6SEL_Msk) >> CLK_UARTSEL0_UART6SEL_Pos;
         /* Get UART clock divider number */
         u32UartClkDivNum = (CLK->UARTDIV0 & CLK_UARTDIV0_UART6DIV_Msk) >> CLK_UARTDIV0_UART6DIV_Pos;
-   }
-    else if(uart==(UART_T*)UART7)
-   {
+    }
+    else if (uart == (UART_T *)UART7)
+    {
         /* Get UART clock source selection */
         u32UartClkSrcSel = (CLK->UARTSEL0 & CLK_UARTSEL0_UART7SEL_Msk) >> CLK_UARTSEL0_UART7SEL_Pos;
         /* Get UART clock divider number */
         u32UartClkDivNum = (CLK->UARTDIV0 & CLK_UARTDIV0_UART7DIV_Msk) >> CLK_UARTDIV0_UART7DIV_Pos;
-   }
-   else if(uart==(UART_T*)UART8)
-   {
+    }
+    else if (uart == (UART_T *)UART8)
+    {
         /* Get UART clock source selection */
         u32UartClkSrcSel = (CLK->UARTSEL1 & CLK_UARTSEL1_UART8SEL_Msk) >> CLK_UARTSEL1_UART8SEL_Pos;
         /* Get UART clock divider number */
         u32UartClkDivNum = (CLK->UARTDIV1 & CLK_UARTDIV1_UART8DIV_Msk) >> CLK_UARTDIV1_UART8DIV_Pos;
-   }
-   else if(uart==(UART_T*)UART9)
-   {
+    }
+    else if (uart == (UART_T *)UART9)
+    {
         /* Get UART clock source selection */
         u32UartClkSrcSel = (CLK->UARTSEL1 & CLK_UARTSEL1_UART9SEL_Msk) >> CLK_UARTSEL1_UART9SEL_Pos;
         /* Get UART clock divider number */
         u32UartClkDivNum = (CLK->UARTDIV1 & CLK_UARTDIV1_UART9DIV_Msk) >> CLK_UARTDIV1_UART9DIV_Pos;
-   }
+    }
 
-     if(u32UartClkSrcSel == 3ul)
+    if (u32UartClkSrcSel == 3ul)
     {
-        au32ClkTbl[u32UartClkSrcSel] = CLK_GetAPLL0ClockFreq()/2;
+        au32ClkTbl[u32UartClkSrcSel] = CLK_GetAPLL0ClockFreq() / 2;
     }
 
 
@@ -428,7 +438,7 @@ void TestFunc_UART_Open()
     uint32_t i;
 
     /* Get APLL0/2 frequency */
-    u32ClkTbl[3] = CLK_GetAPLL0ClockFreq()/2;
+    u32ClkTbl[3] = CLK_GetAPLL0ClockFreq() / 2;
     //wait UART send message finish before change clock
     UART_WAIT_TX_EMPTY(UART0) {};
 
@@ -444,9 +454,9 @@ void TestFunc_UART_Open()
             for (u8UartClkIdx = 0; u8UartClkIdx < 5; u8UartClkIdx++)
             {
                 //skip reserved clock source case
-//                if (u8UartClkIdx == 1 || u8UartClkIdx == 2 || u8UartClkIdx == 5) continue;
-                if (u8UartClkIdx == 2) continue;       
-							
+                //                if (u8UartClkIdx == 1 || u8UartClkIdx == 2 || u8UartClkIdx == 5) continue;
+                if (u8UartClkIdx == 2) continue;
+
                 //select UART clock divider
                 for (u8UartDivIdx = 0; u8UartDivIdx < 16; u8UartDivIdx++)
                 {
@@ -461,8 +471,9 @@ void TestFunc_UART_Open()
 
                     SetUARTClockSource(UartCh[u8UartChIdx], au32UartClkSel[u8UartClkIdx], u8UartDivIdx);
 
-//                    for (i = 0; i < 1000; i++) __NOP();
+                    //                    for (i = 0; i < 1000; i++) __NOP();
                     for (i = 0; i < 10; i++) __NOP();
+
                     //test function
                     UART_Open(UartCh[u8UartChIdx], au32UartBRSel[u8UartBRIdx]);
                     //check
@@ -488,18 +499,18 @@ void TestFunc_UART_Open()
             }
         }
 
-				  UART_SetBaudRateFrationalDivider(UartCh[u8UartChIdx],0xaa);
-				  CU_ASSERT((UartCh[u8UartChIdx]->BAUD & (UART_BAUD_BRFDEN_Msk | UART_BAUD_BAUDM1_Msk |UART_BAUD_BAUDM0_Msk)) == 0x70000000);
-				  CU_ASSERT((UartCh[u8UartChIdx]->BAUD & UART_BAUD_BRFD_Msk) == 0x00aa0000);
-				  UART_SetBaudRateFrationalDivider(UartCh[u8UartChIdx],0x0);
-		      CU_ASSERT((UartCh[u8UartChIdx]->BAUD & (UART_BAUD_BRFDEN_Msk | UART_BAUD_BAUDM1_Msk |UART_BAUD_BAUDM0_Msk)) == 0x70000000);
-				  CU_ASSERT((UartCh[u8UartChIdx]->BAUD & UART_BAUD_BRFD_Msk) == 0x0);
-			    UART_SetBaudRateFrationalDivider(UartCh[u8UartChIdx],0x55);
-		      CU_ASSERT((UartCh[u8UartChIdx]->BAUD & (UART_BAUD_BRFDEN_Msk | UART_BAUD_BAUDM1_Msk |UART_BAUD_BAUDM0_Msk)) == 0x70000000);
-				  CU_ASSERT((UartCh[u8UartChIdx]->BAUD & UART_BAUD_BRFD_Msk) == 0x00550000);
-		      UART_DisableBaudRateFrationalDivider(UartCh[u8UartChIdx]);	
-          CU_ASSERT((UartCh[u8UartChIdx]->BAUD & (UART_BAUD_BRFDEN_Msk)) == 0x0);
-				  CU_ASSERT((UartCh[u8UartChIdx]->BAUD & UART_BAUD_BRFD_Msk) == 0x0);				
+        UART_SetBaudRateFrationalDivider(UartCh[u8UartChIdx], 0xaa);
+        CU_ASSERT((UartCh[u8UartChIdx]->BAUD & (UART_BAUD_BRFDEN_Msk | UART_BAUD_BAUDM1_Msk | UART_BAUD_BAUDM0_Msk)) == 0x70000000);
+        CU_ASSERT((UartCh[u8UartChIdx]->BAUD & UART_BAUD_BRFD_Msk) == 0x00aa0000);
+        UART_SetBaudRateFrationalDivider(UartCh[u8UartChIdx], 0x0);
+        CU_ASSERT((UartCh[u8UartChIdx]->BAUD & (UART_BAUD_BRFDEN_Msk | UART_BAUD_BAUDM1_Msk | UART_BAUD_BAUDM0_Msk)) == 0x70000000);
+        CU_ASSERT((UartCh[u8UartChIdx]->BAUD & UART_BAUD_BRFD_Msk) == 0x0);
+        UART_SetBaudRateFrationalDivider(UartCh[u8UartChIdx], 0x55);
+        CU_ASSERT((UartCh[u8UartChIdx]->BAUD & (UART_BAUD_BRFDEN_Msk | UART_BAUD_BAUDM1_Msk | UART_BAUD_BAUDM0_Msk)) == 0x70000000);
+        CU_ASSERT((UartCh[u8UartChIdx]->BAUD & UART_BAUD_BRFD_Msk) == 0x00550000);
+        UART_DisableBaudRateFrationalDivider(UartCh[u8UartChIdx]);
+        CU_ASSERT((UartCh[u8UartChIdx]->BAUD & (UART_BAUD_BRFDEN_Msk)) == 0x0);
+        CU_ASSERT((UartCh[u8UartChIdx]->BAUD & UART_BAUD_BRFD_Msk) == 0x0);
     }
 
 
@@ -536,9 +547,9 @@ void TestFunc_UART_SetLine_Config()
     uint8_t u8UartBRIdx;    //baud rate index
     uint8_t u8UartClkIdx;   //clock source index
     uint8_t u8UartDivIdx;   //clock divider index
-    uint32_t u32ClkTbl[5] = {__HXT,__HIRC, __LXT, 0,__HIRC48M};
+    uint32_t u32ClkTbl[5] = {__HXT, __HIRC, __LXT, 0, __HIRC48M};
     /* Get APLL0/2 frequency */
-    u32ClkTbl[3] = CLK_GetAPLL0ClockFreq()/2;
+    u32ClkTbl[3] = CLK_GetAPLL0ClockFreq() / 2;
     //variable for data format
     uint8_t u8UartWordIdx;      //word length index
     uint8_t u8UartParityIdx;    //parity index
@@ -558,8 +569,9 @@ void TestFunc_UART_SetLine_Config()
             for (u8UartClkIdx = 0; u8UartClkIdx < 5; u8UartClkIdx++)
             {
                 //skip reserved clock source case
-//                if (u8UartClkIdx == 1 || u8UartClkIdx == 2 || u8UartClkIdx == 5) continue;
-             if (u8UartClkIdx == 2) continue;
+                //                if (u8UartClkIdx == 1 || u8UartClkIdx == 2 || u8UartClkIdx == 5) continue;
+                if (u8UartClkIdx == 2) continue;
+
                 //select UART clock divider
                 for (u8UartDivIdx = 0; u8UartDivIdx < 16; u8UartDivIdx++)
                 {
@@ -585,10 +597,10 @@ void TestFunc_UART_SetLine_Config()
 
                                 //test function
                                 UART_SetLineConfig(UartCh[u8UartChIdx],                   //select UART channel
-                                                    au32UartBRSel[u8UartBRIdx],           //select UART baud rate
-                                                    au32UartWordSel[u8UartWordIdx],       //select UART word length
-                                                    au32UartParitySel[u8UartParityIdx],   //select UART parity
-                                                    au32UartStopSel[u8UartStopIdx]);      //select UART stop bit length
+                                                   au32UartBRSel[u8UartBRIdx],           //select UART baud rate
+                                                   au32UartWordSel[u8UartWordIdx],       //select UART word length
+                                                   au32UartParitySel[u8UartParityIdx],   //select UART parity
+                                                   au32UartStopSel[u8UartStopIdx]);      //select UART stop bit length
                                 //check
                                 CU_ASSERT(UartCh[u8UartChIdx]->LINE == (au32UartWordSel[u8UartWordIdx] | au32UartParitySel[u8UartParityIdx] | au32UartStopSel[u8UartStopIdx]));
                                 CU_ASSERT(GetUartBaudrate(UartCh[u8UartChIdx]) > (((au32UartBRSel[u8UartBRIdx]) * 90) / 100) &&
@@ -620,14 +632,14 @@ void TestFunc_UART_SetTimeoutCnt()
     for (u8UartChIdx = 1; u8UartChIdx < UART_CH_NUM_MAX ; u8UartChIdx++)
     {
         for (u16UartToutCnt = 0; u16UartToutCnt < 256; u16UartToutCnt++)
-        { 
-					  UART_BUS_IDLE_TIMEOUT_ENABLE(UartCh[u8UartChIdx]);
+        {
+            UART_BUS_IDLE_TIMEOUT_ENABLE(UartCh[u8UartChIdx]);
             UART_SetTimeoutCnt(UartCh[u8UartChIdx], u16UartToutCnt);
-					  CU_ASSERT((UartCh[u8UartChIdx]->TOUT & UART_TOUT_BITOMEN_Msk) == 0x80000000);
+            CU_ASSERT((UartCh[u8UartChIdx]->TOUT & UART_TOUT_BITOMEN_Msk) == 0x80000000);
             CU_ASSERT((UartCh[u8UartChIdx]->INTEN & UART_INTEN_TOCNTEN_Msk) == UART_INTEN_TOCNTEN_Msk);
             CU_ASSERT((UartCh[u8UartChIdx]->TOUT & UART_TOUT_TOIC_Msk) == (u16UartToutCnt << UART_TOUT_TOIC_Pos));
-					  UART_BUS_IDLE_TIMEOUT_DISABLE(UartCh[u8UartChIdx]);
-					  CU_ASSERT((UartCh[u8UartChIdx]->TOUT & UART_TOUT_BITOMEN_Msk) == 0x0);
+            UART_BUS_IDLE_TIMEOUT_DISABLE(UartCh[u8UartChIdx]);
+            CU_ASSERT((UartCh[u8UartChIdx]->TOUT & UART_TOUT_BITOMEN_Msk) == 0x0);
             CU_ASSERT((UartCh[u8UartChIdx]->INTEN & UART_INTEN_TOCNTEN_Msk) == UART_INTEN_TOCNTEN_Msk);
             CU_ASSERT((UartCh[u8UartChIdx]->TOUT & UART_TOUT_TOIC_Msk) == (u16UartToutCnt << UART_TOUT_TOIC_Pos));
         }
@@ -640,10 +652,10 @@ void TestFunc_UART_SelectIrDAMode()
     uint8_t u8UartBRIdx;    //baud rate index
     uint8_t u8UartClkIdx;   //clock source index
     uint8_t u8UartDivIdx;   //clock divider index
-    uint32_t u32ClkTbl[5] = {__HXT,__HIRC, __LXT, 0,__HIRC48M};
+    uint32_t u32ClkTbl[5] = {__HXT, __HIRC, __LXT, 0, __HIRC48M};
 
-       /* Get APLL0/2 frequency */
-    u32ClkTbl[3] = CLK_GetAPLL0ClockFreq()/2;
+    /* Get APLL0/2 frequency */
+    u32ClkTbl[3] = CLK_GetAPLL0ClockFreq() / 2;
     //wait UART send message finish before change clock
     UART_WAIT_TX_EMPTY(UART0) {};
 
@@ -658,8 +670,9 @@ void TestFunc_UART_SelectIrDAMode()
             for (u8UartClkIdx = 0; u8UartClkIdx < 5; u8UartClkIdx++)
             {
                 //skip reserved clock source case
-//                if (u8UartClkIdx == 1 || u8UartClkIdx == 2 || u8UartClkIdx == 5) continue;
-             if (u8UartClkIdx == 2) continue;
+                //                if (u8UartClkIdx == 1 || u8UartClkIdx == 2 || u8UartClkIdx == 5) continue;
+                if (u8UartClkIdx == 2) continue;
+
                 //select UART clock divider
                 for (u8UartDivIdx = 0; u8UartDivIdx < 16; u8UartDivIdx++)
                 {
@@ -746,12 +759,12 @@ void TestFunc_UART_TestMacroBR()
     uint8_t u8UartBRIdx;    //baud rate index
     uint8_t u8UartClkIdx;   //clock source index
     uint8_t u8UartDivIdx;   //clock divider index
-	  uint32_t u32BRD_Div;
-    uint32_t u32ClkTbl[5ul] = {__HXT,__HIRC, __LXT, 0,__HIRC48M};
+    uint32_t u32BRD_Div;
+    uint32_t u32ClkTbl[5ul] = {__HXT, __HIRC, __LXT, 0, __HIRC48M};
     uint32_t i;
 
     /* Get APLL0/2 frequency */
-    u32ClkTbl[3] = CLK_GetAPLL0ClockFreq()/2;
+    u32ClkTbl[3] = CLK_GetAPLL0ClockFreq() / 2;
     //wait UART send message finish before change clock
     UART_WAIT_TX_EMPTY(UART0) {};
 
@@ -781,18 +794,19 @@ void TestFunc_UART_TestMacroBR()
                     }
 
                     SetUARTClockSource(UartCh[u8UartChIdx], au32UartClkSel[u8UartClkIdx], u8UartDivIdx);
-                   
-										u32BRD_Div = UART_BAUD_MODE0_DIVIDER(((u32ClkTbl[u8UartClkIdx]) / (u8UartDivIdx + 1)), au32UartBRSel[u8UartBRIdx]);
-										
+
+                    u32BRD_Div = UART_BAUD_MODE0_DIVIDER(((u32ClkTbl[u8UartClkIdx]) / (u8UartDivIdx + 1)), au32UartBRSel[u8UartBRIdx]);
+
                     /* Test macro: UART_BAUD_MODE0_DIVIDER */
                     UartCh[u8UartChIdx]->BAUD = UART_BAUD_MODE0 | u32BRD_Div;
-                    
-//										printf("%x,%x,%d,%d,%d\n",UartCh[u8UartChIdx]->BAUD,u32BRD_Div,u32ClkTbl[u8UartClkIdx],(au32UartBRSel[u8UartBRIdx]),u8UartDivIdx);  
-//                    for (i = 0; i < 10000; i++) __NOP();
-										for (i = 0; i < 100; i++) __NOP();
-//                   printf("%d,%d,%d\n\n",u8UartClkIdx,GetUartBaudrate(UartCh[u8UartChIdx]),(au32UartBRSel[u8UartBRIdx]));   
-       
-									CU_ASSERT(GetUartBaudrate(UartCh[u8UartChIdx]) > (((au32UartBRSel[u8UartBRIdx]) * 90) / 100) &&
+
+                    //                                      printf("%x,%x,%d,%d,%d\n",UartCh[u8UartChIdx]->BAUD,u32BRD_Div,u32ClkTbl[u8UartClkIdx],(au32UartBRSel[u8UartBRIdx]),u8UartDivIdx);
+                    //                    for (i = 0; i < 10000; i++) __NOP();
+                    for (i = 0; i < 100; i++) __NOP();
+
+                    //                   printf("%d,%d,%d\n\n",u8UartClkIdx,GetUartBaudrate(UartCh[u8UartChIdx]),(au32UartBRSel[u8UartBRIdx]));
+
+                    CU_ASSERT(GetUartBaudrate(UartCh[u8UartChIdx]) > (((au32UartBRSel[u8UartBRIdx]) * 90) / 100) &&
                               GetUartBaudrate(UartCh[u8UartChIdx]) < (((au32UartBRSel[u8UartBRIdx]) * 110) / 100));
 
                 } //u8UartDivIdx
@@ -826,15 +840,16 @@ void TestFunc_UART_TestMacroBR()
                     }
 
                     SetUARTClockSource(UartCh[u8UartChIdx], au32UartClkSel[u8UartClkIdx], u8UartDivIdx);
-										
+
                     u32BRD_Div = UART_BAUD_MODE2_DIVIDER(((u32ClkTbl[u8UartClkIdx]) / (u8UartDivIdx + 1)), au32UartBRSel[u8UartBRIdx]);
                     //test function
                     UartCh[u8UartChIdx]->BAUD = UART_BAUD_MODE2 | u32BRD_Div;
-//                    printf("%x,%x,%d,%d,%d\n",UartCh[u8UartChIdx]->BAUD,u32BRD_Div,u32ClkTbl[u8UartClkIdx],(au32UartBRSel[u8UartBRIdx]),u8UartDivIdx);
-										
-//                    for (i = 0; i < 10000; i++) __NOP();
-                     for (i = 0; i < 100; i++) __NOP();     
-//									printf("%d,%d,%d\n\n",u8UartClkIdx,GetUartBaudrate(UartCh[u8UartChIdx]),(au32UartBRSel[u8UartBRIdx]));  
+                    //                    printf("%x,%x,%d,%d,%d\n",UartCh[u8UartChIdx]->BAUD,u32BRD_Div,u32ClkTbl[u8UartClkIdx],(au32UartBRSel[u8UartBRIdx]),u8UartDivIdx);
+
+                    //                    for (i = 0; i < 10000; i++) __NOP();
+                    for (i = 0; i < 100; i++) __NOP();
+
+                    //                                  printf("%d,%d,%d\n\n",u8UartClkIdx,GetUartBaudrate(UartCh[u8UartChIdx]),(au32UartBRSel[u8UartBRIdx]));
                     CU_ASSERT(GetUartBaudrate(UartCh[u8UartChIdx]) > (((au32UartBRSel[u8UartBRIdx]) * 90) / 100) &&
                               GetUartBaudrate(UartCh[u8UartChIdx]) < (((au32UartBRSel[u8UartBRIdx]) * 110) / 100));
 
@@ -844,8 +859,8 @@ void TestFunc_UART_TestMacroBR()
     } //u8UartChIdx
 
     //restore UART debug port setting for printf
-//    CLK->UARTSEL0 |= CLK_UARTSEL0_UART0SEL_Msk;
-//    CLK->UARTDIV0 &= (~CLK_UARTDIV0_UART0DIV_Msk);
+    //    CLK->UARTSEL0 |= CLK_UARTSEL0_UART0SEL_Msk;
+    //    CLK->UARTDIV0 &= (~CLK_UARTDIV0_UART0DIV_Msk);
 
     //restore UART setting for other test
     for (u8UartChIdx = 1; u8UartChIdx < UART_CH_NUM_MAX; u8UartChIdx++)
@@ -905,22 +920,23 @@ void TestFunc_UART_TestMacroFIFO()
         //enable CTS auto flow control
         UartCh[u8UartChIdx]->INTEN |= UART_INTEN_ATOCTSEN_Msk;
 
-//        if (u8UartChIdx != 4)
-//        {
-            //send data to let Tx full
-            for (i = 0; i < 16; i++)
-            {
-                UART_WRITE(UartCh[u8UartChIdx], (0x55 + i));
-            }
-//        }
-//        else
-//        {
-//            //send data to let Tx full
-//            for (i = 0; i < 3; i++)
-//            {
-//                UART_WRITE(UartCh[u8UartChIdx], (0x55 + i));
-//            }
-//        }
+        //        if (u8UartChIdx != 4)
+        //        {
+        //send data to let Tx full
+        for (i = 0; i < 16; i++)
+        {
+            UART_WRITE(UartCh[u8UartChIdx], (0x55 + i));
+        }
+
+        //        }
+        //        else
+        //        {
+        //            //send data to let Tx full
+        //            for (i = 0; i < 3; i++)
+        //            {
+        //                UART_WRITE(UartCh[u8UartChIdx], (0x55 + i));
+        //            }
+        //        }
 
         //check macro
         CU_ASSERT(UART_GET_TX_EMPTY(UartCh[u8UartChIdx]) == 0);
@@ -947,22 +963,23 @@ void TestFunc_UART_TestMacroFIFO()
         CU_ASSERT(UART_GET_TX_FULL(UartCh[u8UartChIdx]) == 0);
         CU_ASSERT(UART_GET_RX_FULL(UartCh[u8UartChIdx]) == UART_FIFOSTS_RXFULL_Msk);
 
-//        if (u8UartChIdx != 4)
-//        {
-            //read Rx empty
-            for (i = 0; i < 16; i++)
-            {
-                UART_READ(UartCh[u8UartChIdx]);
-            }
-//        }
-//        else
-//        {
-//            //read Rx empty
-//            for (i = 0; i < 3; i++)
-//            {
-//                UART_READ(UartCh[u8UartChIdx]);
-//            }
-//        }
+        //        if (u8UartChIdx != 4)
+        //        {
+        //read Rx empty
+        for (i = 0; i < 16; i++)
+        {
+            UART_READ(UartCh[u8UartChIdx]);
+        }
+
+        //        }
+        //        else
+        //        {
+        //            //read Rx empty
+        //            for (i = 0; i < 3; i++)
+        //            {
+        //                UART_READ(UartCh[u8UartChIdx]);
+        //            }
+        //        }
 
         //check macro
         CU_ASSERT(UART_GET_TX_EMPTY(UartCh[u8UartChIdx]) == UART_FIFOSTS_TXEMPTY_Msk);
@@ -1003,9 +1020,9 @@ void TestFunc_UART_TestMacroRTS()
 
         while (!(UartCh[u8UartChIdx]->MODEM & UART_MODEM_RTSSTS_Msk)) {};
 
-//        for (i = 0; i < 1000000; i++) {};
+        //        for (i = 0; i < 1000000; i++) {};
         for (i = 0; i < 100; i++) {};
-					
+
         CU_ASSERT((UartCh[u8UartChIdx]->MODEM & (UART_MODEM_RTSSTS_Msk | UART_MODEM_RTSACTLV_Msk | UART_MODEM_RTS_Msk)) == (UART_MODEM_RTSSTS_Msk | UART_MODEM_RTSACTLV_Msk | UART_MODEM_RTS_Msk));
 
         UART_CLEAR_RTS(UartCh[u8UartChIdx]);
@@ -1014,20 +1031,33 @@ void TestFunc_UART_TestMacroRTS()
 
         CU_ASSERT((UartCh[u8UartChIdx]->MODEM & (UART_MODEM_RTSSTS_Msk | UART_MODEM_RTSACTLV_Msk | UART_MODEM_RTS_Msk)) == UART_MODEM_RTSACTLV_Msk);
 
-				UART_RS485RTSDLY_SET(UartCh[u8UartChIdx],0x5555);
-				CU_ASSERT((UartCh[u8UartChIdx]->RS485DD & UART_RS485DD_RTSDDLY_Msk ) == 0x5555);	
-				UART_RS485RTSDLY_SET(UartCh[u8UartChIdx],0xaaaa);
-				CU_ASSERT((UartCh[u8UartChIdx]->RS485DD & UART_RS485DD_RTSDDLY_Msk ) == 0xaaaa);
-			  UART_RS485RTSDLY_SET(UartCh[u8UartChIdx],0);
-				CU_ASSERT((UartCh[u8UartChIdx]->RS485DD & UART_RS485DD_RTSDDLY_Msk ) == 0);	
-			  UART_DEGLITCH_ENABLE(UartCh[u8UartChIdx]);
-				CU_ASSERT((UartCh[u8UartChIdx]->FUNCSEL & UART_FUNCSEL_DGE_Msk ) == 0x40);
-		    UART_DEGLITCH_DISABLE(UartCh[u8UartChIdx]);
-				CU_ASSERT((UartCh[u8UartChIdx]->FUNCSEL & UART_FUNCSEL_DGE_Msk ) == 0x0);					
-			  UART_TXRX_SWAP_ENABLE(UartCh[u8UartChIdx]);
-				CU_ASSERT((UartCh[u8UartChIdx]->FUNCSEL & UART_FUNCSEL_TXRXSWP_Msk ) == 0x80);
-		    UART_TXRX_SWAP_DISABLE(UartCh[u8UartChIdx]);
-				CU_ASSERT((UartCh[u8UartChIdx]->FUNCSEL & UART_FUNCSEL_TXRXSWP_Msk ) == 0x0);		
+        UART_RS485RTSDLY_SET(UartCh[u8UartChIdx], 0x5555);
+
+        CU_ASSERT((UartCh[u8UartChIdx]->RS485DD & UART_RS485DD_RTSDDLY_Msk) == 0x5555);
+
+        UART_RS485RTSDLY_SET(UartCh[u8UartChIdx], 0xaaaa);
+
+        CU_ASSERT((UartCh[u8UartChIdx]->RS485DD & UART_RS485DD_RTSDDLY_Msk) == 0xaaaa);
+
+        UART_RS485RTSDLY_SET(UartCh[u8UartChIdx], 0);
+
+        CU_ASSERT((UartCh[u8UartChIdx]->RS485DD & UART_RS485DD_RTSDDLY_Msk) == 0);
+
+        UART_DEGLITCH_ENABLE(UartCh[u8UartChIdx]);
+
+        CU_ASSERT((UartCh[u8UartChIdx]->FUNCSEL & UART_FUNCSEL_DGE_Msk) == 0x40);
+
+        UART_DEGLITCH_DISABLE(UartCh[u8UartChIdx]);
+
+        CU_ASSERT((UartCh[u8UartChIdx]->FUNCSEL & UART_FUNCSEL_DGE_Msk) == 0x0);
+
+        UART_TXRX_SWAP_ENABLE(UartCh[u8UartChIdx]);
+
+        CU_ASSERT((UartCh[u8UartChIdx]->FUNCSEL & UART_FUNCSEL_TXRXSWP_Msk) == 0x80);
+
+        UART_TXRX_SWAP_DISABLE(UartCh[u8UartChIdx]);
+
+        CU_ASSERT((UartCh[u8UartChIdx]->FUNCSEL & UART_FUNCSEL_TXRXSWP_Msk) == 0x0);
 
 
     }
@@ -1219,8 +1249,8 @@ void TestFunc_UART_TestMacroINT()
 
         //5 : Buffer error interrupt
         // check macro
-//        if (u8UartChIdx != 4)
-            CU_ASSERT(UART_GET_INT_FLAG(UartCh[u8UartChIdx], UART_INTSTS_BUFERRIF_Msk) == 0);
+        //        if (u8UartChIdx != 4)
+        CU_ASSERT(UART_GET_INT_FLAG(UartCh[u8UartChIdx], UART_INTSTS_BUFERRIF_Msk) == 0);
 
         // send data and wait Rx buffer error flag happen
         while ((UartCh[u8UartChIdx]->INTSTS & UART_INTSTS_BUFERRIF_Msk) == 0)
@@ -1330,14 +1360,14 @@ void TestFunc_UART_TestConstant()
         {
             UartCh[u8UartChIdx]->FIFO = ((UartCh[u8UartChIdx]->FIFO & (~UART_FIFO_RFITL_Msk)) | au32UartRxTrgSel[u16TestIdx]);
 
-//            if (u8UartChIdx != 4)
+            //            if (u8UartChIdx != 4)
             {
                 CU_ASSERT((UartCh[u8UartChIdx]->FIFO & UART_FIFO_RFITL_Msk) == au32UartRxTrgSel[u16TestIdx]);
             }
-//            else
-//            {
-//                CU_ASSERT((UartCh[u8UartChIdx]->FIFO & UART_FIFO_RFITL_Msk) == au32UartRxTrgSel[0]);
-//            }
+            //            else
+            //            {
+            //                CU_ASSERT((UartCh[u8UartChIdx]->FIFO & UART_FIFO_RFITL_Msk) == au32UartRxTrgSel[0]);
+            //            }
 
         }
 
@@ -1346,14 +1376,14 @@ void TestFunc_UART_TestConstant()
         {
             UartCh[u8UartChIdx]->FIFO = ((UartCh[u8UartChIdx]->FIFO & (~UART_FIFO_RTSTRGLV_Msk)) | au32UartRTSTrgSel[u16TestIdx]);
 
-//            if (u8UartChIdx != 4)
-//            {
-                CU_ASSERT((UartCh[u8UartChIdx]->FIFO & UART_FIFO_RTSTRGLV_Msk) == au32UartRTSTrgSel[u16TestIdx]);
-//            }
-//            else
-//            {
-//                CU_ASSERT((UartCh[u8UartChIdx]->FIFO & UART_FIFO_RTSTRGLV_Msk) == au32UartRTSTrgSel[0]);
-//            }
+            //            if (u8UartChIdx != 4)
+            //            {
+            CU_ASSERT((UartCh[u8UartChIdx]->FIFO & UART_FIFO_RTSTRGLV_Msk) == au32UartRTSTrgSel[u16TestIdx]);
+            //            }
+            //            else
+            //            {
+            //                CU_ASSERT((UartCh[u8UartChIdx]->FIFO & UART_FIFO_RTSTRGLV_Msk) == au32UartRTSTrgSel[0]);
+            //            }
         }
 
         //select RTS active level
@@ -1376,7 +1406,7 @@ void TestFunc_UART_TestConstant()
     CU_ASSERT(UART9_FIFO_SIZE == 16);
 
 
-//    UART_IPReset(UART0);
+    //    UART_IPReset(UART0);
     UART_IPReset(UART1);
     UART_IPReset(UART2);
     UART_IPReset(UART3);
@@ -1401,30 +1431,32 @@ void TestFunc_UART_ReadWrite()
         /* Reset Tx/Rx FIFO */
         UartCh[u8UartChIdx]->FIFO |= 0x6;
 
-        while(UartCh[u8UartChIdx]->FIFO & 0x6){};
+        while (UartCh[u8UartChIdx]->FIFO & 0x6) {};
 
-//        if (u8UartChIdx != 4)
-//        {
-            /* Write data */
-            UART_Write(UartCh[u8UartChIdx], u8TxData, 8);
-            /* Read data */
-            UART_Read(UartCh[u8UartChIdx], u8RxData, 8);
+        //        if (u8UartChIdx != 4)
+        //        {
+        /* Write data */
+        UART_Write(UartCh[u8UartChIdx], u8TxData, 8);
 
-            for (i = 0; i < 8; i++)
-            {
-                CU_ASSERT(u8TxData[i] == u8RxData[i]);
-            }
-//        }
-//        else
-//        {
-//            /* Write data */
-//            UART_Write(UartCh[u8UartChIdx], u8TxData, 1);
-//            /* Read data */
-//            UART_Read(UartCh[u8UartChIdx], u8RxData, 1);
+        /* Read data */
+        UART_Read(UartCh[u8UartChIdx], u8RxData, 8);
 
-//            CU_ASSERT(u8TxData[0] == u8RxData[0]);
+        for (i = 0; i < 8; i++)
+        {
+            CU_ASSERT(u8TxData[i] == u8RxData[i]);
+        }
 
-//        }
+        //        }
+        //        else
+        //        {
+        //            /* Write data */
+        //            UART_Write(UartCh[u8UartChIdx], u8TxData, 1);
+        //            /* Read data */
+        //            UART_Read(UartCh[u8UartChIdx], u8RxData, 1);
+
+        //            CU_ASSERT(u8TxData[0] == u8RxData[0]);
+
+        //        }
 
     }
 

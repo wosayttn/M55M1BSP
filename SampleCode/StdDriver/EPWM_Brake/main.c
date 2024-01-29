@@ -41,13 +41,15 @@ NVT_ITCM void BRAKE0_IRQHandler(void)
     EPWM_ClearFaultBrakeIntFlag(EPWM0, EPWM_FB_EDGE);
     __DSB();
     __ISB();
-    while(EPWM_GetFaultBrakeIntFlag(EPWM0, EPWM_FB_EDGE))
+
+    while (EPWM_GetFaultBrakeIntFlag(EPWM0, EPWM_FB_EDGE))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for EPWM0 IntFlag time-out!\n");
         }
     }
+
     SYS_LockReg();
 }
 

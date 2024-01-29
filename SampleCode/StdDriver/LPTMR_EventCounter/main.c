@@ -27,9 +27,10 @@ NVT_ITCM void LPTMR0_IRQHandler(void)
     printf("Count 1000 falling events! Test complete !\n");
     __DSB();
     __ISB();
-    while(LPTMR_GetIntFlag(LPTMR0))
+
+    while (LPTMR_GetIntFlag(LPTMR0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for LPTMR0 IntFlag time-out!\n");
         }
@@ -111,7 +112,7 @@ int main(void)
     LPTMR_EnableInt(LPTMR0);
     NVIC_EnableIRQ(LPTMR0_IRQn);
 
-    for(i = 0; i < 1000; i++)
+    for (i = 0; i < 1000; i++)
     {
         PB4 = 0;
         CLK_SysTickDelay(1);

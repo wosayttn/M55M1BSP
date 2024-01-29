@@ -52,13 +52,13 @@ int Trng_Tests_Clean(void)
 void TRNG_IRQHandler(void)
 {
     uint32_t c, d;
-	
-	if(TRNG_GET_INT_FLAG(TRNG))
+
+    if (TRNG_GET_INT_FLAG(TRNG))
     {
         c = TRNG->DATA_OUT[0];
-	    g_TRNG_done = 1;
-	}
- 
+        g_TRNG_done = 1;
+    }
+
 }
 
 
@@ -90,8 +90,8 @@ CU_SuiteInfo Trng_suites[] =
 void TRNG_Const()
 {
     CU_ASSERT(TRNG_CTL_KATSEL_INSTANTIATION_TESTING == 0);
-    CU_ASSERT(TRNG_CTL_KATSEL_RESEED_TESTING == 1);  
-	CU_ASSERT(TRNG_CTL_KATSEL_GENERATION_TESTING == 2);
+    CU_ASSERT(TRNG_CTL_KATSEL_RESEED_TESTING == 1);
+    CU_ASSERT(TRNG_CTL_KATSEL_GENERATION_TESTING == 2);
     CU_ASSERT(TRNG_CTL_MODE_OUTPUT_ENTROPY == 0);
     CU_ASSERT(TRNG_CTL_MODE_OUTPUT_NRBG == 1);
     CU_ASSERT(TRNG_CTL_MODE_OUTPUT_DRBG == 2);
@@ -101,8 +101,8 @@ void TRNG_Const()
 void MACRO_TRNG_ENABLE_INT()
 {
     TRNG_ENABLE_INT(TRNG);
-    
-	CU_ASSERT_TRUE((TRNG->CTL & (TRNG_CTL_DVIEN_Msk)) == (TRNG_CTL_DVIEN_Msk));
+
+    CU_ASSERT_TRUE((TRNG->CTL & (TRNG_CTL_DVIEN_Msk)) == (TRNG_CTL_DVIEN_Msk));
 
     TRNG_DISABLE_INT(TRNG);
     CU_ASSERT_FALSE(TRNG->CTL & (TRNG_CTL_DVIEN_Msk));
@@ -111,32 +111,32 @@ void MACRO_TRNG_ENABLE_INT()
 void MACRO_TRNG_INT_FLAG()
 {
     TRNG_ENABLE_INT(TRNG);
-    
+
     CU_ASSERT_FALSE(TRNG->STS & (TRNG_STS_DVIF_Msk));
 
-  CLK_EnableModuleClock(TRNG0_MODULE);  
-  
-	TRNG_Open();
-	
-	g_TRNG_done = 0;
-	
-	TRNG->CTL |= TRNG_CTL_START_Msk;
-	  
+    CLK_EnableModuleClock(TRNG0_MODULE);
+
+    TRNG_Open();
+
+    g_TRNG_done = 0;
+
+    TRNG->CTL |= TRNG_CTL_START_Msk;
+
     while (!g_TRNG_done);
-	  
-	CU_ASSERT((TRNG->STS &TRNG_STS_DVIF_Msk) == 0);
+
+    CU_ASSERT((TRNG->STS & TRNG_STS_DVIF_Msk) == 0);
 }
 
 //---------------------API-------------------------------------//
 void API_TRNG_Open()
 {
     TRNG_Open();
-	
-	CU_ASSERT_TRUE((TRNG->CTL & (TRNG_CTL_LDOEN_Msk|TRNG_CTL_NRST_Msk|TRNG_CTL_TRNGEN_Msk)) == (TRNG_CTL_LDOEN_Msk|TRNG_CTL_NRST_Msk|TRNG_CTL_TRNGEN_Msk));
-	
-	CU_ASSERT_TRUE(TRNG->STS & TRNG_STS_TRNGRDY_Msk);
-	
-	CU_PASS();
+
+    CU_ASSERT_TRUE((TRNG->CTL & (TRNG_CTL_LDOEN_Msk | TRNG_CTL_NRST_Msk | TRNG_CTL_TRNGEN_Msk)) == (TRNG_CTL_LDOEN_Msk | TRNG_CTL_NRST_Msk | TRNG_CTL_TRNGEN_Msk));
+
+    CU_ASSERT_TRUE(TRNG->STS & TRNG_STS_TRNGRDY_Msk);
+
+    CU_PASS();
 }
 
 
@@ -150,13 +150,13 @@ CU_TestInfo Trng_ConstantTests[] =
 CU_TestInfo Trng_MacroTests[] =
 {
     {"Enable/Disable TRNG data valid interrupt", MACRO_TRNG_ENABLE_INT},
-    {"Get TRNG data valid interrupt flag", MACRO_TRNG_INT_FLAG},		
+    {"Get TRNG data valid interrupt flag", MACRO_TRNG_INT_FLAG},
     CU_TEST_INFO_NULL
 };
 
 CU_TestInfo Trng_ApiTests[] =
 {
     {"TRNG_Opent", API_TRNG_Open},
-	CU_TEST_INFO_NULL
+    CU_TEST_INFO_NULL
 };
 

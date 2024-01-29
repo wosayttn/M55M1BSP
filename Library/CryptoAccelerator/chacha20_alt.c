@@ -6,8 +6,8 @@
  *
  *  Copyright (C) 2022, Nuvoton Technology Corporation, All Rights Reserved.
  *  SPDX-License-Identifier: Apache-2.0
- *  
- *  
+ *
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
  *  not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
@@ -34,10 +34,10 @@
 
 //#if defined(MBEDTLS_SELF_TEST)
 #if defined(MBEDTLS_PLATFORM_C)
-#include "mbedtls/platform.h"
+    #include "mbedtls/platform.h"
 #else
-#include <stdio.h>
-#define mbedtls_printf printf
+    #include <stdio.h>
+    #define mbedtls_printf printf
 #endif /* MBEDTLS_PLATFORM_C */
 //#endif /* MBEDTLS_SELF_TEST */
 
@@ -66,63 +66,63 @@ extern volatile int g_CHAPOLY_done;
 extern uint8_t  *au8InputData;
 extern uint8_t  *au8OutputData;
 
-void mbedtls_chacha20_init( mbedtls_chacha20_context *ctx )
+void mbedtls_chacha20_init(mbedtls_chacha20_context *ctx)
 {
 
-    printf( "mbedtls_chacha20_init\n" );
+    printf("mbedtls_chacha20_init\n");
 }
 
-void mbedtls_chacha20_free( mbedtls_chacha20_context *ctx )
+void mbedtls_chacha20_free(mbedtls_chacha20_context *ctx)
 {
 
-	printf( "mbedtls_chacha20_free\n" );
+    printf("mbedtls_chacha20_free\n");
 }
 
-int mbedtls_chacha20_setkey( mbedtls_chacha20_context *ctx,
-                            const unsigned char key[32] )
+int mbedtls_chacha20_setkey(mbedtls_chacha20_context *ctx,
+                            const unsigned char key[32])
 {
 
-    printf( "mbedtls_chacha20_setkey\n" );
-	
-    return( 0 );
+    printf("mbedtls_chacha20_setkey\n");
+
+    return (0);
 }
 
-int mbedtls_chacha20_starts( mbedtls_chacha20_context* ctx,
-                             const unsigned char nonce[12],
-                             uint32_t counter )
+int mbedtls_chacha20_starts(mbedtls_chacha20_context *ctx,
+                            const unsigned char nonce[12],
+                            uint32_t counter)
 {
-    printf( "mbedtls_chacha20_starts\n" );
-    return( 0 );
+    printf("mbedtls_chacha20_starts\n");
+    return (0);
 }
 
-int mbedtls_chacha20_update( mbedtls_chacha20_context *ctx,
-                              size_t size,
-                              const unsigned char *input,
-                              unsigned char *output )
+int mbedtls_chacha20_update(mbedtls_chacha20_context *ctx,
+                            size_t size,
+                            const unsigned char *input,
+                            unsigned char *output)
 {
     size_t offset = 0U;
     size_t i;
 
 
-    printf( "mbedtls_chacha20_update\n" );
-    return( 0 );
+    printf("mbedtls_chacha20_update\n");
+    return (0);
 }
 
-int mbedtls_chacha20_crypt( const unsigned char key[32],
-                            const unsigned char nonce[12],
-                            uint32_t counter,
-                            size_t data_len,
-                            const unsigned char* input,
-                            unsigned char* output )
+int mbedtls_chacha20_crypt(const unsigned char key[32],
+                           const unsigned char nonce[12],
+                           uint32_t counter,
+                           size_t data_len,
+                           const unsigned char *input,
+                           unsigned char *output)
 {
-	printf( "mbedtls_chacha20_crypt\n" );
-	
-  CHA_SetKeyandNonce(CRYPTO,  (unsigned char *)key, (unsigned char *)nonce, counter);
-	
-	CHA_SetDMATransfer(CRYPTO, input,  output, data_len);
-	
-	CHA_Start(CRYPTO, 1);
-   return 0;
+    printf("mbedtls_chacha20_crypt\n");
+
+    CHA_SetKeyandNonce(CRYPTO, (unsigned char *)key, (unsigned char *)nonce, counter);
+
+    CHA_SetDMATransfer(CRYPTO, input,  output, data_len);
+
+    CHA_Start(CRYPTO, 1);
+    return 0;
 }
 
 

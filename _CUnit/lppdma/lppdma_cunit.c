@@ -38,7 +38,8 @@ uint8_t SrcArray[256] __attribute__((aligned(8)));
 uint8_t DestArray[256] __attribute__((aligned(8)));
 uint32_t LPPDMA_TEST_LENGTH = 64;
 
-typedef struct dma_desc_t {
+typedef struct dma_desc_t
+{
     uint32_t ctl;
     uint32_t src;
     uint32_t dest;
@@ -79,7 +80,8 @@ void LPPDMA_Reset(void)
 /* Description:                                                                                            */
 /*               description                                                                               */
 /*---------------------------------------------------------------------------------------------------------*/
-CU_SuiteInfo suites[] = {
+CU_SuiteInfo suites[] =
+{
     {"LPPDMA MACRO", suite_success_init, suite_success_clean, NULL, NULL, LPPDMA_MACRO},
     {"LPPDMA API", suite_success_init, suite_success_clean, NULL, NULL, LPPDMA_API},
     {"LPPDMA CONSTANT", suite_success_init, suite_success_clean, NULL, NULL, LPPDMA_CONSTANT},
@@ -95,7 +97,8 @@ void Func_LPPDMA_Open()
     uint32_t au32RegCheck[3] = {0x05, 0x0F, 0x0F};
 
     //test case 1: enable/disable one channel each time, then check each action
-    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++)
+    {
         LPPDMA_Open(LPPDMA, 1 << u32TestCh);
         CU_ASSERT_EQUAL(LPPDMA->CHCTL, 1 << u32TestCh);
         LPPDMA_Close(LPPDMA);
@@ -103,7 +106,8 @@ void Func_LPPDMA_Open()
     }
 
     //test case 2: enable/disable one channel each time, then check at final action
-    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++)
+    {
         LPPDMA_Open(LPPDMA, 1 << u32TestCh);
     }
 
@@ -113,11 +117,13 @@ void Func_LPPDMA_Open()
     CU_ASSERT_EQUAL(LPPDMA->CHCTL, 0);
 
     //test case 3: enable/disable multiple channels each time
-    for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegWrite) / sizeof(uint32_t); u32PatternIdx++) {
+    for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32RegWrite) / sizeof(uint32_t); u32PatternIdx++)
+    {
         LPPDMA_Open(LPPDMA, au32RegWrite[u32PatternIdx]);
         CU_ASSERT_EQUAL(LPPDMA->CHCTL, au32RegCheck[u32PatternIdx]);
 
-        if (LPPDMA->CHCTL != au32RegCheck[u32PatternIdx]) {
+        if (LPPDMA->CHCTL != au32RegCheck[u32PatternIdx])
+        {
             printf("Error LPPDMA->CHCTL = 0x%08X != 0x%08X", LPPDMA->CHCTL, au32RegCheck[u32PatternIdx]);
         }
     }
@@ -133,8 +139,10 @@ void Func_LPPDMA_SetTransferCnt()
     uint32_t au32RegWrite[4] = {0x1555, 0x2AAA, 0x3FFF, 1};
     u32TransferCountPatternCount = sizeof(au32RegWrite) / sizeof(uint32_t);
 
-    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++) {
-        for (u32TransferCountPatternIdx = 0; u32TransferCountPatternIdx < u32TransferCountPatternCount; u32TransferCountPatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++)
+    {
+        for (u32TransferCountPatternIdx = 0; u32TransferCountPatternIdx < u32TransferCountPatternCount; u32TransferCountPatternIdx++)
+        {
             u32TransferCountPatternData = au32RegWrite[u32TransferCountPatternIdx];
             LPPDMA_SetTransferCnt(LPPDMA, u32TestCh, LPPDMA_WIDTH_8, u32TransferCountPatternData);
             CU_ASSERT_EQUAL(LPPDMA->LPDSCT[u32TestCh].CTL & LPPDMA_DSCT_CTL_TXWIDTH_Msk, 0 << 12);
@@ -157,8 +165,10 @@ void Func_LPPDMA_SetTransferAddr()
     LPPDMA_Open(LPPDMA, pow(2, LPPDMA_CH_MAX) - 1);
     CU_ASSERT_EQUAL(LPPDMA->CHCTL, pow(2, LPPDMA_CH_MAX) - 1);
 
-    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++) {
-        for (u32TransferAddressPatternIdx = 0; u32TransferAddressPatternIdx < u32TransferAddressPatternCount; u32TransferAddressPatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++)
+    {
+        for (u32TransferAddressPatternIdx = 0; u32TransferAddressPatternIdx < u32TransferAddressPatternCount; u32TransferAddressPatternIdx++)
+        {
             u32TransferAddressPatternData = ThirtyTwoBitsPatternTable[u32TransferAddressPatternIdx];
             LPPDMA_SetTransferAddr(LPPDMA, u32TestCh, u32TransferAddressPatternData, LPPDMA_SAR_FIX, u32TransferAddressPatternData, LPPDMA_DAR_FIX);
             CU_ASSERT_EQUAL(LPPDMA->LPDSCT[u32TestCh].SA, u32TransferAddressPatternData);
@@ -181,7 +191,8 @@ void Func_LPPDMA_SetTransferMode()
 {
     uint32_t u32TestCh = 0;
     uint32_t u32PatternIdx = 0;
-    uint32_t au32TransferMode[] = {
+    uint32_t au32TransferMode[] =
+    {
         //
         LPPDMA_MEM,
         //
@@ -198,15 +209,18 @@ void Func_LPPDMA_SetTransferMode()
         LPPDMA_LPADC0_RX, LPPDMA_DMIC0_RX
 
     };
-    uint32_t au32ReqSelRegCheck[] = {
+    uint32_t au32ReqSelRegCheck[] =
+    {
         0, 1, 2, 3,
         4, 5, 6, 7,
         8, 9, 10, 11,
         13,
     };
 
-    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++) {
-        for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32TransferMode) / sizeof(uint32_t); u32PatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++)
+    {
+        for (u32PatternIdx = 0; u32PatternIdx < sizeof(au32TransferMode) / sizeof(uint32_t); u32PatternIdx++)
+        {
             LPPDMA_SetTransferMode(LPPDMA, u32TestCh, au32TransferMode[u32PatternIdx], TRUE, 0xFFFC);
             CU_ASSERT_EQUAL(*(__IO uint32_t *)(&(LPPDMA->REQSEL0_3) + ((u32TestCh) >> 2)) & (LPPDMA_REQSEL0_3_REQSRC0_Msk << ((u32TestCh % 4) * 8)), au32ReqSelRegCheck[u32PatternIdx] << ((u32TestCh % 4) * 8));
             CU_ASSERT_EQUAL(LPPDMA->LPDSCT[u32TestCh].CTL & LPPDMA_DSCT_CTL_OPMODE_Msk, LPPDMA_OP_SCATTER);
@@ -239,8 +253,10 @@ void Func_LPPDMA_SetBurstType()
     uint32_t au32RegCheck[8] = {0, 0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70};
     u32TransferCountPatternCount = sizeof(au32BurstSize) / sizeof(uint32_t);
 
-    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++) {
-        for (u32TransferCountPatternIdx = 0; u32TransferCountPatternIdx < u32TransferCountPatternCount; u32TransferCountPatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++)
+    {
+        for (u32TransferCountPatternIdx = 0; u32TransferCountPatternIdx < u32TransferCountPatternCount; u32TransferCountPatternIdx++)
+        {
             u32TransferCountPatternData = au32BurstSize[u32TransferCountPatternIdx];
             LPPDMA_SetBurstType(LPPDMA, u32TestCh, LPPDMA_REQ_SINGLE, u32TransferCountPatternData);
             CU_ASSERT_EQUAL(LPPDMA->LPDSCT[u32TestCh].CTL & LPPDMA_DSCT_CTL_TXTYPE_Msk, 1 << 2);
@@ -256,14 +272,16 @@ void Func_LPPDMA_EnableInt()
 {
     uint32_t u32TestCh = 0;
 
-    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++)
+    {
         LPPDMA_EnableInt(LPPDMA, u32TestCh, LPPDMA_INT_TRANS_DONE);
         CU_ASSERT_EQUAL(LPPDMA->INTEN, pow(2, u32TestCh + 1) - 1);
         LPPDMA_EnableInt(LPPDMA, u32TestCh, LPPDMA_INT_TEMPTY);
         CU_ASSERT_EQUAL(LPPDMA->LPDSCT[u32TestCh].CTL & LPPDMA_DSCT_CTL_TBINTDIS_Msk, 0);
     }
 
-    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++)
+    {
         LPPDMA_DisableInt(LPPDMA, u32TestCh, LPPDMA_INT_TRANS_DONE);
         CU_ASSERT_EQUAL(LPPDMA->INTEN, ((uint32_t)(pow(2, LPPDMA_CH_MAX) - 1) >> (u32TestCh + 1)) << (u32TestCh + 1));
         LPPDMA_DisableInt(LPPDMA, u32TestCh, LPPDMA_INT_TEMPTY);
@@ -275,7 +293,8 @@ void Func_LPPDMA_GET_INT_STATUS()
 {
     uint32_t u32TestCh = 0;
 
-    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++)
+    {
         /* Reset LPPDMA */
         LPPDMA_Reset();
         LPPDMA_Open(LPPDMA, 1 << u32TestCh);
@@ -382,8 +401,10 @@ void Func_LPPDMA_SET_SRC_ADDR()
     LPPDMA_Open(LPPDMA, pow(2, LPPDMA_CH_MAX) - 1);
     CU_ASSERT_EQUAL(LPPDMA->CHCTL, pow(2, LPPDMA_CH_MAX) - 1);
 
-    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++) {
-        for (u32TransferAddressPatternIdx = 0; u32TransferAddressPatternIdx < u32TransferAddressPatternCount; u32TransferAddressPatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++)
+    {
+        for (u32TransferAddressPatternIdx = 0; u32TransferAddressPatternIdx < u32TransferAddressPatternCount; u32TransferAddressPatternIdx++)
+        {
             u32TransferAddressPatternData = ThirtyTwoBitsPatternTable[u32TransferAddressPatternIdx];
             LPPDMA_SET_SRC_ADDR(LPPDMA, u32TestCh, u32TransferAddressPatternData);
             CU_ASSERT_EQUAL(LPPDMA->LPDSCT[u32TestCh].SA, u32TransferAddressPatternData);
@@ -405,8 +426,10 @@ void Func_LPPDMA_SET_SCATTER_DESC()
     LPPDMA_Open(LPPDMA, pow(2, LPPDMA_CH_MAX) - 1);
     CU_ASSERT_EQUAL(LPPDMA->CHCTL, pow(2, LPPDMA_CH_MAX) - 1);
 
-    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++) {
-        for (u32TransferAddressPatternIdx = 0; u32TransferAddressPatternIdx < (u32TransferAddressPatternCount - 1); u32TransferAddressPatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++)
+    {
+        for (u32TransferAddressPatternIdx = 0; u32TransferAddressPatternIdx < (u32TransferAddressPatternCount - 1); u32TransferAddressPatternIdx++)
+        {
             u32TransferAddressPatternData = (ThirtyTwoBitsPatternTable[u32TransferAddressPatternIdx] & ~(0x3));
             LPPDMA_SET_SCATTER_DESC(LPPDMA, u32TestCh, u32TransferAddressPatternData);
             CU_ASSERT_EQUAL(LPPDMA->LPDSCT[u32TestCh].NEXT, ThirtyTwoBitsPatternTable[u32TransferAddressPatternIdx] & ~(0x3));
@@ -424,8 +447,10 @@ void Func_LPPDMA_SET_TRANS_CNT()
     uint32_t au32RegWrite[4] = {0x1555, 0x2AAA, 0x3FFF, 1};
     u32TransferCountPatternCount = sizeof(au32RegWrite) / sizeof(uint32_t);
 
-    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++) {
-        for (u32TransferCountPatternIdx = 0; u32TransferCountPatternIdx < u32TransferCountPatternCount; u32TransferCountPatternIdx++) {
+    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++)
+    {
+        for (u32TransferCountPatternIdx = 0; u32TransferCountPatternIdx < u32TransferCountPatternCount; u32TransferCountPatternIdx++)
+        {
             u32TransferCountPatternData = au32RegWrite[u32TransferCountPatternIdx];
             LPPDMA_SET_TRANS_CNT(LPPDMA, u32TestCh, u32TransferCountPatternData);
             CU_ASSERT_EQUAL(LPPDMA->LPDSCT[u32TestCh].CTL & LPPDMA_DSCT_CTL_TXCNT_Msk, (u32TransferCountPatternData - 1) << 16);
@@ -437,7 +462,8 @@ void Func_LPPDMA_STOP()
 {
     uint32_t u32TestCh = 0;
 
-    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++) {
+    for (u32TestCh = 0; u32TestCh < LPPDMA_CH_MAX; u32TestCh++)
+    {
         LPPDMA_Open(LPPDMA, 1 << u32TestCh);
         CU_ASSERT_EQUAL(LPPDMA->CHCTL, 1 << u32TestCh);
         LPPDMA_Trigger(LPPDMA, u32TestCh);
@@ -458,7 +484,8 @@ void Func_LPPDMA_CONSTANT()
     CU_ASSERT_EQUAL(LPPDMA->LPDSCT[0].CTL, LPPDMA_OP_STOP);
 }
 
-CU_TestInfo LPPDMA_MACRO[] = {
+CU_TestInfo LPPDMA_MACRO[] =
+{
     {
         "Test LPPDMA_GET_INT_STATUS/LPPDMA_GET_ABORT_STS/LPPDMA_CLR_ABORT_FLAG/LPPDMA_IS_CH_BUSY/\n"
         "\t\t /LPPDMA_GET_TD_STS/LPPDMA_CLR_TD_FLAG/LPPDMA_CLR_ABORT_FLAG/\n"
@@ -474,7 +501,8 @@ CU_TestInfo LPPDMA_MACRO[] = {
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo LPPDMA_API[] = {
+CU_TestInfo LPPDMA_API[] =
+{
     {"Test LPPDMA_Open/LPPDMA_Close:", Func_LPPDMA_Open},
     {"Test LPPDMA_SetTransferCnt:", Func_LPPDMA_SetTransferCnt},
     {"Test LPPDMA_SetTransferAddr:", Func_LPPDMA_SetTransferAddr},
@@ -484,7 +512,8 @@ CU_TestInfo LPPDMA_API[] = {
     CU_TEST_INFO_NULL
 };
 
-CU_TestInfo LPPDMA_CONSTANT[] = {
+CU_TestInfo LPPDMA_CONSTANT[] =
+{
     {"Test LPPDMA_CONSTANT:", Func_LPPDMA_CONSTANT},
 
     CU_TEST_INFO_NULL

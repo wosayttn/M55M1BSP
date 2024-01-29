@@ -34,7 +34,7 @@ NVT_ITCM void EPWM0P0_IRQHandler(void)
     EPWM_ClearPeriodIntFlag(EPWM0, 0);
 
     /* Update EPWM0 channel 0 period and duty */
-    if(i32Toggle == 0)
+    if (i32Toggle == 0)
     {
         EPWM_SET_CNR(EPWM0, 0, 99);
         EPWM_SET_CMR(EPWM0, 0, 40);
@@ -44,12 +44,14 @@ NVT_ITCM void EPWM0P0_IRQHandler(void)
         EPWM_SET_CNR(EPWM0, 0, 399);
         EPWM_SET_CMR(EPWM0, 0, 200);
     }
+
     i32Toggle ^= 1;
     __DSB();
     __ISB();
-    while(EPWM_GetPeriodIntFlag(EPWM0, 0))
+
+    while (EPWM_GetPeriodIntFlag(EPWM0, 0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for EPWM0 IntFlag time-out!\n");
         }

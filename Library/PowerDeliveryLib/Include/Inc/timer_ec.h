@@ -32,8 +32,8 @@ typedef union
 
 /* Data type for POSIX style clock() implementation */
 #ifdef SW
-typedef long clock_t;
-#endif 
+    typedef long clock_t;
+#endif
 
 /**
  * Initialize the timer module.
@@ -51,12 +51,12 @@ void timer_init(void);
  * @return EC_SUCCESS, or non-zero if error.
  */
 #ifdef SW
-int timer_arm(timestamp_t tstamp, task_id_t tskid);
+    int timer_arm(timestamp_t tstamp, task_id_t tskid);
 
-/**
- * Cancel a running timer for the specified task id.
- */
-void timer_cancel(task_id_t tskid);
+    /**
+    * Cancel a running timer for the specified task id.
+    */
+    void timer_cancel(task_id_t tskid);
 #endif
 
 /**
@@ -145,9 +145,9 @@ void timer_print_info(void);
  * Returns a free running millisecond clock counter, which matches tpm2
  * library expectations.
  */
-#ifdef SW 
-clock_t clock(void);
-#endif 
+#ifdef SW
+    clock_t clock(void);
+#endif
 
 /**
  * Compute how far to_time is from from_time with rollover taken into account

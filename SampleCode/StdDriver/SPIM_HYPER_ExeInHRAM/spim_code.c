@@ -10,8 +10,8 @@
 #include "NuMicro.h"
 
 #if defined (__ICCARM__)
-/* Placing functions in section .spim_code */
-#pragma default_function_attributes = @".spim_code"
+    /* Placing functions in section .spim_code */
+    #pragma default_function_attributes = @".spim_code"
 #endif
 
 /*
@@ -58,7 +58,7 @@ void spim_put_string(char *str)
 
 void spim_routine(void)
 {
-  printf("PC: 0x%08X\n", __PC());
+    printf("PC: 0x%08X\n", __PC());
     spim_put_string("\r\n\r\n\r\n");
     spim_put_string("+------------------------------------------+\r\n");
     spim_put_string("|  Program is now running on HyperRAM.   |\r\n");
@@ -70,8 +70,8 @@ void spim_routine(void)
 }
 
 #if defined (__ICCARM__)
-/* Stop placing functions in section .spim_code */
-#pragma default_function_attributes = 
+    /* Stop placing functions in section .spim_code */
+    #pragma default_function_attributes =
 #endif
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

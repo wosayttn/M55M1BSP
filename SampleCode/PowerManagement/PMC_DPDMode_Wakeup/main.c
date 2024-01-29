@@ -190,18 +190,18 @@ int32_t main(void)
 
     switch (u8Item)
     {
-    case '1':
-        printf("[1]\n");
-        WakeUpPinFunction(PMC_DPD0, PMC_WKPIN4_RISING);
-        break;
+        case '1':
+            printf("[1]\n");
+            WakeUpPinFunction(PMC_DPD0, PMC_WKPIN4_RISING);
+            break;
 
-    case '2':
-        printf("[2]\n");
-        WakeUpTimerFunction(PMC_DPD0, PMC_STMRWKCTL_STMRIS_4096);
-        break;
+        case '2':
+            printf("[2]\n");
+            WakeUpTimerFunction(PMC_DPD0, PMC_STMRWKCTL_STMRIS_4096);
+            break;
 
-    default:
-        break;
+        default:
+            break;
     }
 
     /* Lock protected registers */

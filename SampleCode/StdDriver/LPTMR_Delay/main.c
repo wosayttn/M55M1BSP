@@ -67,7 +67,8 @@ int main(void)
 
     printf("System core clock = %d\n", SystemCoreClock);
     printf("\nThis sample code use LPTMR to create a small delay \n");
-    while(1)
+
+    while (1)
     {
         printf("Delay 1 second\n");
         LPTMR_Delay(LPTMR0, 1000000);

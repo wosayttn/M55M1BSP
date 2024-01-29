@@ -32,7 +32,7 @@ struct NT_RegValue
 
 static struct NT_RegValue s_shm1055_setting_YUV_VGA[] =
 {
-   {0x0022, 0x00}, {0x0023, 0xCF}, {0x0020, 0x08}, {0x0027, 0x30},
+    {0x0022, 0x00}, {0x0023, 0xCF}, {0x0020, 0x08}, {0x0027, 0x30},
     {0x0004, 0x10}, {0x0006, 0x03}, {0x0012, 0x0F},
     /* {0x0026, 0x77}, */ /*48Mhz */
     {0x0026, 0x37}, /*68Mhz */
@@ -195,7 +195,7 @@ int32_t InitHM1055_VGA_YUV422(uint32_t u32Param)
     uint8_t u8ID[2] = {0};
 
 #if 1
-	// for TC8263 NuMaker-M55M1 board
+    // for TC8263 NuMaker-M55M1 board
     /* PD12 for GPIO to act as PD */
     /* PG11 for GPIO to act as RST */
     /* PH2 for GPIO to act as SCL */
@@ -209,11 +209,11 @@ int32_t InitHM1055_VGA_YUV422(uint32_t u32Param)
     PG11 = 1;
     GPIO_SetMode(PD, BIT12, GPIO_MODE_OUTPUT);        /* Set #PD pin to low */
     PD12 = 0;
-	
+
     /* switch I2C pin function */
     SWI2C_Open(eDRVGPIO_GPIOH, eDRVGPIO_PIN2, eDRVGPIO_GPIOH, eDRVGPIO_PIN3, Delay);
 #else
-	// for TC8263 ETM board
+    // for TC8263 ETM board
     SET_GPIO_PI7();
     SET_GPIO_PI9();
     SET_GPIO_PH2();

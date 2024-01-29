@@ -11,10 +11,10 @@
 #include "FreeRTOS.h"
 #include "semphr.h"
 
-static void threading_alt_mutex_init(mbedtls_threading_mutex_t * m);
-static void threading_alt_mutex_free(mbedtls_threading_mutex_t * m);
-static int threading_alt_mutex_lock(mbedtls_threading_mutex_t * m);
-static int threading_alt_mutex_unlock(mbedtls_threading_mutex_t * m);
+static void threading_alt_mutex_init(mbedtls_threading_mutex_t *m);
+static void threading_alt_mutex_free(mbedtls_threading_mutex_t *m);
+static int threading_alt_mutex_lock(mbedtls_threading_mutex_t *m);
+static int threading_alt_mutex_unlock(mbedtls_threading_mutex_t *m);
 
 void threading_alt_init()
 {
@@ -22,30 +22,31 @@ void threading_alt_init()
                               threading_alt_mutex_unlock);
 }
 
-static void threading_alt_mutex_init(mbedtls_threading_mutex_t * m)
+static void threading_alt_mutex_init(mbedtls_threading_mutex_t *m)
 {
     xSemaphoreHandle s = xSemaphoreCreateBinary();
 
-    if(s)
+    if (s)
     {
         xSemaphoreGive(s);
     }
+
     *m = s;
 }
 
-static void threading_alt_mutex_free(mbedtls_threading_mutex_t * m)
+static void threading_alt_mutex_free(mbedtls_threading_mutex_t *m)
 {
     vSemaphoreDelete(*m);
 }
 
-static int threading_alt_mutex_lock(mbedtls_threading_mutex_t * m)
+static int threading_alt_mutex_lock(mbedtls_threading_mutex_t *m)
 {
     xSemaphoreTake(*m, portMAX_DELAY);
 
     return 0;
 }
 
-static int threading_alt_mutex_unlock(mbedtls_threading_mutex_t * m)
+static int threading_alt_mutex_unlock(mbedtls_threading_mutex_t *m)
 {
     xSemaphoreGive(*m);
     return 0;

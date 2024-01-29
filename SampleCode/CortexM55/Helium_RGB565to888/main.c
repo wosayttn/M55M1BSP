@@ -194,6 +194,7 @@ int32_t main(void)
         printf("\n Tick Counters are:%d!\n", u32TimeVal_Vec);
 
         printf("\n Compare RGB565 Results \n");
+
         for (int ii = 0; ii < DST_IMAGE_LEN; ii++)
         {
             if (image_dst[ii] == vimage_dst[ii])
@@ -205,9 +206,11 @@ int32_t main(void)
                 printf("\n Error: image_dst[%d] = 0x%02x, vimage_dst[%d] = 0x%02x \n", ii, image_dst[ii], ii, vimage_dst[ii]);
             }
         }
+
         printf("\n RGB565 Speedup %1.2f X\n", (float)(u32TimeVal) / (float)(u32TimeVal_Vec));
 
         printf("\n Test Done\n");
+
         while (1);
     }
 
@@ -254,6 +257,7 @@ void VRGB565to888_TP(uint8_t *src, uint8_t *dst, uint16_t size_h, uint16_t size_
     uint8x16_t offset_8_16;
 
     count = size_h * size_w;
+
     while (count > 0)
     {
         //RGB565_IN_UINT8
@@ -271,7 +275,7 @@ void VRGB565to888_TP(uint8_t *src, uint8_t *dst, uint16_t size_h, uint16_t size_
 
         //Separate RGB//
         vdst_8_16_r  =  vshlq_n(vshrq(vsrc_8_16_hi, 3), 3);
-        
+
         vdst_8_16_g =  vorrq_u8(vshlq_n(vsrc_8_16_hi, 5), vshlq_n(vshrq(vsrc_8_16_lo, 5), 2));
 
         vdst_8_16_b =  vshlq_n(vsrc_8_16_lo, 3);
@@ -352,6 +356,7 @@ void VRGB565to888_TP(uint8_t *src, uint8_t *dst, uint16_t size_h, uint16_t size_
     uint8x16_t offset_8_16;
 
     count = size_h * size_w;
+
     while (count > 0)
     {
         //RGB565_IN_UINT8

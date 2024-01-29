@@ -28,32 +28,36 @@ NVT_ITCM void TIMER0_IRQHandler(void)
     static uint32_t u32Toggle = 0;
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
-    if(TPWM_GET_PERIOD_INT_FLAG(TIMER0))
+    if (TPWM_GET_PERIOD_INT_FLAG(TIMER0))
     {
         TPWM_CLEAR_PERIOD_INT_FLAG(TIMER0);
-        if(u32Toggle == 0)
+
+        if (u32Toggle == 0)
         {
             /* Set PWM period to generate output frequency 36000 Hz */
-            TPWM_SET_PERIOD(TIMER0, ((gu32Period/2)-1));
+            TPWM_SET_PERIOD(TIMER0, ((gu32Period / 2) - 1));
 
             /* Set PWM duty, 40% */
-            TPWM_SET_CMPDAT(TIMER0, (((gu32Period/2)*4) / 10));
+            TPWM_SET_CMPDAT(TIMER0, (((gu32Period / 2) * 4) / 10));
         }
         else
         {
             /* Set PWM period to generate output frequency 18000 Hz */
-            TPWM_SET_PERIOD(TIMER0, (gu32Period-1));
+            TPWM_SET_PERIOD(TIMER0, (gu32Period - 1));
 
             /* Set PWM duty, 50% */
-            TPWM_SET_CMPDAT(TIMER0, (gu32Period/2));
+            TPWM_SET_CMPDAT(TIMER0, (gu32Period / 2));
         }
+
         u32Toggle ^= 1;
     }
+
     __DSB();
     __ISB();
-    while(TPWM_GET_PERIOD_INT_FLAG(TIMER0))
+
+    while (TPWM_GET_PERIOD_INT_FLAG(TIMER0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TPWM0 IntFlag time-out!\n");
         }

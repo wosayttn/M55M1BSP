@@ -15,4 +15,4 @@ __NONSECURE_ENTRY uint32_t Secure_GetSystemCoreClock(void);
 }
 #endif
 
-#endif	// __NSC_LIB_H__
+#endif  // __NSC_LIB_H__

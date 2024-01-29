@@ -18,11 +18,11 @@
 #define CONFIG_LCD_BACKLIGHT_PORT   PG//NU_GET_PININDEX(evGG, 5)   //101
 #define CONFIG_LCD_BACKLIGHT_PIN    5//NU_GET_PININDEX(evGG, 5)   //101
 
-#define CONFIG_LCD_DC_PORT   		PH//NU_GET_PININDEX(evGG, 5)   //101
-#define CONFIG_LCD_DC_PIN    		7//NU_GET_PININDEX(evGG, 5)   //101
+#define CONFIG_LCD_DC_PORT          PH//NU_GET_PININDEX(evGG, 5)   //101
+#define CONFIG_LCD_DC_PIN           7//NU_GET_PININDEX(evGG, 5)   //101
 
-#define CONFIG_LCD_RESET_PORT   	PH//NU_GET_PININDEX(evGG, 5)   //101
-#define CONFIG_LCD_RESET_PIN    	6//NU_GET_PININDEX(evGG, 5)   //101
+#define CONFIG_LCD_RESET_PORT       PH//NU_GET_PININDEX(evGG, 5)   //101
+#define CONFIG_LCD_RESET_PIN        6//NU_GET_PININDEX(evGG, 5)   //101
 
 #define CONFIG_LCD_PIN_BACKLIGHT    PG5//NU_GET_PININDEX(evGG, 5)   //101
 #define CONFIG_LCD_PIN_DC           PH7//NU_GET_PININDEX(evGH, 7)   //119
@@ -48,7 +48,7 @@ typedef enum
 {
     eLCD_INPUT_RGB565,
     eLCD_INPUT_RGB888,
-}E_LCD_INPUT_FORMAT;
+} E_LCD_INPUT_FORMAT;
 
 typedef struct s_lcd_info
 {
@@ -61,7 +61,7 @@ typedef struct s_lcd_info
     PFN_LCD_SET_COLUMN  m_pfnSetColumn;
     PFN_LCD_SET_PAGE    m_pfnSetPage;
     PFN_LCD_SENT_PIXEL  m_pfnSentPixel;
-	PFN_LCD_PUT_CHAR	m_pfnPutChar;
+    PFN_LCD_PUT_CHAR    m_pfnPutChar;
 } S_LCD_INFO;
 
 extern S_LCD_INFO g_s_WQVGA_FSA506;

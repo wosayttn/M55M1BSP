@@ -36,25 +36,29 @@ NVT_ITCM void PDMA0_IRQHandler(void)
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     uint32_t u32Status = PDMA_GET_INT_STATUS(PDMA0);
 
-    if(u32Status & PDMA_INTSTS_ABTIF_Msk)    /* abort */
+    if (u32Status & PDMA_INTSTS_ABTIF_Msk)   /* abort */
     {
-        if(PDMA_GET_ABORT_STS(PDMA0) & PDMA_ABTSTS_ABTIF0_Msk)
+        if (PDMA_GET_ABORT_STS(PDMA0) & PDMA_ABTSTS_ABTIF0_Msk)
             g_u32IsTestOver = 2;
+
         PDMA_CLR_ABORT_FLAG(PDMA0, PDMA_ABTSTS_ABTIF0_Msk);
     }
-    else if(u32Status & PDMA_INTSTS_TDIF_Msk)      /* done */
+    else if (u32Status & PDMA_INTSTS_TDIF_Msk)     /* done */
     {
-        if(PDMA_GET_TD_STS(PDMA0) & PDMA_TDSTS_TDIF0_Msk)
+        if (PDMA_GET_TD_STS(PDMA0) & PDMA_TDSTS_TDIF0_Msk)
             g_u32IsTestOver = 1;
+
         PDMA_CLR_TD_FLAG(PDMA0, PDMA_TDSTS_TDIF0_Msk);
     }
     else
         printf("unknown interrupt %x !!\n", u32Status);
+
     __DSB();
     __ISB();
-    while(PDMA_GET_INT_STATUS(PDMA0))
+
+    while (PDMA_GET_INT_STATUS(PDMA0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA IntFlag time-out!\n");
         }
@@ -89,7 +93,7 @@ static void SYS_Init(void)
     /* Select EPWM1 module clock source */
     CLK_SetModuleClock(EPWM1_MODULE, CLK_EPWMSEL_EPWM1SEL_PCLK2, 0);
 
-		/* Enable EPWM1 module clock */
+    /* Enable EPWM1 module clock */
     CLK_EnableModuleClock(EPWM1_MODULE);
 
     /* Enable PDMA0 module clock */
@@ -174,9 +178,10 @@ int main(void)
 
     /* Wait for PDMA transfer done */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(g_u32IsTestOver != 1)
+
+    while (g_u32IsTestOver != 1)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA transfer done time-out!\n");
             goto lexit;
@@ -193,9 +198,10 @@ int main(void)
 
     /* Wait until EPWM1 channel 0 Timer Stop */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while((EPWM1->CNT[0] & EPWM_CNT0_CNT_Msk) != 0)
+
+    while ((EPWM1->CNT[0] & EPWM_CNT0_CNT_Msk) != 0)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for EPWM stop time-out!\n");
             break;

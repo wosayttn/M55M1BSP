@@ -62,9 +62,9 @@ typedef struct
 typedef unsigned char JOCTET;
 
 #if defined(__x86_64__) && defined(__ILP32__)
-typedef unsigned long long bit_buf_type;
+    typedef unsigned long long bit_buf_type;
 #else
-typedef size_t bit_buf_type;
+    typedef size_t bit_buf_type;
 #endif
 
 #if defined(WITH_SIMD) && !(defined(__arm__) || defined(__aarch64__) || \
@@ -75,22 +75,25 @@ typedef bit_buf_type simd_bit_buf_type;
 #endif
 
 
-typedef struct {
-    INT32 put_buffer;		/* current bit-accumulation buffer */
-    int put_bits;			/* # of bits now in it */
+typedef struct
+{
+    INT32 put_buffer;       /* current bit-accumulation buffer */
+    int put_bits;           /* # of bits now in it */
     int free_bits;
     int last_dc_val[MAX_COMPS_IN_SCAN]; /* last DC coef for each component */
 } savable_state_simd;
 
-typedef struct {
-    JOCTET * next_output_byte;	/* => next byte to write in buffer */
-    size_t free_in_buffer;	    /* # of byte spaces remaining in buffer */
-    savable_state_simd cur;		/* Current bit buffer & DC state */
-    j_compress_ptr cinfo;		/* dump_buffer needs access to this */
+typedef struct
+{
+    JOCTET *next_output_byte;   /* => next byte to write in buffer */
+    size_t free_in_buffer;      /* # of byte spaces remaining in buffer */
+    savable_state_simd cur;     /* Current bit buffer & DC state */
+    j_compress_ptr cinfo;       /* dump_buffer needs access to this */
 } working_state_simd;
 
 
-typedef struct {
+typedef struct
+{
     unsigned int ehufco[256];     /* code for each symbol */
     char ehufsi[256];             /* length of code for each symbol */
     /* If no code has been allocated for a symbol S, ehufsi[S] contains 0 */
@@ -102,19 +105,19 @@ typedef struct {
 extern  "C" {
 #endif
 void jsimd_fdct_ifast_Helium(int16_t *data);
-void jsimd_convsamp_helium(uint8_t *sample_data, uint8_t start_col, int16_t* processed_data);
+void jsimd_convsamp_helium(uint8_t *sample_data, uint8_t start_col, int16_t *processed_data);
 void jsimd_quantize_helium(JCOEFPTR coef_block, DCTELEM *divisors, DCTELEM *workspace);
 void jsimd_fdct_islow_helium(int16_t *data);
 int compute_reciprocal(uint16_t divisor, DCTELEM *dtbl);
 void JpegEncode(unsigned char *image, unsigned char *jBuf, unsigned long *jSize, int width, int height, int quality);
-void encode_jpeg_to_memory(unsigned char* image, int width, int height, int quality, const char* comment, unsigned long* jpegSize, unsigned char** jpegBuf);
+void encode_jpeg_to_memory(unsigned char *image, int width, int height, int quality, const char *comment, unsigned long *jpegSize, unsigned char **jpegBuf);
 void fdct(short int *blk, int lx);
 int flss(uint16_t val);
 uint64_t Get_SysTick_Cycle_Count(void);
 int compute_reciprocal(UINT16 divisor, DCTELEM *dtbl);
 void jpeg_fdct_islow(DCTELEM *data);
 void quantize(JCOEFPTR coef_block, DCTELEM *divisors, DCTELEM *workspace);
-boolean encode_one_block_simd(working_state_simd *state, JCOEFPTR block, int last_dc_val,c_derived_tbl *dctbl, c_derived_tbl *actbl);
+boolean encode_one_block_simd(working_state_simd *state, JCOEFPTR block, int last_dc_val, c_derived_tbl *dctbl, c_derived_tbl *actbl);
 #ifdef  __cplusplus
 }
 #endif

@@ -35,25 +35,29 @@ NVT_ITCM void PDMA0_IRQHandler(void)
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     uint32_t u32Status = PDMA_GET_INT_STATUS(PDMA0);
 
-    if(u32Status & 0x1)    /* abort */
+    if (u32Status & 0x1)   /* abort */
     {
-        if(PDMA_GET_ABORT_STS(PDMA0) & 0x1)
+        if (PDMA_GET_ABORT_STS(PDMA0) & 0x1)
             g_u32IsTestOver = 2;
+
         PDMA_CLR_ABORT_FLAG(PDMA0, PDMA_ABTSTS_ABTIF0_Msk);
     }
-    else if(u32Status & 0x2)      /* done */
+    else if (u32Status & 0x2)     /* done */
     {
-        if(PDMA_GET_TD_STS(PDMA0) & 0x1)
+        if (PDMA_GET_TD_STS(PDMA0) & 0x1)
             g_u32IsTestOver = 1;
+
         PDMA_CLR_TD_FLAG(PDMA0, PDMA_TDSTS_TDIF0_Msk);
     }
     else
-        printf("unknown interrupt %x !!\n",u32Status);
+        printf("unknown interrupt %x !!\n", u32Status);
+
     __DSB();
     __ISB();
-    while(PDMA_GET_INT_STATUS(PDMA0))
+
+    while (PDMA_GET_INT_STATUS(PDMA0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA IntFlag time-out!\n");
         }
@@ -84,9 +88,10 @@ int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
     g_u32IsTestOver = 0;
     /* Wait PDMA interrupt (g_u32IsTestOver will be set at IRQ_Handler function) */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(g_u32IsTestOver == 0)
+
+    while (g_u32IsTestOver == 0)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA interrupt time-out!\n");
             return (-1);
@@ -106,7 +111,8 @@ int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
     printf("\nEPWM generate: \nHigh Period=17999 ~ 18001, Low Period=41999 ~ 42001, Total Period=59999 ~ 60001\n");
     printf("\nCapture Result: Rising Time = %d, Falling Time = %d \nHigh Period = %d, Low Period = %d, Total Period = %d.\n\n",
            u16RisingTime, u16FallingTime, u16HighPeriod, u16LowPeriod, u16TotalPeriod);
-    if((u16HighPeriod < 17999) || (u16HighPeriod > 18001) || (u16LowPeriod < 41999) || (u16LowPeriod > 42001) || (u16TotalPeriod < 59999) || (u16TotalPeriod > 60001))
+
+    if ((u16HighPeriod < 17999) || (u16HighPeriod > 18001) || (u16LowPeriod < 41999) || (u16LowPeriod > 42001) || (u16TotalPeriod < 59999) || (u16TotalPeriod > 60001))
     {
         printf("Capture Test Fail!!\n");
         return (-1);
@@ -184,7 +190,7 @@ int main(void)
     printf("    EPWM1 channel 2(PC.3) <--> EPWM1 channel 0(PC.5)\n\n");
     printf("Use EPWM1 Channel 2(PC.3) to capture the EPWM1 Channel 0(PC.5) Waveform\n");
 
-    while(1)
+    while (1)
     {
         printf("\n\nPress any key to start EPWM Capture Test\n");
         getchar();
@@ -272,9 +278,10 @@ int main(void)
 
         /* Wait until EPWM1 channel 2 Timer start to count */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while((EPWM1->CNT[2]) == 0)
+
+        while ((EPWM1->CNT[2]) == 0)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for EPWM1 channel 2 Timer start time-out!\n");
                 goto lexit;
@@ -282,8 +289,9 @@ int main(void)
         }
 
         /* Capture the Input Waveform Data */
-        if( CalPeriodTime(EPWM1, 2) < 0 )
+        if (CalPeriodTime(EPWM1, 2) < 0)
             goto lexit;
+
         /*------------------------------------------------------------------------------------------------------------*/
         /* Stop EPWM1 channel 0 (Recommended procedure method 1)                                                      */
         /* Set EPWM Timer loaded value(Period) as 0. When EPWM internal counter(CNT) reaches to 0, disable EPWM Timer */
@@ -294,9 +302,10 @@ int main(void)
 
         /* Wait until EPWM1 channel 0 Timer Stop */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while((EPWM1->CNT[0] & EPWM_CNT0_CNT_Msk) != 0)
+
+        while ((EPWM1->CNT[0] & EPWM_CNT0_CNT_Msk) != 0)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for EPWM1 channel 0 Timer stop time-out!\n");
                 goto lexit;
@@ -319,9 +328,10 @@ int main(void)
 
         /* Wait until EPWM1 channel 2 current counter reach to 0 */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while((EPWM1->CNT[2] & EPWM_CNT2_CNT_Msk) != 0)
+
+        while ((EPWM1->CNT[2] & EPWM_CNT2_CNT_Msk) != 0)
         {
-            if(--u32TimeOutCnt == 0)
+            if (--u32TimeOutCnt == 0)
             {
                 printf("Wait for EPWM1 channel 2 current counter reach to 0 time-out!\n");
                 goto lexit;

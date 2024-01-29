@@ -250,11 +250,11 @@ const uint32_t au32UUartBRSel[] =
 const uint32_t au32HclkClkSel[] =
 {
     CLK_SCLKSEL_SCLKSEL_HIRC,
-//    CLK_SCLKSEL_SCLKSEL_MIRC,
+    //    CLK_SCLKSEL_SCLKSEL_MIRC,
     CLK_SCLKSEL_SCLKSEL_HIRC48M,
     CLK_SCLKSEL_SCLKSEL_HXT,
-//    CLK_SCLKSEL_SCLKSEL_APLL0,
-    
+    //    CLK_SCLKSEL_SCLKSEL_APLL0,
+
 };
 
 void TestFunc_UUART_Open()
@@ -265,6 +265,7 @@ void TestFunc_UUART_Open()
     uint32_t u32baudrate;
     /* Unlock protected registers */
     SYS_UnlockReg();
+
     /* Test loop */
     //select UART channel
     for (u8UUartChIdx = 0; u8UUartChIdx < UUART_CH_NUM_MAX; u8UUartChIdx++)
@@ -273,17 +274,18 @@ void TestFunc_UUART_Open()
         for (u8UartClkIdx = 0; u8UartClkIdx < (sizeof(au32HclkClkSel) / sizeof(uint32_t)); u8UartClkIdx++)
         {
             //select UART clock source
-//            CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | au32HclkClkSel[u8UartClkIdx];
-               /* Switch SCLK clock source to PLL0 and divide 1 */
-              CLK_SetSCLK(au32HclkClkSel[u8UartClkIdx]);
-					    /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
-              SystemCoreClockUpdate();
+            //            CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | au32HclkClkSel[u8UartClkIdx];
+            /* Switch SCLK clock source to PLL0 and divide 1 */
+            CLK_SetSCLK(au32HclkClkSel[u8UartClkIdx]);
+            /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
+            SystemCoreClockUpdate();
+
             //select UART baud rate
             for (u8UartBRIdx = 0; u8UartBRIdx < (sizeof(au32UUartBRSel) / sizeof(uint32_t)); u8UartBRIdx++)
             {
                 //test function
                 u32baudrate = UUART_Open(UUartCh[u8UUartChIdx], au32UUartBRSel[u8UartBRIdx]);
-//                printf("%d=%d\n",  au32UUartBRSel[u8UartBRIdx], u32baudrate);
+                //                printf("%d=%d\n",  au32UUartBRSel[u8UartBRIdx], u32baudrate);
 
                 //check
                 CU_ASSERT(UUartCh[u8UUartChIdx]->CTL == 2);
@@ -297,7 +299,7 @@ void TestFunc_UUART_Open()
 
     //select HCLK clock source
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-      /* Lock protected registers */
+    /* Lock protected registers */
     SYS_LockReg();
 }
 
@@ -334,8 +336,9 @@ void TestFunc_UUART_SetLine_Config()
     uint8_t u8UartParityIdx;    //parity index
     uint8_t u8UartStopIdx;      //stop bit length index
     uint32_t u32baudrate;
-     /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
+
     /* Test loop */
     //select UART channel
     for (u8UUartChIdx = 0; u8UUartChIdx < UUART_CH_NUM_MAX; u8UUartChIdx++)
@@ -347,8 +350,9 @@ void TestFunc_UUART_SetLine_Config()
             for (u8UartClkIdx = 0; u8UartClkIdx < (sizeof(au32HclkClkSel) / sizeof(uint32_t)); u8UartClkIdx++)
             {
                 //select UART clock source
-//                CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | au32HclkClkSel[u8UartClkIdx];
-                 CLK_SetSCLK(au32HclkClkSel[u8UartClkIdx]);
+                //                CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | au32HclkClkSel[u8UartClkIdx];
+                CLK_SetSCLK(au32HclkClkSel[u8UartClkIdx]);
+
                 //select UART word length
                 for (u8UartWordIdx = 0; u8UartWordIdx < (sizeof(au32UUartWordSel) / sizeof(uint32_t)); u8UartWordIdx++)
                 {
@@ -382,7 +386,7 @@ void TestFunc_UUART_SetLine_Config()
 
     //select HCLK clock source
     CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
-        /* Lock protected registers */
+    /* Lock protected registers */
     SYS_LockReg();
 }
 
@@ -498,7 +502,7 @@ void TestFunc_UUART_TestMacroBUF()
 void TestFunc_UUART_TestMacroINT()
 {
     uint8_t u8UUartChIdx;    //UART channel index
-   SYS_UnlockReg();
+    SYS_UnlockReg();
     /* Reset USCI */
     SYS_ResetModule(SYS_USCI0RST);
 
@@ -664,7 +668,8 @@ void TestFunc_UUART_TestMacroINT()
         CU_ASSERT_EQUAL(UUART_GET_BUF_STATUS(UUartCh[u8UUartChIdx]) & UUART_BUFSTS_RXOVIF_Msk, 0);
 
     }
-       SYS_LockReg();
+
+    SYS_LockReg();
 }
 
 void TestFunc_UUART_TestMacroPDMA()
@@ -688,11 +693,12 @@ void TestFunc_UUART_ReadWrite()
 {
     uint8_t u8UUartChIdx, i;        //UART channel index
     uint8_t u8TxData[2] = {1, 2}, u8RxData[2] = {0};
-       /* Unlock protected registers */
+    /* Unlock protected registers */
     SYS_UnlockReg();
     /* Reset USCI */
     SYS_ResetModule(SYS_USCI0RST);
-//     CLK_SET_PCLK1DIV(10);
+
+    //     CLK_SET_PCLK1DIV(10);
     /* Test loop */
     for (u8UUartChIdx = 0; u8UUartChIdx < UUART_CH_NUM_MAX; u8UUartChIdx++)
     {
@@ -714,8 +720,8 @@ void TestFunc_UUART_ReadWrite()
 
     }
 
-    
-        /* Unlock protected registers */
+
+    /* Unlock protected registers */
     SYS_LockReg();
 }
 

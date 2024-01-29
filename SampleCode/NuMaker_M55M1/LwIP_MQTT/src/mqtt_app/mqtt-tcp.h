@@ -93,7 +93,7 @@ typedef enum
 } _E_MQTT_TCP_ERRORS;
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
 
 typedef struct
@@ -101,8 +101,8 @@ typedef struct
     //!union pointer the ssl context or the netconn context, as being used by application.
     union
     {
-        tls_context_t * ssl;
-        struct netconn * conn;
+        tls_context_t *ssl;
+        struct netconn *conn;
     };
     _E_MQTT_TCP_ERRORS mqtt_tcp_err;    //!tcp layer error as mapped to the above enum
     err_enum_t lwip_err;                            //!lwIP layer error, error codes as provided by lwIP library
@@ -110,7 +110,7 @@ typedef struct
 } _S_MQTT_TCP_INFO;
 
 #if defined ( __CC_ARM   )
-#pragma no_anon_unions
+    #pragma no_anon_unions
 #endif
 
 /**
@@ -139,7 +139,7 @@ void mqtt_tcp_tick_divider(uint32_t divider);
                     mqtt-client.c implementation
     @eg         mqtt_tcp_connect("mqtt.flespi.io", 1883, 0, &err);
 */
-_S_MQTT_TCP_INFO * mqtt_tcp_connect(const char * hostname, uint32_t port_no, tls_configuration_t * conf, _E_MQTT_TCP_ERRORS * err);
+_S_MQTT_TCP_INFO *mqtt_tcp_connect(const char *hostname, uint32_t port_no, tls_configuration_t *conf, _E_MQTT_TCP_ERRORS *err);
 
 /**
     @fn         mqtt_tcp_write
@@ -155,7 +155,7 @@ _S_MQTT_TCP_INFO * mqtt_tcp_connect(const char * hostname, uint32_t port_no, tls
     @note       this handles both the plain and tls layers
     @eg         mqtt_tcp_write(tcp_info, pub_data, publish_len, 10000);
 */
-_E_MQTT_TCP_ERRORS mqtt_tcp_write(_S_MQTT_TCP_INFO * tcp_info, void * data, uint32_t data_len, uint32_t timeout);
+_E_MQTT_TCP_ERRORS mqtt_tcp_write(_S_MQTT_TCP_INFO *tcp_info, void *data, uint32_t data_len, uint32_t timeout);
 
 /**
     @fn         mqtt_tcp_recv
@@ -170,7 +170,7 @@ _E_MQTT_TCP_ERRORS mqtt_tcp_write(_S_MQTT_TCP_INFO * tcp_info, void * data, uint
     @note
     @eg         mqtt_tcp_recv(tcp_info, &recv, 60000);
 */
-_E_MQTT_TCP_ERRORS mqtt_tcp_recv(_S_MQTT_TCP_INFO * tcp_info, struct netbuf ** recv, uint32_t timeout);
+_E_MQTT_TCP_ERRORS mqtt_tcp_recv(_S_MQTT_TCP_INFO *tcp_info, struct netbuf **recv, uint32_t timeout);
 
 /**
     @fn         mqtt_tcp_close
@@ -187,7 +187,7 @@ _E_MQTT_TCP_ERRORS mqtt_tcp_recv(_S_MQTT_TCP_INFO * tcp_info, struct netbuf ** r
                     to delete the connection and do a connection again by calling mqtt_tcp_connect.
     @eg         mqtt_tcp_close(tcp_info)
 */
-_E_MQTT_TCP_ERRORS mqtt_tcp_close(_S_MQTT_TCP_INFO * tcp_info);
+_E_MQTT_TCP_ERRORS mqtt_tcp_close(_S_MQTT_TCP_INFO *tcp_info);
 
 /**
     @fn         mqtt_tcp_delete
@@ -200,7 +200,7 @@ _E_MQTT_TCP_ERRORS mqtt_tcp_close(_S_MQTT_TCP_INFO * tcp_info);
     @note       This will also close the connection if not already done. The passed pointer should not be used after this call.
     @eg         mqtt_tcp_delete(tcp_info);
 */
-_E_MQTT_TCP_ERRORS mqtt_tcp_delete(_S_MQTT_TCP_INFO * tcp_info);
+_E_MQTT_TCP_ERRORS mqtt_tcp_delete(_S_MQTT_TCP_INFO *tcp_info);
 
 /**
     @fn         mqtt_tcp_error_to_string
@@ -210,7 +210,7 @@ _E_MQTT_TCP_ERRORS mqtt_tcp_delete(_S_MQTT_TCP_INFO * tcp_info);
 
     @eg         mqtt_tcp_error_to_string(MQTT_TCP_ERROR_DNS);
 */
-char * mqtt_tcp_error_to_string(_E_MQTT_TCP_ERRORS err);
+char *mqtt_tcp_error_to_string(_E_MQTT_TCP_ERRORS err);
 
 /**
     @fn         mqtt_get_interface_ip
@@ -240,7 +240,7 @@ ip_addr_t mqtt_get_interface_ip(ip_addr_t * dest)
     }
 }
 */
-extern ip_addr_t mqtt_get_interface_ip(ip_addr_t * dest_ip);
+extern ip_addr_t mqtt_get_interface_ip(ip_addr_t *dest_ip);
 
 /**
     @fn         mqtt_tcp_error_is_fatal
@@ -250,14 +250,15 @@ extern ip_addr_t mqtt_get_interface_ip(ip_addr_t * dest_ip);
 */
 __inline static uint32_t mqtt_tcp_error_is_fatal(_E_MQTT_TCP_ERRORS e)
 {
-    if((e < MQTT_TCP_ERROR_UNDEFINED) && (e > MQTT_TCP_ERROR_VAL))
+    if ((e < MQTT_TCP_ERROR_UNDEFINED) && (e > MQTT_TCP_ERROR_VAL))
     {
         return 1;
     }
-    else if((e < MQTT_SSL_UNDEFINED) && (e >= MQTT_SSL_FEATURE_UNAVAILABLE))
+    else if ((e < MQTT_SSL_UNDEFINED) && (e >= MQTT_SSL_FEATURE_UNAVAILABLE))
     {
         return 1;
     }
+
     return 0;
 }
 #endif

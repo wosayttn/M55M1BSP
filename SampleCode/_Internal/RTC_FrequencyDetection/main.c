@@ -34,7 +34,7 @@ void GetActiveLXTandLIRC32Freq(uint32_t *u32LXTFreq, uint32_t *LIRC32Freq);
 NVT_ITCM void RTCTAMPER_IRQHandler(void)
 {
     uint32_t intflag;
-    
+
     if (RTC_GET_CLKFAIL_INT_FLAG(RTC))
     {
         printf("LXT clock frequency monitor fail interrupt is happened!\n");
@@ -58,10 +58,10 @@ NVT_ITCM void RTCTAMPER_IRQHandler(void)
         /* Write 1 to clear LXT Clock frequency monitor stop interrupt */
         RTC_CLEAR_CLKSTOP_INT_FLAG(RTC);
     }
-    
+
     /* make sure that interrupt flag has been cleared. */
     intflag = RTC->INTSTS;
-	NVT_UNUSED(intflag);
+    NVT_UNUSED(intflag);
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System Clock                                                                                       */

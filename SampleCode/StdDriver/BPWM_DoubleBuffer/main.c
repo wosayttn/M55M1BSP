@@ -36,7 +36,7 @@ NVT_ITCM void BPWM0_IRQHandler(void)
     BPWM_ClearPeriodIntFlag(BPWM0, 0);
 
     // Update BPWM0 channel 0 period and duty
-    if(u32Toggle == 0)
+    if (u32Toggle == 0)
     {
         BPWM_SET_CNR(BPWM0, 0, 399);
         BPWM_SET_CMR(BPWM0, 0, 300);
@@ -46,12 +46,14 @@ NVT_ITCM void BPWM0_IRQHandler(void)
         BPWM_SET_CNR(BPWM0, 0, 599);
         BPWM_SET_CMR(BPWM0, 0, 100);
     }
+
     u32Toggle ^= 1;
     __DSB();
     __ISB();
-    while(BPWM_GetPeriodIntFlag(BPWM0, 0))
+
+    while (BPWM_GetPeriodIntFlag(BPWM0, 0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for BPWM0 IntFlag time-out!\n");
         }
@@ -133,7 +135,7 @@ int main(void)
       Duty ratio = (312) / (624 + 1) = 50%
     */
     /* BPWM0 channel 0 frequency is 160000Hz, duty 50% */
-    printf("\nSet 160000Hz frequency.real is %d\n",BPWM_ConfigOutputChannel(BPWM0, 0, 160000, 50));
+    printf("\nSet 160000Hz frequency.real is %d\n", BPWM_ConfigOutputChannel(BPWM0, 0, 160000, 50));
 
     /* Enable output of BPWM0 channel 0 */
     BPWM_EnableOutput(BPWM0, BPWM_CH_0_MASK);

@@ -273,7 +273,7 @@ UAC_DEV_T *usbh_uac_get_device_list(void)
 }
 
 /** @} end of group USBH_EXPORTED_FUNCTIONS */
-       
+
 /** @} end of group USBH_Library */
-       
+
 /** @} end of group LIBRARY */

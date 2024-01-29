@@ -36,11 +36,11 @@ void SysTick_Handler(void)
 
 void SCU_IRQHandler(void)
 {
-//    if (DPM->STS & DPM_STS_PWCERR_Msk)
-//        DPM->STS = DPM_STS_PWCERR_Msk;
-//
-//    if (DPM_NS->NSSTS & DPM_NSSTS_PWCERR_Msk)
-//        DPM_NS->NSSTS = DPM_NSSTS_PWCERR_Msk;
+    //    if (DPM->STS & DPM_STS_PWCERR_Msk)
+    //        DPM->STS = DPM_STS_PWCERR_Msk;
+    //
+    //    if (DPM_NS->NSSTS & DPM_NSSTS_PWCERR_Msk)
+    //        DPM_NS->NSSTS = DPM_NSSTS_PWCERR_Msk;
 }
 
 /*----------------------------------------------------------------------------
@@ -83,7 +83,7 @@ void Boot_NonSecure(uint32_t u32NonSecureBase)
     pfnNonSecureEntry = cmse_nsfptr_create(pfnNonSecureEntry);
 
     /* Check if the Reset_Handler address is in Non-Secure space */
-    if(cmse_is_nsfptr(pfnNonSecureEntry) && (((uint32_t)pfnNonSecureEntry & NS_OFFSET) == NS_OFFSET))
+    if (cmse_is_nsfptr(pfnNonSecureEntry) && (((uint32_t)pfnNonSecureEntry & NS_OFFSET) == NS_OFFSET))
     {
         printf("Execute Non-Secure code at 0x%08X\n", u32NonSecureBase);
         pfnNonSecureEntry(0); /* Non-Secure function entry */
@@ -102,7 +102,7 @@ void Boot_NonSecure(uint32_t u32NonSecureBase)
         pfnNonSecureEntry = (PFN_NON_SECURE_FUNC)(NON_SECURE_SRAM_BASE + 1);
         pfnNonSecureEntry(0);
 
-        while(1);
+        while (1);
     }
 }
 
@@ -240,7 +240,7 @@ int main(void)
         __WFI();
     }
 
-    while(1);
+    while (1);
 }
 
 /*** (C) COPYRIGHT 2023 Nuvoton Technology Corp. ***/

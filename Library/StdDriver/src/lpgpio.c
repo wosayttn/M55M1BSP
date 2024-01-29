@@ -36,9 +36,9 @@ void LPGPIO_SetMode(LPGPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode)
 {
     uint32_t i;
 
-    for(i = 0ul; i < LPGPIO_PIN_MAX; i++)
+    for (i = 0ul; i < LPGPIO_PIN_MAX; i++)
     {
-        if((u32PinMask & (BIT0 << i))==(BIT0 << i))
+        if ((u32PinMask & (BIT0 << i)) == (BIT0 << i))
         {
             port->MODE = (port->MODE & ~(BIT0 << i)) | (u32Mode << i);
         }

@@ -76,7 +76,8 @@
 #define F_3_072  25172
 
 
-static const int16_t jsimd_fdct_islow_helium_consts[] ALIGNMENT_ATTRIBUTE= {
+static const int16_t jsimd_fdct_islow_helium_consts[] ALIGNMENT_ATTRIBUTE =
+{
     F_0_298, -F_0_390,  F_0_541,  F_0_765,
     -F_0_899,  F_1_175,  F_1_501, -F_1_847,
     -F_1_961,  F_2_053, -F_2_562,  F_3_072
@@ -122,14 +123,14 @@ void jsimd_fdct_islow_helium(int16_t *data)
     index = vidupq_n_u16(0, 2);//
     index = vmulq_n_u16(index, 8);
 
-    col0 = vldrhq_gather_offset_s16((int16_t*)(data), index);
-    col1 = vldrhq_gather_offset_s16((int16_t*)(data+1), index);
-    col2 = vldrhq_gather_offset_s16((int16_t*)(data+2), index);
-    col3 = vldrhq_gather_offset_s16((int16_t*)(data+3), index);
-    col4 = vldrhq_gather_offset_s16((int16_t*)(data+4), index);
-    col5 = vldrhq_gather_offset_s16((int16_t*)(data+5), index);
-    col6 = vldrhq_gather_offset_s16((int16_t*)(data+6), index);
-    col7 = vldrhq_gather_offset_s16((int16_t*)(data+7), index);
+    col0 = vldrhq_gather_offset_s16((int16_t *)(data), index);
+    col1 = vldrhq_gather_offset_s16((int16_t *)(data + 1), index);
+    col2 = vldrhq_gather_offset_s16((int16_t *)(data + 2), index);
+    col3 = vldrhq_gather_offset_s16((int16_t *)(data + 3), index);
+    col4 = vldrhq_gather_offset_s16((int16_t *)(data + 4), index);
+    col5 = vldrhq_gather_offset_s16((int16_t *)(data + 5), index);
+    col6 = vldrhq_gather_offset_s16((int16_t *)(data + 6), index);
+    col7 = vldrhq_gather_offset_s16((int16_t *)(data + 7), index);
     /* Pass 1: process rows. */
 
     int16x8_t tmp0 = vaddq_s16(col0, col7);
@@ -157,7 +158,7 @@ void jsimd_fdct_islow_helium(int16_t *data)
     int32x4_t z1_l =
         vqdmullbq_s16(tmp12_add_tmp13, consts_v0_2);
     int32x4_t z1_h =
-        vqdmulltq_s16(tmp12_add_tmp13,consts_v0_2);
+        vqdmulltq_s16(tmp12_add_tmp13, consts_v0_2);
 
     int32x4_t col2_scaled_l = vqdmullbq_s16(tmp13, consts_v0_3);
 
@@ -170,7 +171,7 @@ void jsimd_fdct_islow_helium(int16_t *data)
     col2 = vqshrnbq_n_s32(col2, col2_scaled_l, DESCALE_P1),
     col2 = vqshrntq_n_s32(col2, col2_scaled_h, DESCALE_P1);
 
-    int32x4_t col6_scaled_l =  vqdmullbq_s16(tmp12,consts_v1_3);
+    int32x4_t col6_scaled_l =  vqdmullbq_s16(tmp12, consts_v1_3);
     int32x4_t col6_scaled_h = vqdmulltq_s16(tmp12, consts_v1_3);
 
     col6_scaled_l = vaddq_s32(col6_scaled_l, z1_l);
@@ -190,10 +191,10 @@ void jsimd_fdct_islow_helium(int16_t *data)
     int32x4_t z5_h = vqdmulltq_s16(z3, consts_v1_1);
 
     vmlal_buf = vqdmullbq_s16(z4, consts_v1_1);
-    z5_l = vaddq_s32(z5_l, vmlal_buf );
+    z5_l = vaddq_s32(z5_l, vmlal_buf);
 
     vmlal_buf = vqdmulltq_s16(z4, consts_v1_1);
-    z5_h = vaddq_s32(z5_h, vmlal_buf );
+    z5_h = vaddq_s32(z5_h, vmlal_buf);
 
 
     /* sqrt(2) * (-c1+c3+c5-c7) */
@@ -257,26 +258,26 @@ void jsimd_fdct_islow_helium(int16_t *data)
     col1 = vqshrntq_n_s32(col1, tmp7_h, DESCALE_P1);
 
     /* Transpose to work on columns in pass 2. */
-    vst1q_s16((int16_t*)(data), col0);
-    vst1q_s16((int16_t*)(data+8), col1);
-    vst1q_s16((int16_t*)(data+16), col2);
-    vst1q_s16((int16_t*)(data+24), col3);
-    vst1q_s16((int16_t*)(data+32), col4);
-    vst1q_s16((int16_t*)(data+40), col5);
-    vst1q_s16((int16_t*)(data+48), col6);
-    vst1q_s16((int16_t*)(data+56), col7);
+    vst1q_s16((int16_t *)(data), col0);
+    vst1q_s16((int16_t *)(data + 8), col1);
+    vst1q_s16((int16_t *)(data + 16), col2);
+    vst1q_s16((int16_t *)(data + 24), col3);
+    vst1q_s16((int16_t *)(data + 32), col4);
+    vst1q_s16((int16_t *)(data + 40), col5);
+    vst1q_s16((int16_t *)(data + 48), col6);
+    vst1q_s16((int16_t *)(data + 56), col7);
 
     index = vidupq_n_u16(0, 2);//
     index = vmulq_n_u16(index, 8);
 
-    int16x8_t row0 =  vldrhq_gather_offset_s16((int16_t*)(data), index);
-    int16x8_t row1 =  vldrhq_gather_offset_s16((int16_t*)(data+1), index);
-    int16x8_t row2 =  vldrhq_gather_offset_s16((int16_t*)(data+2), index);
-    int16x8_t row3 =  vldrhq_gather_offset_s16((int16_t*)(data+3), index);
-    int16x8_t row4 =  vldrhq_gather_offset_s16((int16_t*)(data+4), index);
-    int16x8_t row5 =  vldrhq_gather_offset_s16((int16_t*)(data+5), index);
-    int16x8_t row6 =  vldrhq_gather_offset_s16((int16_t*)(data+6), index);
-    int16x8_t row7 =  vldrhq_gather_offset_s16((int16_t*)(data+7), index);
+    int16x8_t row0 =  vldrhq_gather_offset_s16((int16_t *)(data), index);
+    int16x8_t row1 =  vldrhq_gather_offset_s16((int16_t *)(data + 1), index);
+    int16x8_t row2 =  vldrhq_gather_offset_s16((int16_t *)(data + 2), index);
+    int16x8_t row3 =  vldrhq_gather_offset_s16((int16_t *)(data + 3), index);
+    int16x8_t row4 =  vldrhq_gather_offset_s16((int16_t *)(data + 4), index);
+    int16x8_t row5 =  vldrhq_gather_offset_s16((int16_t *)(data + 5), index);
+    int16x8_t row6 =  vldrhq_gather_offset_s16((int16_t *)(data + 6), index);
+    int16x8_t row7 =  vldrhq_gather_offset_s16((int16_t *)(data + 7), index);
 
     /* Pass 2: process columns. */
     tmp0 = vaddq_s16(row0, row7);

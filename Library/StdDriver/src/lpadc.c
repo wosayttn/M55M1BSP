@@ -47,7 +47,7 @@ void LPADC_Open(LPADC_T *lpadc, uint32_t u32InputMode, uint32_t u32OpMode, uint3
     LPADC_POWER_ON(lpadc);
 
     /* Workaround solution for TESTCHIP */
-    outp32((uint32_t)lpadc + 0xFF4, inp32(LPADC0_BASE + 0xFF4) | (BIT5|BIT4|BIT1));
+    outp32((uint32_t)lpadc + 0xFF4, inp32(LPADC0_BASE + 0xFF4) | (BIT5 | BIT4 | BIT1));
     outp32((uint32_t)lpadc + 0xFF0, inp32(LPADC0_BASE + 0xFF0) | (BIT8));
 
 
@@ -79,7 +79,7 @@ void LPADC_Calibration(LPADC_T *lpadc)
     LPADC_POWER_ON(lpadc);
 
     /* Workaround solution for TESTCHIP */
-    outp32((uint32_t)lpadc + 0xFF4, inp32(LPADC0_BASE + 0xFF4) | (BIT5|BIT4|BIT1));
+    outp32((uint32_t)lpadc + 0xFF4, inp32(LPADC0_BASE + 0xFF4) | (BIT5 | BIT4 | BIT1));
     outp32((uint32_t)lpadc + 0xFF0, inp32(LPADC0_BASE + 0xFF0) | (BIT8));
 
     /*Wait the LPADC Power On Ready  */
@@ -120,6 +120,7 @@ void LPADC_Calibration(LPADC_T *lpadc)
                 break;
             }
         }
+
         lpadc->ADCALSTS |= LPADC_ADCALSTS_CALIF_Msk;      /* Clear Calibration Finish Interrupt Flag */
         /* Read channel 0 ADDR to clear Valid flag of channel 0 that set by calibration. */
         /* Currently Sample Time basically needs 5 cycles */
@@ -170,12 +171,12 @@ void LPADC_Close(LPADC_T *lpadc)
   * @return None
   * @note Software should disable TRGEN (ADCR[8]) and ADST (ADCR[11]) before change TRGS(ADCR[5:4]).
   */
-void LPADC_EnableHWTrigger(LPADC_T *lpadc, uint32_t u32Source,uint32_t u32Param)
+void LPADC_EnableHWTrigger(LPADC_T *lpadc, uint32_t u32Source, uint32_t u32Param)
 {
     /* Software should clear TRGEN bit and ADST bit before changing TRGS bits. */
     lpadc->ADCR &= ~(LPADC_ADCR_TRGEN_Msk | LPADC_ADCR_ADST_Msk);
 
-    if(u32Source == LPADC_STADC_TRIGGER)
+    if (u32Source == LPADC_STADC_TRIGGER)
     {
         lpadc->ADCR = (lpadc->ADCR & ~(LPADC_ADCR_TRGS_Msk | LPADC_ADCR_TRGCOND_Msk | LPADC_ADCR_TRGEN_Msk)) |
                       ((u32Source) | (u32Param) | LPADC_ADCR_TRGEN_Msk);

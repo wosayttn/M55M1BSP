@@ -10,12 +10,12 @@
 
 #include "common.h"
 #ifdef SW
-#include "compile_time_macros.h"
-#include "panic.h"
+    #include "compile_time_macros.h"
+    #include "panic.h"
 
-#include "builtin/assert.h"         /* For ASSERT(). */
-#include <stdbool.h>
-#include <stddef.h>
+    #include "builtin/assert.h"         /* For ASSERT(). */
+    #include <stdbool.h>
+    #include <stddef.h>
 #endif
 
 #ifdef __cplusplus
@@ -30,7 +30,7 @@ extern "C" {
     ({                      \
         __typeof__(a) temp_a = (a);     \
         __typeof__(b) temp_b = (b);     \
-                            \
+        \
         GENERIC_MAX(temp_a, temp_b);        \
     })
 #endif
@@ -39,7 +39,7 @@ extern "C" {
     ({                      \
         __typeof__(a) temp_a = (a);     \
         __typeof__(b) temp_b = (b);     \
-                            \
+        \
         GENERIC_MIN(temp_a, temp_b);        \
     })
 #endif

@@ -34,7 +34,8 @@ extern "C"
 #define KPI_PRESS   0
 #define KPI_RELEASE 1
 
-typedef struct {
+typedef struct
+{
     uint8_t     x;
     uint8_t     y;
     uint16_t    st;

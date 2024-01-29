@@ -50,7 +50,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOE_MODULE);
     CLK_EnableModuleClock(EMAC0_MODULE);
     SYS_ResetModule(SYS_EMAC0RST);
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/

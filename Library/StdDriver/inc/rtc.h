@@ -407,7 +407,7 @@ typedef struct
   * @brief      Set Clock FAIL Boundary Register
   *
   * @param[in]  rtc             The pointer of RTC module.
-  * @param[in]  u32RegValue     The clock FAIL boundary register value. the vlaue range is 0x1 ~ 0xFF 
+  * @param[in]  u32RegValue     The clock FAIL boundary register value. the vlaue range is 0x1 ~ 0xFF
   *
   *
   * @details    Set clock fail boundary to CBDR register.
@@ -419,7 +419,7 @@ typedef struct
   * @brief      Set Clock Stop Boundary Register
   *
   * @param[in]  rtc             The pointer of RTC module.
-  * @param[in]  u32RegValue     The clock stop boundary register value. the vlaue range is 0x1 ~ 0xFF 
+  * @param[in]  u32RegValue     The clock stop boundary register value. the vlaue range is 0x1 ~ 0xFF
   *
   *
   * @details    Set clock stop boundary to CBDR register.

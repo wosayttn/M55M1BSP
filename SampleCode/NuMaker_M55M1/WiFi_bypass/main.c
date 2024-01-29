@@ -107,6 +107,7 @@ int main()
         CLK_SysTickLongDelay(1000000);
         putchar('.');
     }
+
     printf(" Done\n");
     WIFI_PORT->FIFO |= UART_FIFO_RXRST_Msk | UART_FIFO_TXRST_Msk;
 
@@ -119,12 +120,14 @@ int main()
         if ((WIFI_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0)
         {
             while (BYPASS_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
+
             BYPASS_PORT->DAT = WIFI_PORT->DAT;
         }
 
         if ((BYPASS_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0)
         {
             while (WIFI_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
+
             WIFI_PORT->DAT = BYPASS_PORT->DAT;
         }
     }

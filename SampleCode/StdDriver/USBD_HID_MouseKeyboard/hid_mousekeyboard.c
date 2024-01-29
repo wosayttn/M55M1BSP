@@ -20,7 +20,7 @@ static uint8_t volatile s_u8EP2Ready = 0;
 static uint8_t volatile s_u8EP3Ready = 0;
 uint8_t volatile g_u8Suspend = 0;
 static uint8_t s_u8Idle = 0, s_u8Protocol = 0;
-uint8_t Led_Status[8]={0};
+uint8_t Led_Status[8] = {0};
 uint32_t LED_SATUS = 0;
 
 /*--------------------------------------------------------------------------*/
@@ -256,37 +256,37 @@ void HID_ClassRequest(void)
         // Device to host
         switch (au8Buf[1])
         {
-        case GET_REPORT:
+            case GET_REPORT:
 
-        //            {
-        //                break;
-        //            }
-        case GET_IDLE:
-        {
-            USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
-            /* Data stage */
-            USBD_PrepareCtrlIn(&s_u8Idle, au8Buf[6]);
-            /* Status stage */
-            USBD_PrepareCtrlOut(0, 0);
-            break;
-        }
+            //            {
+            //                break;
+            //            }
+            case GET_IDLE:
+            {
+                USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
+                /* Data stage */
+                USBD_PrepareCtrlIn(&s_u8Idle, au8Buf[6]);
+                /* Status stage */
+                USBD_PrepareCtrlOut(0, 0);
+                break;
+            }
 
-        case GET_PROTOCOL:
-        {
-            USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
-            /* Data stage */
-            USBD_PrepareCtrlIn(&s_u8Protocol, au8Buf[6]);
-            /* Status stage */
-            USBD_PrepareCtrlOut(0, 0);
-            break;
-        }
+            case GET_PROTOCOL:
+            {
+                USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
+                /* Data stage */
+                USBD_PrepareCtrlIn(&s_u8Protocol, au8Buf[6]);
+                /* Status stage */
+                USBD_PrepareCtrlOut(0, 0);
+                break;
+            }
 
-        default:
-        {
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
+            default:
+            {
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
+            }
         }
     }
     else
@@ -294,52 +294,52 @@ void HID_ClassRequest(void)
         // Host to device
         switch (au8Buf[1])
         {
-        case SET_REPORT:
-        {
-            if (au8Buf[3] == 3)
+            case SET_REPORT:
             {
-                /* Request Type = Feature */
-                USBD_SET_DATA1(EP1);
-                USBD_SET_PAYLOAD_LEN(EP1, 0);
-            }
-            else if (au8Buf[3] == 2)
-            {
-                /* Request Type = Output */
-                USBD_SET_DATA1(EP1);
-                USBD_PrepareCtrlOut(Led_Status, au8Buf[6]);
+                if (au8Buf[3] == 3)
+                {
+                    /* Request Type = Feature */
+                    USBD_SET_DATA1(EP1);
+                    USBD_SET_PAYLOAD_LEN(EP1, 0);
+                }
+                else if (au8Buf[3] == 2)
+                {
+                    /* Request Type = Output */
+                    USBD_SET_DATA1(EP1);
+                    USBD_PrepareCtrlOut(Led_Status, au8Buf[6]);
 
+                    /* Status stage */
+                    USBD_PrepareCtrlIn(0, 0);
+                }
+
+                break;
+            }
+
+            case SET_IDLE:
+            {
+                s_u8Idle = au8Buf[3];
                 /* Status stage */
-                USBD_PrepareCtrlIn(0, 0);
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+                break;
             }
 
-            break;
-        }
+            case SET_PROTOCOL:
+            {
+                s_u8Protocol = au8Buf[2];
+                /* Status stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+                break;
+            }
 
-        case SET_IDLE:
-        {
-            s_u8Idle = au8Buf[3];
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-            break;
-        }
-
-        case SET_PROTOCOL:
-        {
-            s_u8Protocol = au8Buf[2];
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-            break;
-        }
-
-        default:
-        {
-            // Stall
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
+            default:
+            {
+                // Stall
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
+            }
         }
     }
 }
@@ -413,35 +413,36 @@ void HID_UpdateKbData(void)
         }
     }
 
-    if(Led_Status[0] != LED_SATUS)
+    if (Led_Status[0] != LED_SATUS)
     {
-        if((Led_Status[0] & HID_LED_ALL) != (LED_SATUS & HID_LED_ALL))
+        if ((Led_Status[0] & HID_LED_ALL) != (LED_SATUS & HID_LED_ALL))
         {
-            if(Led_Status[0] & HID_LED_NumLock)
+            if (Led_Status[0] & HID_LED_NumLock)
                 printf("NmLK  ON, ");
             else
                 printf("NmLK OFF, ");
 
-            if(Led_Status[0] & HID_LED_CapsLock)
+            if (Led_Status[0] & HID_LED_CapsLock)
                 printf("CapsLock  ON, ");
             else
                 printf("CapsLock OFF, ");
 
-            if(Led_Status[0] & HID_LED_ScrollLock)
+            if (Led_Status[0] & HID_LED_ScrollLock)
                 printf("ScrollLock  ON, ");
             else
                 printf("ScrollLock OFF, ");
 
-            if(Led_Status[0] & HID_LED_Compose)
+            if (Led_Status[0] & HID_LED_Compose)
                 printf("Compose  ON, ");
             else
                 printf("Compose OFF, ");
 
-            if(Led_Status[0] & HID_LED_Kana)
+            if (Led_Status[0] & HID_LED_Kana)
                 printf("Kana  ON\n");
             else
                 printf("Kana OFF\n");
         }
+
         LED_SATUS = Led_Status[0];
     }
 }

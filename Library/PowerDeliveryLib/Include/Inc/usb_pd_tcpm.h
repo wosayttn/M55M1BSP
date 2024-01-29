@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include "common.h"
 #ifdef SW
-#include "compiler.h"
+    #include "compiler.h"
 #endif
 #include "ec_commands.h"
 #include "ec_i2c.h"
@@ -225,7 +225,7 @@ struct tcpm_drv
     int (*get_cc)(int port, enum tcpc_cc_voltage_status *cc1,
                   enum tcpc_cc_voltage_status *cc2);
 
-//#if (CONFIG_USB_PD_VBUS_DETECT_TCPC == 1)
+    //#if (CONFIG_USB_PD_VBUS_DETECT_TCPC == 1)
     /**
      * Check VBUS level
      *
@@ -235,7 +235,7 @@ struct tcpm_drv
      * @return False => VBUS not at level, True => VBUS at level
      */
     bool (*check_vbus_level)(int port, enum vbus_level level);
-//#endif
+    //#endif
 
     /**
      * Set the value of the CC pull-up used when we are a source.
@@ -267,7 +267,7 @@ struct tcpm_drv
      */
     int (*set_polarity)(int port, enum tcpc_cc_polarity polarity);
 
-//#if (CONFIG_USB_PD_DECODE_SOP == 1)
+    //#if (CONFIG_USB_PD_DECODE_SOP == 1)
     /**
      * Control receive of SOP' and SOP'' messages. This is provided
      * separately from set_vconn so that we can preemptively disable
@@ -280,7 +280,7 @@ struct tcpm_drv
      * @return EC_SUCCESS or error
      */
     int (*sop_prime_enable)(int port, bool enable);
-//#endif
+    //#endif
 
     /**
      * Set Vconn.
@@ -360,7 +360,7 @@ struct tcpm_drv
      * @param enable Auto Discharge enable or disable
      */
     void (*tcpc_enable_auto_discharge_disconnect)(int port,
-            int enable);
+                                                  int enable);
 
     /**
      * Manual control of TCPC DebugAccessory enable
@@ -378,7 +378,7 @@ struct tcpm_drv
      */
     int (*debug_detach)(int port);
 
-//#if (CONFIG_USB_PD_DUAL_ROLE_AUTO_TOGGLE == 1)
+    //#if (CONFIG_USB_PD_DUAL_ROLE_AUTO_TOGGLE == 1)
     /**
      * Enable TCPC auto DRP toggling.
      *
@@ -387,7 +387,7 @@ struct tcpm_drv
      * @return EC_SUCCESS or error
      */
     int (*drp_toggle)(int port);
-//#endif
+    //#endif
 
     /**
      * Get firmware version.
@@ -401,7 +401,7 @@ struct tcpm_drv
     int (*get_chip_info)(int port, int live,
                          struct ec_response_pd_chip_info_v1 *info);
 
-//#if (CONFIG_USB_PD_PPC == 1)
+    //#if (CONFIG_USB_PD_PPC == 1)
     /**
      * Request current sinking state of the TCPC
      * NOTE: this is most useful for PPCs that can not tell on their own
@@ -441,7 +441,7 @@ struct tcpm_drv
      * @return EC_SUCCESS or error
      */
     int (*set_src_ctrl)(int port, int enable);
-//#endif
+    //#endif
 
 #if (CONFIG_USB_PD_TCPC_LOW_POWER == 1)
     /**
@@ -488,7 +488,7 @@ struct tcpm_drv
      * @param enable true to enter BIST Test Mode; false to exit
      * @return EC_SUCCESS or error code
      */
-    enum ec_error_list (*set_bist_test_mode)(int port, bool enable);
+    enum ec_error_list(*set_bist_test_mode)(int port, bool enable);
 
 #if (CONFIG_CMD_TCPC_DUMP == 1)
     /**
@@ -544,9 +544,9 @@ struct tcpc_config_t
 };
 
 #ifndef CONFIG_USB_PD_TCPC_RUNTIME_CONFIG
-extern const struct tcpc_config_t tcpc_config[];
+    extern const struct tcpc_config_t tcpc_config[];
 #else
-extern struct tcpc_config_t tcpc_config[];
+    extern struct tcpc_config_t tcpc_config[];
 #endif
 
 /**

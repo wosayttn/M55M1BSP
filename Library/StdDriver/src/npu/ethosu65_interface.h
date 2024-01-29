@@ -20,36 +20,36 @@
 #define ETHOSU65_INTERFACE_H
 
 #ifdef __KERNEL__
-#include <linux/types.h>
+    #include <linux/types.h>
 #else
-#include <stdint.h>
+    #include <stdint.h>
 #endif
 
 #if !defined(__cplusplus) || __cplusplus < 201402L
-#define CONSTEXPR
+    #define CONSTEXPR
 #else
-#define CONSTEXPR constexpr
+    #define CONSTEXPR constexpr
 #endif
 
 #ifndef __cplusplus
-#define STRUCT struct
+    #define STRUCT struct
 #else
-#define STRUCT
+    #define STRUCT
 #endif
 
 #if defined(__cplusplus) && defined(NPU_DISASSEMBLE)
-#include <iomanip>
-#include <sstream>
-#include <vector>
+    #include <iomanip>
+    #include <sstream>
+    #include <vector>
 #endif
 
 #if defined(__cplusplus) && !defined(NPU_NAMESPACE)
-#define NPU_NAMESPACE npu
+    #define NPU_NAMESPACE npu
 #endif
 
 #ifdef __cplusplus
-#include <cstring>
-#include <limits>
+    #include <cstring>
+    #include <limits>
 #endif
 
 #ifdef __cplusplus
@@ -1251,13 +1251,15 @@ enum weight_order
 
 #ifdef NPU_DISASSEMBLE
 
-static const char *acc_format_str[] = {
+static const char *acc_format_str[] =
+{
     "ACC_FORMAT_I32",
     "ACC_FORMAT_I40",
     "ACC_FORMAT_F16",
 };
 
-static const char *activation_clip_range_str[] = {
+static const char *activation_clip_range_str[] =
+{
     "ACTIVATION_CLIP_RANGE_OFM_PRECISION",
     "****",
     "ACTIVATION_CLIP_RANGE_FORCE_UINT8",
@@ -1266,12 +1268,14 @@ static const char *activation_clip_range_str[] = {
     "ACTIVATION_CLIP_RANGE_FORCE_INT16",
 };
 
-static const char *activation_format_str[] = {
+static const char *activation_format_str[] =
+{
     "ACTIVATION_FORMAT_NHWC",
     "ACTIVATION_FORMAT_NHCWB16",
 };
 
-static const char *activation_function_str[] = {
+static const char *activation_function_str[] =
+{
     "ACTIVATION_FUNCTION_RELU",
     "****",
     "****",
@@ -1298,19 +1302,22 @@ static const char *activation_function_str[] = {
     "ACTIVATION_FUNCTION_TABLE_7",
 };
 
-static const char *activation_precision_str[] = {
+static const char *activation_precision_str[] =
+{
     "ACTIVATION_PRECISION_B8",
     "ACTIVATION_PRECISION_B16",
     "ACTIVATION_PRECISION_B32",
     "ACTIVATION_PRECISION_B64",
 };
 
-static const char *activation_type_str[] = {
+static const char *activation_type_str[] =
+{
     "ACTIVATION_TYPE_UNSIGNED",
     "ACTIVATION_TYPE_SIGNED",
 };
 
-static const char *axi_mem_encoding_str[] = {
+static const char *axi_mem_encoding_str[] =
+{
     "AXI_MEM_ENCODING_DEVICE_NON_BUFFERABLE",
     "AXI_MEM_ENCODING_DEVICE_BUFFERABLE",
     "AXI_MEM_ENCODING_NORMAL_NON_CACHEABLE_NON_BUFFERABLE",
@@ -1325,12 +1332,14 @@ static const char *axi_mem_encoding_str[] = {
     "AXI_MEM_ENCODING_WRITE_BACK_READ_AND_WRITE_ALLOCATE",
 };
 
-static const char *broadcast_mode_str[] = {
+static const char *broadcast_mode_str[] =
+{
     "BROADCAST_MODE_DISABLE",
     "BROADCAST_MODE_ENABLE",
 };
 
-static const char *cmd0_opcode_str[] = {
+static const char *cmd0_opcode_str[] =
+{
     "CMD0_OPCODE_NPU_OP_STOP",
     "CMD0_OPCODE_NPU_OP_IRQ",
     "CMD0_OPCODE_NPU_OP_CONV",
@@ -1733,7 +1742,8 @@ static const char *cmd0_opcode_str[] = {
     "CMD0_OPCODE_NPU_SET_IFM2_REGION",
 };
 
-static const char *cmd1_opcode_str[] = {
+static const char *cmd1_opcode_str[] =
+{
     "CMD1_OPCODE_NPU_SET_IFM_BASE0",
     "CMD1_OPCODE_NPU_SET_IFM_BASE1",
     "CMD1_OPCODE_NPU_SET_IFM_BASE2",
@@ -1884,33 +1894,39 @@ static const char *cmd1_opcode_str[] = {
     "CMD1_OPCODE_NPU_SET_SCALE1_LENGTH",
 };
 
-static const char *cmd_ctrl_str[] = {
+static const char *cmd_ctrl_str[] =
+{
     "CMD_CTRL_CMD0_CTRL",
     "CMD_CTRL_CMD1_CTRL",
 };
 
-static const char *custom_dma_str[] = {
+static const char *custom_dma_str[] =
+{
     "CUSTOM_DMA_NOT_IMPLEMENTED",
     "CUSTOM_DMA_IMPLEMENTED",
 };
 
-static const char *dma_fault_src_str[] = {
+static const char *dma_fault_src_str[] =
+{
     "DMA_FAULT_SRC_AXI_M0",
     "DMA_FAULT_SRC_AXI_M1",
 };
 
-static const char *dma_region_mode_str[] = {
+static const char *dma_region_mode_str[] =
+{
     "DMA_REGION_MODE_EXTERNAL",
     "DMA_REGION_MODE_INTERNAL",
 };
 
-static const char *dma_stride_mode_str[] = {
+static const char *dma_stride_mode_str[] =
+{
     "DMA_STRIDE_MODE_D1",
     "DMA_STRIDE_MODE_D2",
     "DMA_STRIDE_MODE_D3",
 };
 
-static const char *elementwise_mode_str[] = {
+static const char *elementwise_mode_str[] =
+{
     "ELEMENTWISE_MODE_MUL",
     "ELEMENTWISE_MODE_ADD",
     "ELEMENTWISE_MODE_SUB",
@@ -1923,62 +1939,73 @@ static const char *elementwise_mode_str[] = {
     "ELEMENTWISE_MODE_SHL",
 };
 
-static const char *functional_safety_str[] = {
+static const char *functional_safety_str[] =
+{
     "FUNCTIONAL_SAFETY_NOT_IMPLEMENTED",
     "FUNCTIONAL_SAFETY_IMPLEMENTED",
 };
 
-static const char *ifm2_operand_order_str[] = {
+static const char *ifm2_operand_order_str[] =
+{
     "IFM2_OPERAND_ORDER_ORDER_B",
     "IFM2_OPERAND_ORDER_ORDER_A",
 };
 
-static const char *ifm_scale_mode_str[] = {
+static const char *ifm_scale_mode_str[] =
+{
     "IFM_SCALE_MODE_OPA_OPB_16",
     "IFM_SCALE_MODE_OPA_32",
     "IFM_SCALE_MODE_OPB_32",
 };
 
-static const char *ifm_upscale_mode_str[] = {
+static const char *ifm_upscale_mode_str[] =
+{
     "IFM_UPSCALE_MODE_NONE",
     "IFM_UPSCALE_MODE_NEAREST",
     "IFM_UPSCALE_MODE_ZEROS",
 };
 
-static const char *kernel_decomposition_str[] = {
+static const char *kernel_decomposition_str[] =
+{
     "KERNEL_DECOMPOSITION_D8X8",
     "KERNEL_DECOMPOSITION_D4X4",
 };
 
-static const char *kernel_dilation_str[] = {
+static const char *kernel_dilation_str[] =
+{
     "KERNEL_DILATION_NONE",
     "KERNEL_DILATION_X2",
 };
 
-static const char *max_beats_str[] = {
+static const char *max_beats_str[] =
+{
     "MAX_BEATS_B64",
     "MAX_BEATS_B128",
     "MAX_BEATS_B256",
 };
 
-static const char *mem_attr_str[] = {
+static const char *mem_attr_str[] =
+{
     "MEM_ATTR_AXI0_OUTSTANDING_COUNTER0",
     "MEM_ATTR_AXI0_OUTSTANDING_COUNTER1",
     "MEM_ATTR_AXI1_OUTSTANDING_COUNTER2",
     "MEM_ATTR_AXI1_OUTSTANDING_COUNTER3",
 };
 
-static const char *ofm_scale_mode_str[] = {
+static const char *ofm_scale_mode_str[] =
+{
     "OFM_SCALE_MODE_PER_CHANNEL",
     "OFM_SCALE_MODE_GLOBAL",
 };
 
-static const char *parallel_mode_str[] = {
+static const char *parallel_mode_str[] =
+{
     "PARALLEL_MODE_SINGLE_CORE",
     "PARALLEL_MODE_DUAL_CORE_DEPTH",
 };
 
-static const char *pmu_axi_channel_str[] = {
+static const char *pmu_axi_channel_str[] =
+{
     "PMU_AXI_CHANNEL_RD_CMD",
     "PMU_AXI_CHANNEL_RD_IFM",
     "PMU_AXI_CHANNEL_RD_WEIGHTS",
@@ -1991,7 +2018,8 @@ static const char *pmu_axi_channel_str[] = {
     "PMU_AXI_CHANNEL_WR_MEM2MEM",
 };
 
-static const char *pmu_event_str[] = {
+static const char *pmu_event_str[] =
+{
     "PMU_EVENT_NO_EVENT",
     "****",
     "****",
@@ -2428,47 +2456,55 @@ static const char *pmu_event_str[] = {
     "PMU_EVENT_ECC_SB1",
 };
 
-static const char *pooling_mode_str[] = {
+static const char *pooling_mode_str[] =
+{
     "POOLING_MODE_MAX",
     "POOLING_MODE_AVERAGE",
     "POOLING_MODE_REDUCE_SUM",
 };
 
-static const char *privilege_level_str[] = {
+static const char *privilege_level_str[] =
+{
     "PRIVILEGE_LEVEL_USER",
     "PRIVILEGE_LEVEL_PRIVILEGED",
 };
 
-static const char *round_mode_str[] = {
+static const char *round_mode_str[] =
+{
     "ROUND_MODE_DBL",
     "ROUND_MODE_TRUNCATE",
     "ROUND_MODE_NATURAL",
 };
 
-static const char *security_level_str[] = {
+static const char *security_level_str[] =
+{
     "SECURITY_LEVEL_SECURE",
     "SECURITY_LEVEL_NON_SECURE",
 };
 
-static const char *state_str[] = {
+static const char *state_str[] =
+{
     "STATE_STOPPED",
     "STATE_RUNNING",
 };
 
-static const char *wd_core_slice_state_str[] = {
+static const char *wd_core_slice_state_str[] =
+{
     "WD_CORE_SLICE_STATE_HEADER",
     "WD_CORE_SLICE_STATE_PALETTE",
     "WD_CORE_SLICE_STATE_WEIGHTS",
 };
 
-static const char *wd_ctrl_state_str[] = {
+static const char *wd_ctrl_state_str[] =
+{
     "WD_CTRL_STATE_IDLE",
     "WD_CTRL_STATE_DRAIN",
     "WD_CTRL_STATE_OFD_INIT",
     "WD_CTRL_STATE_OFD_RUN",
 };
 
-static const char *weight_order_str[] = {
+static const char *weight_order_str[] =
+{
     "WEIGHT_ORDER_DEPTH_FIRST",
     "WEIGHT_ORDER_PART_KERNEL_FIRST",
 };
@@ -2490,17 +2526,17 @@ struct id_r
             uint32_t product_major : 4;  // Product major ID number (unique per base product)
             uint32_t arch_patch_rev : 4; // This is the patch number of the architecture version a.b
             uint32_t
-                arch_minor_rev : 8; // This is the minor architecture version number, b in the architecture version a.b
+            arch_minor_rev : 8; // This is the minor architecture version number, b in the architecture version a.b
             uint32_t
-                arch_major_rev : 4; // This is the major architecture version number, a in the architecture version a.b
+            arch_major_rev : 4; // This is the major architecture version number, a in the architecture version a.b
         };
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR id_r() : word0(268853249) {}
     CONSTEXPR id_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -2676,35 +2712,35 @@ struct status_r
         {
             uint32_t state : 1;      // NPU state, 0 = Stopped, 1 = Running
             uint32_t irq_raised : 1; // Raw IRQ status, 0 = IRQ not raised, 1 = IRQ raised. IRQ is cleared using command
-                                     // register bit 1
+            // register bit 1
             uint32_t
-                bus_status : 1; // 0=OK, 1=Bus abort detected and processing halted (NPU will reach IDLE state and not
-                                // to start process any more commands/AXI transactions). Can only be cleared by a reset
+            bus_status : 1; // 0=OK, 1=Bus abort detected and processing halted (NPU will reach IDLE state and not
+            // to start process any more commands/AXI transactions). Can only be cleared by a reset
             uint32_t reset_status : 1; // Reset is ongoing and only this register can be read (other registers read as 0
-                                       // and writes are ignored.) A value of 0 means NPU is not being reset and can be
-                                       // accessed as normal
+            // and writes are ignored.) A value of 0 means NPU is not being reset and can be
+            // accessed as normal
             uint32_t
-                cmd_parse_error : 1; // 0=No error 1=Command stream parsing error detected. Can only be cleared by reset
+            cmd_parse_error : 1; // 0=No error 1=Command stream parsing error detected. Can only be cleared by reset
             uint32_t cmd_end_reached : 1; // 0=Not reached, 1=Reached. Cleared by writing QBASE or QSIZE when NPU is in
-                                          // stopped state
+            // stopped state
             uint32_t pmu_irq_raised : 1;  // 0=No PMU IRQ, 1=PMU IRQ raised. Cleared by using command register bit 1
             uint32_t wd_fault : 1; // Weight decoder state: 0=no fault 1=weight decoder decompression fault. Can only be
-                                   // cleared by reset
+            // cleared by reset
             uint32_t ecc_fault : 1; // ECC state for internal RAMs: 0=no fault 1=ECC fault signalled. Can only be
-                                    // cleared by reset
+            // cleared by reset
             uint32_t reserved0 : 2;
             uint32_t faulting_interface : 1; // Faulting interface on bus abort
             uint32_t faulting_channel : 4;  // Faulting channel on a bus abort. Read: 0=Cmd 1=IFM 2=Weights 3=Scale+Bias
-                                            // 4=Mem2Mem; Write: 8=OFM 9=Mem2Mem
+            // 4=Mem2Mem; Write: 8=OFM 9=Mem2Mem
             uint32_t irq_history_mask : 16; // IRQ History mask
         };
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR status_r() : word0(8) {}
     CONSTEXPR status_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -2979,23 +3015,23 @@ struct cmd_r
         struct
         {
             uint32_t transition_to_running_state : 1; // Write 1 to transition the NPU to running state. Writing 0 has
-                                                      // no effect
+            // no effect
             uint32_t clear_irq : 1; // Write 1 to clear the IRQ status in the STATUS register. Writing 0 has no effect
             uint32_t clock_q_enable : 1; // Write 1 to this bit to enable clock off using clock q-interface and enable
-                                         // the requester clock gate
+            // the requester clock gate
             uint32_t power_q_enable : 1; // Write 1 to this bit to enable power off using power q-interface
             uint32_t
-                stop_request : 1; // Write 1 to this bit to request STOP after completing any already-started commands
+            stop_request : 1; // Write 1 to this bit to request STOP after completing any already-started commands
             uint32_t reserved0 : 11;
             uint32_t clear_irq_history : 16; // Clears the IRQ history mask
         };
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR cmd_r() : word0(12) {}
     CONSTEXPR cmd_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -3156,10 +3192,10 @@ struct reset_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR reset_r() : word0(0) {}
     CONSTEXPR reset_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -3244,14 +3280,14 @@ struct qbase_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR qbase_r() : word0(0), word1(0) {}
     CONSTEXPR qbase_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -3293,10 +3329,10 @@ struct qread_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR qread_r() : word0(0) {}
     CONSTEXPR qread_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -3356,10 +3392,10 @@ struct qconfig_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR qconfig_r() : word0(0) {}
     CONSTEXPR qconfig_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -3418,10 +3454,10 @@ struct qsize_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR qsize_r() : word0(0) {}
     CONSTEXPR qsize_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -3482,10 +3518,10 @@ struct prot_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR prot_r() : word0(0) {}
     CONSTEXPR prot_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -3574,10 +3610,10 @@ struct config_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR config_r() : word0(268435456) {}
     CONSTEXPR config_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -3738,10 +3774,10 @@ struct lock_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR lock_r() : word0(0) {}
     CONSTEXPR lock_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -3808,10 +3844,10 @@ struct regioncfg_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR regioncfg_r() : word0(0) {}
     CONSTEXPR regioncfg_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -4010,19 +4046,19 @@ struct axi_limit0_r
             uint32_t memtype : 4; // Memtype to be used to encode AxCACHE signals
             uint32_t reserved1 : 8;
             uint32_t
-                max_outstanding_read_m1 : 6; // Maximum number of outstanding AXI read transactions - 1 in range 0 to 63
+            max_outstanding_read_m1 : 6; // Maximum number of outstanding AXI read transactions - 1 in range 0 to 63
             uint32_t reserved2 : 2;
             uint32_t max_outstanding_write_m1 : 5; // Maximum number of outstanding AXI write transactions - 1 in range
-                                                   // 0 to 31
+            // 0 to 31
             uint32_t reserved3 : 3;
         };
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR axi_limit0_r() : word0(0) {}
     CONSTEXPR axi_limit0_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -4143,19 +4179,19 @@ struct axi_limit1_r
             uint32_t memtype : 4; // Memtype to be used to encode AxCACHE signals
             uint32_t reserved1 : 8;
             uint32_t
-                max_outstanding_read_m1 : 6; // Maximum number of outstanding AXI read transactions - 1 in range 0 to 63
+            max_outstanding_read_m1 : 6; // Maximum number of outstanding AXI read transactions - 1 in range 0 to 63
             uint32_t reserved2 : 2;
             uint32_t max_outstanding_write_m1 : 5; // Maximum number of outstanding AXI write transactions - 1 in range
-                                                   // 0 to 31
+            // 0 to 31
             uint32_t reserved3 : 3;
         };
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR axi_limit1_r() : word0(0) {}
     CONSTEXPR axi_limit1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -4276,19 +4312,19 @@ struct axi_limit2_r
             uint32_t memtype : 4; // Memtype to be used to encode AxCACHE signals
             uint32_t reserved1 : 8;
             uint32_t
-                max_outstanding_read_m1 : 6; // Maximum number of outstanding AXI read transactions - 1 in range 0 to 63
+            max_outstanding_read_m1 : 6; // Maximum number of outstanding AXI read transactions - 1 in range 0 to 63
             uint32_t reserved2 : 2;
             uint32_t max_outstanding_write_m1 : 5; // Maximum number of outstanding AXI write transactions - 1 in range
-                                                   // 0 to 31
+            // 0 to 31
             uint32_t reserved3 : 3;
         };
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR axi_limit2_r() : word0(0) {}
     CONSTEXPR axi_limit2_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -4409,19 +4445,19 @@ struct axi_limit3_r
             uint32_t memtype : 4; // Memtype to be used to encode AxCACHE signals
             uint32_t reserved1 : 8;
             uint32_t
-                max_outstanding_read_m1 : 6; // Maximum number of outstanding AXI read transactions - 1 in range 0 to 63
+            max_outstanding_read_m1 : 6; // Maximum number of outstanding AXI read transactions - 1 in range 0 to 63
             uint32_t reserved2 : 2;
             uint32_t max_outstanding_write_m1 : 5; // Maximum number of outstanding AXI write transactions - 1 in range
-                                                   // 0 to 31
+            // 0 to 31
             uint32_t reserved3 : 3;
         };
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR axi_limit3_r() : word0(0) {}
     CONSTEXPR axi_limit3_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -4545,14 +4581,14 @@ struct basep_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR basep_r() : word0(0), word1(0) {}
     CONSTEXPR basep_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -4605,10 +4641,10 @@ struct wd_status_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR wd_status_r() : word0(0) {}
     CONSTEXPR wd_status_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -4886,10 +4922,10 @@ struct mac_status_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR mac_status_r() : word0(0) {}
     CONSTEXPR mac_status_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -5258,10 +5294,10 @@ struct ao_status_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ao_status_r() : word0(0) {}
     CONSTEXPR ao_status_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -5476,12 +5512,12 @@ struct dma_status0_r
         struct
         {
             uint32_t cmd_idle : 1; // When this bit is high means that the CMD block is not busy in generating addresses
-                                   // for a CMD job
+            // for a CMD job
             uint32_t ifm_idle : 1; // When this bit is high means that there are no ongoing IFM jobs
             uint32_t wgt_idle_c0 : 1; // When this bit is high means that the WGT block is not busy in generating
-                                      // addresses for a WGT job
+            // addresses for a WGT job
             uint32_t bas_idle_c0 : 1; // When this bit is high means that the BAS block is not busy in generating
-                                      // addresses for a BAS job
+            // addresses for a BAS job
             uint32_t m2m_idle : 1;    // When this bit is high means that there are no ongoing M2M jobs
             uint32_t ofm_idle : 1;    // When this bit is high means that there are no ongoing OFM jobs
             uint32_t halt_req : 1;    // CPM has requested to HALT AXI bus before soft reset
@@ -5514,10 +5550,10 @@ struct dma_status0_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR dma_status0_r() : word0(0) {}
     CONSTEXPR dma_status0_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -6198,9 +6234,9 @@ struct dma_status1_r
             uint32_t axi1_w_stalled : 1;  // Write transfer stalled on wready low AXI1 (due to memory system)
             uint32_t axi1_wr_limit_stall : 1; // Write stalled due to one AXI1 limit counter being reached
             uint32_t wgt_idle_c1 : 1;     // When this bit is high means that the WGT block is not busy in generating
-                                          // addresses for a WGT job
+            // addresses for a WGT job
             uint32_t bas_idle_c1 : 1;     // When this bit is high means that the BAS block is not busy in generating
-                                          // addresses for a BAS job
+            // addresses for a BAS job
             uint32_t ib0_ai_valid_c1 : 1; // Data for AI to be read in IFM input buffer 0 - Core 1
             uint32_t ib0_ai_ready_c1 : 1; // Data consumed from AI in IFM input buffer 0 - Core 1
             uint32_t ib1_ai_valid_c1 : 1; // Data for AI to be read in IFM input buffer 1 - Core 1
@@ -6222,10 +6258,10 @@ struct dma_status1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR dma_status1_r() : word0(0) {}
     CONSTEXPR dma_status1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -6750,10 +6786,10 @@ struct clkforce_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR clkforce_r() : word0(0) {}
     CONSTEXPR clkforce_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -6912,10 +6948,10 @@ struct debug_address_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR debug_address_r() : word0(0) {}
     CONSTEXPR debug_address_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -6974,10 +7010,10 @@ struct debug_misc_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR debug_misc_r() : word0(0) {}
     CONSTEXPR debug_misc_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -7036,10 +7072,10 @@ struct debugcore_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR debugcore_r() : word0(0) {}
     CONSTEXPR debugcore_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -7099,10 +7135,10 @@ struct debug_block_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR debug_block_r() : word0(0) {}
     CONSTEXPR debug_block_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -7167,10 +7203,10 @@ struct pmcr_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pmcr_r() : word0(8192) {}
     CONSTEXPR pmcr_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -7314,10 +7350,10 @@ struct pmcntenset_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pmcntenset_r() : word0(0) {}
     CONSTEXPR pmcntenset_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -7461,10 +7497,10 @@ struct pmcntenclr_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pmcntenclr_r() : word0(0) {}
     CONSTEXPR pmcntenclr_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -7608,10 +7644,10 @@ struct pmovsset_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pmovsset_r() : word0(0) {}
     CONSTEXPR pmovsset_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -7755,10 +7791,10 @@ struct pmovsclr_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pmovsclr_r() : word0(0) {}
     CONSTEXPR pmovsclr_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -7902,10 +7938,10 @@ struct pmintset_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pmintset_r() : word0(0) {}
     CONSTEXPR pmintset_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -8049,10 +8085,10 @@ struct pmintclr_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pmintclr_r() : word0(0) {}
     CONSTEXPR pmintclr_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -8193,14 +8229,14 @@ struct pmccntr_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR pmccntr_r() : word0(0), word1(0) {}
     CONSTEXPR pmccntr_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -8245,10 +8281,10 @@ struct pmccntr_cfg_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pmccntr_cfg_r() : word0(0) {}
     CONSTEXPR pmccntr_cfg_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -8331,10 +8367,10 @@ struct pmcaxi_chan_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pmcaxi_chan_r() : word0(0) {}
     CONSTEXPR pmcaxi_chan_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -8435,10 +8471,10 @@ struct kernel_x_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR kernel_x_r() : word0(0) {}
     CONSTEXPR kernel_x_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -8497,10 +8533,10 @@ struct kernel_y_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR kernel_y_r() : word0(0) {}
     CONSTEXPR kernel_y_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -8559,10 +8595,10 @@ struct kernel_w_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR kernel_w_m1_r() : word0(0) {}
     CONSTEXPR kernel_w_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -8621,10 +8657,10 @@ struct kernel_h_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR kernel_h_m1_r() : word0(0) {}
     CONSTEXPR kernel_h_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -8683,10 +8719,10 @@ struct ofm_cblk_width_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_cblk_width_m1_r() : word0(0) {}
     CONSTEXPR ofm_cblk_width_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -8745,10 +8781,10 @@ struct ofm_cblk_height_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_cblk_height_m1_r() : word0(0) {}
     CONSTEXPR ofm_cblk_height_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -8807,10 +8843,10 @@ struct ofm_cblk_depth_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_cblk_depth_m1_r() : word0(0) {}
     CONSTEXPR ofm_cblk_depth_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -8869,10 +8905,10 @@ struct ifm_cblk_depth_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_cblk_depth_m1_r() : word0(0) {}
     CONSTEXPR ifm_cblk_depth_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -8931,10 +8967,10 @@ struct ofm_x_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_x_r() : word0(0) {}
     CONSTEXPR ofm_x_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -8993,10 +9029,10 @@ struct ofm_y_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_y_r() : word0(0) {}
     CONSTEXPR ofm_y_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -9055,10 +9091,10 @@ struct ofm_z_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_z_r() : word0(0) {}
     CONSTEXPR ofm_z_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -9117,10 +9153,10 @@ struct ifm_z_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_z_r() : word0(0) {}
     CONSTEXPR ifm_z_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -9179,10 +9215,10 @@ struct pad_top_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pad_top_r() : word0(0) {}
     CONSTEXPR pad_top_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -9241,10 +9277,10 @@ struct pad_left_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pad_left_r() : word0(0) {}
     CONSTEXPR pad_left_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -9303,10 +9339,10 @@ struct ifm_cblk_width_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_cblk_width_r() : word0(0) {}
     CONSTEXPR ifm_cblk_width_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -9365,10 +9401,10 @@ struct ifm_cblk_height_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_cblk_height_r() : word0(0) {}
     CONSTEXPR ifm_cblk_height_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -9429,14 +9465,14 @@ struct dma_ifm_src_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR dma_ifm_src_r() : word0(0), word1(0) {}
     CONSTEXPR dma_ifm_src_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -9478,10 +9514,10 @@ struct dma_ifm_dst_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR dma_ifm_dst_r() : word0(0) {}
     CONSTEXPR dma_ifm_dst_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -9540,10 +9576,10 @@ struct dma_ofm_src_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR dma_ofm_src_r() : word0(0) {}
     CONSTEXPR dma_ofm_src_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -9604,14 +9640,14 @@ struct dma_ofm_dst_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR dma_ofm_dst_r() : word0(0), word1(0) {}
     CONSTEXPR dma_ofm_dst_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -9655,14 +9691,14 @@ struct dma_weight_src_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR dma_weight_src_r() : word0(0), word1(0) {}
     CONSTEXPR dma_weight_src_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -9706,14 +9742,14 @@ struct dma_cmd_src_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR dma_cmd_src_r() : word0(0), word1(0) {}
     CONSTEXPR dma_cmd_src_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -9755,10 +9791,10 @@ struct dma_cmd_size_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR dma_cmd_size_r() : word0(0) {}
     CONSTEXPR dma_cmd_size_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -9819,14 +9855,14 @@ struct dma_m2m_src_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR dma_m2m_src_r() : word0(0), word1(0) {}
     CONSTEXPR dma_m2m_src_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -9870,14 +9906,14 @@ struct dma_m2m_dst_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR dma_m2m_dst_r() : word0(0), word1(0) {}
     CONSTEXPR dma_m2m_dst_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -9919,10 +9955,10 @@ struct current_qread_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR current_qread_r() : word0(0) {}
     CONSTEXPR current_qread_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -9983,14 +10019,14 @@ struct dma_scale_src_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR dma_scale_src_r() : word0(0), word1(0) {}
     CONSTEXPR dma_scale_src_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -10032,10 +10068,10 @@ struct current_block_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR current_block_r() : word0(0) {}
     CONSTEXPR current_block_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10094,10 +10130,10 @@ struct current_op_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR current_op_r() : word0(0) {}
     CONSTEXPR current_op_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10156,10 +10192,10 @@ struct current_cmd_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR current_cmd_r() : word0(0) {}
     CONSTEXPR current_cmd_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10218,10 +10254,10 @@ struct pmevcntr_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pmevcntr_r() : word0(0) {}
     CONSTEXPR pmevcntr_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10281,10 +10317,10 @@ struct pmevtyper_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pmevtyper_r() : word0(0) {}
     CONSTEXPR pmevtyper_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10343,10 +10379,10 @@ struct shared_buffer_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR shared_buffer_r() : word0(0) {}
     CONSTEXPR shared_buffer_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10405,10 +10441,10 @@ struct ifm_pad_top_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_pad_top_r() : word0(0) {}
     CONSTEXPR ifm_pad_top_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10467,10 +10503,10 @@ struct ifm_pad_left_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_pad_left_r() : word0(0) {}
     CONSTEXPR ifm_pad_left_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10529,10 +10565,10 @@ struct ifm_pad_right_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_pad_right_r() : word0(0) {}
     CONSTEXPR ifm_pad_right_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10591,10 +10627,10 @@ struct ifm_pad_bottom_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_pad_bottom_r() : word0(0) {}
     CONSTEXPR ifm_pad_bottom_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10653,10 +10689,10 @@ struct ifm_depth_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_depth_m1_r() : word0(0) {}
     CONSTEXPR ifm_depth_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10715,10 +10751,10 @@ struct ifm_precision_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_precision_r() : word0(0) {}
     CONSTEXPR ifm_precision_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10777,10 +10813,10 @@ struct ifm_upscale_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_upscale_r() : word0(0) {}
     CONSTEXPR ifm_upscale_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10839,10 +10875,10 @@ struct ifm_zero_point_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_zero_point_r() : word0(0) {}
     CONSTEXPR ifm_zero_point_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10901,10 +10937,10 @@ struct ifm_width0_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_width0_m1_r() : word0(0) {}
     CONSTEXPR ifm_width0_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -10963,10 +10999,10 @@ struct ifm_height0_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_height0_m1_r() : word0(0) {}
     CONSTEXPR ifm_height0_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11025,10 +11061,10 @@ struct ifm_height1_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_height1_m1_r() : word0(0) {}
     CONSTEXPR ifm_height1_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11087,10 +11123,10 @@ struct ifm_ib_end_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_ib_end_r() : word0(0) {}
     CONSTEXPR ifm_ib_end_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11149,10 +11185,10 @@ struct ifm_region_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm_region_r() : word0(0) {}
     CONSTEXPR ifm_region_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11211,10 +11247,10 @@ struct ofm_width_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_width_m1_r() : word0(0) {}
     CONSTEXPR ofm_width_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11273,10 +11309,10 @@ struct ofm_height_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_height_m1_r() : word0(0) {}
     CONSTEXPR ofm_height_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11335,10 +11371,10 @@ struct ofm_depth_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_depth_m1_r() : word0(0) {}
     CONSTEXPR ofm_depth_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11397,10 +11433,10 @@ struct ofm_precision_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_precision_r() : word0(0) {}
     CONSTEXPR ofm_precision_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11459,10 +11495,10 @@ struct ofm_blk_width_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_blk_width_m1_r() : word0(0) {}
     CONSTEXPR ofm_blk_width_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11521,10 +11557,10 @@ struct ofm_blk_height_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_blk_height_m1_r() : word0(0) {}
     CONSTEXPR ofm_blk_height_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11583,10 +11619,10 @@ struct ofm_blk_depth_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_blk_depth_m1_r() : word0(0) {}
     CONSTEXPR ofm_blk_depth_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11645,10 +11681,10 @@ struct ofm_zero_point_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_zero_point_r() : word0(0) {}
     CONSTEXPR ofm_zero_point_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11707,10 +11743,10 @@ struct ofm_width0_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_width0_m1_r() : word0(0) {}
     CONSTEXPR ofm_width0_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11769,10 +11805,10 @@ struct ofm_height0_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_height0_m1_r() : word0(0) {}
     CONSTEXPR ofm_height0_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11831,10 +11867,10 @@ struct ofm_height1_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_height1_m1_r() : word0(0) {}
     CONSTEXPR ofm_height1_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11893,10 +11929,10 @@ struct ofm_region_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_region_r() : word0(0) {}
     CONSTEXPR ofm_region_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -11955,10 +11991,10 @@ struct kernel_width_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR kernel_width_m1_r() : word0(0) {}
     CONSTEXPR kernel_width_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12017,10 +12053,10 @@ struct kernel_height_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR kernel_height_m1_r() : word0(0) {}
     CONSTEXPR kernel_height_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12079,10 +12115,10 @@ struct kernel_stride_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR kernel_stride_r() : word0(0) {}
     CONSTEXPR kernel_stride_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12141,10 +12177,10 @@ struct parallel_mode_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR parallel_mode_r() : word0(0) {}
     CONSTEXPR parallel_mode_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12203,10 +12239,10 @@ struct acc_format_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR acc_format_r() : word0(0) {}
     CONSTEXPR acc_format_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12265,10 +12301,10 @@ struct activation_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR activation_r() : word0(0) {}
     CONSTEXPR activation_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12327,10 +12363,10 @@ struct activation_min_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR activation_min_r() : word0(0) {}
     CONSTEXPR activation_min_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12389,10 +12425,10 @@ struct activation_max_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR activation_max_r() : word0(0) {}
     CONSTEXPR activation_max_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12451,10 +12487,10 @@ struct weight_region_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR weight_region_r() : word0(0) {}
     CONSTEXPR weight_region_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12513,10 +12549,10 @@ struct scale_region_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR scale_region_r() : word0(0) {}
     CONSTEXPR scale_region_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12575,10 +12611,10 @@ struct ab_start_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ab_start_r() : word0(0) {}
     CONSTEXPR ab_start_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12637,10 +12673,10 @@ struct blockdep_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR blockdep_r() : word0(0) {}
     CONSTEXPR blockdep_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12699,10 +12735,10 @@ struct dma0_src_region_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR dma0_src_region_r() : word0(0) {}
     CONSTEXPR dma0_src_region_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12761,10 +12797,10 @@ struct dma0_dst_region_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR dma0_dst_region_r() : word0(0) {}
     CONSTEXPR dma0_dst_region_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12823,10 +12859,10 @@ struct dma0_size0_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR dma0_size0_r() : word0(0) {}
     CONSTEXPR dma0_size0_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12885,10 +12921,10 @@ struct dma0_size1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR dma0_size1_r() : word0(0) {}
     CONSTEXPR dma0_size1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -12947,10 +12983,10 @@ struct ifm2_broadcast_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm2_broadcast_r() : word0(0) {}
     CONSTEXPR ifm2_broadcast_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -13009,10 +13045,10 @@ struct ifm2_scalar_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm2_scalar_r() : word0(0) {}
     CONSTEXPR ifm2_scalar_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -13071,10 +13107,10 @@ struct ifm2_precision_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm2_precision_r() : word0(0) {}
     CONSTEXPR ifm2_precision_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -13133,10 +13169,10 @@ struct ifm2_zero_point_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm2_zero_point_r() : word0(0) {}
     CONSTEXPR ifm2_zero_point_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -13195,10 +13231,10 @@ struct ifm2_width0_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm2_width0_m1_r() : word0(0) {}
     CONSTEXPR ifm2_width0_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -13257,10 +13293,10 @@ struct ifm2_height0_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm2_height0_m1_r() : word0(0) {}
     CONSTEXPR ifm2_height0_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -13319,10 +13355,10 @@ struct ifm2_height1_m1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm2_height1_m1_r() : word0(0) {}
     CONSTEXPR ifm2_height1_m1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -13381,10 +13417,10 @@ struct ifm2_ib_start_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm2_ib_start_r() : word0(0) {}
     CONSTEXPR ifm2_ib_start_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -13443,10 +13479,10 @@ struct ifm2_region_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ifm2_region_r() : word0(0) {}
     CONSTEXPR ifm2_region_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -13506,14 +13542,14 @@ struct ifm_base0_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ifm_base0_r() : word0(0), word1(0) {}
     CONSTEXPR ifm_base0_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -13556,14 +13592,14 @@ struct ifm_base1_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ifm_base1_r() : word0(0), word1(0) {}
     CONSTEXPR ifm_base1_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -13606,14 +13642,14 @@ struct ifm_base2_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ifm_base2_r() : word0(0), word1(0) {}
     CONSTEXPR ifm_base2_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -13656,14 +13692,14 @@ struct ifm_base3_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ifm_base3_r() : word0(0), word1(0) {}
     CONSTEXPR ifm_base3_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -13706,14 +13742,14 @@ struct ifm_stride_x_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ifm_stride_x_r() : word0(0), word1(0) {}
     CONSTEXPR ifm_stride_x_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -13756,14 +13792,14 @@ struct ifm_stride_y_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ifm_stride_y_r() : word0(0), word1(0) {}
     CONSTEXPR ifm_stride_y_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -13806,14 +13842,14 @@ struct ifm_stride_c_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ifm_stride_c_r() : word0(0), word1(0) {}
     CONSTEXPR ifm_stride_c_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -13856,14 +13892,14 @@ struct ofm_base0_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ofm_base0_r() : word0(0), word1(0) {}
     CONSTEXPR ofm_base0_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -13906,14 +13942,14 @@ struct ofm_base1_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ofm_base1_r() : word0(0), word1(0) {}
     CONSTEXPR ofm_base1_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -13956,14 +13992,14 @@ struct ofm_base2_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ofm_base2_r() : word0(0), word1(0) {}
     CONSTEXPR ofm_base2_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -14006,14 +14042,14 @@ struct ofm_base3_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ofm_base3_r() : word0(0), word1(0) {}
     CONSTEXPR ofm_base3_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -14056,14 +14092,14 @@ struct ofm_stride_x_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ofm_stride_x_r() : word0(0), word1(0) {}
     CONSTEXPR ofm_stride_x_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -14106,14 +14142,14 @@ struct ofm_stride_y_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ofm_stride_y_r() : word0(0), word1(0) {}
     CONSTEXPR ofm_stride_y_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -14156,14 +14192,14 @@ struct ofm_stride_c_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ofm_stride_c_r() : word0(0), word1(0) {}
     CONSTEXPR ofm_stride_c_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -14206,14 +14242,14 @@ struct weight_base_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR weight_base_r() : word0(0), word1(0) {}
     CONSTEXPR weight_base_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -14256,14 +14292,14 @@ struct weight_length_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR weight_length_r() : word0(0), word1(0) {}
     CONSTEXPR weight_length_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -14306,14 +14342,14 @@ struct scale_base_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR scale_base_r() : word0(0), word1(0) {}
     CONSTEXPR scale_base_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -14356,14 +14392,14 @@ struct scale_length_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR scale_length_r() : word0(0), word1(0) {}
     CONSTEXPR scale_length_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -14405,10 +14441,10 @@ struct ofm_scale_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_scale_r() : word0(0) {}
     CONSTEXPR ofm_scale_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -14467,10 +14503,10 @@ struct ofm_scale_shift_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR ofm_scale_shift_r() : word0(0) {}
     CONSTEXPR ofm_scale_shift_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -14529,10 +14565,10 @@ struct opa_scale_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR opa_scale_r() : word0(0) {}
     CONSTEXPR opa_scale_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -14591,10 +14627,10 @@ struct opa_scale_shift_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR opa_scale_shift_r() : word0(0) {}
     CONSTEXPR opa_scale_shift_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -14653,10 +14689,10 @@ struct opb_scale_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR opb_scale_r() : word0(0) {}
     CONSTEXPR opb_scale_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -14716,14 +14752,14 @@ struct dma0_src_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR dma0_src_r() : word0(0), word1(0) {}
     CONSTEXPR dma0_src_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -14766,14 +14802,14 @@ struct dma0_dst_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR dma0_dst_r() : word0(0), word1(0) {}
     CONSTEXPR dma0_dst_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -14816,14 +14852,14 @@ struct dma0_len_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR dma0_len_r() : word0(0), word1(0) {}
     CONSTEXPR dma0_len_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -14866,14 +14902,14 @@ struct dma0_skip0_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR dma0_skip0_r() : word0(0), word1(0) {}
     CONSTEXPR dma0_skip0_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -14916,14 +14952,14 @@ struct dma0_skip1_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR dma0_skip1_r() : word0(0), word1(0) {}
     CONSTEXPR dma0_skip1_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -14966,14 +15002,14 @@ struct ifm2_base0_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ifm2_base0_r() : word0(0), word1(0) {}
     CONSTEXPR ifm2_base0_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -15016,14 +15052,14 @@ struct ifm2_base1_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ifm2_base1_r() : word0(0), word1(0) {}
     CONSTEXPR ifm2_base1_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -15066,14 +15102,14 @@ struct ifm2_base2_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ifm2_base2_r() : word0(0), word1(0) {}
     CONSTEXPR ifm2_base2_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -15116,14 +15152,14 @@ struct ifm2_base3_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ifm2_base3_r() : word0(0), word1(0) {}
     CONSTEXPR ifm2_base3_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -15166,14 +15202,14 @@ struct ifm2_stride_x_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ifm2_stride_x_r() : word0(0), word1(0) {}
     CONSTEXPR ifm2_stride_x_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -15216,14 +15252,14 @@ struct ifm2_stride_y_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ifm2_stride_y_r() : word0(0), word1(0) {}
     CONSTEXPR ifm2_stride_y_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -15266,14 +15302,14 @@ struct ifm2_stride_c_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR ifm2_stride_c_r() : word0(0), word1(0) {}
     CONSTEXPR ifm2_stride_c_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -15316,14 +15352,14 @@ struct weight1_base_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR weight1_base_r() : word0(0), word1(0) {}
     CONSTEXPR weight1_base_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -15366,14 +15402,14 @@ struct weight1_length_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR weight1_length_r() : word0(0), word1(0) {}
     CONSTEXPR weight1_length_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -15416,14 +15452,14 @@ struct scale1_base_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR scale1_base_r() : word0(0), word1(0) {}
     CONSTEXPR scale1_base_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -15466,14 +15502,14 @@ struct scale1_length_r
         uint32_t word[2];
     };
 #else
-  private:
+private:
     uint32_t word0;
     uint32_t word1;
 
-  public:
+public:
     CONSTEXPR scale1_length_r() : word0(0), word1(0) {}
     CONSTEXPR scale1_length_r(uint64_t init) :
-        word0(static_cast<uint32_t>((init)&std::numeric_limits<uint64_t>::max())),
+        word0(static_cast<uint32_t>((init) & std::numeric_limits<uint64_t>::max())),
         word1(static_cast<uint32_t>((init >> 32) & std::numeric_limits<uint64_t>::max()))
     {
     }
@@ -15515,10 +15551,10 @@ struct revision_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR revision_r() : word0(0) {}
     CONSTEXPR revision_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -15577,10 +15613,10 @@ struct pid4_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pid4_r() : word0(4) {}
     CONSTEXPR pid4_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -15639,10 +15675,10 @@ struct pid5_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pid5_r() : word0(0) {}
     CONSTEXPR pid5_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -15701,10 +15737,10 @@ struct pid6_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pid6_r() : word0(0) {}
     CONSTEXPR pid6_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -15763,10 +15799,10 @@ struct pid7_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pid7_r() : word0(0) {}
     CONSTEXPR pid7_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -15825,10 +15861,10 @@ struct pid0_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pid0_r() : word0(129) {}
     CONSTEXPR pid0_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -15888,10 +15924,10 @@ struct pid1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pid1_r() : word0(181) {}
     CONSTEXPR pid1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -15950,10 +15986,10 @@ struct pid2_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pid2_r() : word0(11) {}
     CONSTEXPR pid2_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -16012,10 +16048,10 @@ struct pid3_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR pid3_r() : word0(0) {}
     CONSTEXPR pid3_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -16074,10 +16110,10 @@ struct cid0_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR cid0_r() : word0(13) {}
     CONSTEXPR cid0_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -16136,10 +16172,10 @@ struct cid1_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR cid1_r() : word0(240) {}
     CONSTEXPR cid1_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -16198,10 +16234,10 @@ struct cid2_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR cid2_r() : word0(5) {}
     CONSTEXPR cid2_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -16260,10 +16296,10 @@ struct cid3_r
         uint32_t word;
     };
 #else
-  private:
+private:
     uint32_t word0;
 
-  public:
+public:
     CONSTEXPR cid3_r() : word0(177) {}
     CONSTEXPR cid3_r(uint32_t init) : word0(init) {}
     CONSTEXPR void operator=(uint32_t value)
@@ -16545,8 +16581,10 @@ struct NPU_REG
         AXI_LIMIT1 = 0;
         AXI_LIMIT2 = 0;
         AXI_LIMIT3 = 0;
+
         for (size_t i = 0; i < (sizeof(BASEP) / sizeof(BASEP[0])); ++i)
             BASEP[i] = 0;
+
         WD_STATUS          = 0;
         MAC_STATUS         = 0;
         AO_STATUS          = 0;
@@ -16597,12 +16635,16 @@ struct NPU_REG
         CURRENT_BLOCK      = 0;
         CURRENT_OP         = 0;
         CURRENT_CMD        = 0;
+
         for (size_t i = 0; i < (sizeof(PMEVCNTR) / sizeof(PMEVCNTR[0])); ++i)
             PMEVCNTR[i] = 0;
+
         for (size_t i = 0; i < (sizeof(PMEVTYPER) / sizeof(PMEVTYPER[0])); ++i)
             PMEVTYPER[i] = 0;
+
         for (size_t i = 0; i < (sizeof(SHARED_BUFFER) / sizeof(SHARED_BUFFER[0])); ++i)
             SHARED_BUFFER[i] = 0;
+
         IFM_PAD_TOP       = 0;
         IFM_PAD_LEFT      = 0;
         IFM_PAD_RIGHT     = 0;
@@ -16714,888 +16756,1328 @@ struct NPU_REG
     {
         switch (offset)
         {
-        case 0:
-            return access_type_t::RO;
-        case 4:
-            return access_type_t::RO;
-        case 8:
-            return access_type_t::RW;
-        case 12:
-            return access_type_t::RW;
-        case 16:
-            return access_type_t::RW;
-        case 24:
-            return access_type_t::RO;
-        case 28:
-            return access_type_t::RW;
-        case 32:
-            return access_type_t::RW;
-        case 36:
-            return access_type_t::RO;
-        case 40:
-            return access_type_t::RO;
-        case 44:
-            return access_type_t::RW;
-        case 60:
-            return access_type_t::RW;
-        case 64:
-            return access_type_t::RW;
-        case 68:
-            return access_type_t::RW;
-        case 72:
-            return access_type_t::RW;
-        case 76:
-            return access_type_t::RW;
-        case 128:
-            return access_type_t::RW;
-        case 136:
-            return access_type_t::RW;
-        case 144:
-            return access_type_t::RW;
-        case 152:
-            return access_type_t::RW;
-        case 160:
-            return access_type_t::RW;
-        case 168:
-            return access_type_t::RW;
-        case 176:
-            return access_type_t::RW;
-        case 184:
-            return access_type_t::RW;
-        case 256:
-            return access_type_t::RO;
-        case 260:
-            return access_type_t::RO;
-        case 264:
-            return access_type_t::RO;
-        case 272:
-            return access_type_t::RO;
-        case 276:
-            return access_type_t::RO;
-        case 320:
-            return access_type_t::RW;
-        case 324:
-            return access_type_t::RW;
-        case 328:
-            return access_type_t::RW;
-        case 332:
-            return access_type_t::RW;
-        case 336:
-            return access_type_t::RW;
-        case 384:
-            return access_type_t::RW;
-        case 388:
-            return access_type_t::RW;
-        case 392:
-            return access_type_t::RW;
-        case 396:
-            return access_type_t::RW;
-        case 400:
-            return access_type_t::RW;
-        case 404:
-            return access_type_t::RW;
-        case 408:
-            return access_type_t::RW;
-        case 416:
-            return access_type_t::RW;
-        case 424:
-            return access_type_t::RW;
-        case 428:
-            return access_type_t::RW;
-        case 512:
-            return access_type_t::RO;
-        case 516:
-            return access_type_t::RO;
-        case 520:
-            return access_type_t::RO;
-        case 524:
-            return access_type_t::RO;
-        case 528:
-            return access_type_t::RO;
-        case 532:
-            return access_type_t::RO;
-        case 536:
-            return access_type_t::RO;
-        case 540:
-            return access_type_t::RO;
-        case 544:
-            return access_type_t::RO;
-        case 548:
-            return access_type_t::RO;
-        case 552:
-            return access_type_t::RO;
-        case 556:
-            return access_type_t::RO;
-        case 560:
-            return access_type_t::RO;
-        case 564:
-            return access_type_t::RO;
-        case 568:
-            return access_type_t::RO;
-        case 572:
-            return access_type_t::RO;
-        case 576:
-            return access_type_t::RO;
-        case 584:
-            return access_type_t::RO;
-        case 588:
-            return access_type_t::RO;
-        case 592:
-            return access_type_t::RO;
-        case 600:
-            return access_type_t::RO;
-        case 608:
-            return access_type_t::RO;
-        case 616:
-            return access_type_t::RO;
-        case 620:
-            return access_type_t::RO;
-        case 628:
-            return access_type_t::RO;
-        case 636:
-            return access_type_t::RO;
-        case 640:
-            return access_type_t::RO;
-        case 692:
-            return access_type_t::RO;
-        case 696:
-            return access_type_t::RO;
-        case 700:
-            return access_type_t::RO;
-        case 768:
-            return access_type_t::RW;
-        case 772:
-            return access_type_t::RW;
-        case 776:
-            return access_type_t::RW;
-        case 780:
-            return access_type_t::RW;
-        case 896:
-            return access_type_t::RW;
-        case 900:
-            return access_type_t::RW;
-        case 904:
-            return access_type_t::RW;
-        case 908:
-            return access_type_t::RW;
-        case 1024:
-            return access_type_t::RW;
-        case 1028:
-            return access_type_t::RW;
-        case 1032:
-            return access_type_t::RW;
-        case 1036:
-            return access_type_t::RW;
-        case 1040:
-            return access_type_t::RW;
-        case 1044:
-            return access_type_t::RW;
-        case 1048:
-            return access_type_t::RW;
-        case 1052:
-            return access_type_t::RW;
-        case 1056:
-            return access_type_t::RW;
-        case 1060:
-            return access_type_t::RW;
-        case 1064:
-            return access_type_t::RW;
-        case 1068:
-            return access_type_t::RW;
-        case 1072:
-            return access_type_t::RW;
-        case 1076:
-            return access_type_t::RW;
-        case 1080:
-            return access_type_t::RW;
-        case 1084:
-            return access_type_t::RW;
-        case 1088:
-            return access_type_t::RW;
-        case 1092:
-            return access_type_t::RW;
-        case 1096:
-            return access_type_t::RW;
-        case 1100:
-            return access_type_t::RW;
-        case 1104:
-            return access_type_t::RW;
-        case 1108:
-            return access_type_t::RW;
-        case 1112:
-            return access_type_t::RW;
-        case 1116:
-            return access_type_t::RW;
-        case 1120:
-            return access_type_t::RW;
-        case 1124:
-            return access_type_t::RW;
-        case 1128:
-            return access_type_t::RW;
-        case 1132:
-            return access_type_t::RW;
-        case 1136:
-            return access_type_t::RW;
-        case 1140:
-            return access_type_t::RW;
-        case 1144:
-            return access_type_t::RW;
-        case 1148:
-            return access_type_t::RW;
-        case 1152:
-            return access_type_t::RW;
-        case 1156:
-            return access_type_t::RW;
-        case 1160:
-            return access_type_t::RW;
-        case 1164:
-            return access_type_t::RW;
-        case 1168:
-            return access_type_t::RW;
-        case 1172:
-            return access_type_t::RW;
-        case 1176:
-            return access_type_t::RW;
-        case 1180:
-            return access_type_t::RW;
-        case 1184:
-            return access_type_t::RW;
-        case 1188:
-            return access_type_t::RW;
-        case 1192:
-            return access_type_t::RW;
-        case 1196:
-            return access_type_t::RW;
-        case 1200:
-            return access_type_t::RW;
-        case 1204:
-            return access_type_t::RW;
-        case 1208:
-            return access_type_t::RW;
-        case 1212:
-            return access_type_t::RW;
-        case 1216:
-            return access_type_t::RW;
-        case 1220:
-            return access_type_t::RW;
-        case 1224:
-            return access_type_t::RW;
-        case 1228:
-            return access_type_t::RW;
-        case 1232:
-            return access_type_t::RW;
-        case 1236:
-            return access_type_t::RW;
-        case 1240:
-            return access_type_t::RW;
-        case 1244:
-            return access_type_t::RW;
-        case 1248:
-            return access_type_t::RW;
-        case 1252:
-            return access_type_t::RW;
-        case 1256:
-            return access_type_t::RW;
-        case 1260:
-            return access_type_t::RW;
-        case 1264:
-            return access_type_t::RW;
-        case 1268:
-            return access_type_t::RW;
-        case 1272:
-            return access_type_t::RW;
-        case 1276:
-            return access_type_t::RW;
-        case 1280:
-            return access_type_t::RW;
-        case 1284:
-            return access_type_t::RW;
-        case 1288:
-            return access_type_t::RW;
-        case 1292:
-            return access_type_t::RW;
-        case 1296:
-            return access_type_t::RW;
-        case 1300:
-            return access_type_t::RW;
-        case 1304:
-            return access_type_t::RW;
-        case 1308:
-            return access_type_t::RW;
-        case 1312:
-            return access_type_t::RW;
-        case 1316:
-            return access_type_t::RW;
-        case 1320:
-            return access_type_t::RW;
-        case 1324:
-            return access_type_t::RW;
-        case 1328:
-            return access_type_t::RW;
-        case 1332:
-            return access_type_t::RW;
-        case 1336:
-            return access_type_t::RW;
-        case 1340:
-            return access_type_t::RW;
-        case 1344:
-            return access_type_t::RW;
-        case 1348:
-            return access_type_t::RW;
-        case 1352:
-            return access_type_t::RW;
-        case 1356:
-            return access_type_t::RW;
-        case 1360:
-            return access_type_t::RW;
-        case 1364:
-            return access_type_t::RW;
-        case 1368:
-            return access_type_t::RW;
-        case 1372:
-            return access_type_t::RW;
-        case 1376:
-            return access_type_t::RW;
-        case 1380:
-            return access_type_t::RW;
-        case 1384:
-            return access_type_t::RW;
-        case 1388:
-            return access_type_t::RW;
-        case 1392:
-            return access_type_t::RW;
-        case 1396:
-            return access_type_t::RW;
-        case 1400:
-            return access_type_t::RW;
-        case 1404:
-            return access_type_t::RW;
-        case 1408:
-            return access_type_t::RW;
-        case 1412:
-            return access_type_t::RW;
-        case 1416:
-            return access_type_t::RW;
-        case 1420:
-            return access_type_t::RW;
-        case 1424:
-            return access_type_t::RW;
-        case 1428:
-            return access_type_t::RW;
-        case 1432:
-            return access_type_t::RW;
-        case 1436:
-            return access_type_t::RW;
-        case 1440:
-            return access_type_t::RW;
-        case 1444:
-            return access_type_t::RW;
-        case 1448:
-            return access_type_t::RW;
-        case 1452:
-            return access_type_t::RW;
-        case 1456:
-            return access_type_t::RW;
-        case 1460:
-            return access_type_t::RW;
-        case 1464:
-            return access_type_t::RW;
-        case 1468:
-            return access_type_t::RW;
-        case 1472:
-            return access_type_t::RW;
-        case 1476:
-            return access_type_t::RW;
-        case 1480:
-            return access_type_t::RW;
-        case 1484:
-            return access_type_t::RW;
-        case 1488:
-            return access_type_t::RW;
-        case 1492:
-            return access_type_t::RW;
-        case 1496:
-            return access_type_t::RW;
-        case 1500:
-            return access_type_t::RW;
-        case 1504:
-            return access_type_t::RW;
-        case 1508:
-            return access_type_t::RW;
-        case 1512:
-            return access_type_t::RW;
-        case 1516:
-            return access_type_t::RW;
-        case 1520:
-            return access_type_t::RW;
-        case 1524:
-            return access_type_t::RW;
-        case 1528:
-            return access_type_t::RW;
-        case 1532:
-            return access_type_t::RW;
-        case 1536:
-            return access_type_t::RW;
-        case 1540:
-            return access_type_t::RW;
-        case 1544:
-            return access_type_t::RW;
-        case 1548:
-            return access_type_t::RW;
-        case 1552:
-            return access_type_t::RW;
-        case 1556:
-            return access_type_t::RW;
-        case 1560:
-            return access_type_t::RW;
-        case 1564:
-            return access_type_t::RW;
-        case 1568:
-            return access_type_t::RW;
-        case 1572:
-            return access_type_t::RW;
-        case 1576:
-            return access_type_t::RW;
-        case 1580:
-            return access_type_t::RW;
-        case 1584:
-            return access_type_t::RW;
-        case 1588:
-            return access_type_t::RW;
-        case 1592:
-            return access_type_t::RW;
-        case 1596:
-            return access_type_t::RW;
-        case 1600:
-            return access_type_t::RW;
-        case 1604:
-            return access_type_t::RW;
-        case 1608:
-            return access_type_t::RW;
-        case 1612:
-            return access_type_t::RW;
-        case 1616:
-            return access_type_t::RW;
-        case 1620:
-            return access_type_t::RW;
-        case 1624:
-            return access_type_t::RW;
-        case 1628:
-            return access_type_t::RW;
-        case 1632:
-            return access_type_t::RW;
-        case 1636:
-            return access_type_t::RW;
-        case 1640:
-            return access_type_t::RW;
-        case 1644:
-            return access_type_t::RW;
-        case 1648:
-            return access_type_t::RW;
-        case 1652:
-            return access_type_t::RW;
-        case 1656:
-            return access_type_t::RW;
-        case 1660:
-            return access_type_t::RW;
-        case 1664:
-            return access_type_t::RW;
-        case 1668:
-            return access_type_t::RW;
-        case 1672:
-            return access_type_t::RW;
-        case 1676:
-            return access_type_t::RW;
-        case 1680:
-            return access_type_t::RW;
-        case 1684:
-            return access_type_t::RW;
-        case 1688:
-            return access_type_t::RW;
-        case 1692:
-            return access_type_t::RW;
-        case 1696:
-            return access_type_t::RW;
-        case 1700:
-            return access_type_t::RW;
-        case 1704:
-            return access_type_t::RW;
-        case 1708:
-            return access_type_t::RW;
-        case 1712:
-            return access_type_t::RW;
-        case 1716:
-            return access_type_t::RW;
-        case 1720:
-            return access_type_t::RW;
-        case 1724:
-            return access_type_t::RW;
-        case 1728:
-            return access_type_t::RW;
-        case 1732:
-            return access_type_t::RW;
-        case 1736:
-            return access_type_t::RW;
-        case 1740:
-            return access_type_t::RW;
-        case 1744:
-            return access_type_t::RW;
-        case 1748:
-            return access_type_t::RW;
-        case 1752:
-            return access_type_t::RW;
-        case 1756:
-            return access_type_t::RW;
-        case 1760:
-            return access_type_t::RW;
-        case 1764:
-            return access_type_t::RW;
-        case 1768:
-            return access_type_t::RW;
-        case 1772:
-            return access_type_t::RW;
-        case 1776:
-            return access_type_t::RW;
-        case 1780:
-            return access_type_t::RW;
-        case 1784:
-            return access_type_t::RW;
-        case 1788:
-            return access_type_t::RW;
-        case 1792:
-            return access_type_t::RW;
-        case 1796:
-            return access_type_t::RW;
-        case 1800:
-            return access_type_t::RW;
-        case 1804:
-            return access_type_t::RW;
-        case 1808:
-            return access_type_t::RW;
-        case 1812:
-            return access_type_t::RW;
-        case 1816:
-            return access_type_t::RW;
-        case 1820:
-            return access_type_t::RW;
-        case 1824:
-            return access_type_t::RW;
-        case 1828:
-            return access_type_t::RW;
-        case 1832:
-            return access_type_t::RW;
-        case 1836:
-            return access_type_t::RW;
-        case 1840:
-            return access_type_t::RW;
-        case 1844:
-            return access_type_t::RW;
-        case 1848:
-            return access_type_t::RW;
-        case 1852:
-            return access_type_t::RW;
-        case 1856:
-            return access_type_t::RW;
-        case 1860:
-            return access_type_t::RW;
-        case 1864:
-            return access_type_t::RW;
-        case 1868:
-            return access_type_t::RW;
-        case 1872:
-            return access_type_t::RW;
-        case 1876:
-            return access_type_t::RW;
-        case 1880:
-            return access_type_t::RW;
-        case 1884:
-            return access_type_t::RW;
-        case 1888:
-            return access_type_t::RW;
-        case 1892:
-            return access_type_t::RW;
-        case 1896:
-            return access_type_t::RW;
-        case 1900:
-            return access_type_t::RW;
-        case 1904:
-            return access_type_t::RW;
-        case 1908:
-            return access_type_t::RW;
-        case 1912:
-            return access_type_t::RW;
-        case 1916:
-            return access_type_t::RW;
-        case 1920:
-            return access_type_t::RW;
-        case 1924:
-            return access_type_t::RW;
-        case 1928:
-            return access_type_t::RW;
-        case 1932:
-            return access_type_t::RW;
-        case 1936:
-            return access_type_t::RW;
-        case 1940:
-            return access_type_t::RW;
-        case 1944:
-            return access_type_t::RW;
-        case 1948:
-            return access_type_t::RW;
-        case 1952:
-            return access_type_t::RW;
-        case 1956:
-            return access_type_t::RW;
-        case 1960:
-            return access_type_t::RW;
-        case 1964:
-            return access_type_t::RW;
-        case 1968:
-            return access_type_t::RW;
-        case 1972:
-            return access_type_t::RW;
-        case 1976:
-            return access_type_t::RW;
-        case 1980:
-            return access_type_t::RW;
-        case 1984:
-            return access_type_t::RW;
-        case 1988:
-            return access_type_t::RW;
-        case 1992:
-            return access_type_t::RW;
-        case 1996:
-            return access_type_t::RW;
-        case 2000:
-            return access_type_t::RW;
-        case 2004:
-            return access_type_t::RW;
-        case 2008:
-            return access_type_t::RW;
-        case 2012:
-            return access_type_t::RW;
-        case 2016:
-            return access_type_t::RW;
-        case 2020:
-            return access_type_t::RW;
-        case 2024:
-            return access_type_t::RW;
-        case 2028:
-            return access_type_t::RW;
-        case 2032:
-            return access_type_t::RW;
-        case 2036:
-            return access_type_t::RW;
-        case 2040:
-            return access_type_t::RW;
-        case 2044:
-            return access_type_t::RW;
-        case 2048:
-            return access_type_t::RW;
-        case 2052:
-            return access_type_t::RW;
-        case 2056:
-            return access_type_t::RW;
-        case 2060:
-            return access_type_t::RW;
-        case 2064:
-            return access_type_t::RW;
-        case 2068:
-            return access_type_t::RW;
-        case 2076:
-            return access_type_t::RW;
-        case 2084:
-            return access_type_t::RW;
-        case 2088:
-            return access_type_t::RW;
-        case 2092:
-            return access_type_t::RW;
-        case 2096:
-            return access_type_t::RW;
-        case 2100:
-            return access_type_t::RW;
-        case 2108:
-            return access_type_t::RW;
-        case 2116:
-            return access_type_t::RW;
-        case 2120:
-            return access_type_t::RW;
-        case 2124:
-            return access_type_t::RW;
-        case 2128:
-            return access_type_t::RW;
-        case 2132:
-            return access_type_t::RW;
-        case 2136:
-            return access_type_t::RW;
-        case 2140:
-            return access_type_t::RW;
-        case 2144:
-            return access_type_t::RW;
-        case 2152:
-            return access_type_t::RW;
-        case 2156:
-            return access_type_t::RW;
-        case 2160:
-            return access_type_t::RW;
-        case 2172:
-            return access_type_t::RW;
-        case 2176:
-            return access_type_t::RW;
-        case 2180:
-            return access_type_t::RW;
-        case 2184:
-            return access_type_t::RW;
-        case 2188:
-            return access_type_t::RW;
-        case 2192:
-            return access_type_t::RW;
-        case 2196:
-            return access_type_t::RW;
-        case 2200:
-            return access_type_t::RW;
-        case 2204:
-            return access_type_t::RW;
-        case 2208:
-            return access_type_t::RW;
-        case 2212:
-            return access_type_t::RW;
-        case 2228:
-            return access_type_t::RW;
-        case 2236:
-            return access_type_t::RW;
-        case 2240:
-            return access_type_t::RW;
-        case 2244:
-            return access_type_t::RW;
-        case 2248:
-            return access_type_t::RW;
-        case 2252:
-            return access_type_t::RW;
-        case 2304:
-            return access_type_t::RW;
-        case 2308:
-            return access_type_t::RW;
-        case 2324:
-            return access_type_t::RW;
-        case 2340:
-            return access_type_t::RW;
-        case 2344:
-            return access_type_t::RW;
-        case 2348:
-            return access_type_t::RW;
-        case 2352:
-            return access_type_t::RW;
-        case 2356:
-            return access_type_t::RW;
-        case 2364:
-            return access_type_t::RW;
-        case 2560:
-            return access_type_t::RW;
-        case 2568:
-            return access_type_t::RW;
-        case 2576:
-            return access_type_t::RW;
-        case 2584:
-            return access_type_t::RW;
-        case 2592:
-            return access_type_t::RW;
-        case 2600:
-            return access_type_t::RW;
-        case 2608:
-            return access_type_t::RW;
-        case 2624:
-            return access_type_t::RW;
-        case 2632:
-            return access_type_t::RW;
-        case 2640:
-            return access_type_t::RW;
-        case 2648:
-            return access_type_t::RW;
-        case 2656:
-            return access_type_t::RW;
-        case 2664:
-            return access_type_t::RW;
-        case 2672:
-            return access_type_t::RW;
-        case 2688:
-            return access_type_t::RW;
-        case 2696:
-            return access_type_t::RW;
-        case 2704:
-            return access_type_t::RW;
-        case 2712:
-            return access_type_t::RW;
-        case 2720:
-            return access_type_t::RW;
-        case 2724:
-            return access_type_t::RW;
-        case 2728:
-            return access_type_t::RW;
-        case 2732:
-            return access_type_t::RW;
-        case 2736:
-            return access_type_t::RW;
-        case 2752:
-            return access_type_t::RW;
-        case 2760:
-            return access_type_t::RW;
-        case 2768:
-            return access_type_t::RW;
-        case 2776:
-            return access_type_t::RW;
-        case 2784:
-            return access_type_t::RW;
-        case 2816:
-            return access_type_t::RW;
-        case 2824:
-            return access_type_t::RW;
-        case 2832:
-            return access_type_t::RW;
-        case 2840:
-            return access_type_t::RW;
-        case 2848:
-            return access_type_t::RW;
-        case 2856:
-            return access_type_t::RW;
-        case 2864:
-            return access_type_t::RW;
-        case 2880:
-            return access_type_t::RW;
-        case 2888:
-            return access_type_t::RW;
-        case 2896:
-            return access_type_t::RW;
-        case 2904:
-            return access_type_t::RW;
-        case 4032:
-            return access_type_t::RO;
-        case 4048:
-            return access_type_t::RO;
-        case 4052:
-            return access_type_t::RO;
-        case 4056:
-            return access_type_t::RO;
-        case 4060:
-            return access_type_t::RO;
-        case 4064:
-            return access_type_t::RO;
-        case 4068:
-            return access_type_t::RO;
-        case 4072:
-            return access_type_t::RO;
-        case 4076:
-            return access_type_t::RO;
-        case 4080:
-            return access_type_t::RO;
-        case 4084:
-            return access_type_t::RO;
-        case 4088:
-            return access_type_t::RO;
-        case 4092:
-            return access_type_t::RO;
-        default:
-            return access_type_t::RO;
+            case 0:
+                return access_type_t::RO;
+
+            case 4:
+                return access_type_t::RO;
+
+            case 8:
+                return access_type_t::RW;
+
+            case 12:
+                return access_type_t::RW;
+
+            case 16:
+                return access_type_t::RW;
+
+            case 24:
+                return access_type_t::RO;
+
+            case 28:
+                return access_type_t::RW;
+
+            case 32:
+                return access_type_t::RW;
+
+            case 36:
+                return access_type_t::RO;
+
+            case 40:
+                return access_type_t::RO;
+
+            case 44:
+                return access_type_t::RW;
+
+            case 60:
+                return access_type_t::RW;
+
+            case 64:
+                return access_type_t::RW;
+
+            case 68:
+                return access_type_t::RW;
+
+            case 72:
+                return access_type_t::RW;
+
+            case 76:
+                return access_type_t::RW;
+
+            case 128:
+                return access_type_t::RW;
+
+            case 136:
+                return access_type_t::RW;
+
+            case 144:
+                return access_type_t::RW;
+
+            case 152:
+                return access_type_t::RW;
+
+            case 160:
+                return access_type_t::RW;
+
+            case 168:
+                return access_type_t::RW;
+
+            case 176:
+                return access_type_t::RW;
+
+            case 184:
+                return access_type_t::RW;
+
+            case 256:
+                return access_type_t::RO;
+
+            case 260:
+                return access_type_t::RO;
+
+            case 264:
+                return access_type_t::RO;
+
+            case 272:
+                return access_type_t::RO;
+
+            case 276:
+                return access_type_t::RO;
+
+            case 320:
+                return access_type_t::RW;
+
+            case 324:
+                return access_type_t::RW;
+
+            case 328:
+                return access_type_t::RW;
+
+            case 332:
+                return access_type_t::RW;
+
+            case 336:
+                return access_type_t::RW;
+
+            case 384:
+                return access_type_t::RW;
+
+            case 388:
+                return access_type_t::RW;
+
+            case 392:
+                return access_type_t::RW;
+
+            case 396:
+                return access_type_t::RW;
+
+            case 400:
+                return access_type_t::RW;
+
+            case 404:
+                return access_type_t::RW;
+
+            case 408:
+                return access_type_t::RW;
+
+            case 416:
+                return access_type_t::RW;
+
+            case 424:
+                return access_type_t::RW;
+
+            case 428:
+                return access_type_t::RW;
+
+            case 512:
+                return access_type_t::RO;
+
+            case 516:
+                return access_type_t::RO;
+
+            case 520:
+                return access_type_t::RO;
+
+            case 524:
+                return access_type_t::RO;
+
+            case 528:
+                return access_type_t::RO;
+
+            case 532:
+                return access_type_t::RO;
+
+            case 536:
+                return access_type_t::RO;
+
+            case 540:
+                return access_type_t::RO;
+
+            case 544:
+                return access_type_t::RO;
+
+            case 548:
+                return access_type_t::RO;
+
+            case 552:
+                return access_type_t::RO;
+
+            case 556:
+                return access_type_t::RO;
+
+            case 560:
+                return access_type_t::RO;
+
+            case 564:
+                return access_type_t::RO;
+
+            case 568:
+                return access_type_t::RO;
+
+            case 572:
+                return access_type_t::RO;
+
+            case 576:
+                return access_type_t::RO;
+
+            case 584:
+                return access_type_t::RO;
+
+            case 588:
+                return access_type_t::RO;
+
+            case 592:
+                return access_type_t::RO;
+
+            case 600:
+                return access_type_t::RO;
+
+            case 608:
+                return access_type_t::RO;
+
+            case 616:
+                return access_type_t::RO;
+
+            case 620:
+                return access_type_t::RO;
+
+            case 628:
+                return access_type_t::RO;
+
+            case 636:
+                return access_type_t::RO;
+
+            case 640:
+                return access_type_t::RO;
+
+            case 692:
+                return access_type_t::RO;
+
+            case 696:
+                return access_type_t::RO;
+
+            case 700:
+                return access_type_t::RO;
+
+            case 768:
+                return access_type_t::RW;
+
+            case 772:
+                return access_type_t::RW;
+
+            case 776:
+                return access_type_t::RW;
+
+            case 780:
+                return access_type_t::RW;
+
+            case 896:
+                return access_type_t::RW;
+
+            case 900:
+                return access_type_t::RW;
+
+            case 904:
+                return access_type_t::RW;
+
+            case 908:
+                return access_type_t::RW;
+
+            case 1024:
+                return access_type_t::RW;
+
+            case 1028:
+                return access_type_t::RW;
+
+            case 1032:
+                return access_type_t::RW;
+
+            case 1036:
+                return access_type_t::RW;
+
+            case 1040:
+                return access_type_t::RW;
+
+            case 1044:
+                return access_type_t::RW;
+
+            case 1048:
+                return access_type_t::RW;
+
+            case 1052:
+                return access_type_t::RW;
+
+            case 1056:
+                return access_type_t::RW;
+
+            case 1060:
+                return access_type_t::RW;
+
+            case 1064:
+                return access_type_t::RW;
+
+            case 1068:
+                return access_type_t::RW;
+
+            case 1072:
+                return access_type_t::RW;
+
+            case 1076:
+                return access_type_t::RW;
+
+            case 1080:
+                return access_type_t::RW;
+
+            case 1084:
+                return access_type_t::RW;
+
+            case 1088:
+                return access_type_t::RW;
+
+            case 1092:
+                return access_type_t::RW;
+
+            case 1096:
+                return access_type_t::RW;
+
+            case 1100:
+                return access_type_t::RW;
+
+            case 1104:
+                return access_type_t::RW;
+
+            case 1108:
+                return access_type_t::RW;
+
+            case 1112:
+                return access_type_t::RW;
+
+            case 1116:
+                return access_type_t::RW;
+
+            case 1120:
+                return access_type_t::RW;
+
+            case 1124:
+                return access_type_t::RW;
+
+            case 1128:
+                return access_type_t::RW;
+
+            case 1132:
+                return access_type_t::RW;
+
+            case 1136:
+                return access_type_t::RW;
+
+            case 1140:
+                return access_type_t::RW;
+
+            case 1144:
+                return access_type_t::RW;
+
+            case 1148:
+                return access_type_t::RW;
+
+            case 1152:
+                return access_type_t::RW;
+
+            case 1156:
+                return access_type_t::RW;
+
+            case 1160:
+                return access_type_t::RW;
+
+            case 1164:
+                return access_type_t::RW;
+
+            case 1168:
+                return access_type_t::RW;
+
+            case 1172:
+                return access_type_t::RW;
+
+            case 1176:
+                return access_type_t::RW;
+
+            case 1180:
+                return access_type_t::RW;
+
+            case 1184:
+                return access_type_t::RW;
+
+            case 1188:
+                return access_type_t::RW;
+
+            case 1192:
+                return access_type_t::RW;
+
+            case 1196:
+                return access_type_t::RW;
+
+            case 1200:
+                return access_type_t::RW;
+
+            case 1204:
+                return access_type_t::RW;
+
+            case 1208:
+                return access_type_t::RW;
+
+            case 1212:
+                return access_type_t::RW;
+
+            case 1216:
+                return access_type_t::RW;
+
+            case 1220:
+                return access_type_t::RW;
+
+            case 1224:
+                return access_type_t::RW;
+
+            case 1228:
+                return access_type_t::RW;
+
+            case 1232:
+                return access_type_t::RW;
+
+            case 1236:
+                return access_type_t::RW;
+
+            case 1240:
+                return access_type_t::RW;
+
+            case 1244:
+                return access_type_t::RW;
+
+            case 1248:
+                return access_type_t::RW;
+
+            case 1252:
+                return access_type_t::RW;
+
+            case 1256:
+                return access_type_t::RW;
+
+            case 1260:
+                return access_type_t::RW;
+
+            case 1264:
+                return access_type_t::RW;
+
+            case 1268:
+                return access_type_t::RW;
+
+            case 1272:
+                return access_type_t::RW;
+
+            case 1276:
+                return access_type_t::RW;
+
+            case 1280:
+                return access_type_t::RW;
+
+            case 1284:
+                return access_type_t::RW;
+
+            case 1288:
+                return access_type_t::RW;
+
+            case 1292:
+                return access_type_t::RW;
+
+            case 1296:
+                return access_type_t::RW;
+
+            case 1300:
+                return access_type_t::RW;
+
+            case 1304:
+                return access_type_t::RW;
+
+            case 1308:
+                return access_type_t::RW;
+
+            case 1312:
+                return access_type_t::RW;
+
+            case 1316:
+                return access_type_t::RW;
+
+            case 1320:
+                return access_type_t::RW;
+
+            case 1324:
+                return access_type_t::RW;
+
+            case 1328:
+                return access_type_t::RW;
+
+            case 1332:
+                return access_type_t::RW;
+
+            case 1336:
+                return access_type_t::RW;
+
+            case 1340:
+                return access_type_t::RW;
+
+            case 1344:
+                return access_type_t::RW;
+
+            case 1348:
+                return access_type_t::RW;
+
+            case 1352:
+                return access_type_t::RW;
+
+            case 1356:
+                return access_type_t::RW;
+
+            case 1360:
+                return access_type_t::RW;
+
+            case 1364:
+                return access_type_t::RW;
+
+            case 1368:
+                return access_type_t::RW;
+
+            case 1372:
+                return access_type_t::RW;
+
+            case 1376:
+                return access_type_t::RW;
+
+            case 1380:
+                return access_type_t::RW;
+
+            case 1384:
+                return access_type_t::RW;
+
+            case 1388:
+                return access_type_t::RW;
+
+            case 1392:
+                return access_type_t::RW;
+
+            case 1396:
+                return access_type_t::RW;
+
+            case 1400:
+                return access_type_t::RW;
+
+            case 1404:
+                return access_type_t::RW;
+
+            case 1408:
+                return access_type_t::RW;
+
+            case 1412:
+                return access_type_t::RW;
+
+            case 1416:
+                return access_type_t::RW;
+
+            case 1420:
+                return access_type_t::RW;
+
+            case 1424:
+                return access_type_t::RW;
+
+            case 1428:
+                return access_type_t::RW;
+
+            case 1432:
+                return access_type_t::RW;
+
+            case 1436:
+                return access_type_t::RW;
+
+            case 1440:
+                return access_type_t::RW;
+
+            case 1444:
+                return access_type_t::RW;
+
+            case 1448:
+                return access_type_t::RW;
+
+            case 1452:
+                return access_type_t::RW;
+
+            case 1456:
+                return access_type_t::RW;
+
+            case 1460:
+                return access_type_t::RW;
+
+            case 1464:
+                return access_type_t::RW;
+
+            case 1468:
+                return access_type_t::RW;
+
+            case 1472:
+                return access_type_t::RW;
+
+            case 1476:
+                return access_type_t::RW;
+
+            case 1480:
+                return access_type_t::RW;
+
+            case 1484:
+                return access_type_t::RW;
+
+            case 1488:
+                return access_type_t::RW;
+
+            case 1492:
+                return access_type_t::RW;
+
+            case 1496:
+                return access_type_t::RW;
+
+            case 1500:
+                return access_type_t::RW;
+
+            case 1504:
+                return access_type_t::RW;
+
+            case 1508:
+                return access_type_t::RW;
+
+            case 1512:
+                return access_type_t::RW;
+
+            case 1516:
+                return access_type_t::RW;
+
+            case 1520:
+                return access_type_t::RW;
+
+            case 1524:
+                return access_type_t::RW;
+
+            case 1528:
+                return access_type_t::RW;
+
+            case 1532:
+                return access_type_t::RW;
+
+            case 1536:
+                return access_type_t::RW;
+
+            case 1540:
+                return access_type_t::RW;
+
+            case 1544:
+                return access_type_t::RW;
+
+            case 1548:
+                return access_type_t::RW;
+
+            case 1552:
+                return access_type_t::RW;
+
+            case 1556:
+                return access_type_t::RW;
+
+            case 1560:
+                return access_type_t::RW;
+
+            case 1564:
+                return access_type_t::RW;
+
+            case 1568:
+                return access_type_t::RW;
+
+            case 1572:
+                return access_type_t::RW;
+
+            case 1576:
+                return access_type_t::RW;
+
+            case 1580:
+                return access_type_t::RW;
+
+            case 1584:
+                return access_type_t::RW;
+
+            case 1588:
+                return access_type_t::RW;
+
+            case 1592:
+                return access_type_t::RW;
+
+            case 1596:
+                return access_type_t::RW;
+
+            case 1600:
+                return access_type_t::RW;
+
+            case 1604:
+                return access_type_t::RW;
+
+            case 1608:
+                return access_type_t::RW;
+
+            case 1612:
+                return access_type_t::RW;
+
+            case 1616:
+                return access_type_t::RW;
+
+            case 1620:
+                return access_type_t::RW;
+
+            case 1624:
+                return access_type_t::RW;
+
+            case 1628:
+                return access_type_t::RW;
+
+            case 1632:
+                return access_type_t::RW;
+
+            case 1636:
+                return access_type_t::RW;
+
+            case 1640:
+                return access_type_t::RW;
+
+            case 1644:
+                return access_type_t::RW;
+
+            case 1648:
+                return access_type_t::RW;
+
+            case 1652:
+                return access_type_t::RW;
+
+            case 1656:
+                return access_type_t::RW;
+
+            case 1660:
+                return access_type_t::RW;
+
+            case 1664:
+                return access_type_t::RW;
+
+            case 1668:
+                return access_type_t::RW;
+
+            case 1672:
+                return access_type_t::RW;
+
+            case 1676:
+                return access_type_t::RW;
+
+            case 1680:
+                return access_type_t::RW;
+
+            case 1684:
+                return access_type_t::RW;
+
+            case 1688:
+                return access_type_t::RW;
+
+            case 1692:
+                return access_type_t::RW;
+
+            case 1696:
+                return access_type_t::RW;
+
+            case 1700:
+                return access_type_t::RW;
+
+            case 1704:
+                return access_type_t::RW;
+
+            case 1708:
+                return access_type_t::RW;
+
+            case 1712:
+                return access_type_t::RW;
+
+            case 1716:
+                return access_type_t::RW;
+
+            case 1720:
+                return access_type_t::RW;
+
+            case 1724:
+                return access_type_t::RW;
+
+            case 1728:
+                return access_type_t::RW;
+
+            case 1732:
+                return access_type_t::RW;
+
+            case 1736:
+                return access_type_t::RW;
+
+            case 1740:
+                return access_type_t::RW;
+
+            case 1744:
+                return access_type_t::RW;
+
+            case 1748:
+                return access_type_t::RW;
+
+            case 1752:
+                return access_type_t::RW;
+
+            case 1756:
+                return access_type_t::RW;
+
+            case 1760:
+                return access_type_t::RW;
+
+            case 1764:
+                return access_type_t::RW;
+
+            case 1768:
+                return access_type_t::RW;
+
+            case 1772:
+                return access_type_t::RW;
+
+            case 1776:
+                return access_type_t::RW;
+
+            case 1780:
+                return access_type_t::RW;
+
+            case 1784:
+                return access_type_t::RW;
+
+            case 1788:
+                return access_type_t::RW;
+
+            case 1792:
+                return access_type_t::RW;
+
+            case 1796:
+                return access_type_t::RW;
+
+            case 1800:
+                return access_type_t::RW;
+
+            case 1804:
+                return access_type_t::RW;
+
+            case 1808:
+                return access_type_t::RW;
+
+            case 1812:
+                return access_type_t::RW;
+
+            case 1816:
+                return access_type_t::RW;
+
+            case 1820:
+                return access_type_t::RW;
+
+            case 1824:
+                return access_type_t::RW;
+
+            case 1828:
+                return access_type_t::RW;
+
+            case 1832:
+                return access_type_t::RW;
+
+            case 1836:
+                return access_type_t::RW;
+
+            case 1840:
+                return access_type_t::RW;
+
+            case 1844:
+                return access_type_t::RW;
+
+            case 1848:
+                return access_type_t::RW;
+
+            case 1852:
+                return access_type_t::RW;
+
+            case 1856:
+                return access_type_t::RW;
+
+            case 1860:
+                return access_type_t::RW;
+
+            case 1864:
+                return access_type_t::RW;
+
+            case 1868:
+                return access_type_t::RW;
+
+            case 1872:
+                return access_type_t::RW;
+
+            case 1876:
+                return access_type_t::RW;
+
+            case 1880:
+                return access_type_t::RW;
+
+            case 1884:
+                return access_type_t::RW;
+
+            case 1888:
+                return access_type_t::RW;
+
+            case 1892:
+                return access_type_t::RW;
+
+            case 1896:
+                return access_type_t::RW;
+
+            case 1900:
+                return access_type_t::RW;
+
+            case 1904:
+                return access_type_t::RW;
+
+            case 1908:
+                return access_type_t::RW;
+
+            case 1912:
+                return access_type_t::RW;
+
+            case 1916:
+                return access_type_t::RW;
+
+            case 1920:
+                return access_type_t::RW;
+
+            case 1924:
+                return access_type_t::RW;
+
+            case 1928:
+                return access_type_t::RW;
+
+            case 1932:
+                return access_type_t::RW;
+
+            case 1936:
+                return access_type_t::RW;
+
+            case 1940:
+                return access_type_t::RW;
+
+            case 1944:
+                return access_type_t::RW;
+
+            case 1948:
+                return access_type_t::RW;
+
+            case 1952:
+                return access_type_t::RW;
+
+            case 1956:
+                return access_type_t::RW;
+
+            case 1960:
+                return access_type_t::RW;
+
+            case 1964:
+                return access_type_t::RW;
+
+            case 1968:
+                return access_type_t::RW;
+
+            case 1972:
+                return access_type_t::RW;
+
+            case 1976:
+                return access_type_t::RW;
+
+            case 1980:
+                return access_type_t::RW;
+
+            case 1984:
+                return access_type_t::RW;
+
+            case 1988:
+                return access_type_t::RW;
+
+            case 1992:
+                return access_type_t::RW;
+
+            case 1996:
+                return access_type_t::RW;
+
+            case 2000:
+                return access_type_t::RW;
+
+            case 2004:
+                return access_type_t::RW;
+
+            case 2008:
+                return access_type_t::RW;
+
+            case 2012:
+                return access_type_t::RW;
+
+            case 2016:
+                return access_type_t::RW;
+
+            case 2020:
+                return access_type_t::RW;
+
+            case 2024:
+                return access_type_t::RW;
+
+            case 2028:
+                return access_type_t::RW;
+
+            case 2032:
+                return access_type_t::RW;
+
+            case 2036:
+                return access_type_t::RW;
+
+            case 2040:
+                return access_type_t::RW;
+
+            case 2044:
+                return access_type_t::RW;
+
+            case 2048:
+                return access_type_t::RW;
+
+            case 2052:
+                return access_type_t::RW;
+
+            case 2056:
+                return access_type_t::RW;
+
+            case 2060:
+                return access_type_t::RW;
+
+            case 2064:
+                return access_type_t::RW;
+
+            case 2068:
+                return access_type_t::RW;
+
+            case 2076:
+                return access_type_t::RW;
+
+            case 2084:
+                return access_type_t::RW;
+
+            case 2088:
+                return access_type_t::RW;
+
+            case 2092:
+                return access_type_t::RW;
+
+            case 2096:
+                return access_type_t::RW;
+
+            case 2100:
+                return access_type_t::RW;
+
+            case 2108:
+                return access_type_t::RW;
+
+            case 2116:
+                return access_type_t::RW;
+
+            case 2120:
+                return access_type_t::RW;
+
+            case 2124:
+                return access_type_t::RW;
+
+            case 2128:
+                return access_type_t::RW;
+
+            case 2132:
+                return access_type_t::RW;
+
+            case 2136:
+                return access_type_t::RW;
+
+            case 2140:
+                return access_type_t::RW;
+
+            case 2144:
+                return access_type_t::RW;
+
+            case 2152:
+                return access_type_t::RW;
+
+            case 2156:
+                return access_type_t::RW;
+
+            case 2160:
+                return access_type_t::RW;
+
+            case 2172:
+                return access_type_t::RW;
+
+            case 2176:
+                return access_type_t::RW;
+
+            case 2180:
+                return access_type_t::RW;
+
+            case 2184:
+                return access_type_t::RW;
+
+            case 2188:
+                return access_type_t::RW;
+
+            case 2192:
+                return access_type_t::RW;
+
+            case 2196:
+                return access_type_t::RW;
+
+            case 2200:
+                return access_type_t::RW;
+
+            case 2204:
+                return access_type_t::RW;
+
+            case 2208:
+                return access_type_t::RW;
+
+            case 2212:
+                return access_type_t::RW;
+
+            case 2228:
+                return access_type_t::RW;
+
+            case 2236:
+                return access_type_t::RW;
+
+            case 2240:
+                return access_type_t::RW;
+
+            case 2244:
+                return access_type_t::RW;
+
+            case 2248:
+                return access_type_t::RW;
+
+            case 2252:
+                return access_type_t::RW;
+
+            case 2304:
+                return access_type_t::RW;
+
+            case 2308:
+                return access_type_t::RW;
+
+            case 2324:
+                return access_type_t::RW;
+
+            case 2340:
+                return access_type_t::RW;
+
+            case 2344:
+                return access_type_t::RW;
+
+            case 2348:
+                return access_type_t::RW;
+
+            case 2352:
+                return access_type_t::RW;
+
+            case 2356:
+                return access_type_t::RW;
+
+            case 2364:
+                return access_type_t::RW;
+
+            case 2560:
+                return access_type_t::RW;
+
+            case 2568:
+                return access_type_t::RW;
+
+            case 2576:
+                return access_type_t::RW;
+
+            case 2584:
+                return access_type_t::RW;
+
+            case 2592:
+                return access_type_t::RW;
+
+            case 2600:
+                return access_type_t::RW;
+
+            case 2608:
+                return access_type_t::RW;
+
+            case 2624:
+                return access_type_t::RW;
+
+            case 2632:
+                return access_type_t::RW;
+
+            case 2640:
+                return access_type_t::RW;
+
+            case 2648:
+                return access_type_t::RW;
+
+            case 2656:
+                return access_type_t::RW;
+
+            case 2664:
+                return access_type_t::RW;
+
+            case 2672:
+                return access_type_t::RW;
+
+            case 2688:
+                return access_type_t::RW;
+
+            case 2696:
+                return access_type_t::RW;
+
+            case 2704:
+                return access_type_t::RW;
+
+            case 2712:
+                return access_type_t::RW;
+
+            case 2720:
+                return access_type_t::RW;
+
+            case 2724:
+                return access_type_t::RW;
+
+            case 2728:
+                return access_type_t::RW;
+
+            case 2732:
+                return access_type_t::RW;
+
+            case 2736:
+                return access_type_t::RW;
+
+            case 2752:
+                return access_type_t::RW;
+
+            case 2760:
+                return access_type_t::RW;
+
+            case 2768:
+                return access_type_t::RW;
+
+            case 2776:
+                return access_type_t::RW;
+
+            case 2784:
+                return access_type_t::RW;
+
+            case 2816:
+                return access_type_t::RW;
+
+            case 2824:
+                return access_type_t::RW;
+
+            case 2832:
+                return access_type_t::RW;
+
+            case 2840:
+                return access_type_t::RW;
+
+            case 2848:
+                return access_type_t::RW;
+
+            case 2856:
+                return access_type_t::RW;
+
+            case 2864:
+                return access_type_t::RW;
+
+            case 2880:
+                return access_type_t::RW;
+
+            case 2888:
+                return access_type_t::RW;
+
+            case 2896:
+                return access_type_t::RW;
+
+            case 2904:
+                return access_type_t::RW;
+
+            case 4032:
+                return access_type_t::RO;
+
+            case 4048:
+                return access_type_t::RO;
+
+            case 4052:
+                return access_type_t::RO;
+
+            case 4056:
+                return access_type_t::RO;
+
+            case 4060:
+                return access_type_t::RO;
+
+            case 4064:
+                return access_type_t::RO;
+
+            case 4068:
+                return access_type_t::RO;
+
+            case 4072:
+                return access_type_t::RO;
+
+            case 4076:
+                return access_type_t::RO;
+
+            case 4080:
+                return access_type_t::RO;
+
+            case 4084:
+                return access_type_t::RO;
+
+            case 4088:
+                return access_type_t::RO;
+
+            case 4092:
+                return access_type_t::RO;
+
+            default:
+                return access_type_t::RO;
         }
     }
 #endif
@@ -17611,783 +18093,880 @@ struct isa
     {
         switch (*in & 0xffff)
         {
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_STOP):
-        {
-            const npu_op_stop_t &v = *reinterpret_cast<const npu_op_stop_t *>(in);
-            op                     = "NPU_OP_STOP";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_IRQ):
-        {
-            const npu_op_irq_t &v = *reinterpret_cast<const npu_op_irq_t *>(in);
-            op                    = "NPU_OP_IRQ";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_CONV):
-        {
-            const npu_op_conv_t &v = *reinterpret_cast<const npu_op_conv_t *>(in);
-            op                     = "NPU_OP_CONV";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_DEPTHWISE):
-        {
-            const npu_op_depthwise_t &v = *reinterpret_cast<const npu_op_depthwise_t *>(in);
-            op                          = "NPU_OP_DEPTHWISE";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_POOL):
-        {
-            const npu_op_pool_t &v = *reinterpret_cast<const npu_op_pool_t *>(in);
-            op                     = "NPU_OP_POOL";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_ELEMENTWISE):
-        {
-            const npu_op_elementwise_t &v = *reinterpret_cast<const npu_op_elementwise_t *>(in);
-            op                            = "NPU_OP_ELEMENTWISE";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_DMA_START):
-        {
-            const npu_op_dma_start_t &v = *reinterpret_cast<const npu_op_dma_start_t *>(in);
-            op                          = "NPU_OP_DMA_START";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_DMA_WAIT):
-        {
-            const npu_op_dma_wait_t &v = *reinterpret_cast<const npu_op_dma_wait_t *>(in);
-            op                         = "NPU_OP_DMA_WAIT";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_KERNEL_WAIT):
-        {
-            const npu_op_kernel_wait_t &v = *reinterpret_cast<const npu_op_kernel_wait_t *>(in);
-            op                            = "NPU_OP_KERNEL_WAIT";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_PMU_MASK):
-        {
-            const npu_op_pmu_mask_t &v = *reinterpret_cast<const npu_op_pmu_mask_t *>(in);
-            op                         = "NPU_OP_PMU_MASK";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_PAD_TOP):
-        {
-            const npu_set_ifm_pad_top_t &v = *reinterpret_cast<const npu_set_ifm_pad_top_t *>(in);
-            op                             = "NPU_SET_IFM_PAD_TOP";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_PAD_LEFT):
-        {
-            const npu_set_ifm_pad_left_t &v = *reinterpret_cast<const npu_set_ifm_pad_left_t *>(in);
-            op                              = "NPU_SET_IFM_PAD_LEFT";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_PAD_RIGHT):
-        {
-            const npu_set_ifm_pad_right_t &v = *reinterpret_cast<const npu_set_ifm_pad_right_t *>(in);
-            op                               = "NPU_SET_IFM_PAD_RIGHT";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_PAD_BOTTOM):
-        {
-            const npu_set_ifm_pad_bottom_t &v = *reinterpret_cast<const npu_set_ifm_pad_bottom_t *>(in);
-            op                                = "NPU_SET_IFM_PAD_BOTTOM";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_DEPTH_M1):
-        {
-            const npu_set_ifm_depth_m1_t &v = *reinterpret_cast<const npu_set_ifm_depth_m1_t *>(in);
-            op                              = "NPU_SET_IFM_DEPTH_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_PRECISION):
-        {
-            const npu_set_ifm_precision_t &v = *reinterpret_cast<const npu_set_ifm_precision_t *>(in);
-            op                               = "NPU_SET_IFM_PRECISION";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_UPSCALE):
-        {
-            const npu_set_ifm_upscale_t &v = *reinterpret_cast<const npu_set_ifm_upscale_t *>(in);
-            op                             = "NPU_SET_IFM_UPSCALE";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_ZERO_POINT):
-        {
-            const npu_set_ifm_zero_point_t &v = *reinterpret_cast<const npu_set_ifm_zero_point_t *>(in);
-            op                                = "NPU_SET_IFM_ZERO_POINT";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_WIDTH0_M1):
-        {
-            const npu_set_ifm_width0_m1_t &v = *reinterpret_cast<const npu_set_ifm_width0_m1_t *>(in);
-            op                               = "NPU_SET_IFM_WIDTH0_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_HEIGHT0_M1):
-        {
-            const npu_set_ifm_height0_m1_t &v = *reinterpret_cast<const npu_set_ifm_height0_m1_t *>(in);
-            op                                = "NPU_SET_IFM_HEIGHT0_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_HEIGHT1_M1):
-        {
-            const npu_set_ifm_height1_m1_t &v = *reinterpret_cast<const npu_set_ifm_height1_m1_t *>(in);
-            op                                = "NPU_SET_IFM_HEIGHT1_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_IB_END):
-        {
-            const npu_set_ifm_ib_end_t &v = *reinterpret_cast<const npu_set_ifm_ib_end_t *>(in);
-            op                            = "NPU_SET_IFM_IB_END";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_REGION):
-        {
-            const npu_set_ifm_region_t &v = *reinterpret_cast<const npu_set_ifm_region_t *>(in);
-            op                            = "NPU_SET_IFM_REGION";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_WIDTH_M1):
-        {
-            const npu_set_ofm_width_m1_t &v = *reinterpret_cast<const npu_set_ofm_width_m1_t *>(in);
-            op                              = "NPU_SET_OFM_WIDTH_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_HEIGHT_M1):
-        {
-            const npu_set_ofm_height_m1_t &v = *reinterpret_cast<const npu_set_ofm_height_m1_t *>(in);
-            op                               = "NPU_SET_OFM_HEIGHT_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_DEPTH_M1):
-        {
-            const npu_set_ofm_depth_m1_t &v = *reinterpret_cast<const npu_set_ofm_depth_m1_t *>(in);
-            op                              = "NPU_SET_OFM_DEPTH_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_PRECISION):
-        {
-            const npu_set_ofm_precision_t &v = *reinterpret_cast<const npu_set_ofm_precision_t *>(in);
-            op                               = "NPU_SET_OFM_PRECISION";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_BLK_WIDTH_M1):
-        {
-            const npu_set_ofm_blk_width_m1_t &v = *reinterpret_cast<const npu_set_ofm_blk_width_m1_t *>(in);
-            op                                  = "NPU_SET_OFM_BLK_WIDTH_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_BLK_HEIGHT_M1):
-        {
-            const npu_set_ofm_blk_height_m1_t &v = *reinterpret_cast<const npu_set_ofm_blk_height_m1_t *>(in);
-            op                                   = "NPU_SET_OFM_BLK_HEIGHT_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_BLK_DEPTH_M1):
-        {
-            const npu_set_ofm_blk_depth_m1_t &v = *reinterpret_cast<const npu_set_ofm_blk_depth_m1_t *>(in);
-            op                                  = "NPU_SET_OFM_BLK_DEPTH_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_ZERO_POINT):
-        {
-            const npu_set_ofm_zero_point_t &v = *reinterpret_cast<const npu_set_ofm_zero_point_t *>(in);
-            op                                = "NPU_SET_OFM_ZERO_POINT";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_WIDTH0_M1):
-        {
-            const npu_set_ofm_width0_m1_t &v = *reinterpret_cast<const npu_set_ofm_width0_m1_t *>(in);
-            op                               = "NPU_SET_OFM_WIDTH0_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_HEIGHT0_M1):
-        {
-            const npu_set_ofm_height0_m1_t &v = *reinterpret_cast<const npu_set_ofm_height0_m1_t *>(in);
-            op                                = "NPU_SET_OFM_HEIGHT0_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_HEIGHT1_M1):
-        {
-            const npu_set_ofm_height1_m1_t &v = *reinterpret_cast<const npu_set_ofm_height1_m1_t *>(in);
-            op                                = "NPU_SET_OFM_HEIGHT1_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_REGION):
-        {
-            const npu_set_ofm_region_t &v = *reinterpret_cast<const npu_set_ofm_region_t *>(in);
-            op                            = "NPU_SET_OFM_REGION";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_KERNEL_WIDTH_M1):
-        {
-            const npu_set_kernel_width_m1_t &v = *reinterpret_cast<const npu_set_kernel_width_m1_t *>(in);
-            op                                 = "NPU_SET_KERNEL_WIDTH_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_KERNEL_HEIGHT_M1):
-        {
-            const npu_set_kernel_height_m1_t &v = *reinterpret_cast<const npu_set_kernel_height_m1_t *>(in);
-            op                                  = "NPU_SET_KERNEL_HEIGHT_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_KERNEL_STRIDE):
-        {
-            const npu_set_kernel_stride_t &v = *reinterpret_cast<const npu_set_kernel_stride_t *>(in);
-            op                               = "NPU_SET_KERNEL_STRIDE";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_PARALLEL_MODE):
-        {
-            const npu_set_parallel_mode_t &v = *reinterpret_cast<const npu_set_parallel_mode_t *>(in);
-            op                               = "NPU_SET_PARALLEL_MODE";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_ACC_FORMAT):
-        {
-            const npu_set_acc_format_t &v = *reinterpret_cast<const npu_set_acc_format_t *>(in);
-            op                            = "NPU_SET_ACC_FORMAT";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_ACTIVATION):
-        {
-            const npu_set_activation_t &v = *reinterpret_cast<const npu_set_activation_t *>(in);
-            op                            = "NPU_SET_ACTIVATION";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_ACTIVATION_MIN):
-        {
-            const npu_set_activation_min_t &v = *reinterpret_cast<const npu_set_activation_min_t *>(in);
-            op                                = "NPU_SET_ACTIVATION_MIN";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_ACTIVATION_MAX):
-        {
-            const npu_set_activation_max_t &v = *reinterpret_cast<const npu_set_activation_max_t *>(in);
-            op                                = "NPU_SET_ACTIVATION_MAX";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_WEIGHT_REGION):
-        {
-            const npu_set_weight_region_t &v = *reinterpret_cast<const npu_set_weight_region_t *>(in);
-            op                               = "NPU_SET_WEIGHT_REGION";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_SCALE_REGION):
-        {
-            const npu_set_scale_region_t &v = *reinterpret_cast<const npu_set_scale_region_t *>(in);
-            op                              = "NPU_SET_SCALE_REGION";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_AB_START):
-        {
-            const npu_set_ab_start_t &v = *reinterpret_cast<const npu_set_ab_start_t *>(in);
-            op                          = "NPU_SET_AB_START";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_BLOCKDEP):
-        {
-            const npu_set_blockdep_t &v = *reinterpret_cast<const npu_set_blockdep_t *>(in);
-            op                          = "NPU_SET_BLOCKDEP";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_DMA0_SRC_REGION):
-        {
-            const npu_set_dma0_src_region_t &v = *reinterpret_cast<const npu_set_dma0_src_region_t *>(in);
-            op                                 = "NPU_SET_DMA0_SRC_REGION";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_DMA0_DST_REGION):
-        {
-            const npu_set_dma0_dst_region_t &v = *reinterpret_cast<const npu_set_dma0_dst_region_t *>(in);
-            op                                 = "NPU_SET_DMA0_DST_REGION";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_DMA0_SIZE0):
-        {
-            const npu_set_dma0_size0_t &v = *reinterpret_cast<const npu_set_dma0_size0_t *>(in);
-            op                            = "NPU_SET_DMA0_SIZE0";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_DMA0_SIZE1):
-        {
-            const npu_set_dma0_size1_t &v = *reinterpret_cast<const npu_set_dma0_size1_t *>(in);
-            op                            = "NPU_SET_DMA0_SIZE1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_BROADCAST):
-        {
-            const npu_set_ifm2_broadcast_t &v = *reinterpret_cast<const npu_set_ifm2_broadcast_t *>(in);
-            op                                = "NPU_SET_IFM2_BROADCAST";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_SCALAR):
-        {
-            const npu_set_ifm2_scalar_t &v = *reinterpret_cast<const npu_set_ifm2_scalar_t *>(in);
-            op                             = "NPU_SET_IFM2_SCALAR";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_PRECISION):
-        {
-            const npu_set_ifm2_precision_t &v = *reinterpret_cast<const npu_set_ifm2_precision_t *>(in);
-            op                                = "NPU_SET_IFM2_PRECISION";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_ZERO_POINT):
-        {
-            const npu_set_ifm2_zero_point_t &v = *reinterpret_cast<const npu_set_ifm2_zero_point_t *>(in);
-            op                                 = "NPU_SET_IFM2_ZERO_POINT";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_WIDTH0_M1):
-        {
-            const npu_set_ifm2_width0_m1_t &v = *reinterpret_cast<const npu_set_ifm2_width0_m1_t *>(in);
-            op                                = "NPU_SET_IFM2_WIDTH0_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_HEIGHT0_M1):
-        {
-            const npu_set_ifm2_height0_m1_t &v = *reinterpret_cast<const npu_set_ifm2_height0_m1_t *>(in);
-            op                                 = "NPU_SET_IFM2_HEIGHT0_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_HEIGHT1_M1):
-        {
-            const npu_set_ifm2_height1_m1_t &v = *reinterpret_cast<const npu_set_ifm2_height1_m1_t *>(in);
-            op                                 = "NPU_SET_IFM2_HEIGHT1_M1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_IB_START):
-        {
-            const npu_set_ifm2_ib_start_t &v = *reinterpret_cast<const npu_set_ifm2_ib_start_t *>(in);
-            op                               = "NPU_SET_IFM2_IB_START";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_REGION):
-        {
-            const npu_set_ifm2_region_t &v = *reinterpret_cast<const npu_set_ifm2_region_t *>(in);
-            op                             = "NPU_SET_IFM2_REGION";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_BASE0):
-        {
-            const npu_set_ifm_base0_t &v = *reinterpret_cast<const npu_set_ifm_base0_t *>(in);
-            op                           = "NPU_SET_IFM_BASE0";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_BASE1):
-        {
-            const npu_set_ifm_base1_t &v = *reinterpret_cast<const npu_set_ifm_base1_t *>(in);
-            op                           = "NPU_SET_IFM_BASE1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_BASE2):
-        {
-            const npu_set_ifm_base2_t &v = *reinterpret_cast<const npu_set_ifm_base2_t *>(in);
-            op                           = "NPU_SET_IFM_BASE2";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_BASE3):
-        {
-            const npu_set_ifm_base3_t &v = *reinterpret_cast<const npu_set_ifm_base3_t *>(in);
-            op                           = "NPU_SET_IFM_BASE3";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_STRIDE_X):
-        {
-            const npu_set_ifm_stride_x_t &v = *reinterpret_cast<const npu_set_ifm_stride_x_t *>(in);
-            op                              = "NPU_SET_IFM_STRIDE_X";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_STRIDE_Y):
-        {
-            const npu_set_ifm_stride_y_t &v = *reinterpret_cast<const npu_set_ifm_stride_y_t *>(in);
-            op                              = "NPU_SET_IFM_STRIDE_Y";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_STRIDE_C):
-        {
-            const npu_set_ifm_stride_c_t &v = *reinterpret_cast<const npu_set_ifm_stride_c_t *>(in);
-            op                              = "NPU_SET_IFM_STRIDE_C";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_BASE0):
-        {
-            const npu_set_ofm_base0_t &v = *reinterpret_cast<const npu_set_ofm_base0_t *>(in);
-            op                           = "NPU_SET_OFM_BASE0";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_BASE1):
-        {
-            const npu_set_ofm_base1_t &v = *reinterpret_cast<const npu_set_ofm_base1_t *>(in);
-            op                           = "NPU_SET_OFM_BASE1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_BASE2):
-        {
-            const npu_set_ofm_base2_t &v = *reinterpret_cast<const npu_set_ofm_base2_t *>(in);
-            op                           = "NPU_SET_OFM_BASE2";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_BASE3):
-        {
-            const npu_set_ofm_base3_t &v = *reinterpret_cast<const npu_set_ofm_base3_t *>(in);
-            op                           = "NPU_SET_OFM_BASE3";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_STRIDE_X):
-        {
-            const npu_set_ofm_stride_x_t &v = *reinterpret_cast<const npu_set_ofm_stride_x_t *>(in);
-            op                              = "NPU_SET_OFM_STRIDE_X";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_STRIDE_Y):
-        {
-            const npu_set_ofm_stride_y_t &v = *reinterpret_cast<const npu_set_ofm_stride_y_t *>(in);
-            op                              = "NPU_SET_OFM_STRIDE_Y";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_STRIDE_C):
-        {
-            const npu_set_ofm_stride_c_t &v = *reinterpret_cast<const npu_set_ofm_stride_c_t *>(in);
-            op                              = "NPU_SET_OFM_STRIDE_C";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_WEIGHT_BASE):
-        {
-            const npu_set_weight_base_t &v = *reinterpret_cast<const npu_set_weight_base_t *>(in);
-            op                             = "NPU_SET_WEIGHT_BASE";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_WEIGHT_LENGTH):
-        {
-            const npu_set_weight_length_t &v = *reinterpret_cast<const npu_set_weight_length_t *>(in);
-            op                               = "NPU_SET_WEIGHT_LENGTH";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_SCALE_BASE):
-        {
-            const npu_set_scale_base_t &v = *reinterpret_cast<const npu_set_scale_base_t *>(in);
-            op                            = "NPU_SET_SCALE_BASE";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_SCALE_LENGTH):
-        {
-            const npu_set_scale_length_t &v = *reinterpret_cast<const npu_set_scale_length_t *>(in);
-            op                              = "NPU_SET_SCALE_LENGTH";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_SCALE):
-        {
-            const npu_set_ofm_scale_t &v = *reinterpret_cast<const npu_set_ofm_scale_t *>(in);
-            op                           = "NPU_SET_OFM_SCALE";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OPA_SCALE):
-        {
-            const npu_set_opa_scale_t &v = *reinterpret_cast<const npu_set_opa_scale_t *>(in);
-            op                           = "NPU_SET_OPA_SCALE";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OPB_SCALE):
-        {
-            const npu_set_opb_scale_t &v = *reinterpret_cast<const npu_set_opb_scale_t *>(in);
-            op                           = "NPU_SET_OPB_SCALE";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_SRC):
-        {
-            const npu_set_dma0_src_t &v = *reinterpret_cast<const npu_set_dma0_src_t *>(in);
-            op                          = "NPU_SET_DMA0_SRC";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_DST):
-        {
-            const npu_set_dma0_dst_t &v = *reinterpret_cast<const npu_set_dma0_dst_t *>(in);
-            op                          = "NPU_SET_DMA0_DST";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_LEN):
-        {
-            const npu_set_dma0_len_t &v = *reinterpret_cast<const npu_set_dma0_len_t *>(in);
-            op                          = "NPU_SET_DMA0_LEN";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_SKIP0):
-        {
-            const npu_set_dma0_skip0_t &v = *reinterpret_cast<const npu_set_dma0_skip0_t *>(in);
-            op                            = "NPU_SET_DMA0_SKIP0";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_SKIP1):
-        {
-            const npu_set_dma0_skip1_t &v = *reinterpret_cast<const npu_set_dma0_skip1_t *>(in);
-            op                            = "NPU_SET_DMA0_SKIP1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_BASE0):
-        {
-            const npu_set_ifm2_base0_t &v = *reinterpret_cast<const npu_set_ifm2_base0_t *>(in);
-            op                            = "NPU_SET_IFM2_BASE0";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_BASE1):
-        {
-            const npu_set_ifm2_base1_t &v = *reinterpret_cast<const npu_set_ifm2_base1_t *>(in);
-            op                            = "NPU_SET_IFM2_BASE1";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_BASE2):
-        {
-            const npu_set_ifm2_base2_t &v = *reinterpret_cast<const npu_set_ifm2_base2_t *>(in);
-            op                            = "NPU_SET_IFM2_BASE2";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_BASE3):
-        {
-            const npu_set_ifm2_base3_t &v = *reinterpret_cast<const npu_set_ifm2_base3_t *>(in);
-            op                            = "NPU_SET_IFM2_BASE3";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_STRIDE_X):
-        {
-            const npu_set_ifm2_stride_x_t &v = *reinterpret_cast<const npu_set_ifm2_stride_x_t *>(in);
-            op                               = "NPU_SET_IFM2_STRIDE_X";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_STRIDE_Y):
-        {
-            const npu_set_ifm2_stride_y_t &v = *reinterpret_cast<const npu_set_ifm2_stride_y_t *>(in);
-            op                               = "NPU_SET_IFM2_STRIDE_Y";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_STRIDE_C):
-        {
-            const npu_set_ifm2_stride_c_t &v = *reinterpret_cast<const npu_set_ifm2_stride_c_t *>(in);
-            op                               = "NPU_SET_IFM2_STRIDE_C";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_WEIGHT1_BASE):
-        {
-            const npu_set_weight1_base_t &v = *reinterpret_cast<const npu_set_weight1_base_t *>(in);
-            op                              = "NPU_SET_WEIGHT1_BASE";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_WEIGHT1_LENGTH):
-        {
-            const npu_set_weight1_length_t &v = *reinterpret_cast<const npu_set_weight1_length_t *>(in);
-            op                                = "NPU_SET_WEIGHT1_LENGTH";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_SCALE1_BASE):
-        {
-            const npu_set_scale1_base_t &v = *reinterpret_cast<const npu_set_scale1_base_t *>(in);
-            op                             = "NPU_SET_SCALE1_BASE";
-            v.disassemble(fields);
-            break;
-        }
-        case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
-            static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_SCALE1_LENGTH):
-        {
-            const npu_set_scale1_length_t &v = *reinterpret_cast<const npu_set_scale1_length_t *>(in);
-            op                               = "NPU_SET_SCALE1_LENGTH";
-            v.disassemble(fields);
-            break;
-        }
-        }
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_STOP):
+                {
+                    const npu_op_stop_t &v = *reinterpret_cast<const npu_op_stop_t *>(in);
+                    op                     = "NPU_OP_STOP";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_IRQ):
+                {
+                    const npu_op_irq_t &v = *reinterpret_cast<const npu_op_irq_t *>(in);
+                    op                    = "NPU_OP_IRQ";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_CONV):
+                {
+                    const npu_op_conv_t &v = *reinterpret_cast<const npu_op_conv_t *>(in);
+                    op                     = "NPU_OP_CONV";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_DEPTHWISE):
+                {
+                    const npu_op_depthwise_t &v = *reinterpret_cast<const npu_op_depthwise_t *>(in);
+                    op                          = "NPU_OP_DEPTHWISE";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_POOL):
+                {
+                    const npu_op_pool_t &v = *reinterpret_cast<const npu_op_pool_t *>(in);
+                    op                     = "NPU_OP_POOL";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_ELEMENTWISE):
+                {
+                    const npu_op_elementwise_t &v = *reinterpret_cast<const npu_op_elementwise_t *>(in);
+                    op                            = "NPU_OP_ELEMENTWISE";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_DMA_START):
+                {
+                    const npu_op_dma_start_t &v = *reinterpret_cast<const npu_op_dma_start_t *>(in);
+                    op                          = "NPU_OP_DMA_START";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_DMA_WAIT):
+                {
+                    const npu_op_dma_wait_t &v = *reinterpret_cast<const npu_op_dma_wait_t *>(in);
+                    op                         = "NPU_OP_DMA_WAIT";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_KERNEL_WAIT):
+                {
+                    const npu_op_kernel_wait_t &v = *reinterpret_cast<const npu_op_kernel_wait_t *>(in);
+                    op                            = "NPU_OP_KERNEL_WAIT";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_PMU_MASK):
+                {
+                    const npu_op_pmu_mask_t &v = *reinterpret_cast<const npu_op_pmu_mask_t *>(in);
+                    op                         = "NPU_OP_PMU_MASK";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_PAD_TOP):
+                {
+                    const npu_set_ifm_pad_top_t &v = *reinterpret_cast<const npu_set_ifm_pad_top_t *>(in);
+                    op                             = "NPU_SET_IFM_PAD_TOP";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_PAD_LEFT):
+                {
+                    const npu_set_ifm_pad_left_t &v = *reinterpret_cast<const npu_set_ifm_pad_left_t *>(in);
+                    op                              = "NPU_SET_IFM_PAD_LEFT";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_PAD_RIGHT):
+                {
+                    const npu_set_ifm_pad_right_t &v = *reinterpret_cast<const npu_set_ifm_pad_right_t *>(in);
+                    op                               = "NPU_SET_IFM_PAD_RIGHT";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_PAD_BOTTOM):
+                {
+                    const npu_set_ifm_pad_bottom_t &v = *reinterpret_cast<const npu_set_ifm_pad_bottom_t *>(in);
+                    op                                = "NPU_SET_IFM_PAD_BOTTOM";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_DEPTH_M1):
+                {
+                    const npu_set_ifm_depth_m1_t &v = *reinterpret_cast<const npu_set_ifm_depth_m1_t *>(in);
+                    op                              = "NPU_SET_IFM_DEPTH_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_PRECISION):
+                {
+                    const npu_set_ifm_precision_t &v = *reinterpret_cast<const npu_set_ifm_precision_t *>(in);
+                    op                               = "NPU_SET_IFM_PRECISION";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_UPSCALE):
+                {
+                    const npu_set_ifm_upscale_t &v = *reinterpret_cast<const npu_set_ifm_upscale_t *>(in);
+                    op                             = "NPU_SET_IFM_UPSCALE";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_ZERO_POINT):
+                {
+                    const npu_set_ifm_zero_point_t &v = *reinterpret_cast<const npu_set_ifm_zero_point_t *>(in);
+                    op                                = "NPU_SET_IFM_ZERO_POINT";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_WIDTH0_M1):
+                {
+                    const npu_set_ifm_width0_m1_t &v = *reinterpret_cast<const npu_set_ifm_width0_m1_t *>(in);
+                    op                               = "NPU_SET_IFM_WIDTH0_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_HEIGHT0_M1):
+                {
+                    const npu_set_ifm_height0_m1_t &v = *reinterpret_cast<const npu_set_ifm_height0_m1_t *>(in);
+                    op                                = "NPU_SET_IFM_HEIGHT0_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_HEIGHT1_M1):
+                {
+                    const npu_set_ifm_height1_m1_t &v = *reinterpret_cast<const npu_set_ifm_height1_m1_t *>(in);
+                    op                                = "NPU_SET_IFM_HEIGHT1_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_IB_END):
+                {
+                    const npu_set_ifm_ib_end_t &v = *reinterpret_cast<const npu_set_ifm_ib_end_t *>(in);
+                    op                            = "NPU_SET_IFM_IB_END";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_REGION):
+                {
+                    const npu_set_ifm_region_t &v = *reinterpret_cast<const npu_set_ifm_region_t *>(in);
+                    op                            = "NPU_SET_IFM_REGION";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_WIDTH_M1):
+                {
+                    const npu_set_ofm_width_m1_t &v = *reinterpret_cast<const npu_set_ofm_width_m1_t *>(in);
+                    op                              = "NPU_SET_OFM_WIDTH_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_HEIGHT_M1):
+                {
+                    const npu_set_ofm_height_m1_t &v = *reinterpret_cast<const npu_set_ofm_height_m1_t *>(in);
+                    op                               = "NPU_SET_OFM_HEIGHT_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_DEPTH_M1):
+                {
+                    const npu_set_ofm_depth_m1_t &v = *reinterpret_cast<const npu_set_ofm_depth_m1_t *>(in);
+                    op                              = "NPU_SET_OFM_DEPTH_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_PRECISION):
+                {
+                    const npu_set_ofm_precision_t &v = *reinterpret_cast<const npu_set_ofm_precision_t *>(in);
+                    op                               = "NPU_SET_OFM_PRECISION";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_BLK_WIDTH_M1):
+                {
+                    const npu_set_ofm_blk_width_m1_t &v = *reinterpret_cast<const npu_set_ofm_blk_width_m1_t *>(in);
+                    op                                  = "NPU_SET_OFM_BLK_WIDTH_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_BLK_HEIGHT_M1):
+                {
+                    const npu_set_ofm_blk_height_m1_t &v = *reinterpret_cast<const npu_set_ofm_blk_height_m1_t *>(in);
+                    op                                   = "NPU_SET_OFM_BLK_HEIGHT_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_BLK_DEPTH_M1):
+                {
+                    const npu_set_ofm_blk_depth_m1_t &v = *reinterpret_cast<const npu_set_ofm_blk_depth_m1_t *>(in);
+                    op                                  = "NPU_SET_OFM_BLK_DEPTH_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_ZERO_POINT):
+                {
+                    const npu_set_ofm_zero_point_t &v = *reinterpret_cast<const npu_set_ofm_zero_point_t *>(in);
+                    op                                = "NPU_SET_OFM_ZERO_POINT";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_WIDTH0_M1):
+                {
+                    const npu_set_ofm_width0_m1_t &v = *reinterpret_cast<const npu_set_ofm_width0_m1_t *>(in);
+                    op                               = "NPU_SET_OFM_WIDTH0_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_HEIGHT0_M1):
+                {
+                    const npu_set_ofm_height0_m1_t &v = *reinterpret_cast<const npu_set_ofm_height0_m1_t *>(in);
+                    op                                = "NPU_SET_OFM_HEIGHT0_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_HEIGHT1_M1):
+                {
+                    const npu_set_ofm_height1_m1_t &v = *reinterpret_cast<const npu_set_ofm_height1_m1_t *>(in);
+                    op                                = "NPU_SET_OFM_HEIGHT1_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_REGION):
+                {
+                    const npu_set_ofm_region_t &v = *reinterpret_cast<const npu_set_ofm_region_t *>(in);
+                    op                            = "NPU_SET_OFM_REGION";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_KERNEL_WIDTH_M1):
+                {
+                    const npu_set_kernel_width_m1_t &v = *reinterpret_cast<const npu_set_kernel_width_m1_t *>(in);
+                    op                                 = "NPU_SET_KERNEL_WIDTH_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_KERNEL_HEIGHT_M1):
+                {
+                    const npu_set_kernel_height_m1_t &v = *reinterpret_cast<const npu_set_kernel_height_m1_t *>(in);
+                    op                                  = "NPU_SET_KERNEL_HEIGHT_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_KERNEL_STRIDE):
+                {
+                    const npu_set_kernel_stride_t &v = *reinterpret_cast<const npu_set_kernel_stride_t *>(in);
+                    op                               = "NPU_SET_KERNEL_STRIDE";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_PARALLEL_MODE):
+                {
+                    const npu_set_parallel_mode_t &v = *reinterpret_cast<const npu_set_parallel_mode_t *>(in);
+                    op                               = "NPU_SET_PARALLEL_MODE";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_ACC_FORMAT):
+                {
+                    const npu_set_acc_format_t &v = *reinterpret_cast<const npu_set_acc_format_t *>(in);
+                    op                            = "NPU_SET_ACC_FORMAT";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_ACTIVATION):
+                {
+                    const npu_set_activation_t &v = *reinterpret_cast<const npu_set_activation_t *>(in);
+                    op                            = "NPU_SET_ACTIVATION";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_ACTIVATION_MIN):
+                {
+                    const npu_set_activation_min_t &v = *reinterpret_cast<const npu_set_activation_min_t *>(in);
+                    op                                = "NPU_SET_ACTIVATION_MIN";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_ACTIVATION_MAX):
+                {
+                    const npu_set_activation_max_t &v = *reinterpret_cast<const npu_set_activation_max_t *>(in);
+                    op                                = "NPU_SET_ACTIVATION_MAX";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_WEIGHT_REGION):
+                {
+                    const npu_set_weight_region_t &v = *reinterpret_cast<const npu_set_weight_region_t *>(in);
+                    op                               = "NPU_SET_WEIGHT_REGION";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_SCALE_REGION):
+                {
+                    const npu_set_scale_region_t &v = *reinterpret_cast<const npu_set_scale_region_t *>(in);
+                    op                              = "NPU_SET_SCALE_REGION";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_AB_START):
+                {
+                    const npu_set_ab_start_t &v = *reinterpret_cast<const npu_set_ab_start_t *>(in);
+                    op                          = "NPU_SET_AB_START";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_BLOCKDEP):
+                {
+                    const npu_set_blockdep_t &v = *reinterpret_cast<const npu_set_blockdep_t *>(in);
+                    op                          = "NPU_SET_BLOCKDEP";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_DMA0_SRC_REGION):
+                {
+                    const npu_set_dma0_src_region_t &v = *reinterpret_cast<const npu_set_dma0_src_region_t *>(in);
+                    op                                 = "NPU_SET_DMA0_SRC_REGION";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_DMA0_DST_REGION):
+                {
+                    const npu_set_dma0_dst_region_t &v = *reinterpret_cast<const npu_set_dma0_dst_region_t *>(in);
+                    op                                 = "NPU_SET_DMA0_DST_REGION";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_DMA0_SIZE0):
+                {
+                    const npu_set_dma0_size0_t &v = *reinterpret_cast<const npu_set_dma0_size0_t *>(in);
+                    op                            = "NPU_SET_DMA0_SIZE0";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_DMA0_SIZE1):
+                {
+                    const npu_set_dma0_size1_t &v = *reinterpret_cast<const npu_set_dma0_size1_t *>(in);
+                    op                            = "NPU_SET_DMA0_SIZE1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_BROADCAST):
+                {
+                    const npu_set_ifm2_broadcast_t &v = *reinterpret_cast<const npu_set_ifm2_broadcast_t *>(in);
+                    op                                = "NPU_SET_IFM2_BROADCAST";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_SCALAR):
+                {
+                    const npu_set_ifm2_scalar_t &v = *reinterpret_cast<const npu_set_ifm2_scalar_t *>(in);
+                    op                             = "NPU_SET_IFM2_SCALAR";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_PRECISION):
+                {
+                    const npu_set_ifm2_precision_t &v = *reinterpret_cast<const npu_set_ifm2_precision_t *>(in);
+                    op                                = "NPU_SET_IFM2_PRECISION";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_ZERO_POINT):
+                {
+                    const npu_set_ifm2_zero_point_t &v = *reinterpret_cast<const npu_set_ifm2_zero_point_t *>(in);
+                    op                                 = "NPU_SET_IFM2_ZERO_POINT";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_WIDTH0_M1):
+                {
+                    const npu_set_ifm2_width0_m1_t &v = *reinterpret_cast<const npu_set_ifm2_width0_m1_t *>(in);
+                    op                                = "NPU_SET_IFM2_WIDTH0_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_HEIGHT0_M1):
+                {
+                    const npu_set_ifm2_height0_m1_t &v = *reinterpret_cast<const npu_set_ifm2_height0_m1_t *>(in);
+                    op                                 = "NPU_SET_IFM2_HEIGHT0_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_HEIGHT1_M1):
+                {
+                    const npu_set_ifm2_height1_m1_t &v = *reinterpret_cast<const npu_set_ifm2_height1_m1_t *>(in);
+                    op                                 = "NPU_SET_IFM2_HEIGHT1_M1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_IB_START):
+                {
+                    const npu_set_ifm2_ib_start_t &v = *reinterpret_cast<const npu_set_ifm2_ib_start_t *>(in);
+                    op                               = "NPU_SET_IFM2_IB_START";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_REGION):
+                {
+                    const npu_set_ifm2_region_t &v = *reinterpret_cast<const npu_set_ifm2_region_t *>(in);
+                    op                             = "NPU_SET_IFM2_REGION";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_BASE0):
+                {
+                    const npu_set_ifm_base0_t &v = *reinterpret_cast<const npu_set_ifm_base0_t *>(in);
+                    op                           = "NPU_SET_IFM_BASE0";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_BASE1):
+                {
+                    const npu_set_ifm_base1_t &v = *reinterpret_cast<const npu_set_ifm_base1_t *>(in);
+                    op                           = "NPU_SET_IFM_BASE1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_BASE2):
+                {
+                    const npu_set_ifm_base2_t &v = *reinterpret_cast<const npu_set_ifm_base2_t *>(in);
+                    op                           = "NPU_SET_IFM_BASE2";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_BASE3):
+                {
+                    const npu_set_ifm_base3_t &v = *reinterpret_cast<const npu_set_ifm_base3_t *>(in);
+                    op                           = "NPU_SET_IFM_BASE3";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_STRIDE_X):
+                {
+                    const npu_set_ifm_stride_x_t &v = *reinterpret_cast<const npu_set_ifm_stride_x_t *>(in);
+                    op                              = "NPU_SET_IFM_STRIDE_X";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_STRIDE_Y):
+                {
+                    const npu_set_ifm_stride_y_t &v = *reinterpret_cast<const npu_set_ifm_stride_y_t *>(in);
+                    op                              = "NPU_SET_IFM_STRIDE_Y";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_STRIDE_C):
+                {
+                    const npu_set_ifm_stride_c_t &v = *reinterpret_cast<const npu_set_ifm_stride_c_t *>(in);
+                    op                              = "NPU_SET_IFM_STRIDE_C";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_BASE0):
+                {
+                    const npu_set_ofm_base0_t &v = *reinterpret_cast<const npu_set_ofm_base0_t *>(in);
+                    op                           = "NPU_SET_OFM_BASE0";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_BASE1):
+                {
+                    const npu_set_ofm_base1_t &v = *reinterpret_cast<const npu_set_ofm_base1_t *>(in);
+                    op                           = "NPU_SET_OFM_BASE1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_BASE2):
+                {
+                    const npu_set_ofm_base2_t &v = *reinterpret_cast<const npu_set_ofm_base2_t *>(in);
+                    op                           = "NPU_SET_OFM_BASE2";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_BASE3):
+                {
+                    const npu_set_ofm_base3_t &v = *reinterpret_cast<const npu_set_ofm_base3_t *>(in);
+                    op                           = "NPU_SET_OFM_BASE3";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_STRIDE_X):
+                {
+                    const npu_set_ofm_stride_x_t &v = *reinterpret_cast<const npu_set_ofm_stride_x_t *>(in);
+                    op                              = "NPU_SET_OFM_STRIDE_X";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_STRIDE_Y):
+                {
+                    const npu_set_ofm_stride_y_t &v = *reinterpret_cast<const npu_set_ofm_stride_y_t *>(in);
+                    op                              = "NPU_SET_OFM_STRIDE_Y";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_STRIDE_C):
+                {
+                    const npu_set_ofm_stride_c_t &v = *reinterpret_cast<const npu_set_ofm_stride_c_t *>(in);
+                    op                              = "NPU_SET_OFM_STRIDE_C";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_WEIGHT_BASE):
+                {
+                    const npu_set_weight_base_t &v = *reinterpret_cast<const npu_set_weight_base_t *>(in);
+                    op                             = "NPU_SET_WEIGHT_BASE";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_WEIGHT_LENGTH):
+                {
+                    const npu_set_weight_length_t &v = *reinterpret_cast<const npu_set_weight_length_t *>(in);
+                    op                               = "NPU_SET_WEIGHT_LENGTH";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_SCALE_BASE):
+                {
+                    const npu_set_scale_base_t &v = *reinterpret_cast<const npu_set_scale_base_t *>(in);
+                    op                            = "NPU_SET_SCALE_BASE";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_SCALE_LENGTH):
+                {
+                    const npu_set_scale_length_t &v = *reinterpret_cast<const npu_set_scale_length_t *>(in);
+                    op                              = "NPU_SET_SCALE_LENGTH";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_SCALE):
+                {
+                    const npu_set_ofm_scale_t &v = *reinterpret_cast<const npu_set_ofm_scale_t *>(in);
+                    op                           = "NPU_SET_OFM_SCALE";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OPA_SCALE):
+                {
+                    const npu_set_opa_scale_t &v = *reinterpret_cast<const npu_set_opa_scale_t *>(in);
+                    op                           = "NPU_SET_OPA_SCALE";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OPB_SCALE):
+                {
+                    const npu_set_opb_scale_t &v = *reinterpret_cast<const npu_set_opb_scale_t *>(in);
+                    op                           = "NPU_SET_OPB_SCALE";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_SRC):
+                {
+                    const npu_set_dma0_src_t &v = *reinterpret_cast<const npu_set_dma0_src_t *>(in);
+                    op                          = "NPU_SET_DMA0_SRC";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_DST):
+                {
+                    const npu_set_dma0_dst_t &v = *reinterpret_cast<const npu_set_dma0_dst_t *>(in);
+                    op                          = "NPU_SET_DMA0_DST";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_LEN):
+                {
+                    const npu_set_dma0_len_t &v = *reinterpret_cast<const npu_set_dma0_len_t *>(in);
+                    op                          = "NPU_SET_DMA0_LEN";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_SKIP0):
+                {
+                    const npu_set_dma0_skip0_t &v = *reinterpret_cast<const npu_set_dma0_skip0_t *>(in);
+                    op                            = "NPU_SET_DMA0_SKIP0";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_SKIP1):
+                {
+                    const npu_set_dma0_skip1_t &v = *reinterpret_cast<const npu_set_dma0_skip1_t *>(in);
+                    op                            = "NPU_SET_DMA0_SKIP1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_BASE0):
+                {
+                    const npu_set_ifm2_base0_t &v = *reinterpret_cast<const npu_set_ifm2_base0_t *>(in);
+                    op                            = "NPU_SET_IFM2_BASE0";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_BASE1):
+                {
+                    const npu_set_ifm2_base1_t &v = *reinterpret_cast<const npu_set_ifm2_base1_t *>(in);
+                    op                            = "NPU_SET_IFM2_BASE1";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_BASE2):
+                {
+                    const npu_set_ifm2_base2_t &v = *reinterpret_cast<const npu_set_ifm2_base2_t *>(in);
+                    op                            = "NPU_SET_IFM2_BASE2";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_BASE3):
+                {
+                    const npu_set_ifm2_base3_t &v = *reinterpret_cast<const npu_set_ifm2_base3_t *>(in);
+                    op                            = "NPU_SET_IFM2_BASE3";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_STRIDE_X):
+                {
+                    const npu_set_ifm2_stride_x_t &v = *reinterpret_cast<const npu_set_ifm2_stride_x_t *>(in);
+                    op                               = "NPU_SET_IFM2_STRIDE_X";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_STRIDE_Y):
+                {
+                    const npu_set_ifm2_stride_y_t &v = *reinterpret_cast<const npu_set_ifm2_stride_y_t *>(in);
+                    op                               = "NPU_SET_IFM2_STRIDE_Y";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_STRIDE_C):
+                {
+                    const npu_set_ifm2_stride_c_t &v = *reinterpret_cast<const npu_set_ifm2_stride_c_t *>(in);
+                    op                               = "NPU_SET_IFM2_STRIDE_C";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_WEIGHT1_BASE):
+                {
+                    const npu_set_weight1_base_t &v = *reinterpret_cast<const npu_set_weight1_base_t *>(in);
+                    op                              = "NPU_SET_WEIGHT1_BASE";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_WEIGHT1_LENGTH):
+                {
+                    const npu_set_weight1_length_t &v = *reinterpret_cast<const npu_set_weight1_length_t *>(in);
+                    op                                = "NPU_SET_WEIGHT1_LENGTH";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_SCALE1_BASE):
+                {
+                    const npu_set_scale1_base_t &v = *reinterpret_cast<const npu_set_scale1_base_t *>(in);
+                    op                             = "NPU_SET_SCALE1_BASE";
+                    v.disassemble(fields);
+                    break;
+                }
+
+            case (static_cast<uint32_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL) << 14) |
+                    static_cast<uint32_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_SCALE1_LENGTH):
+                {
+                    const npu_set_scale1_length_t &v = *reinterpret_cast<const npu_set_scale1_length_t *>(in);
+                    op                               = "NPU_SET_SCALE1_LENGTH";
+                    v.disassemble(fields);
+                    break;
+                }
+        }
+
         return (*in & (3 << 14)) != 0 ? 2 : 1;
     }
 #endif
@@ -18396,14 +18975,14 @@ struct isa
     struct npu_op_stop_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2; //  control
         uint32_t mask : 16;   //  Encoding for 16-bit mask value
 #ifdef __cplusplus
-      public:
+    public:
         npu_op_stop_t(uint32_t _mask) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_STOP)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), mask(_mask & ((1U << 16) - 1))
@@ -18469,14 +19048,14 @@ struct isa
     struct npu_op_irq_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2; //  control
         uint32_t mask : 16;   //  Encoding for 16-bit mask value
 #ifdef __cplusplus
-      public:
+    public:
         npu_op_irq_t(uint32_t _mask) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_IRQ)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), mask(_mask & ((1U << 16) - 1))
@@ -18542,14 +19121,14 @@ struct isa
     struct npu_op_conv_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2; //  control
         uint32_t reserved1 : 16;
 #ifdef __cplusplus
-      public:
+    public:
         CONSTEXPR npu_op_conv_t() :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_CONV)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), reserved1(0)
@@ -18598,14 +19177,14 @@ struct isa
     struct npu_op_depthwise_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2; //  control
         uint32_t reserved1 : 16;
 #ifdef __cplusplus
-      public:
+    public:
         CONSTEXPR npu_op_depthwise_t() :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_DEPTHWISE)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), reserved1(0)
@@ -18654,7 +19233,7 @@ struct isa
     struct npu_op_pool_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -18662,7 +19241,7 @@ struct isa
         uint32_t pooling_mode : 3; //  Pooling mode
         uint32_t reserved1 : 13;
 #ifdef __cplusplus
-      public:
+    public:
         npu_op_pool_t(NPU_NAMESPACE::pooling_mode _pooling_mode) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_POOL)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)),
@@ -18721,10 +19300,10 @@ struct isa
         void disassemble(std::vector<std::pair<std::string, std::string>> &fields) const
         {
             fields.push_back(std::make_pair<std::string, std::string>(
-                "pooling_mode",
-                (pooling_mode < (sizeof(pooling_mode_str) / sizeof(pooling_mode_str[0])) ?
-                     pooling_mode_str[pooling_mode] :
-                     "****")));
+                                 "pooling_mode",
+                                 (pooling_mode < (sizeof(pooling_mode_str) / sizeof(pooling_mode_str[0])) ?
+                                  pooling_mode_str[pooling_mode] :
+                                  "****")));
         }
 #endif
 #endif
@@ -18733,7 +19312,7 @@ struct isa
     struct npu_op_elementwise_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -18741,7 +19320,7 @@ struct isa
         uint32_t elementwise_mode : 6; //  Elementwise mode
         uint32_t reserved1 : 10;
 #ifdef __cplusplus
-      public:
+    public:
         npu_op_elementwise_t(NPU_NAMESPACE::elementwise_mode _elementwise_mode) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_ELEMENTWISE)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)),
@@ -18800,10 +19379,10 @@ struct isa
         void disassemble(std::vector<std::pair<std::string, std::string>> &fields) const
         {
             fields.push_back(std::make_pair<std::string, std::string>(
-                "elementwise_mode",
-                (elementwise_mode < (sizeof(elementwise_mode_str) / sizeof(elementwise_mode_str[0])) ?
-                     elementwise_mode_str[elementwise_mode] :
-                     "****")));
+                                 "elementwise_mode",
+                                 (elementwise_mode < (sizeof(elementwise_mode_str) / sizeof(elementwise_mode_str[0])) ?
+                                  elementwise_mode_str[elementwise_mode] :
+                                  "****")));
         }
 #endif
 #endif
@@ -18812,14 +19391,14 @@ struct isa
     struct npu_op_dma_start_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2; //  control
         uint32_t reserved1 : 16;
 #ifdef __cplusplus
-      public:
+    public:
         CONSTEXPR npu_op_dma_start_t() :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_DMA_START)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), reserved1(0)
@@ -18868,7 +19447,7 @@ struct isa
     struct npu_op_dma_wait_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -18876,7 +19455,7 @@ struct isa
         uint32_t k : 4;       //  Number of outstanding descriptors
         uint32_t reserved1 : 12;
 #ifdef __cplusplus
-      public:
+    public:
         npu_op_dma_wait_t(uint32_t _k) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_DMA_WAIT)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), k(_k & ((1U << 4) - 1)), reserved1(0)
@@ -18942,7 +19521,7 @@ struct isa
     struct npu_op_kernel_wait_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -18950,7 +19529,7 @@ struct isa
         uint32_t n : 2;       //  Number of kernel operations in range 0-3
         uint32_t reserved1 : 14;
 #ifdef __cplusplus
-      public:
+    public:
         npu_op_kernel_wait_t(uint32_t _n) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_KERNEL_WAIT)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), n(_n & ((1U << 2) - 1)), reserved1(0)
@@ -19016,7 +19595,7 @@ struct isa
     struct npu_op_pmu_mask_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -19024,7 +19603,7 @@ struct isa
         uint32_t enable : 1;  //  Enable or disable PMU mask
         uint32_t reserved1 : 15;
 #ifdef __cplusplus
-      public:
+    public:
         npu_op_pmu_mask_t(uint32_t _enable) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_OP_PMU_MASK)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), enable(_enable & ((1U << 1) - 1)),
@@ -19091,7 +19670,7 @@ struct isa
     struct npu_set_ifm_pad_top_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -19099,7 +19678,7 @@ struct isa
         uint32_t pad : 7;     //  IFM top pad
         uint32_t reserved1 : 9;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_pad_top_t(uint32_t _pad) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_PAD_TOP)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), pad(_pad & ((1U << 7) - 1)), reserved1(0)
@@ -19165,7 +19744,7 @@ struct isa
     struct npu_set_ifm_pad_left_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -19173,7 +19752,7 @@ struct isa
         uint32_t pad : 7;     //  IFM left pad
         uint32_t reserved1 : 9;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_pad_left_t(uint32_t _pad) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_PAD_LEFT)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), pad(_pad & ((1U << 7) - 1)), reserved1(0)
@@ -19239,7 +19818,7 @@ struct isa
     struct npu_set_ifm_pad_right_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -19247,7 +19826,7 @@ struct isa
         uint32_t pad : 8;     //  IFM right pad. Max value is 128
         uint32_t reserved1 : 8;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_pad_right_t(uint32_t _pad) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_PAD_RIGHT)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), pad(_pad & ((1U << 8) - 1)), reserved1(0)
@@ -19313,7 +19892,7 @@ struct isa
     struct npu_set_ifm_pad_bottom_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -19321,7 +19900,7 @@ struct isa
         uint32_t pad : 8;     //  IFM bottom pad. Max value is 128
         uint32_t reserved1 : 8;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_pad_bottom_t(uint32_t _pad) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_PAD_BOTTOM)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), pad(_pad & ((1U << 8) - 1)), reserved1(0)
@@ -19387,14 +19966,14 @@ struct isa
     struct npu_set_ifm_depth_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;   //  control
         uint32_t depth_m1 : 16; //  Number of input channels for convolution
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_depth_m1_t(uint32_t _depth_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_DEPTH_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), depth_m1(_depth_m1 & ((1U << 16) - 1))
@@ -19460,7 +20039,7 @@ struct isa
     struct npu_set_ifm_precision_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -19474,7 +20053,7 @@ struct isa
         uint32_t reserved3 : 4;
         uint32_t round_mode : 2; //  IFM round mode
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_precision_t(NPU_NAMESPACE::activation_type _activation_type,
                                 NPU_NAMESPACE::activation_precision _activation_precision,
                                 NPU_NAMESPACE::activation_format _activation_format,
@@ -19578,29 +20157,29 @@ struct isa
         void disassemble(std::vector<std::pair<std::string, std::string>> &fields) const
         {
             fields.push_back(std::make_pair<std::string, std::string>(
-                "activation_type",
-                (activation_type < (sizeof(activation_type_str) / sizeof(activation_type_str[0])) ?
-                     activation_type_str[activation_type] :
-                     "****")));
+                                 "activation_type",
+                                 (activation_type < (sizeof(activation_type_str) / sizeof(activation_type_str[0])) ?
+                                  activation_type_str[activation_type] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "activation_precision",
-                (activation_precision < (sizeof(activation_precision_str) / sizeof(activation_precision_str[0])) ?
-                     activation_precision_str[activation_precision] :
-                     "****")));
+                                 "activation_precision",
+                                 (activation_precision < (sizeof(activation_precision_str) / sizeof(activation_precision_str[0])) ?
+                                  activation_precision_str[activation_precision] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "activation_format",
-                (activation_format < (sizeof(activation_format_str) / sizeof(activation_format_str[0])) ?
-                     activation_format_str[activation_format] :
-                     "****")));
+                                 "activation_format",
+                                 (activation_format < (sizeof(activation_format_str) / sizeof(activation_format_str[0])) ?
+                                  activation_format_str[activation_format] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "scale_mode",
-                (scale_mode < (sizeof(ifm_scale_mode_str) / sizeof(ifm_scale_mode_str[0])) ?
-                     ifm_scale_mode_str[scale_mode] :
-                     "****")));
+                                 "scale_mode",
+                                 (scale_mode < (sizeof(ifm_scale_mode_str) / sizeof(ifm_scale_mode_str[0])) ?
+                                  ifm_scale_mode_str[scale_mode] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "round_mode",
-                (round_mode < (sizeof(round_mode_str) / sizeof(round_mode_str[0])) ? round_mode_str[round_mode] :
-                                                                                     "****")));
+                                 "round_mode",
+                                 (round_mode < (sizeof(round_mode_str) / sizeof(round_mode_str[0])) ? round_mode_str[round_mode] :
+                                  "****")));
         }
 #endif
 #endif
@@ -19609,7 +20188,7 @@ struct isa
     struct npu_set_ifm_upscale_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -19617,7 +20196,7 @@ struct isa
         uint32_t mode : 2;    //  IFM upscale mode
         uint32_t reserved1 : 14;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_upscale_t(NPU_NAMESPACE::ifm_upscale_mode _mode) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_UPSCALE)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)),
@@ -19676,9 +20255,9 @@ struct isa
         void disassemble(std::vector<std::pair<std::string, std::string>> &fields) const
         {
             fields.push_back(std::make_pair<std::string, std::string>(
-                "mode",
-                (mode < (sizeof(ifm_upscale_mode_str) / sizeof(ifm_upscale_mode_str[0])) ? ifm_upscale_mode_str[mode] :
-                                                                                           "****")));
+                                 "mode",
+                                 (mode < (sizeof(ifm_upscale_mode_str) / sizeof(ifm_upscale_mode_str[0])) ? ifm_upscale_mode_str[mode] :
+                                  "****")));
         }
 #endif
 #endif
@@ -19687,14 +20266,14 @@ struct isa
     struct npu_set_ifm_zero_point_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;     //  control
         uint32_t zero_point : 16; //  Zero point offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_zero_point_t(uint32_t _zero_point) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_ZERO_POINT)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)),
@@ -19761,14 +20340,14 @@ struct isa
     struct npu_set_ifm_width0_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;   //  control
         uint32_t width_m1 : 16; //  IFM Tile 0 and tile 2 width
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_width0_m1_t(uint32_t _width_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_WIDTH0_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), width_m1(_width_m1 & ((1U << 16) - 1))
@@ -19834,14 +20413,14 @@ struct isa
     struct npu_set_ifm_height0_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;    //  control
         uint32_t height_m1 : 16; //  IFM Tile 0 height
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_height0_m1_t(uint32_t _height_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_HEIGHT0_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), height_m1(_height_m1 & ((1U << 16) - 1))
@@ -19907,14 +20486,14 @@ struct isa
     struct npu_set_ifm_height1_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;    //  control
         uint32_t height_m1 : 16; //  IFM Tile 1 height
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_height1_m1_t(uint32_t _height_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_HEIGHT1_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), height_m1(_height_m1 & ((1U << 16) - 1))
@@ -19980,7 +20559,7 @@ struct isa
     struct npu_set_ifm_ib_end_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -19988,7 +20567,7 @@ struct isa
         uint32_t ib_end : 6;  //  End of IB0,IB1 buffers in the SHRAM in KB units. Multiple of 2
         uint32_t reserved1 : 10;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_ib_end_t(uint32_t _ib_end) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_IB_END)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), ib_end(_ib_end & ((1U << 6) - 1)),
@@ -20055,7 +20634,7 @@ struct isa
     struct npu_set_ifm_region_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -20063,7 +20642,7 @@ struct isa
         uint32_t region : 3;  //  Region number n
         uint32_t reserved1 : 13;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_region_t(uint32_t _region) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM_REGION)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), region(_region & ((1U << 3) - 1)),
@@ -20130,14 +20709,14 @@ struct isa
     struct npu_set_ofm_width_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;   //  control
         uint32_t width_m1 : 16; //  Output feature map width
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_width_m1_t(uint32_t _width_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_WIDTH_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), width_m1(_width_m1 & ((1U << 16) - 1))
@@ -20203,14 +20782,14 @@ struct isa
     struct npu_set_ofm_height_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;    //  control
         uint32_t height_m1 : 16; //  Output feature map height
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_height_m1_t(uint32_t _height_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_HEIGHT_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), height_m1(_height_m1 & ((1U << 16) - 1))
@@ -20276,14 +20855,14 @@ struct isa
     struct npu_set_ofm_depth_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;   //  control
         uint32_t depth_m1 : 16; //  Output feature map depth
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_depth_m1_t(uint32_t _depth_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_DEPTH_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), depth_m1(_depth_m1 & ((1U << 16) - 1))
@@ -20349,7 +20928,7 @@ struct isa
     struct npu_set_ofm_precision_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -20362,7 +20941,7 @@ struct isa
         uint32_t reserved2 : 5;
         uint32_t round_mode : 2; //  OFM round mode
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_precision_t(NPU_NAMESPACE::activation_type _activation_type,
                                 NPU_NAMESPACE::activation_precision _activation_precision,
                                 NPU_NAMESPACE::activation_format _activation_format,
@@ -20466,29 +21045,29 @@ struct isa
         void disassemble(std::vector<std::pair<std::string, std::string>> &fields) const
         {
             fields.push_back(std::make_pair<std::string, std::string>(
-                "activation_type",
-                (activation_type < (sizeof(activation_type_str) / sizeof(activation_type_str[0])) ?
-                     activation_type_str[activation_type] :
-                     "****")));
+                                 "activation_type",
+                                 (activation_type < (sizeof(activation_type_str) / sizeof(activation_type_str[0])) ?
+                                  activation_type_str[activation_type] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "activation_precision",
-                (activation_precision < (sizeof(activation_precision_str) / sizeof(activation_precision_str[0])) ?
-                     activation_precision_str[activation_precision] :
-                     "****")));
+                                 "activation_precision",
+                                 (activation_precision < (sizeof(activation_precision_str) / sizeof(activation_precision_str[0])) ?
+                                  activation_precision_str[activation_precision] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "activation_format",
-                (activation_format < (sizeof(activation_format_str) / sizeof(activation_format_str[0])) ?
-                     activation_format_str[activation_format] :
-                     "****")));
+                                 "activation_format",
+                                 (activation_format < (sizeof(activation_format_str) / sizeof(activation_format_str[0])) ?
+                                  activation_format_str[activation_format] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "scale_mode",
-                (scale_mode < (sizeof(ofm_scale_mode_str) / sizeof(ofm_scale_mode_str[0])) ?
-                     ofm_scale_mode_str[scale_mode] :
-                     "****")));
+                                 "scale_mode",
+                                 (scale_mode < (sizeof(ofm_scale_mode_str) / sizeof(ofm_scale_mode_str[0])) ?
+                                  ofm_scale_mode_str[scale_mode] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "round_mode",
-                (round_mode < (sizeof(round_mode_str) / sizeof(round_mode_str[0])) ? round_mode_str[round_mode] :
-                                                                                     "****")));
+                                 "round_mode",
+                                 (round_mode < (sizeof(round_mode_str) / sizeof(round_mode_str[0])) ? round_mode_str[round_mode] :
+                                  "****")));
         }
 #endif
 #endif
@@ -20497,7 +21076,7 @@ struct isa
     struct npu_set_ofm_blk_width_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -20505,7 +21084,7 @@ struct isa
         uint32_t width_m1 : 6; //  OFM block width
         uint32_t reserved1 : 10;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_blk_width_m1_t(uint32_t _width_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_BLK_WIDTH_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), width_m1(_width_m1 & ((1U << 6) - 1)),
@@ -20572,7 +21151,7 @@ struct isa
     struct npu_set_ofm_blk_height_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -20580,7 +21159,7 @@ struct isa
         uint32_t height_m1 : 5; //  OFM block height
         uint32_t reserved1 : 11;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_blk_height_m1_t(uint32_t _height_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_BLK_HEIGHT_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), height_m1(_height_m1 & ((1U << 5) - 1)),
@@ -20647,7 +21226,7 @@ struct isa
     struct npu_set_ofm_blk_depth_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -20655,7 +21234,7 @@ struct isa
         uint32_t depth_m1 : 7; //  OFM block depth
         uint32_t reserved1 : 9;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_blk_depth_m1_t(uint32_t _depth_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_BLK_DEPTH_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), depth_m1(_depth_m1 & ((1U << 7) - 1)),
@@ -20722,14 +21301,14 @@ struct isa
     struct npu_set_ofm_zero_point_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;     //  control
         uint32_t zero_point : 16; //  Zero point offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_zero_point_t(uint32_t _zero_point) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_ZERO_POINT)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)),
@@ -20796,14 +21375,14 @@ struct isa
     struct npu_set_ofm_width0_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;   //  control
         uint32_t width_m1 : 16; //  OFM Tile 0 and tile 2 width
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_width0_m1_t(uint32_t _width_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_WIDTH0_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), width_m1(_width_m1 & ((1U << 16) - 1))
@@ -20869,14 +21448,14 @@ struct isa
     struct npu_set_ofm_height0_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;    //  control
         uint32_t height_m1 : 16; //  OFM Tile 0 height
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_height0_m1_t(uint32_t _height_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_HEIGHT0_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), height_m1(_height_m1 & ((1U << 16) - 1))
@@ -20942,14 +21521,14 @@ struct isa
     struct npu_set_ofm_height1_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;    //  control
         uint32_t height_m1 : 16; //  OFM Tile 1 height
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_height1_m1_t(uint32_t _height_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_HEIGHT1_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), height_m1(_height_m1 & ((1U << 16) - 1))
@@ -21015,7 +21594,7 @@ struct isa
     struct npu_set_ofm_region_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -21023,7 +21602,7 @@ struct isa
         uint32_t region : 3;  //  Index n for OFM access
         uint32_t reserved1 : 13;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_region_t(uint32_t _region) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_OFM_REGION)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), region(_region & ((1U << 3) - 1)),
@@ -21090,14 +21669,14 @@ struct isa
     struct npu_set_kernel_width_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;   //  control
         uint32_t width_m1 : 16; //  Kernel width
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_kernel_width_m1_t(uint32_t _width_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_KERNEL_WIDTH_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), width_m1(_width_m1 & ((1U << 16) - 1))
@@ -21163,14 +21742,14 @@ struct isa
     struct npu_set_kernel_height_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;    //  control
         uint32_t height_m1 : 16; //  Kernel height
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_kernel_height_m1_t(uint32_t _height_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_KERNEL_HEIGHT_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), height_m1(_height_m1 & ((1U << 16) - 1))
@@ -21236,7 +21815,7 @@ struct isa
     struct npu_set_kernel_stride_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -21252,7 +21831,7 @@ struct isa
         uint32_t stride_y_msb : 1; //  Stride y MSB. (kernel_y_stride - 1) >> 1
         uint32_t reserved2 : 6;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_kernel_stride_t(uint32_t _stride_x_lsb,
                                 uint32_t _stride_y_lsb,
                                 NPU_NAMESPACE::weight_order _weight_order,
@@ -21391,25 +21970,25 @@ struct isa
             fields.push_back(std::make_pair<std::string, std::string>("stride_x_lsb", std::to_string(stride_x_lsb)));
             fields.push_back(std::make_pair<std::string, std::string>("stride_y_lsb", std::to_string(stride_y_lsb)));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "weight_order",
-                (weight_order < (sizeof(weight_order_str) / sizeof(weight_order_str[0])) ?
-                     weight_order_str[weight_order] :
-                     "****")));
+                                 "weight_order",
+                                 (weight_order < (sizeof(weight_order_str) / sizeof(weight_order_str[0])) ?
+                                  weight_order_str[weight_order] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "dilation_x",
-                (dilation_x < (sizeof(kernel_dilation_str) / sizeof(kernel_dilation_str[0])) ?
-                     kernel_dilation_str[dilation_x] :
-                     "****")));
+                                 "dilation_x",
+                                 (dilation_x < (sizeof(kernel_dilation_str) / sizeof(kernel_dilation_str[0])) ?
+                                  kernel_dilation_str[dilation_x] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "dilation_y",
-                (dilation_y < (sizeof(kernel_dilation_str) / sizeof(kernel_dilation_str[0])) ?
-                     kernel_dilation_str[dilation_y] :
-                     "****")));
+                                 "dilation_y",
+                                 (dilation_y < (sizeof(kernel_dilation_str) / sizeof(kernel_dilation_str[0])) ?
+                                  kernel_dilation_str[dilation_y] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "decomposition",
-                (decomposition < (sizeof(kernel_decomposition_str) / sizeof(kernel_decomposition_str[0])) ?
-                     kernel_decomposition_str[decomposition] :
-                     "****")));
+                                 "decomposition",
+                                 (decomposition < (sizeof(kernel_decomposition_str) / sizeof(kernel_decomposition_str[0])) ?
+                                  kernel_decomposition_str[decomposition] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>("stride_x_msb", std::to_string(stride_x_msb)));
             fields.push_back(std::make_pair<std::string, std::string>("stride_y_msb", std::to_string(stride_y_msb)));
         }
@@ -21420,7 +21999,7 @@ struct isa
     struct npu_set_parallel_mode_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -21428,7 +22007,7 @@ struct isa
         uint32_t parallel_mode : 1; //  Multi-core parallel mode
         uint32_t reserved1 : 15;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_parallel_mode_t(NPU_NAMESPACE::parallel_mode _parallel_mode) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_PARALLEL_MODE)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)),
@@ -21487,10 +22066,10 @@ struct isa
         void disassemble(std::vector<std::pair<std::string, std::string>> &fields) const
         {
             fields.push_back(std::make_pair<std::string, std::string>(
-                "parallel_mode",
-                (parallel_mode < (sizeof(parallel_mode_str) / sizeof(parallel_mode_str[0])) ?
-                     parallel_mode_str[parallel_mode] :
-                     "****")));
+                                 "parallel_mode",
+                                 (parallel_mode < (sizeof(parallel_mode_str) / sizeof(parallel_mode_str[0])) ?
+                                  parallel_mode_str[parallel_mode] :
+                                  "****")));
         }
 #endif
 #endif
@@ -21499,7 +22078,7 @@ struct isa
     struct npu_set_acc_format_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -21507,7 +22086,7 @@ struct isa
         uint32_t acc_format : 2; //  Accumulator format
         uint32_t reserved1 : 14;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_acc_format_t(NPU_NAMESPACE::acc_format _acc_format) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_ACC_FORMAT)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)),
@@ -21566,9 +22145,9 @@ struct isa
         void disassemble(std::vector<std::pair<std::string, std::string>> &fields) const
         {
             fields.push_back(std::make_pair<std::string, std::string>(
-                "acc_format",
-                (acc_format < (sizeof(acc_format_str) / sizeof(acc_format_str[0])) ? acc_format_str[acc_format] :
-                                                                                     "****")));
+                                 "acc_format",
+                                 (acc_format < (sizeof(acc_format_str) / sizeof(acc_format_str[0])) ? acc_format_str[acc_format] :
+                                  "****")));
         }
 #endif
 #endif
@@ -21577,7 +22156,7 @@ struct isa
     struct npu_set_activation_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -21587,7 +22166,7 @@ struct isa
         uint32_t activation_clip_range : 3; //  Activation clip range. This must be set to 0 if table lookup is not used
         uint32_t reserved2 : 1;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_activation_t(NPU_NAMESPACE::activation_function _activation_function,
                              NPU_NAMESPACE::activation_clip_range _activation_clip_range) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_ACTIVATION)),
@@ -21658,15 +22237,15 @@ struct isa
         void disassemble(std::vector<std::pair<std::string, std::string>> &fields) const
         {
             fields.push_back(std::make_pair<std::string, std::string>(
-                "activation_function",
-                (activation_function < (sizeof(activation_function_str) / sizeof(activation_function_str[0])) ?
-                     activation_function_str[activation_function] :
-                     "****")));
+                                 "activation_function",
+                                 (activation_function < (sizeof(activation_function_str) / sizeof(activation_function_str[0])) ?
+                                  activation_function_str[activation_function] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "activation_clip_range",
-                (activation_clip_range < (sizeof(activation_clip_range_str) / sizeof(activation_clip_range_str[0])) ?
-                     activation_clip_range_str[activation_clip_range] :
-                     "****")));
+                                 "activation_clip_range",
+                                 (activation_clip_range < (sizeof(activation_clip_range_str) / sizeof(activation_clip_range_str[0])) ?
+                                  activation_clip_range_str[activation_clip_range] :
+                                  "****")));
         }
 #endif
 #endif
@@ -21675,14 +22254,14 @@ struct isa
     struct npu_set_activation_min_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;        //  control
         uint32_t clip_boundary : 16; //  Clip boundary for OFM activations
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_activation_min_t(uint32_t _clip_boundary) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_ACTIVATION_MIN)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)),
@@ -21749,14 +22328,14 @@ struct isa
     struct npu_set_activation_max_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;        //  control
         uint32_t clip_boundary : 16; //  Clip boundary for OFM activations
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_activation_max_t(uint32_t _clip_boundary) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_ACTIVATION_MAX)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)),
@@ -21823,7 +22402,7 @@ struct isa
     struct npu_set_weight_region_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -21831,7 +22410,7 @@ struct isa
         uint32_t region : 3;  //  Index n for weight stream access
         uint32_t reserved1 : 13;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_weight_region_t(uint32_t _region) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_WEIGHT_REGION)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), region(_region & ((1U << 3) - 1)),
@@ -21898,7 +22477,7 @@ struct isa
     struct npu_set_scale_region_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -21906,7 +22485,7 @@ struct isa
         uint32_t region : 3;  //  Index n for scale stream access
         uint32_t reserved1 : 13;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_scale_region_t(uint32_t _region) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_SCALE_REGION)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), region(_region & ((1U << 3) - 1)),
@@ -21973,7 +22552,7 @@ struct isa
     struct npu_set_ab_start_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -21981,7 +22560,7 @@ struct isa
         uint32_t ab_start : 6; //  Start of ACC0,ACC1 buffers in the SHRAM in KB units. Multiple of 2
         uint32_t reserved1 : 10;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ab_start_t(uint32_t _ab_start) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_AB_START)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), ab_start(_ab_start & ((1U << 6) - 1)),
@@ -22048,7 +22627,7 @@ struct isa
     struct npu_set_blockdep_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -22056,7 +22635,7 @@ struct isa
         uint32_t blockdep : 2; //  Block number of blocks dependency between kernel operations
         uint32_t reserved1 : 14;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_blockdep_t(uint32_t _blockdep) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_BLOCKDEP)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), blockdep(_blockdep & ((1U << 2) - 1)),
@@ -22123,7 +22702,7 @@ struct isa
     struct npu_set_dma0_src_region_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -22134,7 +22713,7 @@ struct isa
         uint32_t stride_mode : 2; //  Stride mode
         uint32_t reserved2 : 5;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_dma0_src_region_t(uint32_t _region,
                                   NPU_NAMESPACE::dma_region_mode _region_mode,
                                   NPU_NAMESPACE::dma_stride_mode _stride_mode) :
@@ -22217,15 +22796,15 @@ struct isa
         {
             fields.push_back(std::make_pair<std::string, std::string>("region", std::to_string(region)));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "region_mode",
-                (region_mode < (sizeof(dma_region_mode_str) / sizeof(dma_region_mode_str[0])) ?
-                     dma_region_mode_str[region_mode] :
-                     "****")));
+                                 "region_mode",
+                                 (region_mode < (sizeof(dma_region_mode_str) / sizeof(dma_region_mode_str[0])) ?
+                                  dma_region_mode_str[region_mode] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "stride_mode",
-                (stride_mode < (sizeof(dma_stride_mode_str) / sizeof(dma_stride_mode_str[0])) ?
-                     dma_stride_mode_str[stride_mode] :
-                     "****")));
+                                 "stride_mode",
+                                 (stride_mode < (sizeof(dma_stride_mode_str) / sizeof(dma_stride_mode_str[0])) ?
+                                  dma_stride_mode_str[stride_mode] :
+                                  "****")));
         }
 #endif
 #endif
@@ -22234,19 +22813,19 @@ struct isa
     struct npu_set_dma0_dst_region_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2; //  control
         uint32_t region : 3; //  Region number if region_mode is region_mode_external. Else core mask to write to (bit k
-                             //  set for core k=0,1)
+        //  set for core k=0,1)
         uint32_t reserved1 : 5;
         uint32_t region_mode : 1; //  Region mode
         uint32_t stride_mode : 2; //  Stride mode
         uint32_t reserved2 : 5;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_dma0_dst_region_t(uint32_t _region,
                                   NPU_NAMESPACE::dma_region_mode _region_mode,
                                   NPU_NAMESPACE::dma_stride_mode _stride_mode) :
@@ -22329,15 +22908,15 @@ struct isa
         {
             fields.push_back(std::make_pair<std::string, std::string>("region", std::to_string(region)));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "region_mode",
-                (region_mode < (sizeof(dma_region_mode_str) / sizeof(dma_region_mode_str[0])) ?
-                     dma_region_mode_str[region_mode] :
-                     "****")));
+                                 "region_mode",
+                                 (region_mode < (sizeof(dma_region_mode_str) / sizeof(dma_region_mode_str[0])) ?
+                                  dma_region_mode_str[region_mode] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "stride_mode",
-                (stride_mode < (sizeof(dma_stride_mode_str) / sizeof(dma_stride_mode_str[0])) ?
-                     dma_stride_mode_str[stride_mode] :
-                     "****")));
+                                 "stride_mode",
+                                 (stride_mode < (sizeof(dma_stride_mode_str) / sizeof(dma_stride_mode_str[0])) ?
+                                  dma_stride_mode_str[stride_mode] :
+                                  "****")));
         }
 #endif
 #endif
@@ -22346,14 +22925,14 @@ struct isa
     struct npu_set_dma0_size0_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2; //  control
         uint32_t size : 16;   //  Size of second dimension for 2D/3D transfers
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_dma0_size0_t(uint32_t _size) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_DMA0_SIZE0)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), size(_size & ((1U << 16) - 1))
@@ -22419,14 +22998,14 @@ struct isa
     struct npu_set_dma0_size1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2; //  control
         uint32_t size : 16;   //  Size of third dimension for 3D transfers
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_dma0_size1_t(uint32_t _size) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_DMA0_SIZE1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), size(_size & ((1U << 16) - 1))
@@ -22492,13 +23071,13 @@ struct isa
     struct npu_set_ifm2_broadcast_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2; //  control
         uint32_t
-            broadcast_h : 1; //  Broadcast H dimension (if set then any accesses to IFM2 sets y=0 and IFM2 height=1)
+        broadcast_h : 1; //  Broadcast H dimension (if set then any accesses to IFM2 sets y=0 and IFM2 height=1)
         uint32_t broadcast_w : 1; //  Broadcast W dimension (if set then any accesses to IFM2 sets x=0 and IFM2 width=1)
         uint32_t broadcast_c : 1; //  Broadcast C dimension (if set then any accesses to IFM2 sets c=0 and IFM2 depth=1)
         uint32_t reserved1 : 3;
@@ -22506,7 +23085,7 @@ struct isa
         uint32_t broadcast_constant : 1; //  Broadcast constant given by NPU_SET_IFM2_SCALAR and so ignore BH, BW and BC
         uint32_t reserved2 : 8;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_broadcast_t(NPU_NAMESPACE::broadcast_mode _broadcast_h,
                                  NPU_NAMESPACE::broadcast_mode _broadcast_w,
                                  NPU_NAMESPACE::broadcast_mode _broadcast_c,
@@ -22610,30 +23189,30 @@ struct isa
         void disassemble(std::vector<std::pair<std::string, std::string>> &fields) const
         {
             fields.push_back(std::make_pair<std::string, std::string>(
-                "broadcast_h",
-                (broadcast_h < (sizeof(broadcast_mode_str) / sizeof(broadcast_mode_str[0])) ?
-                     broadcast_mode_str[broadcast_h] :
-                     "****")));
+                                 "broadcast_h",
+                                 (broadcast_h < (sizeof(broadcast_mode_str) / sizeof(broadcast_mode_str[0])) ?
+                                  broadcast_mode_str[broadcast_h] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "broadcast_w",
-                (broadcast_w < (sizeof(broadcast_mode_str) / sizeof(broadcast_mode_str[0])) ?
-                     broadcast_mode_str[broadcast_w] :
-                     "****")));
+                                 "broadcast_w",
+                                 (broadcast_w < (sizeof(broadcast_mode_str) / sizeof(broadcast_mode_str[0])) ?
+                                  broadcast_mode_str[broadcast_w] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "broadcast_c",
-                (broadcast_c < (sizeof(broadcast_mode_str) / sizeof(broadcast_mode_str[0])) ?
-                     broadcast_mode_str[broadcast_c] :
-                     "****")));
+                                 "broadcast_c",
+                                 (broadcast_c < (sizeof(broadcast_mode_str) / sizeof(broadcast_mode_str[0])) ?
+                                  broadcast_mode_str[broadcast_c] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "operand_order",
-                (operand_order < (sizeof(ifm2_operand_order_str) / sizeof(ifm2_operand_order_str[0])) ?
-                     ifm2_operand_order_str[operand_order] :
-                     "****")));
+                                 "operand_order",
+                                 (operand_order < (sizeof(ifm2_operand_order_str) / sizeof(ifm2_operand_order_str[0])) ?
+                                  ifm2_operand_order_str[operand_order] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "broadcast_constant",
-                (broadcast_constant < (sizeof(broadcast_mode_str) / sizeof(broadcast_mode_str[0])) ?
-                     broadcast_mode_str[broadcast_constant] :
-                     "****")));
+                                 "broadcast_constant",
+                                 (broadcast_constant < (sizeof(broadcast_mode_str) / sizeof(broadcast_mode_str[0])) ?
+                                  broadcast_mode_str[broadcast_constant] :
+                                  "****")));
         }
 #endif
 #endif
@@ -22642,14 +23221,14 @@ struct isa
     struct npu_set_ifm2_scalar_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2; //  control
         uint32_t scalar : 16; //  int16 or uint16 depending on ifm2_precision.type
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_scalar_t(uint32_t _scalar) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_SCALAR)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), scalar(_scalar & ((1U << 16) - 1))
@@ -22715,7 +23294,7 @@ struct isa
     struct npu_set_ifm2_precision_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -22727,7 +23306,7 @@ struct isa
         uint32_t activation_format : 2; //  IFM format
         uint32_t reserved3 : 8;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_precision_t(NPU_NAMESPACE::activation_type _activation_type,
                                  NPU_NAMESPACE::activation_precision _activation_precision,
                                  NPU_NAMESPACE::activation_format _activation_format) :
@@ -22809,20 +23388,20 @@ struct isa
         void disassemble(std::vector<std::pair<std::string, std::string>> &fields) const
         {
             fields.push_back(std::make_pair<std::string, std::string>(
-                "activation_type",
-                (activation_type < (sizeof(activation_type_str) / sizeof(activation_type_str[0])) ?
-                     activation_type_str[activation_type] :
-                     "****")));
+                                 "activation_type",
+                                 (activation_type < (sizeof(activation_type_str) / sizeof(activation_type_str[0])) ?
+                                  activation_type_str[activation_type] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "activation_precision",
-                (activation_precision < (sizeof(activation_precision_str) / sizeof(activation_precision_str[0])) ?
-                     activation_precision_str[activation_precision] :
-                     "****")));
+                                 "activation_precision",
+                                 (activation_precision < (sizeof(activation_precision_str) / sizeof(activation_precision_str[0])) ?
+                                  activation_precision_str[activation_precision] :
+                                  "****")));
             fields.push_back(std::make_pair<std::string, std::string>(
-                "activation_format",
-                (activation_format < (sizeof(activation_format_str) / sizeof(activation_format_str[0])) ?
-                     activation_format_str[activation_format] :
-                     "****")));
+                                 "activation_format",
+                                 (activation_format < (sizeof(activation_format_str) / sizeof(activation_format_str[0])) ?
+                                  activation_format_str[activation_format] :
+                                  "****")));
         }
 #endif
 #endif
@@ -22831,14 +23410,14 @@ struct isa
     struct npu_set_ifm2_zero_point_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;     //  control
         uint32_t zero_point : 16; //  Zero point offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_zero_point_t(uint32_t _zero_point) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_ZERO_POINT)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)),
@@ -22905,14 +23484,14 @@ struct isa
     struct npu_set_ifm2_width0_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;   //  control
         uint32_t width_m1 : 16; //  IFM2 Tile 0 and tile 2 width
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_width0_m1_t(uint32_t _width_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_WIDTH0_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), width_m1(_width_m1 & ((1U << 16) - 1))
@@ -22978,14 +23557,14 @@ struct isa
     struct npu_set_ifm2_height0_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;    //  control
         uint32_t height_m1 : 16; //  IFM2 Tile 0 height
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_height0_m1_t(uint32_t _height_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_HEIGHT0_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), height_m1(_height_m1 & ((1U << 16) - 1))
@@ -23051,14 +23630,14 @@ struct isa
     struct npu_set_ifm2_height1_m1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
         uint32_t control : 2;    //  control
         uint32_t height_m1 : 16; //  IFM2 Tile 1 height
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_height1_m1_t(uint32_t _height_m1) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_HEIGHT1_M1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), height_m1(_height_m1 & ((1U << 16) - 1))
@@ -23124,7 +23703,7 @@ struct isa
     struct npu_set_ifm2_ib_start_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -23132,7 +23711,7 @@ struct isa
         uint32_t ib_start : 6; //  Start of IB0,IB1 buffers for IFM2 in the SHRAM in KB units. Multiple of 2
         uint32_t reserved1 : 10;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_ib_start_t(uint32_t _ib_start) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_IB_START)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), ib_start(_ib_start & ((1U << 6) - 1)),
@@ -23199,7 +23778,7 @@ struct isa
     struct npu_set_ifm2_region_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -23207,7 +23786,7 @@ struct isa
         uint32_t region : 3;  //  Index n for IFM2 access
         uint32_t reserved1 : 13;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_region_t(uint32_t _region) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd0_opcode::NPU_SET_IFM2_REGION)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD0_CTRL)), region(_region & ((1U << 3) - 1)),
@@ -23274,7 +23853,7 @@ struct isa
     struct npu_set_ifm_base0_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -23283,12 +23862,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_base0_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_BASE0)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ifm_base0_t() :
@@ -23336,7 +23915,7 @@ struct isa
     struct npu_set_ifm_base1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -23345,12 +23924,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_base1_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_BASE1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ifm_base1_t() :
@@ -23398,7 +23977,7 @@ struct isa
     struct npu_set_ifm_base2_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -23407,12 +23986,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_base2_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_BASE2)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ifm_base2_t() :
@@ -23460,7 +24039,7 @@ struct isa
     struct npu_set_ifm_base3_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -23469,12 +24048,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_base3_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_BASE3)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ifm_base3_t() :
@@ -23522,7 +24101,7 @@ struct isa
     struct npu_set_ifm_stride_x_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -23531,12 +24110,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_stride_x_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_STRIDE_X)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ifm_stride_x_t() :
@@ -23584,7 +24163,7 @@ struct isa
     struct npu_set_ifm_stride_y_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -23593,12 +24172,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_stride_y_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_STRIDE_Y)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ifm_stride_y_t() :
@@ -23646,7 +24225,7 @@ struct isa
     struct npu_set_ifm_stride_c_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -23655,12 +24234,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm_stride_c_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM_STRIDE_C)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ifm_stride_c_t() :
@@ -23708,7 +24287,7 @@ struct isa
     struct npu_set_ofm_base0_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -23717,12 +24296,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_base0_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_BASE0)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ofm_base0_t() :
@@ -23770,7 +24349,7 @@ struct isa
     struct npu_set_ofm_base1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -23779,12 +24358,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_base1_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_BASE1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ofm_base1_t() :
@@ -23832,7 +24411,7 @@ struct isa
     struct npu_set_ofm_base2_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -23841,12 +24420,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_base2_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_BASE2)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ofm_base2_t() :
@@ -23894,7 +24473,7 @@ struct isa
     struct npu_set_ofm_base3_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -23903,12 +24482,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_base3_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_BASE3)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ofm_base3_t() :
@@ -23956,7 +24535,7 @@ struct isa
     struct npu_set_ofm_stride_x_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -23965,12 +24544,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_stride_x_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_STRIDE_X)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ofm_stride_x_t() :
@@ -24018,7 +24597,7 @@ struct isa
     struct npu_set_ofm_stride_y_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24027,12 +24606,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_stride_y_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_STRIDE_Y)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ofm_stride_y_t() :
@@ -24080,7 +24659,7 @@ struct isa
     struct npu_set_ofm_stride_c_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24089,12 +24668,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_stride_c_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_STRIDE_C)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ofm_stride_c_t() :
@@ -24142,7 +24721,7 @@ struct isa
     struct npu_set_weight_base_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24151,12 +24730,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_weight_base_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_WEIGHT_BASE)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_weight_base_t() :
@@ -24204,7 +24783,7 @@ struct isa
     struct npu_set_weight_length_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24212,7 +24791,7 @@ struct isa
         uint32_t reserved1 : 16;
         uint32_t length : 32; //  Weight stream byte length
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_weight_length_t(uint32_t _length) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_WEIGHT_LENGTH)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)), reserved1(0), length(_length)
@@ -24278,7 +24857,7 @@ struct isa
     struct npu_set_scale_base_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24287,12 +24866,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_scale_base_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_SCALE_BASE)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_scale_base_t() :
@@ -24340,7 +24919,7 @@ struct isa
     struct npu_set_scale_length_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24349,7 +24928,7 @@ struct isa
         uint32_t length : 20; //  Scale and bias stream byte length
         uint32_t reserved2 : 12;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_scale_length_t(uint32_t _length) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_SCALE_LENGTH)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)), reserved1(0),
@@ -24416,7 +24995,7 @@ struct isa
     struct npu_set_ofm_scale_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24425,7 +25004,7 @@ struct isa
         uint32_t reserved1 : 10;
         uint32_t scale : 32; //  Scale. Not applied for 32-bit operations
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ofm_scale_t(uint32_t _shift, uint32_t _scale) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OFM_SCALE)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)), shift(_shift & ((1U << 6) - 1)),
@@ -24502,7 +25081,7 @@ struct isa
     struct npu_set_opa_scale_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24511,7 +25090,7 @@ struct isa
         uint32_t reserved1 : 10;
         uint32_t scale : 32; //  Scale. 16-bit if IFM scale mode is 0
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_opa_scale_t(uint32_t _shift, uint32_t _scale) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OPA_SCALE)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)), shift(_shift & ((1U << 6) - 1)),
@@ -24588,7 +25167,7 @@ struct isa
     struct npu_set_opb_scale_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24597,7 +25176,7 @@ struct isa
         uint32_t scale : 16; //  Scale. Not used if IFM scale mode is 1 or 2
         uint32_t reserved2 : 16;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_opb_scale_t(uint32_t _scale) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_OPB_SCALE)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)), reserved1(0),
@@ -24664,7 +25243,7 @@ struct isa
     struct npu_set_dma0_src_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24673,12 +25252,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_dma0_src_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_SRC)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_dma0_src_t() :
@@ -24726,7 +25305,7 @@ struct isa
     struct npu_set_dma0_dst_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24735,12 +25314,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_dma0_dst_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_DST)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_dma0_dst_t() :
@@ -24788,7 +25367,7 @@ struct isa
     struct npu_set_dma0_len_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24797,12 +25376,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_dma0_len_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_LEN)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_dma0_len_t() :
@@ -24850,7 +25429,7 @@ struct isa
     struct npu_set_dma0_skip0_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24859,12 +25438,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_dma0_skip0_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_SKIP0)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_dma0_skip0_t() :
@@ -24912,7 +25491,7 @@ struct isa
     struct npu_set_dma0_skip1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24921,12 +25500,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_dma0_skip1_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_DMA0_SKIP1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_dma0_skip1_t() :
@@ -24974,7 +25553,7 @@ struct isa
     struct npu_set_ifm2_base0_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -24983,12 +25562,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_base0_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_BASE0)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ifm2_base0_t() :
@@ -25036,7 +25615,7 @@ struct isa
     struct npu_set_ifm2_base1_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -25045,12 +25624,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_base1_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_BASE1)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ifm2_base1_t() :
@@ -25098,7 +25677,7 @@ struct isa
     struct npu_set_ifm2_base2_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -25107,12 +25686,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_base2_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_BASE2)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ifm2_base2_t() :
@@ -25160,7 +25739,7 @@ struct isa
     struct npu_set_ifm2_base3_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -25169,12 +25748,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_base3_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_BASE3)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ifm2_base3_t() :
@@ -25222,7 +25801,7 @@ struct isa
     struct npu_set_ifm2_stride_x_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -25231,12 +25810,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_stride_x_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_STRIDE_X)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ifm2_stride_x_t() :
@@ -25284,7 +25863,7 @@ struct isa
     struct npu_set_ifm2_stride_y_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -25293,12 +25872,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_stride_y_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_STRIDE_Y)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ifm2_stride_y_t() :
@@ -25346,7 +25925,7 @@ struct isa
     struct npu_set_ifm2_stride_c_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -25355,12 +25934,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_ifm2_stride_c_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_IFM2_STRIDE_C)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_ifm2_stride_c_t() :
@@ -25408,7 +25987,7 @@ struct isa
     struct npu_set_weight1_base_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -25417,12 +25996,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_weight1_base_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_WEIGHT1_BASE)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_weight1_base_t() :
@@ -25470,7 +26049,7 @@ struct isa
     struct npu_set_weight1_length_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -25478,7 +26057,7 @@ struct isa
         uint32_t reserved1 : 16;
         uint32_t length : 32; //  Weight stream byte length
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_weight1_length_t(uint32_t _length) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_WEIGHT1_LENGTH)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)), reserved1(0), length(_length)
@@ -25544,7 +26123,7 @@ struct isa
     struct npu_set_scale1_base_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -25553,12 +26132,12 @@ struct isa
         uint32_t reserved1 : 8;
         uint32_t addr_lo : 32; //  address offset
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_scale1_base_t(uint64_t _addr) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_SCALE1_BASE)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)),
             addr_hi(static_cast<uint8_t>((_addr >> 32) & std::numeric_limits<uint64_t>::max())), reserved1(0),
-            addr_lo(static_cast<uint32_t>((_addr)&std::numeric_limits<uint64_t>::max()))
+            addr_lo(static_cast<uint32_t>((_addr) & std::numeric_limits<uint64_t>::max()))
         {
         }
         CONSTEXPR npu_set_scale1_base_t() :
@@ -25606,7 +26185,7 @@ struct isa
     struct npu_set_scale1_length_t
     {
 #ifdef __cplusplus
-      private:
+    private:
 #endif
         uint32_t opcode : 10; //  opcode
         uint32_t reserved0 : 4;
@@ -25615,7 +26194,7 @@ struct isa
         uint32_t length : 20; //  Scale and bias stream byte length
         uint32_t reserved2 : 12;
 #ifdef __cplusplus
-      public:
+    public:
         npu_set_scale1_length_t(uint32_t _length) :
             opcode(static_cast<uint16_t>(NPU_NAMESPACE::cmd1_opcode::NPU_SET_SCALE1_LENGTH)), reserved0(0),
             control(static_cast<uint8_t>(NPU_NAMESPACE::cmd_ctrl::CMD1_CTRL)), reserved1(0),
@@ -25787,17 +26366,17 @@ struct isa
 #define EXPAND_ACTIVATION_CLIP_RANGE(FUNC, SEP)                                                                        \
     FUNC(activation_clip_range, OFM_PRECISION)                                                                         \
     SEP FUNC(activation_clip_range, FORCE_UINT8) SEP FUNC(activation_clip_range, FORCE_INT8)                           \
-        SEP FUNC(activation_clip_range, FORCE_INT16)
+    SEP FUNC(activation_clip_range, FORCE_INT16)
 
 #define EXPAND_ACTIVATION_FORMAT(FUNC, SEP) FUNC(activation_format, NHWC) SEP FUNC(activation_format, NHCWB16)
 
 #define EXPAND_ACTIVATION_FUNCTION(FUNC, SEP)                                                                          \
     FUNC(activation_function, RELU)                                                                                    \
     SEP FUNC(activation_function, TANH) SEP FUNC(activation_function, SIGMOID) SEP FUNC(activation_function, TABLE_0)  \
-        SEP FUNC(activation_function, TABLE_1) SEP FUNC(activation_function, TABLE_2)                                  \
-            SEP FUNC(activation_function, TABLE_3) SEP FUNC(activation_function, TABLE_4)                              \
-                SEP FUNC(activation_function, TABLE_5) SEP FUNC(activation_function, TABLE_6)                          \
-                    SEP FUNC(activation_function, TABLE_7)
+    SEP FUNC(activation_function, TABLE_1) SEP FUNC(activation_function, TABLE_2)                                  \
+    SEP FUNC(activation_function, TABLE_3) SEP FUNC(activation_function, TABLE_4)                              \
+    SEP FUNC(activation_function, TABLE_5) SEP FUNC(activation_function, TABLE_6)                          \
+    SEP FUNC(activation_function, TABLE_7)
 
 #define EXPAND_ACTIVATION_PRECISION(FUNC, SEP)                                                                         \
     FUNC(activation_precision, B8)                                                                                     \
@@ -25808,104 +26387,104 @@ struct isa
 #define EXPAND_AXI_MEM_ENCODING(FUNC, SEP)                                                                             \
     FUNC(axi_mem_encoding, DEVICE_NON_BUFFERABLE)                                                                      \
     SEP FUNC(axi_mem_encoding, DEVICE_BUFFERABLE) SEP FUNC(axi_mem_encoding, NORMAL_NON_CACHEABLE_NON_BUFFERABLE)      \
-        SEP FUNC(axi_mem_encoding, NORMAL_NON_CACHEABLE_BUFFERABLE)                                                    \
-            SEP FUNC(axi_mem_encoding, WRITE_THROUGH_NO_ALLOCATE)                                                      \
-                SEP FUNC(axi_mem_encoding, WRITE_THROUGH_READ_ALLOCATE)                                                \
-                    SEP FUNC(axi_mem_encoding, WRITE_THROUGH_WRITE_ALLOCATE)                                           \
-                        SEP FUNC(axi_mem_encoding, WRITE_THROUGH_READ_AND_WRITE_ALLOCATE)                              \
-                            SEP FUNC(axi_mem_encoding, WRITE_BACK_NO_ALLOCATE)                                         \
-                                SEP FUNC(axi_mem_encoding, WRITE_BACK_READ_ALLOCATE)                                   \
-                                    SEP FUNC(axi_mem_encoding, WRITE_BACK_WRITE_ALLOCATE)                              \
-                                        SEP FUNC(axi_mem_encoding, WRITE_BACK_READ_AND_WRITE_ALLOCATE)
+    SEP FUNC(axi_mem_encoding, NORMAL_NON_CACHEABLE_BUFFERABLE)                                                    \
+    SEP FUNC(axi_mem_encoding, WRITE_THROUGH_NO_ALLOCATE)                                                      \
+    SEP FUNC(axi_mem_encoding, WRITE_THROUGH_READ_ALLOCATE)                                                \
+    SEP FUNC(axi_mem_encoding, WRITE_THROUGH_WRITE_ALLOCATE)                                           \
+    SEP FUNC(axi_mem_encoding, WRITE_THROUGH_READ_AND_WRITE_ALLOCATE)                              \
+    SEP FUNC(axi_mem_encoding, WRITE_BACK_NO_ALLOCATE)                                         \
+    SEP FUNC(axi_mem_encoding, WRITE_BACK_READ_ALLOCATE)                                   \
+    SEP FUNC(axi_mem_encoding, WRITE_BACK_WRITE_ALLOCATE)                              \
+    SEP FUNC(axi_mem_encoding, WRITE_BACK_READ_AND_WRITE_ALLOCATE)
 
 #define EXPAND_BROADCAST_MODE(FUNC, SEP) FUNC(broadcast_mode, DISABLE) SEP FUNC(broadcast_mode, ENABLE)
 
 #define EXPAND_CMD0_OPCODE(FUNC, SEP)                                                                                  \
     FUNC(cmd0_opcode, NPU_OP_STOP)                                                                                     \
     SEP FUNC(cmd0_opcode, NPU_OP_IRQ) SEP FUNC(cmd0_opcode, NPU_OP_CONV) SEP FUNC(                                     \
-        cmd0_opcode, NPU_OP_DEPTHWISE) SEP FUNC(cmd0_opcode, NPU_OP_POOL) SEP FUNC(cmd0_opcode, NPU_OP_ELEMENTWISE)    \
-        SEP FUNC(cmd0_opcode, NPU_OP_DMA_START) SEP FUNC(cmd0_opcode, NPU_OP_DMA_WAIT) SEP FUNC(                       \
-            cmd0_opcode, NPU_OP_KERNEL_WAIT) SEP FUNC(cmd0_opcode, NPU_OP_PMU_MASK) SEP FUNC(cmd0_opcode,              \
-                                                                                             NPU_SET_IFM_PAD_TOP)      \
-            SEP FUNC(cmd0_opcode, NPU_SET_IFM_PAD_LEFT) SEP FUNC(cmd0_opcode, NPU_SET_IFM_PAD_RIGHT) SEP FUNC(         \
-                cmd0_opcode, NPU_SET_IFM_PAD_BOTTOM) SEP FUNC(cmd0_opcode,                                             \
-                                                              NPU_SET_IFM_DEPTH_M1) SEP FUNC(cmd0_opcode,              \
-                                                                                             NPU_SET_IFM_PRECISION)    \
-                SEP FUNC(cmd0_opcode, NPU_SET_IFM_UPSCALE) SEP FUNC(cmd0_opcode, NPU_SET_IFM_ZERO_POINT) SEP FUNC(     \
-                    cmd0_opcode, NPU_SET_IFM_WIDTH0_M1) SEP FUNC(cmd0_opcode, NPU_SET_IFM_HEIGHT0_M1)                  \
-                    SEP FUNC(cmd0_opcode, NPU_SET_IFM_HEIGHT1_M1) SEP FUNC(cmd0_opcode, NPU_SET_IFM_IB_END) SEP FUNC(  \
-                        cmd0_opcode, NPU_SET_IFM_REGION) SEP FUNC(cmd0_opcode, NPU_SET_OFM_WIDTH_M1)                   \
-                        SEP FUNC(cmd0_opcode, NPU_SET_OFM_HEIGHT_M1) SEP FUNC(cmd0_opcode, NPU_SET_OFM_DEPTH_M1)       \
-                            SEP FUNC(cmd0_opcode, NPU_SET_OFM_PRECISION) SEP FUNC(                                     \
-                                cmd0_opcode, NPU_SET_OFM_BLK_WIDTH_M1) SEP FUNC(cmd0_opcode,                           \
-                                                                                NPU_SET_OFM_BLK_HEIGHT_M1)             \
-                                SEP FUNC(cmd0_opcode, NPU_SET_OFM_BLK_DEPTH_M1) SEP FUNC(                              \
-                                    cmd0_opcode, NPU_SET_OFM_ZERO_POINT) SEP FUNC(cmd0_opcode, NPU_SET_OFM_WIDTH0_M1)  \
-                                    SEP FUNC(cmd0_opcode, NPU_SET_OFM_HEIGHT0_M1) SEP FUNC(                            \
-                                        cmd0_opcode,                                                                   \
-                                        NPU_SET_OFM_HEIGHT1_M1) SEP FUNC(cmd0_opcode, NPU_SET_OFM_REGION)              \
-                                        SEP FUNC(cmd0_opcode, NPU_SET_KERNEL_WIDTH_M1) SEP FUNC(                       \
-                                            cmd0_opcode,                                                               \
-                                            NPU_SET_KERNEL_HEIGHT_M1) SEP FUNC(cmd0_opcode, NPU_SET_KERNEL_STRIDE)     \
-                                            SEP FUNC(cmd0_opcode, NPU_SET_PARALLEL_MODE) SEP FUNC(                     \
-                                                cmd0_opcode,                                                           \
-                                                NPU_SET_ACC_FORMAT) SEP FUNC(cmd0_opcode, NPU_SET_ACTIVATION)          \
-                                                SEP FUNC(cmd0_opcode,                                                  \
-                                                         NPU_SET_ACTIVATION_MIN) SEP FUNC(cmd0_opcode,                 \
-                                                                                          NPU_SET_ACTIVATION_MAX)      \
-                                                    SEP FUNC(cmd0_opcode, NPU_SET_WEIGHT_REGION) SEP FUNC(             \
-                                                        cmd0_opcode,                                                   \
-                                                        NPU_SET_SCALE_REGION) SEP FUNC(cmd0_opcode, NPU_SET_AB_START)  \
-                                                        SEP FUNC(cmd0_opcode, NPU_SET_BLOCKDEP)                        \
-                                                            SEP FUNC(cmd0_opcode, NPU_SET_DMA0_SRC_REGION) SEP FUNC(   \
-                                                                cmd0_opcode,                                           \
-                                                                NPU_SET_DMA0_DST_REGION) SEP FUNC(cmd0_opcode,         \
-                                                                                                  NPU_SET_DMA0_SIZE0)  \
-                                                                SEP FUNC(cmd0_opcode, NPU_SET_DMA0_SIZE1) SEP FUNC(    \
-                                                                    cmd0_opcode,                                       \
-                                                                    NPU_SET_IFM2_BROADCAST) SEP                        \
-                                                                    FUNC(cmd0_opcode, NPU_SET_IFM2_SCALAR) SEP FUNC(   \
-                                                                        cmd0_opcode,                                   \
-                                                                        NPU_SET_IFM2_PRECISION) SEP                    \
-                                                                        FUNC(cmd0_opcode, NPU_SET_IFM2_ZERO_POINT) SEP \
-                                                                            FUNC(cmd0_opcode,                          \
-                                                                                 NPU_SET_IFM2_WIDTH0_M1) SEP           \
-                                                                                FUNC(cmd0_opcode,                      \
-                                                                                     NPU_SET_IFM2_HEIGHT0_M1) SEP      \
-                                                                                    FUNC(cmd0_opcode,                  \
-                                                                                         NPU_SET_IFM2_HEIGHT1_M1)      \
-                                                                                        SEP FUNC(                      \
-                                                                                            cmd0_opcode,               \
-                                                                                            NPU_SET_IFM2_IB_START)     \
-                                                                                            SEP FUNC(                  \
-                                                                                                cmd0_opcode,           \
-                                                                                                NPU_SET_IFM2_REGION)
+                                                                                                                       cmd0_opcode, NPU_OP_DEPTHWISE) SEP FUNC(cmd0_opcode, NPU_OP_POOL) SEP FUNC(cmd0_opcode, NPU_OP_ELEMENTWISE)    \
+    SEP FUNC(cmd0_opcode, NPU_OP_DMA_START) SEP FUNC(cmd0_opcode, NPU_OP_DMA_WAIT) SEP FUNC(                       \
+                                                                                                                   cmd0_opcode, NPU_OP_KERNEL_WAIT) SEP FUNC(cmd0_opcode, NPU_OP_PMU_MASK) SEP FUNC(cmd0_opcode,              \
+                                                                                                                           NPU_SET_IFM_PAD_TOP)      \
+    SEP FUNC(cmd0_opcode, NPU_SET_IFM_PAD_LEFT) SEP FUNC(cmd0_opcode, NPU_SET_IFM_PAD_RIGHT) SEP FUNC(         \
+                                                                                                               cmd0_opcode, NPU_SET_IFM_PAD_BOTTOM) SEP FUNC(cmd0_opcode,                                             \
+                                                                                                                       NPU_SET_IFM_DEPTH_M1) SEP FUNC(cmd0_opcode,              \
+                                                                                                                               NPU_SET_IFM_PRECISION)    \
+    SEP FUNC(cmd0_opcode, NPU_SET_IFM_UPSCALE) SEP FUNC(cmd0_opcode, NPU_SET_IFM_ZERO_POINT) SEP FUNC(     \
+                                                                                                           cmd0_opcode, NPU_SET_IFM_WIDTH0_M1) SEP FUNC(cmd0_opcode, NPU_SET_IFM_HEIGHT0_M1)                  \
+    SEP FUNC(cmd0_opcode, NPU_SET_IFM_HEIGHT1_M1) SEP FUNC(cmd0_opcode, NPU_SET_IFM_IB_END) SEP FUNC(  \
+                                                                                                       cmd0_opcode, NPU_SET_IFM_REGION) SEP FUNC(cmd0_opcode, NPU_SET_OFM_WIDTH_M1)                   \
+    SEP FUNC(cmd0_opcode, NPU_SET_OFM_HEIGHT_M1) SEP FUNC(cmd0_opcode, NPU_SET_OFM_DEPTH_M1)       \
+    SEP FUNC(cmd0_opcode, NPU_SET_OFM_PRECISION) SEP FUNC(                                     \
+                                                                                               cmd0_opcode, NPU_SET_OFM_BLK_WIDTH_M1) SEP FUNC(cmd0_opcode,                           \
+                                                                                                       NPU_SET_OFM_BLK_HEIGHT_M1)             \
+    SEP FUNC(cmd0_opcode, NPU_SET_OFM_BLK_DEPTH_M1) SEP FUNC(                              \
+                                                                                           cmd0_opcode, NPU_SET_OFM_ZERO_POINT) SEP FUNC(cmd0_opcode, NPU_SET_OFM_WIDTH0_M1)  \
+    SEP FUNC(cmd0_opcode, NPU_SET_OFM_HEIGHT0_M1) SEP FUNC(                            \
+                                                                                       cmd0_opcode,                                                                   \
+                                                                                       NPU_SET_OFM_HEIGHT1_M1) SEP FUNC(cmd0_opcode, NPU_SET_OFM_REGION)              \
+    SEP FUNC(cmd0_opcode, NPU_SET_KERNEL_WIDTH_M1) SEP FUNC(                       \
+                                                                                   cmd0_opcode,                                                               \
+                                                                                   NPU_SET_KERNEL_HEIGHT_M1) SEP FUNC(cmd0_opcode, NPU_SET_KERNEL_STRIDE)     \
+    SEP FUNC(cmd0_opcode, NPU_SET_PARALLEL_MODE) SEP FUNC(                     \
+                                                                               cmd0_opcode,                                                           \
+                                                                               NPU_SET_ACC_FORMAT) SEP FUNC(cmd0_opcode, NPU_SET_ACTIVATION)          \
+    SEP FUNC(cmd0_opcode,                                                  \
+             NPU_SET_ACTIVATION_MIN) SEP FUNC(cmd0_opcode,                 \
+                                              NPU_SET_ACTIVATION_MAX)      \
+    SEP FUNC(cmd0_opcode, NPU_SET_WEIGHT_REGION) SEP FUNC(             \
+                                                                       cmd0_opcode,                                                   \
+                                                                       NPU_SET_SCALE_REGION) SEP FUNC(cmd0_opcode, NPU_SET_AB_START)  \
+    SEP FUNC(cmd0_opcode, NPU_SET_BLOCKDEP)                        \
+    SEP FUNC(cmd0_opcode, NPU_SET_DMA0_SRC_REGION) SEP FUNC(   \
+                                                               cmd0_opcode,                                           \
+                                                               NPU_SET_DMA0_DST_REGION) SEP FUNC(cmd0_opcode,         \
+                                                                                                 NPU_SET_DMA0_SIZE0)  \
+    SEP FUNC(cmd0_opcode, NPU_SET_DMA0_SIZE1) SEP FUNC(    \
+                                                           cmd0_opcode,                                       \
+                                                           NPU_SET_IFM2_BROADCAST) SEP                        \
+    FUNC(cmd0_opcode, NPU_SET_IFM2_SCALAR) SEP FUNC(   \
+                                                       cmd0_opcode,                                   \
+                                                       NPU_SET_IFM2_PRECISION) SEP                    \
+    FUNC(cmd0_opcode, NPU_SET_IFM2_ZERO_POINT) SEP \
+    FUNC(cmd0_opcode,                          \
+         NPU_SET_IFM2_WIDTH0_M1) SEP           \
+    FUNC(cmd0_opcode,                      \
+         NPU_SET_IFM2_HEIGHT0_M1) SEP      \
+    FUNC(cmd0_opcode,                  \
+         NPU_SET_IFM2_HEIGHT1_M1)      \
+    SEP FUNC(                      \
+                                   cmd0_opcode,               \
+                                   NPU_SET_IFM2_IB_START)     \
+    SEP FUNC(                  \
+                               cmd0_opcode,           \
+                               NPU_SET_IFM2_REGION)
 
 #define EXPAND_CMD1_OPCODE(FUNC, SEP)                                                                                  \
     FUNC(cmd1_opcode, NPU_SET_IFM_BASE0)                                                                               \
     SEP FUNC(cmd1_opcode, NPU_SET_IFM_BASE1) SEP FUNC(cmd1_opcode, NPU_SET_IFM_BASE2)                                  \
-        SEP FUNC(cmd1_opcode, NPU_SET_IFM_BASE3) SEP FUNC(cmd1_opcode, NPU_SET_IFM_STRIDE_X)                           \
-            SEP FUNC(cmd1_opcode, NPU_SET_IFM_STRIDE_Y) SEP FUNC(cmd1_opcode, NPU_SET_IFM_STRIDE_C) SEP FUNC(          \
-                cmd1_opcode, NPU_SET_OFM_BASE0) SEP FUNC(cmd1_opcode, NPU_SET_OFM_BASE1)                               \
-                SEP FUNC(cmd1_opcode, NPU_SET_OFM_BASE2) SEP FUNC(cmd1_opcode, NPU_SET_OFM_BASE3) SEP FUNC(            \
-                    cmd1_opcode, NPU_SET_OFM_STRIDE_X) SEP FUNC(cmd1_opcode, NPU_SET_OFM_STRIDE_Y)                     \
-                    SEP FUNC(cmd1_opcode, NPU_SET_OFM_STRIDE_C) SEP FUNC(cmd1_opcode, NPU_SET_WEIGHT_BASE) SEP FUNC(   \
-                        cmd1_opcode, NPU_SET_WEIGHT_LENGTH) SEP FUNC(cmd1_opcode, NPU_SET_SCALE_BASE)                  \
-                        SEP FUNC(cmd1_opcode, NPU_SET_SCALE_LENGTH) SEP FUNC(cmd1_opcode, NPU_SET_OFM_SCALE)           \
-                            SEP FUNC(cmd1_opcode, NPU_SET_OPA_SCALE) SEP FUNC(cmd1_opcode, NPU_SET_OPB_SCALE)          \
-                                SEP FUNC(cmd1_opcode, NPU_SET_DMA0_SRC) SEP FUNC(cmd1_opcode, NPU_SET_DMA0_DST)        \
-                                    SEP FUNC(cmd1_opcode, NPU_SET_DMA0_LEN) SEP FUNC(cmd1_opcode, NPU_SET_DMA0_SKIP0)  \
-                                        SEP FUNC(cmd1_opcode, NPU_SET_DMA0_SKIP1) SEP FUNC(                            \
-                                            cmd1_opcode, NPU_SET_IFM2_BASE0) SEP FUNC(cmd1_opcode, NPU_SET_IFM2_BASE1) \
-                                            SEP FUNC(cmd1_opcode, NPU_SET_IFM2_BASE2) SEP FUNC(cmd1_opcode,            \
-                                                                                               NPU_SET_IFM2_BASE3)     \
-                                                SEP FUNC(cmd1_opcode, NPU_SET_IFM2_STRIDE_X)                           \
-                                                    SEP FUNC(cmd1_opcode, NPU_SET_IFM2_STRIDE_Y)                       \
-                                                        SEP FUNC(cmd1_opcode, NPU_SET_IFM2_STRIDE_C)                   \
-                                                            SEP FUNC(cmd1_opcode, NPU_SET_WEIGHT1_BASE)                \
-                                                                SEP FUNC(cmd1_opcode, NPU_SET_WEIGHT1_LENGTH)          \
-                                                                    SEP FUNC(cmd1_opcode, NPU_SET_SCALE1_BASE)         \
-                                                                        SEP FUNC(cmd1_opcode, NPU_SET_SCALE1_LENGTH)
+    SEP FUNC(cmd1_opcode, NPU_SET_IFM_BASE3) SEP FUNC(cmd1_opcode, NPU_SET_IFM_STRIDE_X)                           \
+    SEP FUNC(cmd1_opcode, NPU_SET_IFM_STRIDE_Y) SEP FUNC(cmd1_opcode, NPU_SET_IFM_STRIDE_C) SEP FUNC(          \
+                                                                                                               cmd1_opcode, NPU_SET_OFM_BASE0) SEP FUNC(cmd1_opcode, NPU_SET_OFM_BASE1)                               \
+    SEP FUNC(cmd1_opcode, NPU_SET_OFM_BASE2) SEP FUNC(cmd1_opcode, NPU_SET_OFM_BASE3) SEP FUNC(            \
+                                                                                                           cmd1_opcode, NPU_SET_OFM_STRIDE_X) SEP FUNC(cmd1_opcode, NPU_SET_OFM_STRIDE_Y)                     \
+    SEP FUNC(cmd1_opcode, NPU_SET_OFM_STRIDE_C) SEP FUNC(cmd1_opcode, NPU_SET_WEIGHT_BASE) SEP FUNC(   \
+                                                                                                       cmd1_opcode, NPU_SET_WEIGHT_LENGTH) SEP FUNC(cmd1_opcode, NPU_SET_SCALE_BASE)                  \
+    SEP FUNC(cmd1_opcode, NPU_SET_SCALE_LENGTH) SEP FUNC(cmd1_opcode, NPU_SET_OFM_SCALE)           \
+    SEP FUNC(cmd1_opcode, NPU_SET_OPA_SCALE) SEP FUNC(cmd1_opcode, NPU_SET_OPB_SCALE)          \
+    SEP FUNC(cmd1_opcode, NPU_SET_DMA0_SRC) SEP FUNC(cmd1_opcode, NPU_SET_DMA0_DST)        \
+    SEP FUNC(cmd1_opcode, NPU_SET_DMA0_LEN) SEP FUNC(cmd1_opcode, NPU_SET_DMA0_SKIP0)  \
+    SEP FUNC(cmd1_opcode, NPU_SET_DMA0_SKIP1) SEP FUNC(                            \
+                                                                                   cmd1_opcode, NPU_SET_IFM2_BASE0) SEP FUNC(cmd1_opcode, NPU_SET_IFM2_BASE1) \
+    SEP FUNC(cmd1_opcode, NPU_SET_IFM2_BASE2) SEP FUNC(cmd1_opcode,            \
+                                                       NPU_SET_IFM2_BASE3)     \
+    SEP FUNC(cmd1_opcode, NPU_SET_IFM2_STRIDE_X)                           \
+    SEP FUNC(cmd1_opcode, NPU_SET_IFM2_STRIDE_Y)                       \
+    SEP FUNC(cmd1_opcode, NPU_SET_IFM2_STRIDE_C)                   \
+    SEP FUNC(cmd1_opcode, NPU_SET_WEIGHT1_BASE)                \
+    SEP FUNC(cmd1_opcode, NPU_SET_WEIGHT1_LENGTH)          \
+    SEP FUNC(cmd1_opcode, NPU_SET_SCALE1_BASE)         \
+    SEP FUNC(cmd1_opcode, NPU_SET_SCALE1_LENGTH)
 
 #define EXPAND_CMD_CTRL(FUNC, SEP) FUNC(cmd_ctrl, CMD0_CTRL) SEP FUNC(cmd_ctrl, CMD1_CTRL)
 
@@ -25921,8 +26500,8 @@ struct isa
 #define EXPAND_ELEMENTWISE_MODE(FUNC, SEP)                                                                             \
     FUNC(elementwise_mode, MUL)                                                                                        \
     SEP FUNC(elementwise_mode, ADD) SEP FUNC(elementwise_mode, SUB) SEP FUNC(elementwise_mode, MIN)                    \
-        SEP FUNC(elementwise_mode, MAX) SEP FUNC(elementwise_mode, LRELU) SEP FUNC(elementwise_mode, ABS)              \
-            SEP FUNC(elementwise_mode, CLZ) SEP FUNC(elementwise_mode, SHR) SEP FUNC(elementwise_mode, SHL)
+    SEP FUNC(elementwise_mode, MAX) SEP FUNC(elementwise_mode, LRELU) SEP FUNC(elementwise_mode, ABS)              \
+    SEP FUNC(elementwise_mode, CLZ) SEP FUNC(elementwise_mode, SHR) SEP FUNC(elementwise_mode, SHL)
 
 #define EXPAND_FUNCTIONAL_SAFETY(FUNC, SEP)                                                                            \
     FUNC(functional_safety, NOT_IMPLEMENTED) SEP FUNC(functional_safety, IMPLEMENTED)
@@ -25944,7 +26523,7 @@ struct isa
 #define EXPAND_MEM_ATTR(FUNC, SEP)                                                                                     \
     FUNC(mem_attr, AXI0_OUTSTANDING_COUNTER0)                                                                          \
     SEP FUNC(mem_attr, AXI0_OUTSTANDING_COUNTER1) SEP FUNC(mem_attr, AXI1_OUTSTANDING_COUNTER2)                        \
-        SEP FUNC(mem_attr, AXI1_OUTSTANDING_COUNTER3)
+    SEP FUNC(mem_attr, AXI1_OUTSTANDING_COUNTER3)
 
 #define EXPAND_OFM_SCALE_MODE(FUNC, SEP) FUNC(ofm_scale_mode, PER_CHANNEL) SEP FUNC(ofm_scale_mode, GLOBAL)
 
@@ -25953,86 +26532,86 @@ struct isa
 #define EXPAND_PMU_AXI_CHANNEL(FUNC, SEP)                                                                              \
     FUNC(pmu_axi_channel, RD_CMD)                                                                                      \
     SEP FUNC(pmu_axi_channel, RD_IFM) SEP FUNC(pmu_axi_channel, RD_WEIGHTS) SEP FUNC(pmu_axi_channel, RD_SCALE_BIAS)   \
-        SEP FUNC(pmu_axi_channel, RD_MEM2MEM) SEP FUNC(pmu_axi_channel, WR_OFM) SEP FUNC(pmu_axi_channel, WR_MEM2MEM)
+    SEP FUNC(pmu_axi_channel, RD_MEM2MEM) SEP FUNC(pmu_axi_channel, WR_OFM) SEP FUNC(pmu_axi_channel, WR_MEM2MEM)
 
 #define EXPAND_PMU_EVENT(FUNC, SEP)                                                                                                    \
     FUNC(pmu_event, NO_EVENT)                                                                                                          \
     SEP FUNC(pmu_event, CYCLE) SEP FUNC(pmu_event, NPU_IDLE) SEP FUNC(pmu_event, CC_STALLED_ON_BLOCKDEP) SEP FUNC(                     \
-        pmu_event, CC_STALLED_ON_SHRAM_RECONFIG) SEP FUNC(pmu_event, NPU_ACTIVE) SEP FUNC(pmu_event, MAC_ACTIVE)                       \
-        SEP FUNC(pmu_event, MAC_ACTIVE_8BIT) SEP FUNC(pmu_event, MAC_ACTIVE_16BIT) SEP FUNC(                                           \
+            pmu_event, CC_STALLED_ON_SHRAM_RECONFIG) SEP FUNC(pmu_event, NPU_ACTIVE) SEP FUNC(pmu_event, MAC_ACTIVE)                       \
+    SEP FUNC(pmu_event, MAC_ACTIVE_8BIT) SEP FUNC(pmu_event, MAC_ACTIVE_16BIT) SEP FUNC(                                           \
             pmu_event, MAC_DPU_ACTIVE) SEP FUNC(pmu_event, MAC_STALLED_BY_WD_ACC) SEP FUNC(pmu_event,                                  \
                                                                                            MAC_STALLED_BY_WD)                          \
-            SEP FUNC(pmu_event, MAC_STALLED_BY_ACC) SEP FUNC(pmu_event, MAC_STALLED_BY_IB) SEP FUNC(                                   \
-                pmu_event,                                                                                                             \
-                MAC_ACTIVE_32BIT) SEP FUNC(pmu_event,                                                                                  \
-                                           MAC_STALLED_BY_INT_W) SEP FUNC(pmu_event,                                                   \
-                                                                          MAC_STALLED_BY_INT_ACC) SEP FUNC(pmu_event,                  \
-                                                                                                           AO_ACTIVE)                  \
-                SEP FUNC(pmu_event, AO_ACTIVE_8BIT) SEP FUNC(pmu_event, AO_ACTIVE_16BIT) SEP FUNC(                                     \
-                    pmu_event, AO_STALLED_BY_OFMP_OB) SEP FUNC(pmu_event, AO_STALLED_BY_OFMP) SEP                                      \
-                    FUNC(pmu_event, AO_STALLED_BY_OB) SEP FUNC(pmu_event, AO_STALLED_BY_ACC_IB) SEP FUNC(                              \
-                        pmu_event, AO_STALLED_BY_ACC) SEP FUNC(pmu_event, AO_STALLED_BY_IB) SEP                                        \
-                        FUNC(pmu_event, WD_ACTIVE) SEP FUNC(pmu_event, WD_STALLED) SEP FUNC(pmu_event, WD_STALLED_BY_WS) SEP FUNC(     \
-                            pmu_event, WD_STALLED_BY_WD_BUF) SEP FUNC(pmu_event,                                                       \
-                                                                      WD_PARSE_ACTIVE) SEP                                             \
-                            FUNC(pmu_event, WD_PARSE_STALLED) SEP FUNC(pmu_event, WD_PARSE_STALLED_IN) SEP FUNC(                       \
-                                pmu_event, WD_PARSE_STALLED_OUT) SEP FUNC(pmu_event,                                                   \
-                                                                          WD_TRANS_WS) SEP                                             \
-                                FUNC(pmu_event, WD_TRANS_WB) SEP FUNC(pmu_event, WD_TRANS_DW0) SEP FUNC(                               \
-                                    pmu_event, WD_TRANS_DW1) SEP FUNC(pmu_event,                                                       \
-                                                                      AXI0_RD_TRANS_ACCEPTED) SEP                                      \
-                                    FUNC(pmu_event, AXI0_RD_TRANS_COMPLETED) SEP FUNC(pmu_event, AXI0_RD_DATA_BEAT_RECEIVED) SEP FUNC( \
-                                        pmu_event, AXI0_RD_TRAN_REQ_STALLED) SEP FUNC(pmu_event,                                       \
-                                                                                      AXI0_WR_TRANS_ACCEPTED) SEP                      \
-                                        FUNC(pmu_event, AXI0_WR_TRANS_COMPLETED_M) SEP FUNC(                                           \
-                                            pmu_event, AXI0_WR_TRANS_COMPLETED_S) SEP                                                  \
-                                            FUNC(pmu_event, AXI0_WR_DATA_BEAT_WRITTEN) SEP FUNC(                                       \
-                                                pmu_event, AXI0_WR_TRAN_REQ_STALLED) SEP                                               \
-                                                FUNC(pmu_event, AXI0_WR_DATA_BEAT_STALLED) SEP FUNC(                                   \
-                                                    pmu_event,                                                                         \
-                                                    AXI0_ENABLED_CYCLES) SEP FUNC(pmu_event,                                           \
-                                                                                  AXI0_RD_STALL_LIMIT) SEP                             \
-                                                    FUNC(pmu_event, AXI0_WR_STALL_LIMIT) SEP FUNC(                                     \
-                                                        pmu_event,                                                                     \
-                                                        AXI_LATENCY_ANY) SEP FUNC(pmu_event,                                           \
-                                                                                  AXI_LATENCY_32) SEP                                  \
-                                                        FUNC(pmu_event,                                                                \
-                                                             AXI_LATENCY_64) SEP FUNC(pmu_event,                                       \
-                                                                                      AXI_LATENCY_128) SEP                             \
-                                                            FUNC(pmu_event, AXI_LATENCY_256) SEP FUNC(                                 \
-                                                                pmu_event,                                                             \
-                                                                AXI_LATENCY_512) SEP FUNC(pmu_event,                                   \
-                                                                                          AXI_LATENCY_1024) SEP                        \
-                                                                FUNC(pmu_event, ECC_DMA) SEP FUNC(                                     \
-                                                                    pmu_event,                                                         \
-                                                                    ECC_SB0) SEP FUNC(pmu_event,                                       \
-                                                                                      AXI1_RD_TRANS_ACCEPTED) SEP                      \
-                                                                    FUNC(pmu_event, AXI1_RD_TRANS_COMPLETED) SEP FUNC(                 \
-                                                                        pmu_event, AXI1_RD_DATA_BEAT_RECEIVED) SEP                     \
-                                                                        FUNC(pmu_event, AXI1_RD_TRAN_REQ_STALLED) SEP FUNC(            \
-                                                                            pmu_event, AXI1_WR_TRANS_ACCEPTED) SEP                     \
-                                                                            FUNC(pmu_event, AXI1_WR_TRANS_COMPLETED_M) SEP FUNC(       \
-                                                                                pmu_event,                                             \
-                                                                                AXI1_WR_TRANS_COMPLETED_S) SEP                         \
-                                                                                FUNC(pmu_event,                                        \
-                                                                                     AXI1_WR_DATA_BEAT_WRITTEN) SEP                    \
-                                                                                    FUNC(pmu_event,                                    \
-                                                                                         AXI1_WR_TRAN_REQ_STALLED) SEP                 \
-                                                                                        FUNC(                                          \
-                                                                                            pmu_event,                                 \
-                                                                                            AXI1_WR_DATA_BEAT_STALLED) SEP             \
-                                                                                            FUNC(                                      \
-                                                                                                pmu_event,                             \
-                                                                                                AXI1_ENABLED_CYCLES) SEP               \
-                                                                                                FUNC(                                  \
-                                                                                                    pmu_event,                         \
-                                                                                                    AXI1_RD_STALL_LIMIT) SEP           \
-                                                                                                    FUNC(                              \
-                                                                                                        pmu_event,                     \
-                                                                                                        AXI1_WR_STALL_LIMIT)           \
-                                                                                                        SEP FUNC(                      \
-                                                                                                            pmu_event,                 \
-                                                                                                            ECC_SB1)
+    SEP FUNC(pmu_event, MAC_STALLED_BY_ACC) SEP FUNC(pmu_event, MAC_STALLED_BY_IB) SEP FUNC(                                   \
+            pmu_event,                                                                                                             \
+            MAC_ACTIVE_32BIT) SEP FUNC(pmu_event,                                                                                  \
+                                       MAC_STALLED_BY_INT_W) SEP FUNC(pmu_event,                                                   \
+                                                                      MAC_STALLED_BY_INT_ACC) SEP FUNC(pmu_event,                  \
+                                                                                                       AO_ACTIVE)                  \
+    SEP FUNC(pmu_event, AO_ACTIVE_8BIT) SEP FUNC(pmu_event, AO_ACTIVE_16BIT) SEP FUNC(                                     \
+                                                                                                                           pmu_event, AO_STALLED_BY_OFMP_OB) SEP FUNC(pmu_event, AO_STALLED_BY_OFMP) SEP                                      \
+    FUNC(pmu_event, AO_STALLED_BY_OB) SEP FUNC(pmu_event, AO_STALLED_BY_ACC_IB) SEP FUNC(                              \
+                                                                                                                       pmu_event, AO_STALLED_BY_ACC) SEP FUNC(pmu_event, AO_STALLED_BY_IB) SEP                                        \
+    FUNC(pmu_event, WD_ACTIVE) SEP FUNC(pmu_event, WD_STALLED) SEP FUNC(pmu_event, WD_STALLED_BY_WS) SEP FUNC(     \
+                                                                                                                   pmu_event, WD_STALLED_BY_WD_BUF) SEP FUNC(pmu_event,                                                       \
+                                                                                                                           WD_PARSE_ACTIVE) SEP                                             \
+    FUNC(pmu_event, WD_PARSE_STALLED) SEP FUNC(pmu_event, WD_PARSE_STALLED_IN) SEP FUNC(                       \
+                                                                                                               pmu_event, WD_PARSE_STALLED_OUT) SEP FUNC(pmu_event,                                                   \
+                                                                                                                       WD_TRANS_WS) SEP                                             \
+    FUNC(pmu_event, WD_TRANS_WB) SEP FUNC(pmu_event, WD_TRANS_DW0) SEP FUNC(                               \
+                                                                                                           pmu_event, WD_TRANS_DW1) SEP FUNC(pmu_event,                                                       \
+                                                                                                                   AXI0_RD_TRANS_ACCEPTED) SEP                                      \
+    FUNC(pmu_event, AXI0_RD_TRANS_COMPLETED) SEP FUNC(pmu_event, AXI0_RD_DATA_BEAT_RECEIVED) SEP FUNC( \
+                                                                                                       pmu_event, AXI0_RD_TRAN_REQ_STALLED) SEP FUNC(pmu_event,                                       \
+                                                                                                               AXI0_WR_TRANS_ACCEPTED) SEP                      \
+    FUNC(pmu_event, AXI0_WR_TRANS_COMPLETED_M) SEP FUNC(                                           \
+                                                                                                   pmu_event, AXI0_WR_TRANS_COMPLETED_S) SEP                                                  \
+    FUNC(pmu_event, AXI0_WR_DATA_BEAT_WRITTEN) SEP FUNC(                                       \
+                                                                                               pmu_event, AXI0_WR_TRAN_REQ_STALLED) SEP                                               \
+    FUNC(pmu_event, AXI0_WR_DATA_BEAT_STALLED) SEP FUNC(                                   \
+                                                                                           pmu_event,                                                                         \
+                                                                                           AXI0_ENABLED_CYCLES) SEP FUNC(pmu_event,                                           \
+                                                                                                                         AXI0_RD_STALL_LIMIT) SEP                             \
+    FUNC(pmu_event, AXI0_WR_STALL_LIMIT) SEP FUNC(                                     \
+                                                                                       pmu_event,                                                                     \
+                                                                                       AXI_LATENCY_ANY) SEP FUNC(pmu_event,                                           \
+                                                                                                                 AXI_LATENCY_32) SEP                                  \
+    FUNC(pmu_event,                                                                \
+         AXI_LATENCY_64) SEP FUNC(pmu_event,                                       \
+                                  AXI_LATENCY_128) SEP                             \
+    FUNC(pmu_event, AXI_LATENCY_256) SEP FUNC(                                 \
+                                                                               pmu_event,                                                             \
+                                                                               AXI_LATENCY_512) SEP FUNC(pmu_event,                                   \
+                                                                                                         AXI_LATENCY_1024) SEP                        \
+    FUNC(pmu_event, ECC_DMA) SEP FUNC(                                     \
+                                                                           pmu_event,                                                         \
+                                                                           ECC_SB0) SEP FUNC(pmu_event,                                       \
+                                                                                             AXI1_RD_TRANS_ACCEPTED) SEP                      \
+    FUNC(pmu_event, AXI1_RD_TRANS_COMPLETED) SEP FUNC(                 \
+                                                                       pmu_event, AXI1_RD_DATA_BEAT_RECEIVED) SEP                     \
+    FUNC(pmu_event, AXI1_RD_TRAN_REQ_STALLED) SEP FUNC(            \
+                                                                   pmu_event, AXI1_WR_TRANS_ACCEPTED) SEP                     \
+    FUNC(pmu_event, AXI1_WR_TRANS_COMPLETED_M) SEP FUNC(       \
+                                                               pmu_event,                                             \
+                                                               AXI1_WR_TRANS_COMPLETED_S) SEP                         \
+    FUNC(pmu_event,                                        \
+         AXI1_WR_DATA_BEAT_WRITTEN) SEP                    \
+    FUNC(pmu_event,                                    \
+         AXI1_WR_TRAN_REQ_STALLED) SEP                 \
+    FUNC(                                          \
+                                                   pmu_event,                                 \
+                                                   AXI1_WR_DATA_BEAT_STALLED) SEP             \
+    FUNC(                                      \
+                                               pmu_event,                             \
+                                               AXI1_ENABLED_CYCLES) SEP               \
+    FUNC(                                  \
+                                           pmu_event,                         \
+                                           AXI1_RD_STALL_LIMIT) SEP           \
+    FUNC(                              \
+                                       pmu_event,                     \
+                                       AXI1_WR_STALL_LIMIT)           \
+    SEP FUNC(                      \
+                                   pmu_event,                 \
+                                   ECC_SB1)
 
 #define EXPAND_POOLING_MODE(FUNC, SEP)                                                                                 \
     FUNC(pooling_mode, MAX) SEP FUNC(pooling_mode, AVERAGE) SEP FUNC(pooling_mode, REDUCE_SUM)

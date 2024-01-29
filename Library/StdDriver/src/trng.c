@@ -32,8 +32,9 @@ int32_t TRNG_Open(void)
     SYS_ResetModule(SYS_TRNG0RST);
 
     TRNG->CTL |= TRNG_CTL_LDOEN_Msk;
+
     /* Waiting for ready */
-    while((TRNG->STS & TRNG_STS_LDORDY_Msk) == 0)
+    while ((TRNG->STS & TRNG_STS_LDORDY_Msk) == 0)
     {
         printf("Waiting for ready\n");
     }
@@ -42,20 +43,21 @@ int32_t TRNG_Open(void)
 
     TRNG->CTL |= (TRNG_CTL_TRNGEN_Msk);
 
-    printf("TRNG->STS0 0x%x \n",TRNG->STS);
+    printf("TRNG->STS0 0x%x \n", TRNG->STS);
 
     /* Waiting for ready */
-    while((TRNG->STS & TRNG_STS_TRNGRDY_Msk) == 0);
+    while ((TRNG->STS & TRNG_STS_TRNGRDY_Msk) == 0);
 
-    for(i=0; i<3; i++)
+    for (i = 0; i < 3; i++)
         printf("TRNG->STS: loop%d  0x%x \n", i, TRNG->STS);
 
-    if((TRNG->STS & 0x70) != 0x70)
+    if ((TRNG->STS & 0x70) != 0x70)
     {
         printf("Entropy source test fail!\n");
 
         return -1;
     }
+
     return 0;
 }
 
@@ -83,16 +85,17 @@ int32_t TRNG_GenWord(uint32_t *u32RndNum)
         /* TRNG should generate one byte per 125*8 us */
         for (timeout = (CLK_GetHCLK0Freq() / 100); timeout > 0; timeout--)
         {
-            if (TRNG->STS &TRNG_STS_DVIF_Msk )
+            if (TRNG->STS & TRNG_STS_DVIF_Msk)
                 break;
         }
 
         if (timeout == 0)
             return -1;
 
-        *u32RndNum |= ((TRNG->DATA_OUT[0] & 0xff) << i*8);
+        *u32RndNum |= ((TRNG->DATA_OUT[0] & 0xff) << i * 8);
 
     }
+
     return 0;
 }
 
@@ -111,7 +114,7 @@ int32_t TRNG_GenBignum(uint8_t u8BigNum[], int32_t i32Len)
 
     u32Reg = TRNG->CTL;
 
-    for (i = 0; i < i32Len/8; i++)
+    for (i = 0; i < i32Len / 8; i++)
     {
         TRNG->CTL = TRNG_CTL_START_Msk | u32Reg;
 
@@ -125,8 +128,9 @@ int32_t TRNG_GenBignum(uint8_t u8BigNum[], int32_t i32Len)
         if (timeout == 0)
             return -1;
 
-        u8BigNum[i] = (TRNG->DATA_OUT[0]& 0xff);
+        u8BigNum[i] = (TRNG->DATA_OUT[0] & 0xff);
     }
+
     return 0;
 }
 
@@ -146,7 +150,8 @@ int32_t TRNG_GenBignumHex(char cBigNumHex[], int32_t i32Len)
 
     u32Reg = TRNG->CTL;
     idx = 0;
-    for (i = 0; i < i32Len/8; i++)
+
+    for (i = 0; i < i32Len / 8; i++)
     {
         TRNG->CTL = TRNG_CTL_START_Msk | u32Reg;
 
@@ -160,7 +165,7 @@ int32_t TRNG_GenBignumHex(char cBigNumHex[], int32_t i32Len)
         if (timeout == 0)
             return -1;
 
-        data = (TRNG->DATA_OUT [0]& 0xff);
+        data = (TRNG->DATA_OUT [0] & 0xff);
 
         if (data >= 0xA0)
             cBigNumHex[idx++] = ((data >> 4) & 0xf) - 10 + 'A';
@@ -168,11 +173,13 @@ int32_t TRNG_GenBignumHex(char cBigNumHex[], int32_t i32Len)
             cBigNumHex[idx++] = ((data >> 4) & 0xf) + '0';
 
         data &= 0xf;
+
         if (data >= 0xA)
             cBigNumHex[idx++] = data - 10 + 'A';
         else
             cBigNumHex[idx++] = data + '0';
     }
+
     cBigNumHex[idx] = 0;
     return 0;
 }

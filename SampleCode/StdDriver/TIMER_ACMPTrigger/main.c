@@ -28,9 +28,10 @@ NVT_ITCM void TIMER0_IRQHandler(void)
     printf("ACMP triggered timer reset while counter is at %d\n", TIMER_GetCaptureData(TIMER0));
     __DSB();
     __ISB();
-    while(TIMER_GetCaptureIntFlag(TIMER0))
+
+    while (TIMER_GetCaptureIntFlag(TIMER0))
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for TIMER0 IntFlag time-out!\n");
         }
@@ -129,7 +130,7 @@ int main(void)
     /* Select P1 as ACMP1 positive input channel */
     ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P1);
 
-    while(1)
+    while (1)
     {
         PB5 = 0; // low
         CLK_SysTickDelay(10000);

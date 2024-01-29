@@ -20,8 +20,8 @@
 #define NCT38XX_NCT3808_MAX_IO_PORT        1
 
 #define NCT38XX_SUPPORT_GPIO_FLAGS (GPIO_OPEN_DRAIN | GPIO_INPUT | \
-        GPIO_OUTPUT | GPIO_LOW | GPIO_HIGH | GPIO_INT_F_RISING | \
-        GPIO_INT_F_FALLING | GPIO_INT_F_HIGH | GPIO_INT_F_LOW)
+                                    GPIO_OUTPUT | GPIO_LOW | GPIO_HIGH | GPIO_INT_F_RISING | \
+                                    GPIO_INT_F_FALLING | GPIO_INT_F_HIGH | GPIO_INT_F_LOW)
 
 /* I2C interface */
 #define NCT38XX_I2C_ADDR1_1_FLAGS          0x70
@@ -61,18 +61,18 @@
 /* NCT3808 only supports GPIO 2/3/4/6/7 */
 #define NCT38XXX_3808_VALID_GPIO_MASK            0xDC
 #if 0
-#define NCT38XX_REG_CTRL_OUT_EN            0xD2
-#define NCT38XX_REG_CTRL_OUT_EN_SRCEN      (1 << 0)
-#define NCT38XX_REG_CTRL_OUT_EN_FASTEN     (1 << 1)
-#define NCT38XX_REG_CTRL_OUT_EN_SNKEN      (1 << 2)
-#define NCT38XX_REG_CTRL_OUT_EN_CONNDIREN  (1 << 6)
+    #define NCT38XX_REG_CTRL_OUT_EN            0xD2
+    #define NCT38XX_REG_CTRL_OUT_EN_SRCEN      (1 << 0)
+    #define NCT38XX_REG_CTRL_OUT_EN_FASTEN     (1 << 1)
+    #define NCT38XX_REG_CTRL_OUT_EN_SNKEN      (1 << 2)
+    #define NCT38XX_REG_CTRL_OUT_EN_CONNDIREN  (1 << 6)
 
-#define NCT38XX_REG_VBC_FAULT_CTL          0xD7
-#define NCT38XX_REG_VBC_FAULT_CTL_VC_OCP_EN (1 << 0)
-#define NCT38XX_REG_VBC_FAULT_CTL_VC_SCP_EN (1 << 1)
-#define NCT38XX_REG_VBC_FAULT_CTL_FAULT_VC_OFF  (1 << 3)
-#define NCT38XX_REG_VBC_FAULT_CTL_VB_OCP_OFF    (1 << 4)
-#define NCT38XX_REG_VBC_FAULT_CTL_VC_OVP_OFF    (1 << 5)
+    #define NCT38XX_REG_VBC_FAULT_CTL          0xD7
+    #define NCT38XX_REG_VBC_FAULT_CTL_VC_OCP_EN (1 << 0)
+    #define NCT38XX_REG_VBC_FAULT_CTL_VC_SCP_EN (1 << 1)
+    #define NCT38XX_REG_VBC_FAULT_CTL_FAULT_VC_OFF  (1 << 3)
+    #define NCT38XX_REG_VBC_FAULT_CTL_VB_OCP_OFF    (1 << 4)
+    #define NCT38XX_REG_VBC_FAULT_CTL_VC_OVP_OFF    (1 << 5)
 #endif
 
 #define NCT38XX_RESET_HOLD_DELAY_MS 1

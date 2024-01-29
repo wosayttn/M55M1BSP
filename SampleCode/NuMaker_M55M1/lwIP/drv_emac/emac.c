@@ -17,7 +17,7 @@
 #include <lwip/sys.h>
 
 #if (LWIP_USING_HW_CHECKSUM == 1)
-#define USING_HW_CHECKSUM
+    #define USING_HW_CHECKSUM
 #endif
 
 static synopGMACdevice GMACdev = {0};
@@ -38,48 +38,49 @@ typedef struct nu_emac_lwip_pbuf *nu_emac_lwip_pbuf_t;
 LWIP_MEMPOOL_DECLARE(emac_rx, RECEIVE_DESC_SIZE, sizeof(struct nu_emac_lwip_pbuf), "EMAC0 RX PBUF pool");
 
 void EMAC_Open(uint8_t *macaddr)
-{        
+{
     int32_t ret = 0;
     uint32_t i;
 
-  
+
     /* Attach the device to MAC struct This will configure all the required base addresses
       such as Mac base, configuration base, phy base address(out of 32 possible phys) */
-   	synopGMAC_attach(&GMACdev, (EMAC0_BASE + MACBASE), (EMAC0_BASE + DMABASE), DEFAULT_PHY_BASE, macaddr );
-  
+    synopGMAC_attach(&GMACdev, (EMAC0_BASE + MACBASE), (EMAC0_BASE + DMABASE), DEFAULT_PHY_BASE, macaddr);
+
     synopGMAC_reset(&GMACdev);
 
-    memcpy((void*)&GMACdev.mac_addr[0], (void*)&macaddr[0], 6);
+    memcpy((void *)&GMACdev.mac_addr[0], (void *)&macaddr[0], 6);
 
     /* Lets read the version of ip in to device structure */
     synopGMAC_read_version(&GMACdev);
 
     /* Check for Phy initialization */
-    if(SystemCoreClock >= 250000000)
+    if (SystemCoreClock >= 250000000)
         synopGMAC_set_mdc_clk_div(&GMACdev, GmiiCsrClk5);
-    else if(SystemCoreClock >= 150000000)
+    else if (SystemCoreClock >= 150000000)
         synopGMAC_set_mdc_clk_div(&GMACdev, GmiiCsrClk4);
-    else if(SystemCoreClock >= 100000000)
+    else if (SystemCoreClock >= 100000000)
         synopGMAC_set_mdc_clk_div(&GMACdev, GmiiCsrClk1);
-    else if(SystemCoreClock >= 60000000)
+    else if (SystemCoreClock >= 60000000)
         synopGMAC_set_mdc_clk_div(&GMACdev, GmiiCsrClk0);
-    else if(SystemCoreClock >= 35000000)
+    else if (SystemCoreClock >= 35000000)
         synopGMAC_set_mdc_clk_div(&GMACdev, GmiiCsrClk3);
     else
         synopGMAC_set_mdc_clk_div(&GMACdev, GmiiCsrClk2);
-    
+
     GMACdev.ClockDivMdc = synopGMAC_get_mdc_clk_div(&GMACdev);
 
-    if((ret = mii_check_phy_init(&GMACdev)) < 0)
+    if ((ret = mii_check_phy_init(&GMACdev)) < 0)
     {
         printf("emac:: Init PHY FAIL.\n");
         printf("\n??? Check the PHY device...\n");
-        while(1) {}
+
+        while (1) {}
     }
 
     /* Set up the tx and rx descriptor queue/ring */
     synopGMAC_setup_tx_desc_queue(&GMACdev, &tx_desc[0], TRANSMIT_DESC_SIZE, RINGMODE);
-    synopGMAC_init_tx_desc_base(&GMACdev);	// Program the transmit descriptor base address in to DmaTxBase addr
+    synopGMAC_init_tx_desc_base(&GMACdev);  // Program the transmit descriptor base address in to DmaTxBase addr
     TR("DmaTxBaseAddr = %08x\n", synopGMACReadReg(GMACdev.DmaBase, DmaTxBaseAddr));
 
     synopGMAC_setup_rx_desc_queue(&GMACdev, &rx_desc[0], RECEIVE_DESC_SIZE, RINGMODE);
@@ -87,7 +88,7 @@ void EMAC_Open(uint8_t *macaddr)
     TR("DmaTxBaseAddr = %08x\n", synopGMACReadReg(GMACdev.DmaBase, DmaRxBaseAddr));
 
     synopGMAC_dma_bus_mode_init(&GMACdev, (DmaBurstLength32 | DmaDescriptorSkip0 | DmaDescriptor8Words));
-    synopGMAC_dma_control_init(&GMACdev, (DmaStoreAndForward | DmaTxSecondFrame| DmaRxThreshCtrl128));
+    synopGMAC_dma_control_init(&GMACdev, (DmaStoreAndForward | DmaTxSecondFrame | DmaRxThreshCtrl128));
 
     /* Initialize the mac interface */
     synopGMAC_mac_init(&GMACdev);
@@ -101,7 +102,7 @@ void EMAC_Open(uint8_t *macaddr)
     synopGMAC_rx_tcpip_chksum_drop_enable(&GMACdev); // This is default configuration, DMA drops the packets if error in encapsulated ethernet payload
 #endif
 
-    for(i=0; i<RECEIVE_DESC_SIZE; i ++) 
+    for (i = 0; i < RECEIVE_DESC_SIZE; i ++)
     {
         synopGMAC_set_rx_qptr(&GMACdev, (u32)&rx_buf[i], PKT_FRAME_BUF_SIZE, 0);
     }
@@ -120,7 +121,7 @@ void EMAC_Open(uint8_t *macaddr)
     printf("Link speed......%d\n", GMACdev.Speed);
 
     synopGMAC_set_mode(&GMACdev, GMACdev.Speed);
-    
+
     /* Initial zero_copy rx pool */
     memp_init_pool(&memp_emac_rx);
 
@@ -134,7 +135,7 @@ void EMAC_Open(uint8_t *macaddr)
 NVT_ITCM void EMAC0_IRQHandler(void)
 {
     uint32_t u32Status;
-    
+
     portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 
     u32 interrupt, dma_status_reg;
@@ -144,10 +145,12 @@ NVT_ITCM void EMAC0_IRQHandler(void)
 
     // Check GMAC interrupt
     u32GmacIntSts = synopGMACReadReg(GMACdev.MacBase, GmacInterruptStatus);
+
     if (u32GmacIntSts & GmacTSIntSts)
     {
         GMACdev.synopGMACNetStats.ts_int = 1;
         status = synopGMACReadReg(GMACdev.MacBase, GmacTSStatus);
+
         if (!(status & (1 << 1)))
         {
             TR("TS alarm flag not set??\n");
@@ -161,6 +164,7 @@ NVT_ITCM void EMAC0_IRQHandler(void)
     synopGMACWriteReg(GMACdev.MacBase, GmacInterruptStatus, u32GmacIntSts);
 
     dma_status_reg = synopGMACReadReg(GMACdev.DmaBase, DmaStatus);
+
     if (dma_status_reg == 0)
     {
         TR("dma_status ==0 \n");
@@ -206,16 +210,18 @@ NVT_ITCM void EMAC0_IRQHandler(void)
     }
 
     if ((interrupt & synopGMACDmaRxNormal) ||
-        (interrupt & synopGMACDmaRxAbnormal))
+            (interrupt & synopGMACDmaRxAbnormal))
     {
         if (interrupt & synopGMACDmaRxNormal)
         {
             TR("%s:: Rx Normal \n", __FUNCTION__);
             u32GmacDmaIE &= ~DmaIntRxNormMask;  // disable RX interrupt
         }
+
         if (interrupt & synopGMACDmaRxAbnormal)
         {
             TR0("%s::Abnormal Rx Interrupt Seen %08x\n", __FUNCTION__, dma_status_reg);
+
             if (GMACdev.GMAC_Power_down == 0)
             {
                 GMACdev.synopGMACNetStats.rx_over_errors++;
@@ -230,6 +236,7 @@ NVT_ITCM void EMAC0_IRQHandler(void)
     if (interrupt & synopGMACDmaRxStopped)
     {
         TR("%s::Receiver stopped seeing Rx interrupts\n", __FUNCTION__); //Receiver gone in to stopped state
+
         if (GMACdev.GMAC_Power_down == 0)   // If Mac is not in powerdown
         {
             GMACdev.synopGMACNetStats.rx_over_errors++;
@@ -246,6 +253,7 @@ NVT_ITCM void EMAC0_IRQHandler(void)
     if (interrupt & synopGMACDmaTxAbnormal)
     {
         TR("%s::Abnormal Tx Interrupt Seen\n", __FUNCTION__);
+
         if (GMACdev.GMAC_Power_down == 0)   // If Mac is not in powerdown
         {
             synop_handle_transmit_over(&GMACdev);
@@ -255,6 +263,7 @@ NVT_ITCM void EMAC0_IRQHandler(void)
     if (interrupt & synopGMACDmaTxStopped)
     {
         TR("%s::Transmitter stopped sending the packets\n", __FUNCTION__);
+
         if (GMACdev.GMAC_Power_down == 0)    // If Mac is not in powerdown
         {
             synopGMAC_disable_dma_tx(&GMACdev);
@@ -266,9 +275,9 @@ NVT_ITCM void EMAC0_IRQHandler(void)
 
     /* Enable the interrrupt before returning from ISR*/
     synopGMAC_enable_interrupt(&GMACdev, u32GmacDmaIE);
-		
+
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-    
+
     /* CPU read interrupt flag register to wait write(clear) instruction completement */
     u32Status = synopGMACReadReg(GMACdev.MacBase, GmacInterruptStatus);
 }
@@ -281,10 +290,12 @@ void nu_emac_pbuf_free(struct pbuf *p)
     SYS_ARCH_DECL_PROTECT(old_level);
     SYS_ARCH_PROTECT(old_level);
     status = synopGMAC_set_rx_qptr(&GMACdev, (u32)my_buf->psPktFrameDataBuf, PKT_FRAME_BUF_SIZE, 0);
+
     if (status < 0)
     {
         TR0("synopGMAC_set_rx_qptr: status < 0!!\n");
     }
+
     memp_free_pool(&memp_emac_rx, my_buf);
     SYS_ARCH_UNPROTECT(old_level);
 }
@@ -292,12 +303,13 @@ void nu_emac_pbuf_free(struct pbuf *p)
 uint32_t EMAC_ReceivePkt(void)
 {
     uint32_t len = 0;
-    PKT_FRAME_T* psPktFrame;
+    PKT_FRAME_T *psPktFrame;
     struct pbuf *pbuf;
-	
-    if ( (len = synop_handle_received_data(&GMACdev, &psPktFrame)) > 0 )
-    {		
+
+    if ((len = synop_handle_received_data(&GMACdev, &psPktFrame)) > 0)
+    {
         nu_emac_lwip_pbuf_t my_pbuf  = (nu_emac_lwip_pbuf_t)memp_malloc_pool(&memp_emac_rx);
+
         if (my_pbuf != NULL)
         {
             my_pbuf->p.custom_free_function = nu_emac_pbuf_free;
@@ -309,11 +321,12 @@ uint32_t EMAC_ReceivePkt(void)
                                        &my_pbuf->p,
                                        psPktFrame,
                                        PKT_FRAME_BUF_SIZE);
+
             if (pbuf == NULL)
             {
                 printf("%s : failed to alloted\n", __func__);
             }
-            else if (_netif->input(pbuf, _netif) != ERR_OK )
+            else if (_netif->input(pbuf, _netif) != ERR_OK)
             {
                 LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: Input error\n"));
                 pbuf_free(pbuf);
@@ -332,7 +345,7 @@ uint32_t EMAC_ReceivePkt(void)
     return len;
 }
 
-uint8_t* EMAC_AllocatePktBuf(void)
+uint8_t *EMAC_AllocatePktBuf(void)
 {
     u32 index = GMACdev.TxNext;
     return &tx_buf[index].au8Buf[0];
@@ -341,18 +354,18 @@ uint8_t* EMAC_AllocatePktBuf(void)
 int32_t EMAC_TransmitPkt(uint8_t *pbuf, uint32_t len)
 {
     u32 offload_needed;
-    
+
     if ((pbuf != NULL) && (len > 0) &&
-        !synopGMAC_is_desc_owned_by_dma(GMACdev.TxNextDesc)  )
+            !synopGMAC_is_desc_owned_by_dma(GMACdev.TxNextDesc))
     {
-	
+
 #if defined(USING_HW_CHECKSUM)
         offload_needed = 1;
 #else
         offload_needed = 0;
 #endif
         return synopGMAC_xmit_frames(&GMACdev, pbuf, len, offload_needed, 0);
-  	}
-		
+    }
+
     return -1;
 }

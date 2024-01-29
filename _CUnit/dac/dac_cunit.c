@@ -142,32 +142,34 @@ void Test_CONST_DAC_CTL(void)
     CU_ASSERT(DAC_TIMER1_TRIGGER == (0x60 | 0x10));
     CU_ASSERT(DAC_TIMER2_TRIGGER == (0x80 | 0x10));
     CU_ASSERT(DAC_TIMER3_TRIGGER == (0xA0 | 0x10));
-    CU_ASSERT(DAC_EPWM0_TRIGGER == (0xC0|0x10));
-    CU_ASSERT(DAC_EPWM1_TRIGGER == (0xE0|0x10));
+    CU_ASSERT(DAC_EPWM0_TRIGGER == (0xC0 | 0x10));
+    CU_ASSERT(DAC_EPWM1_TRIGGER == (0xE0 | 0x10));
     CU_ASSERT(DAC_TRIGGER_MODE_ENABLE == 0x10);
     CU_ASSERT(DAC_TRIGGER_MODE_DISABLE == 0x00);
 
 }
 void ResetPDMA(PDMA_T *psPdma)
 {
-  /* Unlock protected registers */
-  SYS_UnlockReg(); 
-  if(psPdma == PDMA0)
-   SYS_ResetModule(SYS_PDMA0RST);
-  else
-   SYS_ResetModule(SYS_PDMA1RST);
-  /* Lock protected registers */
-  SYS_LockReg();
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    if (psPdma == PDMA0)
+        SYS_ResetModule(SYS_PDMA0RST);
+    else
+        SYS_ResetModule(SYS_PDMA1RST);
+
+    /* Lock protected registers */
+    SYS_LockReg();
 }
 
 
 void ResetDAC(uint32_t u32Module)
 {
-  /* Unlock protected registers */
-  SYS_UnlockReg(); 
-  SYS_ResetModule(SYS_DAC01RST);
-  /* Lock protected registers */
-  SYS_LockReg();
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+    SYS_ResetModule(SYS_DAC01RST);
+    /* Lock protected registers */
+    SYS_LockReg();
 }
 void Test_API_DAC_Open_Close(void)
 {
@@ -728,7 +730,7 @@ void Test_MACRO_DAC_SW_PDMA(void)
         PDMA_SetTransferAddr(PDMA0, 0, (uint32_t)&sine[index], PDMA_SAR_INC, (uint32_t)&g_apDACModule[u32DACModule]->DAT, PDMA_DAR_FIX);
 
 
-       if (u32DACModule == 0)
+        if (u32DACModule == 0)
             /* Select channel 0 request source from DAC */
             PDMA_SetTransferMode(PDMA0, 0, PDMA_DAC0_TX, FALSE, 0);
         else
@@ -809,38 +811,38 @@ void Test_MACRO_DAC_GROUP_MODE(void)
     DAC_DISABLE_GROUP_MODE(DAC0);
     CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == 0);
     DAC_ENABLE_GROUP_MODE(DAC0);
-    DAC_GROUP_WRITE_DATA(0xAAAA,0x5555);
-	  CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == DAC_CTL_GRPEN_Msk);
-  	CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk ) == 0x55550000);
-	  CU_ASSERT((DAC0->GRPDAT &DAC_GPRDAT_DAC0DAT_Msk) == 0xAAAA);
-    DAC_GROUP_WRITE_DATA(0x0,0x0);
-	  CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk ) == 0x0);
-	  CU_ASSERT((DAC0->GRPDAT &DAC_GPRDAT_DAC0DAT_Msk) == 0x0);
-	  DAC_DISABLE_GROUP_MODE(DAC0);
-    CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == 0);	  
-	  DAC_GROUP_WRITE_DATA(0x5555,0xAAAA);
-	  CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk ) == 0x0);
-	  CU_ASSERT((DAC0->GRPDAT &DAC_GPRDAT_DAC0DAT_Msk) == 0x0);  
-	
-	  DAC_ENABLE_GROUP_MODE(DAC1);
+    DAC_GROUP_WRITE_DATA(0xAAAA, 0x5555);
+    CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == DAC_CTL_GRPEN_Msk);
+    CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk) == 0x55550000);
+    CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC0DAT_Msk) == 0xAAAA);
+    DAC_GROUP_WRITE_DATA(0x0, 0x0);
+    CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk) == 0x0);
+    CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC0DAT_Msk) == 0x0);
+    DAC_DISABLE_GROUP_MODE(DAC0);
+    CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == 0);
+    DAC_GROUP_WRITE_DATA(0x5555, 0xAAAA);
+    CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk) == 0x0);
+    CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC0DAT_Msk) == 0x0);
+
+    DAC_ENABLE_GROUP_MODE(DAC1);
     CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == DAC_CTL_GRPEN_Msk);
     DAC_DISABLE_GROUP_MODE(DAC1);
     CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == 0);
-		DAC_ENABLE_GROUP_MODE(DAC1);
-    DAC_GROUP_WRITE_DATA(0x5555,0xAAAA);
-	  CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == DAC_CTL_GRPEN_Msk);
-  	CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk ) == 0xAAAA0000);
-	  CU_ASSERT((DAC0->GRPDAT &DAC_GPRDAT_DAC0DAT_Msk) == 0x5555);
-    DAC_GROUP_WRITE_DATA(0x0,0x0);
-	  CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk ) == 0x0);
-	  CU_ASSERT((DAC0->GRPDAT &DAC_GPRDAT_DAC0DAT_Msk) == 0x0);
-	  DAC_DISABLE_GROUP_MODE(DAC1);
-    CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == 0);	  
-	  DAC_GROUP_WRITE_DATA(0x5555,0xAAAA);
-	  CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk ) == 0x0);
-	  CU_ASSERT((DAC0->GRPDAT &DAC_GPRDAT_DAC0DAT_Msk) == 0x0);  
-		
-		
+    DAC_ENABLE_GROUP_MODE(DAC1);
+    DAC_GROUP_WRITE_DATA(0x5555, 0xAAAA);
+    CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == DAC_CTL_GRPEN_Msk);
+    CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk) == 0xAAAA0000);
+    CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC0DAT_Msk) == 0x5555);
+    DAC_GROUP_WRITE_DATA(0x0, 0x0);
+    CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk) == 0x0);
+    CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC0DAT_Msk) == 0x0);
+    DAC_DISABLE_GROUP_MODE(DAC1);
+    CU_ASSERT((DAC0->CTL & DAC_CTL_GRPEN_Msk) == 0);
+    DAC_GROUP_WRITE_DATA(0x5555, 0xAAAA);
+    CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC1DAT_Msk) == 0x0);
+    CU_ASSERT((DAC0->GRPDAT & DAC_GPRDAT_DAC0DAT_Msk) == 0x0);
+
+
 
 }
 

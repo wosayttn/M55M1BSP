@@ -68,10 +68,13 @@ __STATIC_INLINE void BUFCTRL_CFG(volatile S_BUFCTRL *psBuf, int32_t *pi32Data, u
  */
 __STATIC_INLINE void BUFCTRL_WRITE(volatile S_BUFCTRL *psBuf, int32_t i32Data)
 {
-    if(psBuf->u16DataCount<psBuf->u16BufCount) {
+    if (psBuf->u16DataCount < psBuf->u16BufCount)
+    {
         psBuf->pai32Buf[psBuf->u16WriteIdx] = i32Data;
         psBuf->u16DataCount++;
-        if((psBuf->u16WriteIdx+=1)>=psBuf->u16BufCount) {
+
+        if ((psBuf->u16WriteIdx += 1) >= psBuf->u16BufCount)
+        {
             psBuf->u16WriteIdx = 0;
         }
     }
@@ -84,10 +87,13 @@ __STATIC_INLINE void BUFCTRL_WRITE(volatile S_BUFCTRL *psBuf, int32_t i32Data)
  */
 __STATIC_INLINE void BUFCTRL_READ(volatile S_BUFCTRL *psBuf, int32_t *pi32Data)
 {
-    if(psBuf->u16DataCount>0) {
+    if (psBuf->u16DataCount > 0)
+    {
         *pi32Data = psBuf->pai32Buf[psBuf->u16ReadIdx];
         psBuf->u16DataCount--;
-        if((psBuf->u16ReadIdx+=1)>=psBuf->u16BufCount) {
+
+        if ((psBuf->u16ReadIdx += 1) >= psBuf->u16BufCount)
+        {
             psBuf->u16ReadIdx = 0;
         }
     }

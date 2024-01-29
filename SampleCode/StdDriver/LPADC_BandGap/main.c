@@ -64,7 +64,7 @@ void SYS_Init(void)
     /* Workaround(TESTCHIP_ONLY)  */
     /* To measure the VBG voltage in TC8263, ACMP_N must be set through ACMP to turn on VBG.*/
     CLK_EnableModuleClock(ACMP01_MODULE);
-    ACMP_Open(ACMP01,0,ACMP_CTL_NEGSEL_VBG,ACMP_CTL_HYSTERESIS_DISABLE);
+    ACMP_Open(ACMP01, 0, ACMP_CTL_NEGSEL_VBG, ACMP_CTL_HYSTERESIS_DISABLE);
 
     /* Debug UART clock setting*/
     SetDebugUartCLK();
@@ -127,7 +127,7 @@ void LPADC_FunctionTest()
 
     printf("LPADC Conversion result of Band-gap: 0x%X (%d)\n", i32ConversionData, i32ConversionData);
 
-    printf("Band-gap voltage is %dmV if Reference voltage is %.2f V\n", (3300 * i32ConversionData) / 4095,((float)4095 / i32ConversionData) * (float)(1.2));
+    printf("Band-gap voltage is %dmV if Reference voltage is %.2f V\n", (3300 * i32ConversionData) / 4095, ((float)4095 / i32ConversionData) * (float)(1.2));
 
 }
 

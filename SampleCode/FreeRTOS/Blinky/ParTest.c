@@ -156,7 +156,7 @@ void vParTestInitialise(void)
 void vParTestToggleLED(unsigned long ulLED)
 {
     (void)ulLED;
- 
+
     PI12 ^= 1;
 }
 /*-----------------------------------------------------------*/

@@ -11,16 +11,16 @@
 #include <stdint.h>
 #include <inttypes.h>
 #ifdef SW
-#include "compile_time_macros.h"
+    #include "compile_time_macros.h"
 
-#ifdef CONFIG_ZEPHYR
-#include <fpu.h>
-#include <sys/util.h>
-#include <toolchain.h>
-#ifdef CONFIG_ZTEST
-#define TEST_BUILD
-#endif /* CONFIG_ZTEST */
-#endif /* CONFIG_ZEPHYR */
+    #ifdef CONFIG_ZEPHYR
+        #include <fpu.h>
+        #include <sys/util.h>
+        #include <toolchain.h>
+        #ifdef CONFIG_ZTEST
+            #define TEST_BUILD
+        #endif /* CONFIG_ZTEST */
+    #endif /* CONFIG_ZEPHYR */
 #endif
 /*
  * Define a new macro (FIXED_SECTION) to abstract away the linker details
@@ -29,9 +29,9 @@
  * both the RO/RW images.
  */
 #ifdef CONFIG_ZEPHYR
-#define FIXED_SECTION(name) __attribute__((section(".fixed." name)))
+    #define FIXED_SECTION(name) __attribute__((section(".fixed." name)))
 #else
-#define FIXED_SECTION(name) __attribute__((section(".rodata." name)))
+    #define FIXED_SECTION(name) __attribute__((section(".rodata." name)))
 #endif
 
 
@@ -71,8 +71,8 @@
  * is safe with regards to using nested macros and defined arguments.
  */
 #ifndef CONFIG_ZEPHYR
-#define STRINGIFY0(name)  #name
-#define STRINGIFY(name)  STRINGIFY0(name)
+    #define STRINGIFY0(name)  #name
+    #define STRINGIFY(name)  STRINGIFY0(name)
 #endif   /* CONFIG_ZEPHYR */
 
 /* Macros to access registers */
@@ -92,18 +92,18 @@
  * __attribute__((aligned(n))).
  */
 #ifndef __aligned
-#define __aligned(n) __attribute__((aligned(n)))
+    #define __aligned(n) __attribute__((aligned(n)))
 #endif
 
 #ifndef __packed
-#define __packed __attribute__((packed))
+    #define __packed __attribute__((packed))
 #endif
 
 /*
  * Define __unused in the same manner.
  */
 #ifndef __unused
-#define __unused __attribute__((unused))
+    #define __unused __attribute__((unused))
 #endif
 
 /*
@@ -114,18 +114,18 @@
  * CONFIG options.
  */
 #ifndef __maybe_unused
-#define __maybe_unused __attribute__((unused))
+    #define __maybe_unused __attribute__((unused))
 #endif
 
 /*
  * externally_visible is required by GCC to avoid kicking out memset.
  */
 #ifndef __visible
-#ifndef __clang__
-#define __visible __attribute__((externally_visible))
-#else
-#define __visible __attribute__((used))
-#endif
+    #ifndef __clang__
+        #define __visible __attribute__((externally_visible))
+    #else
+        #define __visible __attribute__((used))
+    #endif
 #endif
 
 /*
@@ -135,7 +135,7 @@
  * Useful for C functions called only from assembly or through special sections.
  */
 #ifndef __keep
-#define __keep __attribute__((used)) __visible
+    #define __keep __attribute__((used)) __visible
 #endif
 
 /*
@@ -145,7 +145,7 @@
  * to the .bss section.
  */
 #ifndef __bss_slow
-#define __bss_slow __attribute__((section(".bss.slow")))
+    #define __bss_slow __attribute__((section(".bss.slow")))
 #endif
 
 /*
@@ -158,16 +158,16 @@
  * linked into the .rodata section.
  */
 #ifndef __init_rom
-#ifndef CONFIG_ZEPHYR
-#define __init_rom __attribute__((section(".init.rom")))
-#else
-#define __init_rom
-#endif
+    #ifndef CONFIG_ZEPHYR
+        #define __init_rom __attribute__((section(".init.rom")))
+    #else
+        #define __init_rom
+    #endif
 #endif
 
 /* gcc does not support __has_feature */
 #ifndef __has_feature
-#define __has_feature(x) 0
+    #define __has_feature(x) 0
 #endif
 
 /*
@@ -175,11 +175,11 @@
  * variables (e.g. hook/commands "arrays" that are put together at link time).
  */
 #ifndef __no_sanitize_address
-#if __has_feature(address_sanitizer)
-#define __no_sanitize_address __attribute__((no_sanitize("address")))
-#else
-#define __no_sanitize_address
-#endif
+    #if __has_feature(address_sanitizer)
+        #define __no_sanitize_address __attribute__((no_sanitize("address")))
+    #else
+        #define __no_sanitize_address
+    #endif
 #endif
 
 /*
@@ -223,10 +223,10 @@
     ((lsb) | (byte1) << 8 | (byte2) << 16 | (msb) << 24)
 #define UINT32_FROM_BYTE_ARRAY_LE(data, lsb_index) \
     UINT32_FROM_BYTES((data)[(lsb_index)], (data)[(lsb_index) + 1], \
-              (data)[(lsb_index) + 2], (data)[(lsb_index) + 3])
+                      (data)[(lsb_index) + 2], (data)[(lsb_index) + 3])
 #define UINT32_FROM_BYTE_ARRAY_BE(data, msb_index) \
     UINT32_FROM_BYTES((data)[(msb_index) + 3], (data)[(msb_index) + 2], \
-              (data)[(msb_index) + 1], (data)[(msb_index)])
+                      (data)[(msb_index) + 1], (data)[(msb_index)])
 
 /* There isn't really a better place for this */
 #define C_TO_K(temp_c) ((temp_c) + 273)
@@ -256,14 +256,14 @@
 
 /* Call a function, and return the error value unless it returns EC_SUCCESS. */
 #define RETURN_ERROR(fn) do { \
-    int error = (fn); \
-    if (error != EC_SUCCESS) \
-        return error; \
-} while (0)
+        int error = (fn); \
+        if (error != EC_SUCCESS) \
+            return error; \
+    } while (0)
 
 /* Include top-level configuration file */
 #ifdef SW
-#include "config.h"
+    #include "config.h"
 #endif
 /*
  * When CONFIG_CHIP_DATA_IN_INIT_ROM is enabled the .data section is linked
@@ -275,14 +275,14 @@
  * savings.
  */
 #ifdef CONFIG_CHIP_DATA_IN_INIT_ROM
-#define __const_data __attribute__((section(".data#")))
+    #define __const_data __attribute__((section(".data#")))
 #else
-#define __const_data
+    #define __const_data
 #endif
 
 #ifdef SW
-/* Canonical list of module IDs */
-#include "module_id.h"
+    /* Canonical list of module IDs */
+    #include "module_id.h"
 #endif
 
 /* List of common error codes that can be returned */
@@ -367,15 +367,15 @@ enum ec_error_list
  * functions.
  */
 #ifdef TEST_BUILD
-#define test_mockable __attribute__((weak))
-#define test_mockable_static __attribute__((weak))
-#define test_mockable_static_inline __attribute__((weak))
-#define test_export_static
+    #define test_mockable __attribute__((weak))
+    #define test_mockable_static __attribute__((weak))
+    #define test_mockable_static_inline __attribute__((weak))
+    #define test_export_static
 #else
-#define test_mockable
-#define test_mockable_static static
-#define test_mockable_static_inline static inline
-#define test_export_static static
+    #define test_mockable
+    #define test_mockable_static static
+    #define test_mockable_static_inline static inline
+    #define test_export_static static
 #endif
 
 /*
@@ -386,9 +386,9 @@ enum ec_error_list
  * __test_only void foo(void);
  */
 #ifdef TEST_BUILD
-#define __test_only
+    #define __test_only
 #else
-#define __test_only __error("This function should only be used by tests")
+    #define __test_only __error("This function should only be used by tests")
 #endif
 
 /*
@@ -397,9 +397,9 @@ enum ec_error_list
  * before including common.h from code that links to cstdlib.
  */
 #ifdef TEST_FUZZ
-#define __stdlib_compat __attribute__((visibility("hidden")))
+    #define __stdlib_compat __attribute__((visibility("hidden")))
 #else /* TEST_FUZZ */
-#define __stdlib_compat
+    #define __stdlib_compat
 #endif /* TEST_FUZZ */
 
 /* find the most significant bit. Not defined in n == 0. */
@@ -435,11 +435,11 @@ enum ec_error_list
 #ifdef SW
 #define __cfg_select_build_assert(cfg, value, empty, undef) \
     __cfg_select(                       \
-        value,                      \
-        empty,                      \
-        BUILD_ASSERT(                   \
-            __builtin_strcmp(cfg, #value) == 0);    \
-        undef)
+                                        value,                      \
+                                        empty,                      \
+                                        BUILD_ASSERT(                   \
+                                                                        __builtin_strcmp(cfg, #value) == 0);    \
+                                        undef)
 #endif
 /*
  * Attribute for generating an error if a function is used.
@@ -448,9 +448,9 @@ enum ec_error_list
  * errors. :(
  */
 #ifdef __clang__
-#define __error(msg) __attribute__((section("/DISCARD/")))
+    #define __error(msg) __attribute__((section("/DISCARD/")))
 #else
-#define __error(msg) __attribute__((error(msg)))
+    #define __error(msg) __attribute__((error(msg)))
 #endif
 
 /*
@@ -467,14 +467,14 @@ enum ec_error_list
 #ifdef SW
 #define __config_enabled(cfg, value)                          \
     __cfg_select(                                 \
-        value, 1, ({                              \
-            int __undefined = __builtin_strcmp(cfg, #value) == 0; \
-            extern int IS_ENABLED_BAD_ARGS(void) __error(         \
-                cfg " must be <blank>, or not defined.");     \
-            if (!__undefined)                     \
-                IS_ENABLED_BAD_ARGS();                \
-            0;                            \
-        }))
+    value, 1, ({                              \
+        int __undefined = __builtin_strcmp(cfg, #value) == 0; \
+        extern int IS_ENABLED_BAD_ARGS(void) __error(         \
+                                                              cfg " must be <blank>, or not defined.");     \
+        if (!__undefined)                     \
+            IS_ENABLED_BAD_ARGS();                \
+        0;                            \
+    }))
 #endif
 /**
  * Checks if a config option is enabled or disabled
@@ -491,24 +491,24 @@ enum ec_error_list
  * it checks for unknown values.
  */
 #ifndef CONFIG_ZEPHYR
-//#define IS_ENABLED(option) __config_enabled(#option, option)
-#define IS_ENABLED(x)   (x == 1)
+    //#define IS_ENABLED(option) __config_enabled(#option, option)
+    #define IS_ENABLED(x)   (x == 1)
 #else
-/* IS_ENABLED previously defined in sys/util.h */
-#undef IS_ENABLED
-/*
- * For Zephyr, we must create a new version of IS_ENABLED which is
- * compatible with both Kconfig enables (for Zephyr code), which have
- * the value defined to 1 upon enablement, and CrOS EC defines (which
- * are defined to the empty string).
- *
- * To do this, we use __cfg_select from this codebase to determine if
- * the option was defined to nothing ("enabled" in CrOS EC terms).  If
- * not, we then check using Zephyr's Z_IS_ENABLED1 macro to determine
- * if the config option is enabled by Zephyr's definition.
- */
-//#define IS_ENABLED(option) __cfg_select(option, 1, Z_IS_ENABLED1(option))
-#define IS_ENABLED(x)   (x == 1)
+    /* IS_ENABLED previously defined in sys/util.h */
+    #undef IS_ENABLED
+    /*
+    * For Zephyr, we must create a new version of IS_ENABLED which is
+    * compatible with both Kconfig enables (for Zephyr code), which have
+    * the value defined to 1 upon enablement, and CrOS EC defines (which
+    * are defined to the empty string).
+    *
+    * To do this, we use __cfg_select from this codebase to determine if
+    * the option was defined to nothing ("enabled" in CrOS EC terms).  If
+    * not, we then check using Zephyr's Z_IS_ENABLED1 macro to determine
+    * if the config option is enabled by Zephyr's definition.
+    */
+    //#define IS_ENABLED(option) __cfg_select(option, 1, Z_IS_ENABLED1(option))
+    #define IS_ENABLED(x)   (x == 1)
 #endif  /* CONFIG_ZEPHYR */
 /**
  * Makes a global variable static when a config option is enabled,

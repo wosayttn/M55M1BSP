@@ -153,7 +153,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(GPIOE_MODULE);
     CLK_EnableModuleClock(EMAC0_MODULE);
     SYS_ResetModule(SYS_EMAC0RST);
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -262,6 +262,7 @@ int main(void)
     while (1)
     {
 #if 0
+
         /* Check mii link status per second */
         if (TIMER_GetIntFlag(TIMER1) != 0)
         {
@@ -269,6 +270,7 @@ int main(void)
             /* Only enable under the circumstance cable may be plug/unplug */
             mii_link_monitor(g_gmacdev);
         }
+
 #endif
 
         ProcessEMACRx(&_netif);

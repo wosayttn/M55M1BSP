@@ -10,9 +10,9 @@
 #define __TRNG_REG_H__
 
 #if defined ( __CC_ARM   )
-#pragma anon_unions
+    #pragma anon_unions
 #endif
-/** 
+/**
     @addtogroup REGISTER Control Register
     @{
 */
@@ -20,126 +20,126 @@
 /**
     @addtogroup TRNG True Random Number Generator (TRNG)
     Memory Mapped Structure for TRNG Controller
-    @{ 
+    @{
 */
- 
+
 typedef struct
 {
 
 
-/**
- * @var TRNG_T::CTL
- * Offset: 0x00  TRNG Control Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |LDOEN     |LDO Enable Bit
- * |        |          |0 = LDO Disabled.
- * |        |          |1 = LDO Enabled.
- * |[1]     |NRST      |Negative-edge Trigger Reset
- * |        |          |0 = Keep reset.
- * |        |          |1 = No reset.
- * |[2]     |TRNGEN    |True Random Number Generator Macro Enable Bit
- * |        |          |0 = TRNG macro Disabled.
- * |        |          |1 = TRNG macro Enabled.
- * |[3]     |START     |True Random Number Generator Start
- * |        |          |0 = No effect.
- * |        |          |1 = Start TRNG.
- * |        |          |Note: Do not enable START and KATEN at the same time. This bit is always 0 when it is read back.
- * |[5:4]   |MODE      |Random Bit Generator Output Selection
- * |        |          |00 = Output data is from entropy (32-bits).
- * |        |          |01 = Output data is from NRBG (128-bits).
- * |        |          |10 = Output data is from DRBG (128-bits).
- * |        |          |11 = Reserved.
- * |[8]     |INSTANT   |CTR_DRBG User Manual Instant Function
- * |        |          |0 = No effect.
- * |        |          |1 = Enable CTR_DRBG instant function.
- * |[9]     |RESEED    |CTR_DRBG User Manual Reseed Function
- * |        |          |0 = No effect.
- * |        |          |1 = Enable CTR_DRBG reseed function.
- * |[10]    |UPDATE    |CTR_DRBG User Manual Update Function
- * |        |          |0 = No effect.
- * |        |          |1 = Enable CTR_DRBG update function.
- * |[24]    |KATEN     |CTR_DRBG Known Answer Test Enable Bit
- * |        |          |0 = Disabled.
- * |        |          |1 = Enabled.
- * |        |          |Note: Do not enable START and KATEN at the same time.
- * |[26:25] |KATSEL    |CTR_DRBG Known Answer Test Selection
- * |        |          |0 = Instantiation testing.
- * |        |          |1 = Reseed testing.
- * |        |          |2 = Generation testing.
- * |        |          |Others = reserved.
- * |[30]    |ERRIEN    |TRNG Error Interrupt Enable Bit
- * |        |          |0 = Error interrupt Disabled.
- * |        |          |1 = Error interrupt Enabled.
- * |[31]    |DVIEN     |Data Valid Interrupt Enable Bit
- * |        |          |0 = Interrupt Disabled.
- * |        |          |1 = Interrupt Enabled.
- * @var TRNG_T::CFG
- * Offset: 0x04  TRNG Configure Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[25:0]  |RESEED_INTERVAL|Reseed Interval
- * |        |          |Maximum number of requests between reseeds.
- * |        |          |The value is 1 ~ 225 .
- * |        |          |Note: If users select out of this range (1 ~ 225 ), reseed_interval will be set the maximum value = 225.
- * |[31:28] |CTRLEN    |CTR_DRBG Bits Length Per Request
- * |        |          |CTR_DRBG bits length per request = (2CTRLEN -4) x block length.
- * |        |          |CTR_DRBG block length is 128-bits (27).
- * |        |          |CTRLEN is 4~12.
- * |        |          |Note: If users select out of this range (4~12), CTRLEN will be set the maximum value = 12.
- * @var TRNG_T::STS
- * Offset: 0x08  TRNG Status Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[0]     |LDORDY    |LDO Ready Signal
- * |        |          |0 = LDO is not ready.
- * |        |          |1 = LDO is ready.
- * |[1]     |TRNGRDY   |TRNG Ready Signal
- * |        |          |0 = True random number generator is not ready.
- * |        |          |1 = True random number generator is ready.
- * |[4]     |ESSUT     |Entropy Source Start-Up Test
- * |        |          |0 = Entropy source is still under testing or test fail.
- * |        |          |1 = Test pass.
- * |[5]     |ESRCT     |Entropy Source Repetition Count Test
- * |        |          |0 = Entropy source is still under testing or test fail.
- * |        |          |1 = Test pass.
- * |[6]     |ESAPT     |Entropy Source Adaptive Proportion Test
- * |        |          |0 = Entropy source is still under testing or test fail.
- * |        |          |1 = Test pass.
- * |[27]    |KATPASS   |CTR_DRBG Known Answer Test Pass
- * |        |          |0 = Test fail.
- * |        |          |1 = Test pass.
- * |        |          |Note: When users enable KATEN, they can check this bit after DVIF become u20181u2019.
- * |[30]    |ERRIF     |TRNG Error Interrupt Flag
- * |        |          |0 = No TRNG error.
- * |        |          |1 = TRNGRDY became u20180u2019 over 1ms , TRNG error interrupt.
- * |[31]    |DVIF      |Data Valid Interrupt Flag
- * |        |          |0 = Data is invalid.
- * |        |          |1 = Data is valid. A valid random number can be read form TRNG_DATAx.
- * |        |          |Note: This bit is cleared to u20180u2019 by reading DATA_OUT[0] ~ DATA_OUT[3].
- * |        |          |If MODE (TRNG_CTL[5:4]) = u201800u2019, this bit is cleared to u20180u2019 by reading DATA_OUT[0].
- * @var TRNG_T::DATA_OUT[4]
- * Offset: 0x0C~0x18  TRNG Data Output Word Register
- * ---------------------------------------------------------------------------------------------------
- * |Bits    |Field     |Descriptions
- * | :----: | :----:   | :---- |
- * |[31:0]  |DATA      |True Random Number Generator Data (Read Only)
- * |        |          |The DATA stores the output data generated by TRNG, it can be read when DVIF become 1 and can be read only once.
- * |        |          |TRNG_DATA0 stores Entropy / NRBG word 0 / DRBG word 0.
- * |        |          |TRNG_DATA1 stores NRBG word 1 / DRBG word 1.
- * |        |          |TRNG_DATA2 stores NRBG word 2 / DRBG word 2.
- * |        |          |TRNG_DATA3 stores NRBG word 3 / DRBG word 3.
- */
+    /**
+     * @var TRNG_T::CTL
+     * Offset: 0x00  TRNG Control Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |LDOEN     |LDO Enable Bit
+     * |        |          |0 = LDO Disabled.
+     * |        |          |1 = LDO Enabled.
+     * |[1]     |NRST      |Negative-edge Trigger Reset
+     * |        |          |0 = Keep reset.
+     * |        |          |1 = No reset.
+     * |[2]     |TRNGEN    |True Random Number Generator Macro Enable Bit
+     * |        |          |0 = TRNG macro Disabled.
+     * |        |          |1 = TRNG macro Enabled.
+     * |[3]     |START     |True Random Number Generator Start
+     * |        |          |0 = No effect.
+     * |        |          |1 = Start TRNG.
+     * |        |          |Note: Do not enable START and KATEN at the same time. This bit is always 0 when it is read back.
+     * |[5:4]   |MODE      |Random Bit Generator Output Selection
+     * |        |          |00 = Output data is from entropy (32-bits).
+     * |        |          |01 = Output data is from NRBG (128-bits).
+     * |        |          |10 = Output data is from DRBG (128-bits).
+     * |        |          |11 = Reserved.
+     * |[8]     |INSTANT   |CTR_DRBG User Manual Instant Function
+     * |        |          |0 = No effect.
+     * |        |          |1 = Enable CTR_DRBG instant function.
+     * |[9]     |RESEED    |CTR_DRBG User Manual Reseed Function
+     * |        |          |0 = No effect.
+     * |        |          |1 = Enable CTR_DRBG reseed function.
+     * |[10]    |UPDATE    |CTR_DRBG User Manual Update Function
+     * |        |          |0 = No effect.
+     * |        |          |1 = Enable CTR_DRBG update function.
+     * |[24]    |KATEN     |CTR_DRBG Known Answer Test Enable Bit
+     * |        |          |0 = Disabled.
+     * |        |          |1 = Enabled.
+     * |        |          |Note: Do not enable START and KATEN at the same time.
+     * |[26:25] |KATSEL    |CTR_DRBG Known Answer Test Selection
+     * |        |          |0 = Instantiation testing.
+     * |        |          |1 = Reseed testing.
+     * |        |          |2 = Generation testing.
+     * |        |          |Others = reserved.
+     * |[30]    |ERRIEN    |TRNG Error Interrupt Enable Bit
+     * |        |          |0 = Error interrupt Disabled.
+     * |        |          |1 = Error interrupt Enabled.
+     * |[31]    |DVIEN     |Data Valid Interrupt Enable Bit
+     * |        |          |0 = Interrupt Disabled.
+     * |        |          |1 = Interrupt Enabled.
+     * @var TRNG_T::CFG
+     * Offset: 0x04  TRNG Configure Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[25:0]  |RESEED_INTERVAL|Reseed Interval
+     * |        |          |Maximum number of requests between reseeds.
+     * |        |          |The value is 1 ~ 225 .
+     * |        |          |Note: If users select out of this range (1 ~ 225 ), reseed_interval will be set the maximum value = 225.
+     * |[31:28] |CTRLEN    |CTR_DRBG Bits Length Per Request
+     * |        |          |CTR_DRBG bits length per request = (2CTRLEN -4) x block length.
+     * |        |          |CTR_DRBG block length is 128-bits (27).
+     * |        |          |CTRLEN is 4~12.
+     * |        |          |Note: If users select out of this range (4~12), CTRLEN will be set the maximum value = 12.
+     * @var TRNG_T::STS
+     * Offset: 0x08  TRNG Status Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[0]     |LDORDY    |LDO Ready Signal
+     * |        |          |0 = LDO is not ready.
+     * |        |          |1 = LDO is ready.
+     * |[1]     |TRNGRDY   |TRNG Ready Signal
+     * |        |          |0 = True random number generator is not ready.
+     * |        |          |1 = True random number generator is ready.
+     * |[4]     |ESSUT     |Entropy Source Start-Up Test
+     * |        |          |0 = Entropy source is still under testing or test fail.
+     * |        |          |1 = Test pass.
+     * |[5]     |ESRCT     |Entropy Source Repetition Count Test
+     * |        |          |0 = Entropy source is still under testing or test fail.
+     * |        |          |1 = Test pass.
+     * |[6]     |ESAPT     |Entropy Source Adaptive Proportion Test
+     * |        |          |0 = Entropy source is still under testing or test fail.
+     * |        |          |1 = Test pass.
+     * |[27]    |KATPASS   |CTR_DRBG Known Answer Test Pass
+     * |        |          |0 = Test fail.
+     * |        |          |1 = Test pass.
+     * |        |          |Note: When users enable KATEN, they can check this bit after DVIF become u20181u2019.
+     * |[30]    |ERRIF     |TRNG Error Interrupt Flag
+     * |        |          |0 = No TRNG error.
+     * |        |          |1 = TRNGRDY became u20180u2019 over 1ms , TRNG error interrupt.
+     * |[31]    |DVIF      |Data Valid Interrupt Flag
+     * |        |          |0 = Data is invalid.
+     * |        |          |1 = Data is valid. A valid random number can be read form TRNG_DATAx.
+     * |        |          |Note: This bit is cleared to u20180u2019 by reading DATA_OUT[0] ~ DATA_OUT[3].
+     * |        |          |If MODE (TRNG_CTL[5:4]) = u201800u2019, this bit is cleared to u20180u2019 by reading DATA_OUT[0].
+     * @var TRNG_T::DATA_OUT[4]
+     * Offset: 0x0C~0x18  TRNG Data Output Word Register
+     * ---------------------------------------------------------------------------------------------------
+     * |Bits    |Field     |Descriptions
+     * | :----: | :----:   | :---- |
+     * |[31:0]  |DATA      |True Random Number Generator Data (Read Only)
+     * |        |          |The DATA stores the output data generated by TRNG, it can be read when DVIF become 1 and can be read only once.
+     * |        |          |TRNG_DATA0 stores Entropy / NRBG word 0 / DRBG word 0.
+     * |        |          |TRNG_DATA1 stores NRBG word 1 / DRBG word 1.
+     * |        |          |TRNG_DATA2 stores NRBG word 2 / DRBG word 2.
+     * |        |          |TRNG_DATA3 stores NRBG word 3 / DRBG word 3.
+     */
     __IO uint32_t CTL;                   /*!< [0x0000] TRNG Control Register                                            */
     __IO uint32_t CFG;                   /*!< [0x0004] TRNG Configure Register                                          */
     __I  uint32_t STS;                   /*!< [0x0008] TRNG Status Register                                             */
     __I  uint32_t DATA_OUT[4];           /*!< [0x000c] TRNG Data Output Word 0 Register                                 */
-                                         /*!< [0x0010] TRNG Data Output Word 1 Register                                 */
-                                         /*!< [0x0014] TRNG Data Output Word 2 Register                                 */
-                                         /*!< [0x0018] TRNG Data Output Word 3 Register                                 */
+    /*!< [0x0010] TRNG Data Output Word 1 Register                                 */
+    /*!< [0x0014] TRNG Data Output Word 2 Register                                 */
+    /*!< [0x0018] TRNG Data Output Word 3 Register                                 */
 
 } TRNG_T;
 

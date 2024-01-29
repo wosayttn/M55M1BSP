@@ -9,69 +9,69 @@
 #define __CROS_EC_EC_COMMANDS_H
 
 #if !defined(__ACPI__) && !defined(__KERNEL__)
-#include <stdint.h>
+    #include <stdint.h>
 #endif
 
 #ifdef CHROMIUM_EC
-/*
- * CHROMIUM_EC is defined by the Makefile system of Chromium EC repository.
- * It is used to not include macros that may cause conflicts in foreign
- * projects (refer to crbug.com/984623).
- */
+    /*
+    * CHROMIUM_EC is defined by the Makefile system of Chromium EC repository.
+    * It is used to not include macros that may cause conflicts in foreign
+    * projects (refer to crbug.com/984623).
+    */
 
-/*
- * Include common.h for CONFIG_HOSTCMD_ALIGNED, if it's defined. This
- * generates more efficient code for accessing request/response structures on
- * ARM Cortex-M if the structures are guaranteed 32-bit aligned.
- */
-#include "common.h"
-#ifdef SW
-#include "compile_time_macros.h"
-#endif
+    /*
+    * Include common.h for CONFIG_HOSTCMD_ALIGNED, if it's defined. This
+    * generates more efficient code for accessing request/response structures on
+    * ARM Cortex-M if the structures are guaranteed 32-bit aligned.
+    */
+    #include "common.h"
+    #ifdef SW
+        #include "compile_time_macros.h"
+    #endif
 #else  /* CHROMIUM_EC */
-#ifdef SW
-/* If BUILD_ASSERT isn't already defined, make it a no-op */
-#ifndef BUILD_ASSERT
-#define BUILD_ASSERT(_cond)
-#endif /* !BUILD_ASSERT */
-#endif
+    #ifdef SW
+        /* If BUILD_ASSERT isn't already defined, make it a no-op */
+        #ifndef BUILD_ASSERT
+            #define BUILD_ASSERT(_cond)
+        #endif /* !BUILD_ASSERT */
+    #endif
 #endif  /* CHROMIUM_EC */
 
 #ifdef __KERNEL__
-#include <linux/limits.h>
+    #include <linux/limits.h>
 #else
-/*
- * Defines macros that may be needed but are for sure defined by the linux
- * kernel. This section is removed when cros_ec_commands.h is generated (by
- * util/make_linux_ec_commands_h.sh).
- * cros_ec_commands.h looks more integrated to the kernel.
- */
+    /*
+    * Defines macros that may be needed but are for sure defined by the linux
+    * kernel. This section is removed when cros_ec_commands.h is generated (by
+    * util/make_linux_ec_commands_h.sh).
+    * cros_ec_commands.h looks more integrated to the kernel.
+    */
 
-#ifndef BIT
-#define BIT(nr)         (1UL << (nr))
-#endif
+    #ifndef BIT
+        #define BIT(nr)         (1UL << (nr))
+    #endif
 
-#ifndef BIT_ULL
-#define BIT_ULL(nr)     (1ULL << (nr))
-#endif
+    #ifndef BIT_ULL
+        #define BIT_ULL(nr)     (1ULL << (nr))
+    #endif
 
-/* SW ADD to replace TASK_EVENT_CUSTOM_BIT defined in task.h*/
-#define TASK_EVENT_CUSTOM_BIT       BIT
+    /* SW ADD to replace TASK_EVENT_CUSTOM_BIT defined in task.h*/
+    #define TASK_EVENT_CUSTOM_BIT       BIT
 
-/*
- * When building Zephyr, this file ends up being included before Zephyr's
- * include/sys/util.h so causes a warning there. We don't want to add an #ifdef
- * in that file since it won't be accepted upstream. So work around it here.
- */
-#ifndef CONFIG_ZEPHYR
-#ifndef GENMASK
-#define GENMASK(h, l) (((BIT(h) << 1) - 1) ^ (BIT(l) - 1))
-#endif
+    /*
+    * When building Zephyr, this file ends up being included before Zephyr's
+    * include/sys/util.h so causes a warning there. We don't want to add an #ifdef
+    * in that file since it won't be accepted upstream. So work around it here.
+    */
+    #ifndef CONFIG_ZEPHYR
+        #ifndef GENMASK
+            #define GENMASK(h, l) (((BIT(h) << 1) - 1) ^ (BIT(l) - 1))
+        #endif
 
-#ifndef GENMASK_ULL
-#define GENMASK_ULL(h, l) (((BIT_ULL(h) << 1) - 1) ^ (BIT_ULL(l) - 1))
-#endif
-#endif
+        #ifndef GENMASK_ULL
+            #define GENMASK_ULL(h, l) (((BIT_ULL(h) << 1) - 1) ^ (BIT_ULL(l) - 1))
+        #endif
+    #endif
 
 #endif  /* __KERNEL__ */
 
@@ -463,10 +463,10 @@ extern "C" {
 #define USB_RETIMER_FW_UPDATE_INVALID_MUX 0xff
 /* Mask to clear unused MUX bits in retimer firmware update  */
 #define USB_RETIMER_FW_UPDATE_MUX_MASK  (USB_PD_MUX_USB_ENABLED       | \
-                    USB_PD_MUX_DP_ENABLED         | \
-                    USB_PD_MUX_SAFE_MODE          | \
-                    USB_PD_MUX_TBT_COMPAT_ENABLED | \
-                    USB_PD_MUX_USB4_ENABLED)
+                                         USB_PD_MUX_DP_ENABLED         | \
+                                         USB_PD_MUX_SAFE_MODE          | \
+                                         USB_PD_MUX_TBT_COMPAT_ENABLED | \
+                                         USB_PD_MUX_USB4_ENABLED)
 
 /* Retimer firmware update operations */
 #define USB_RETIMER_FW_UPDATE_QUERY_PORT 0 /* Which ports has retimer */
@@ -887,21 +887,21 @@ struct ec_lpc_host_args
 #define EC_PROTO2_REQUEST_HEADER_BYTES 3
 #define EC_PROTO2_REQUEST_TRAILER_BYTES 1
 #define EC_PROTO2_REQUEST_OVERHEAD (EC_PROTO2_REQUEST_HEADER_BYTES +    \
-                    EC_PROTO2_REQUEST_TRAILER_BYTES)
+                                    EC_PROTO2_REQUEST_TRAILER_BYTES)
 
 #define EC_PROTO2_RESPONSE_HEADER_BYTES 2
 #define EC_PROTO2_RESPONSE_TRAILER_BYTES 1
 #define EC_PROTO2_RESPONSE_OVERHEAD (EC_PROTO2_RESPONSE_HEADER_BYTES +  \
-                     EC_PROTO2_RESPONSE_TRAILER_BYTES)
+                                     EC_PROTO2_RESPONSE_TRAILER_BYTES)
 
 /* Parameter length was limited by the LPC interface */
 #define EC_PROTO2_MAX_PARAM_SIZE 0xfc
 
 /* Maximum request and response packet sizes for protocol version 2 */
 #define EC_PROTO2_MAX_REQUEST_SIZE (EC_PROTO2_REQUEST_OVERHEAD +    \
-                    EC_PROTO2_MAX_PARAM_SIZE)
+                                    EC_PROTO2_MAX_PARAM_SIZE)
 #define EC_PROTO2_MAX_RESPONSE_SIZE (EC_PROTO2_RESPONSE_OVERHEAD +  \
-                     EC_PROTO2_MAX_PARAM_SIZE)
+                                     EC_PROTO2_MAX_PARAM_SIZE)
 
 /*****************************************************************************/
 
@@ -3426,8 +3426,8 @@ enum usb_suspend_charge
 struct ec_params_usb_charge_set_mode
 {
     uint8_t usb_port_id;
-    uint8_t mode:7;              /* enum usb_charge_mode */
-    uint8_t inhibit_charge:1;    /* enum usb_suspend_charge */
+    uint8_t mode: 7;             /* enum usb_charge_mode */
+    uint8_t inhibit_charge: 1;   /* enum usb_suspend_charge */
 } __ec_align1;
 
 /*****************************************************************************/
@@ -4162,11 +4162,11 @@ struct ec_response_keyboard_factory_test
 #define EC_MKBP_FP_ERRCODE(fp_events)   ((fp_events) & 0x0000000F)
 #define EC_MKBP_FP_ENROLL_PROGRESS_OFFSET 4
 #define EC_MKBP_FP_ENROLL_PROGRESS(fpe) (((fpe) & 0x00000FF0) \
-                     >> EC_MKBP_FP_ENROLL_PROGRESS_OFFSET)
+                                         >> EC_MKBP_FP_ENROLL_PROGRESS_OFFSET)
 #define EC_MKBP_FP_MATCH_IDX_OFFSET 12
 #define EC_MKBP_FP_MATCH_IDX_MASK 0x0000F000
 #define EC_MKBP_FP_MATCH_IDX(fpe) (((fpe) & EC_MKBP_FP_MATCH_IDX_MASK) \
-                     >> EC_MKBP_FP_MATCH_IDX_OFFSET)
+                                   >> EC_MKBP_FP_MATCH_IDX_OFFSET)
 #define EC_MKBP_FP_ENROLL               BIT(27)
 #define EC_MKBP_FP_MATCH                BIT(28)
 #define EC_MKBP_FP_FINGER_DOWN          BIT(29)
@@ -4566,9 +4566,9 @@ enum ec_charge_control_mode
 };
 
 #define EC_CHARGE_MODE_TEXT { \
-    [CHARGE_CONTROL_NORMAL] = "NORMAL", \
-    [CHARGE_CONTROL_IDLE] = "IDLE", \
-    [CHARGE_CONTROL_DISCHARGE] = "DISCHARGE", \
+        [CHARGE_CONTROL_NORMAL] = "NORMAL", \
+                                  [CHARGE_CONTROL_IDLE] = "IDLE", \
+                                                          [CHARGE_CONTROL_DISCHARGE] = "DISCHARGE", \
     }
 
 enum ec_charge_control_cmd
@@ -5475,9 +5475,9 @@ struct __ec_align4 ec_param_ec_codec
     union
     {
         struct ec_param_ec_codec_get_shm_addr
-                get_shm_addr_param;
+            get_shm_addr_param;
         struct ec_param_ec_codec_set_shm_addr
-                set_shm_addr_param;
+            set_shm_addr_param;
     };
 };
 
@@ -5541,9 +5541,9 @@ struct __ec_align4 ec_param_ec_codec_dmic
     union
     {
         struct ec_param_ec_codec_dmic_set_gain_idx
-                set_gain_idx_param;
+            set_gain_idx_param;
         struct ec_param_ec_codec_dmic_get_gain_idx
-                get_gain_idx_param;
+            get_gain_idx_param;
     };
 };
 
@@ -5621,11 +5621,11 @@ struct __ec_align4 ec_param_ec_codec_i2s_rx
     union
     {
         struct ec_param_ec_codec_i2s_rx_set_sample_depth
-                set_sample_depth_param;
+            set_sample_depth_param;
         struct ec_param_ec_codec_i2s_rx_set_daifmt
-                set_daifmt_param;
+            set_daifmt_param;
         struct ec_param_ec_codec_i2s_rx_set_bclk
-                set_bclk_param;
+            set_bclk_param;
     };
 };
 
@@ -5676,9 +5676,9 @@ struct __ec_align4 ec_param_ec_codec_wov
     union
     {
         struct ec_param_ec_codec_wov_set_lang
-                set_lang_param;
+            set_lang_param;
         struct ec_param_ec_codec_wov_set_lang_shm
-                set_lang_shm_param;
+            set_lang_shm_param;
     };
 };
 
@@ -5879,8 +5879,8 @@ struct ec_params_pd_status
 #define PD_STATUS_TCPC_ALERT_2    BIT(5) /* Alert active in port 2 TCPC */
 #define PD_STATUS_TCPC_ALERT_3    BIT(6) /* Alert active in port 3 TCPC */
 #define PD_STATUS_EC_INT_ACTIVE  (PD_STATUS_TCPC_ALERT_0 | \
-                      PD_STATUS_TCPC_ALERT_1 | \
-                      PD_STATUS_HOST_EVENT)
+                                  PD_STATUS_TCPC_ALERT_1 | \
+                                  PD_STATUS_HOST_EVENT)
 struct ec_response_pd_status
 {
     uint32_t curr_lim_ma;       /* input current limit */
@@ -6180,7 +6180,7 @@ struct ec_response_pd_log
 #define PD_LOG_PORT_MASK  0xe0
 #define PD_LOG_PORT_SHIFT    5
 #define PD_LOG_PORT_SIZE(port, size) (((port) << PD_LOG_PORT_SHIFT) | \
-                      ((size) & PD_LOG_SIZE_MASK))
+                                      ((size) & PD_LOG_SIZE_MASK))
 #define PD_LOG_PORT(size_port) ((size_port) >> PD_LOG_PORT_SHIFT)
 #define PD_LOG_SIZE(size_port) ((size_port) & PD_LOG_SIZE_MASK)
 
@@ -7469,15 +7469,15 @@ enum pchg_state
 };
 
 #define EC_PCHG_STATE_TEXT { \
-    [PCHG_STATE_RESET] = "RESET", \
-    [PCHG_STATE_INITIALIZED] = "INITIALIZED", \
-    [PCHG_STATE_ENABLED] = "ENABLED", \
-    [PCHG_STATE_DETECTED] = "DETECTED", \
-    [PCHG_STATE_CHARGING] = "CHARGING", \
-    [PCHG_STATE_FULL] = "FULL", \
-    [PCHG_STATE_DOWNLOAD] = "DOWNLOAD", \
-    [PCHG_STATE_DOWNLOADING] = "DOWNLOADING", \
-    [PCHG_STATE_CONNECTED] = "CONNECTED", \
+        [PCHG_STATE_RESET] = "RESET", \
+                             [PCHG_STATE_INITIALIZED] = "INITIALIZED", \
+                                                        [PCHG_STATE_ENABLED] = "ENABLED", \
+                                                                               [PCHG_STATE_DETECTED] = "DETECTED", \
+                                                                                                       [PCHG_STATE_CHARGING] = "CHARGING", \
+                                                                                                                               [PCHG_STATE_FULL] = "FULL", \
+                                                                                                                                       [PCHG_STATE_DOWNLOAD] = "DOWNLOAD", \
+                                                                                                                                               [PCHG_STATE_DOWNLOADING] = "DOWNLOADING", \
+                                                                                                                                                       [PCHG_STATE_CONNECTED] = "CONNECTED", \
     }
 
 /**
@@ -7491,7 +7491,7 @@ enum pchg_state
 #define EC_MKBP_PCHG_EVENT_TO_PORT(e)   (((e) >> EC_MKBP_PCHG_PORT_SHIFT) & 0xf)
 /* Utility macro for extracting event bits. */
 #define EC_MKBP_PCHG_EVENT_MASK(e)  ((e) \
-                    & GENMASK(EC_MKBP_PCHG_PORT_SHIFT-1, 0))
+                                     & GENMASK(EC_MKBP_PCHG_PORT_SHIFT-1, 0))
 
 #define EC_MKBP_PCHG_UPDATE_OPENED  BIT(0)
 #define EC_MKBP_PCHG_WRITE_COMPLETE BIT(1)
@@ -7534,7 +7534,7 @@ struct ec_params_pchg_update
 } __ec_align4;
 #ifdef SW
 BUILD_ASSERT(EC_PCHG_UPDATE_CMD_COUNT
-             < BIT(sizeof(((struct ec_params_pchg_update *)0)->cmd)*8));
+             < BIT(sizeof(((struct ec_params_pchg_update *)0)->cmd) * 8));
 #endif
 struct ec_response_pchg_update
 {
@@ -7647,15 +7647,15 @@ struct ec_params_fp_passthru
 #define FP_MODE_DONT_CHANGE    BIT(31)
 
 #define FP_VALID_MODES (FP_MODE_DEEPSLEEP      | \
-            FP_MODE_FINGER_DOWN    | \
-            FP_MODE_FINGER_UP      | \
-            FP_MODE_CAPTURE        | \
-            FP_MODE_ENROLL_SESSION | \
-            FP_MODE_ENROLL_IMAGE   | \
-            FP_MODE_MATCH          | \
-            FP_MODE_RESET_SENSOR   | \
-            FP_MODE_SENSOR_MAINTENANCE | \
-            FP_MODE_DONT_CHANGE)
+                        FP_MODE_FINGER_DOWN    | \
+                        FP_MODE_FINGER_UP      | \
+                        FP_MODE_CAPTURE        | \
+                        FP_MODE_ENROLL_SESSION | \
+                        FP_MODE_ENROLL_IMAGE   | \
+                        FP_MODE_MATCH          | \
+                        FP_MODE_RESET_SENSOR   | \
+                        FP_MODE_SENSOR_MAINTENANCE | \
+                        FP_MODE_DONT_CHANGE)
 
 /* Capture types defined in bits [30..28] */
 #define FP_MODE_CAPTURE_TYPE_SHIFT 28
@@ -7682,7 +7682,7 @@ enum fp_capture_type
 };
 /* Extracts the capture type from the sensor 'mode' word */
 #define FP_CAPTURE_TYPE(mode) (((mode) & FP_MODE_CAPTURE_TYPE_MASK) \
-                       >> FP_MODE_CAPTURE_TYPE_SHIFT)
+                               >> FP_MODE_CAPTURE_TYPE_SHIFT)
 
 struct ec_params_fp_mode
 {

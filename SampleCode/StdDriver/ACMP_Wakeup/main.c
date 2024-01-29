@@ -93,9 +93,11 @@ void EnterToPowerDown(uint32_t u32PDMode)
         PMC_SetPowerDownMode(PMC_NPD0, PMC_PLCTL_PLSEL_PL0);   //Power down
     else if (u32PDMode == NPD1_MODE)
         PMC_SetPowerDownMode(PMC_NPD1, PMC_PLCTL_PLSEL_PL0);   //Power down
+
 #if !defined(TESTCHIP_ONLY)
     else if (u32PDMode == NPD3_MODE)
         PMC_SetPowerDownMode(PMC_NPD3, PMC_PLCTL_PLSEL_PL0);   //Power down
+
 #endif
     else if (u32PDMode == NPD3_MODE)
         PMC_SetPowerDownMode(PMC_SPD0, PMC_PLCTL_PLSEL_PL0);   //Power down

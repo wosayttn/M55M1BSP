@@ -17,9 +17,9 @@
  */
 
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
-#if !defined(_POSIX_C_SOURCE)
-#define _POSIX_C_SOURCE 200112L // for fileno() from <stdio.h>
-#endif
+    #if !defined(_POSIX_C_SOURCE)
+        #define _POSIX_C_SOURCE 200112L // for fileno() from <stdio.h>
+    #endif
 #endif
 
 #include "mbedtls/build_info.h"
@@ -30,7 +30,7 @@
  * enabled but the corresponding warnings are not treated as errors.
  */
 #if !defined(MBEDTLS_DEPRECATED_REMOVED) && !defined(MBEDTLS_DEPRECATED_WARNING)
-#define MBEDTLS_TEST_DEPRECATED
+    #define MBEDTLS_TEST_DEPRECATED
 #endif
 
 /*----------------------------------------------------------------------------*/
@@ -51,61 +51,61 @@
 
 #include "NuMicro.h"
 #if defined(MBEDTLS_ERROR_C)
-#include "mbedtls/error.h"
+    #include "mbedtls/error.h"
 #endif
 //Porting by nvt
 #if defined(MBEDTLS_PLATFORM_C)
-#include "mbedtls/platform.h"
+    #include "mbedtls/platform.h"
 #else
-#include <stdio.h>
-#define mbedtls_fprintf    fprintf
-#define mbedtls_snprintf   snprintf
-#define mbedtls_calloc     calloc
-#define mbedtls_free       free
-#define mbedtls_exit       exit
-#define mbedtls_time       time
-#define mbedtls_time_t     time_t
-#define MBEDTLS_EXIT_SUCCESS EXIT_SUCCESS
-#define MBEDTLS_EXIT_FAILURE EXIT_FAILURE
+    #include <stdio.h>
+    #define mbedtls_fprintf    fprintf
+    #define mbedtls_snprintf   snprintf
+    #define mbedtls_calloc     calloc
+    #define mbedtls_free       free
+    #define mbedtls_exit       exit
+    #define mbedtls_time       time
+    #define mbedtls_time_t     time_t
+    #define MBEDTLS_EXIT_SUCCESS EXIT_SUCCESS
+    #define MBEDTLS_EXIT_FAILURE EXIT_FAILURE
 #endif
 //End Porting by nvt
 #if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C)
-#include "mbedtls/memory_buffer_alloc.h"
+    #include "mbedtls/memory_buffer_alloc.h"
 #endif
 
 //Porting by nvt
 #ifdef _MSC_VER
-#include <basetsd.h>
-typedef UINT8 uint8_t;
-typedef INT32 int32_t;
-typedef UINT32 uint32_t;
-#define strncasecmp _strnicmp
-#define strcasecmp _stricmp
+    #include <basetsd.h>
+    typedef UINT8 uint8_t;
+    typedef INT32 int32_t;
+    typedef UINT32 uint32_t;
+    #define strncasecmp _strnicmp
+    #define strcasecmp _stricmp
 #else
-#include <stdint.h>
+    #include <stdint.h>
 #endif
 //End Porting by nvt
 #include <string.h>
 
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
-#include <unistd.h>
-#include <strings.h>
+    #include <unistd.h>
+    #include <strings.h>
 #endif
 
 //Porting by nvt
 /* Type for Hex parameters */
 typedef struct data_tag
 {
-    uint8_t *   x;
+    uint8_t    *x;
     uint32_t    len;
 } data_t;
 //End Porting by nvt
 #if defined(MBEDTLS_MD_SOME_PSA)
-#define MD_PSA_INIT()   PSA_INIT()
-#define MD_PSA_DONE()   PSA_DONE()
+    #define MD_PSA_INIT()   PSA_INIT()
+    #define MD_PSA_DONE()   PSA_DONE()
 #else /* MBEDTLS_MD_SOME_PSA */
-#define MD_PSA_INIT() ((void) 0)
-#define MD_PSA_DONE() ((void) 0)
+    #define MD_PSA_INIT() ((void) 0)
+    #define MD_PSA_DONE() ((void) 0)
 #endif /* MBEDTLS_MD_SOME_PSA */
 
 /** Allocate memory dynamically and fail the test case if this fails.
@@ -159,7 +159,8 @@ typedef struct data_tag
     } while (0)
 
 
-typedef union {
+typedef union
+{
     size_t len;
     intmax_t sint;
 } mbedtls_test_argument_t;
@@ -210,18 +211,23 @@ static int redirect_output(FILE *out_stream, const char *path)
     out_fd = fileno(out_stream);
     dup_fd = dup(out_fd);
 
-    if (dup_fd == -1) {
+    if (dup_fd == -1)
+    {
         return -1;
     }
 
     path_stream = fopen(path, "w");
-    if (path_stream == NULL) {
+
+    if (path_stream == NULL)
+    {
         close(dup_fd);
         return -1;
     }
 
     fflush(out_stream);
-    if (dup2(fileno(path_stream), out_fd) == -1) {
+
+    if (dup2(fileno(path_stream), out_fd) == -1)
+    {
         close(dup_fd);
         fclose(path_stream);
         return -1;
@@ -236,7 +242,9 @@ static int restore_output(FILE *out_stream, int dup_fd)
     int out_fd = fileno(out_stream);
 
     fflush(out_stream);
-    if (dup2(dup_fd, out_fd) == -1) {
+
+    if (dup2(dup_fd, out_fd) == -1)
+    {
         close(out_fd);
         close(dup_fd);
         return -1;
@@ -252,47 +260,48 @@ static int restore_output(FILE *out_stream, int dup_fd)
 /* test patterns */
 #include "dat.h"
 
-typedef struct {
-    const char* base;
-    const char* limit;
+typedef struct
+{
+    const char *base;
+    const char *limit;
     unsigned int ofs;
 } MYFILE;
 
 MYFILE g_myfile;
 
-char* myfgets(char* s, int n, FILE* f)
+char *myfgets(char *s, int n, FILE *f)
 {
-    MYFILE* myfile;
+    MYFILE *myfile;
     int32_t i;
     int32_t ofs;
-    const char* pu8Base, * pu8Limit;
+    const char *pu8Base, * pu8Limit;
 
-    myfile = (MYFILE*)f;
+    myfile = (MYFILE *)f;
 
     pu8Base = myfile->base;
     pu8Limit = myfile->limit;
     ofs = myfile->ofs;
 
     /* End of file check */
-    if(pu8Base + ofs >= pu8Limit)
+    if (pu8Base + ofs >= pu8Limit)
         return 0;
 
     /* Seek to offset */
     pu8Base += ofs;
 
     /* Check length to read */
-    if(pu8Base + n > pu8Limit)
+    if (pu8Base + n > pu8Limit)
     {
         /* touch the eof */
         n = (int)(pu8Limit - pu8Base);
     }
 
-    for(i = 0; i < n; i++)
+    for (i = 0; i < n; i++)
     {
         s[i] = pu8Base[i];
 
         /* Check new line */
-        if((pu8Base[i] == 0x0d) && (pu8Base[i + 1] == 0x0a))
+        if ((pu8Base[i] == 0x0d) && (pu8Base[i + 1] == 0x0a))
         {
             s[i] = 0x0a;
             i++;
@@ -302,7 +311,7 @@ char* myfgets(char* s, int n, FILE* f)
             break;
         }
 
-        if(pu8Base[i] == 0x0a)
+        if (pu8Base[i] == 0x0a)
         {
             i++;
             break;
@@ -313,36 +322,38 @@ char* myfgets(char* s, int n, FILE* f)
     myfile->ofs += i;
 
     /* append 0 */
-    if(i < n)
+    if (i < n)
         s[i] = 0;
 
     return s;
 }
 
-int myfeof(FILE* f)
+int myfeof(FILE *f)
 {
-    MYFILE* myfile;
-    myfile = (MYFILE*)f;
-    if(myfile->base + myfile->ofs >= myfile->limit)
+    MYFILE *myfile;
+    myfile = (MYFILE *)f;
+
+    if (myfile->base + myfile->ofs >= myfile->limit)
         return 1;
+
     return 0;
 }
 
-void myfclose(FILE* f)
+void myfclose(FILE *f)
 {
-    MYFILE* myfile;
+    MYFILE *myfile;
 
-    myfile = (MYFILE*)f;
+    myfile = (MYFILE *)f;
 
     myfile->ofs = 0;
 }
 
-FILE* myfopen(char const* fname, char const* mode)
+FILE *myfopen(char const *fname, char const *mode)
 {
     g_myfile.base = _dat;
     g_myfile.limit = _dat + sizeof(_dat);
     g_myfile.ofs = 0;
-    return (FILE*)&g_myfile;
+    return (FILE *)&g_myfile;
 }
 
 
@@ -356,19 +367,21 @@ FILE* myfopen(char const* fname, char const* mode)
 #include "mbedtls/hkdf.h"
 #include "md_wrap.h"
 
-void dump_tlsdata(data_t* dd)
+void dump_tlsdata(data_t *dd)
 {
     int ii;
-    for(ii=0; ii<dd->len; ii++)
+
+    for (ii = 0; ii < dd->len; ii++)
         printf("%02x", dd->x[ii]);
 
     printf("\r\n\r\n");
 }
 
-void dump_tlsokm(data_t* e_okm, unsigned char* ucpokm)
+void dump_tlsokm(data_t *e_okm, unsigned char *ucpokm)
 {
     int ii;
-    for(ii=0; ii<e_okm->len; ii++)
+
+    for (ii = 0; ii < e_okm->len; ii++)
         printf("%02x", ucpokm[ii]);
 
     printf("\r\n\r\n");
@@ -447,14 +460,14 @@ exit:
     MD_PSA_DONE();
 }
 
-void test_test_hkdf_wrapper( void ** params )
+void test_test_hkdf_wrapper(void **params)
 {
     data_t data1 = {(uint8_t *) params[1], ((mbedtls_test_argument_t *) params[2])->len};
     data_t data3 = {(uint8_t *) params[3], ((mbedtls_test_argument_t *) params[4])->len};
     data_t data5 = {(uint8_t *) params[5], ((mbedtls_test_argument_t *) params[6])->len};
     data_t data7 = {(uint8_t *) params[7], ((mbedtls_test_argument_t *) params[8])->len};
 
-    test_test_hkdf( ((mbedtls_test_argument_t *) params[0])->sint, &data1, &data3, &data5, &data7 );
+    test_test_hkdf(((mbedtls_test_argument_t *) params[0])->sint, &data1, &data3, &data5, &data7);
 }
 
 void test_test_hkdf_extract(int md_alg,
@@ -485,13 +498,13 @@ exit:
     MD_PSA_DONE();
 }
 
-void test_test_hkdf_extract_wrapper( void ** params )
+void test_test_hkdf_extract_wrapper(void **params)
 {
     data_t data1 = {(uint8_t *) params[1], ((mbedtls_test_argument_t *) params[2])->len};
     data_t data3 = {(uint8_t *) params[3], ((mbedtls_test_argument_t *) params[4])->len};
     data_t data5 = {(uint8_t *) params[5], ((mbedtls_test_argument_t *) params[6])->len};
 
-    test_test_hkdf_extract( ((mbedtls_test_argument_t *) params[0])->sint, &data1, &data3, &data5 );
+    test_test_hkdf_extract(((mbedtls_test_argument_t *) params[0])->sint, &data1, &data3, &data5);
 }
 
 void test_test_hkdf_expand(int md_alg,
@@ -524,13 +537,13 @@ exit:
     MD_PSA_DONE();
 }
 
-void test_test_hkdf_expand_wrapper( void ** params )
+void test_test_hkdf_expand_wrapper(void **params)
 {
     data_t data1 = {(uint8_t *) params[1], ((mbedtls_test_argument_t *) params[2])->len};
     data_t data3 = {(uint8_t *) params[3], ((mbedtls_test_argument_t *) params[4])->len};
     data_t data5 = {(uint8_t *) params[5], ((mbedtls_test_argument_t *) params[6])->len};
 
-    test_test_hkdf_expand( ((mbedtls_test_argument_t *) params[0])->sint, &data1, &data3, &data5 );
+    test_test_hkdf_expand(((mbedtls_test_argument_t *) params[0])->sint, &data1, &data3, &data5);
 }
 
 void test_test_hkdf_extract_ret(int hash_len, int ret)
@@ -558,10 +571,10 @@ exit:
     mbedtls_free(prk);
 }
 
-void test_test_hkdf_extract_ret_wrapper( void ** params )
+void test_test_hkdf_extract_ret_wrapper(void **params)
 {
 
-    test_test_hkdf_extract_ret( ((mbedtls_test_argument_t *) params[0])->sint, ((mbedtls_test_argument_t *) params[1])->sint );
+    test_test_hkdf_extract_ret(((mbedtls_test_argument_t *) params[0])->sint, ((mbedtls_test_argument_t *) params[1])->sint);
 }
 
 void test_test_hkdf_expand_ret(int hash_len, int prk_len, int okm_len, int ret)
@@ -579,11 +592,13 @@ void test_test_hkdf_expand_ret(int hash_len, int prk_len, int okm_len, int ret)
 
     info_len = 0;
 
-    if (prk_len > 0) {
+    if (prk_len > 0)
+    {
         TEST_CALLOC(prk, prk_len);
     }
 
-    if (okm_len > 0) {
+    if (okm_len > 0)
+    {
         TEST_CALLOC(okm, okm_len);
     }
 
@@ -596,10 +611,11 @@ exit:
     mbedtls_free(okm);
 }
 
-void test_test_hkdf_expand_ret_wrapper( void ** params )
+void test_test_hkdf_expand_ret_wrapper(void **params)
 {
 
-    test_test_hkdf_expand_ret( ((mbedtls_test_argument_t *) params[0])->sint, ((mbedtls_test_argument_t *) params[1])->sint, ((mbedtls_test_argument_t *) params[2])->sint, ((mbedtls_test_argument_t *) params[3])->sint );
+    test_test_hkdf_expand_ret(((mbedtls_test_argument_t *) params[0])->sint, ((mbedtls_test_argument_t *) params[1])->sint, ((mbedtls_test_argument_t *) params[2])->sint,
+                              ((mbedtls_test_argument_t *) params[3])->sint);
 }
 #endif /* MBEDTLS_HKDF_C */
 
@@ -628,33 +644,37 @@ int get_expression(int32_t exp_id, intmax_t *out_value)
     (void) exp_id;
     (void) out_value;
 
-    switch (exp_id) {
+    switch (exp_id)
+    {
 
 #if defined(MBEDTLS_HKDF_C)
 
-    case 0:
-    {
-        *out_value = MBEDTLS_ERR_HKDF_BAD_INPUT_DATA;
-    }
-    break;
-    case 1:
-    {
-        *out_value = MBEDTLS_MD_SHA256;
-    }
-    break;
-    case 2:
-    {
-        *out_value = MBEDTLS_MD_SHA1;
-    }
-    break;
+        case 0:
+        {
+            *out_value = MBEDTLS_ERR_HKDF_BAD_INPUT_DATA;
+        }
+        break;
+
+        case 1:
+        {
+            *out_value = MBEDTLS_MD_SHA256;
+        }
+        break;
+
+        case 2:
+        {
+            *out_value = MBEDTLS_MD_SHA1;
+        }
+        break;
 #endif
 
-    default:
-    {
-        ret = KEY_VALUE_MAPPING_NOT_FOUND;
+        default:
+        {
+            ret = KEY_VALUE_MAPPING_NOT_FOUND;
+        }
+        break;
     }
-    break;
-    }
+
     return ret;
 }
 
@@ -676,34 +696,37 @@ int dep_check(int dep_id)
 
     (void) dep_id;
 
-    switch (dep_id) {
+    switch (dep_id)
+    {
 
 #if defined(MBEDTLS_HKDF_C)
 
-    case 0:
-    {
+        case 0:
+        {
 #if defined(MBEDTLS_MD_CAN_SHA256)
-        ret = DEPENDENCY_SUPPORTED;
+            ret = DEPENDENCY_SUPPORTED;
 #else
-        ret = DEPENDENCY_NOT_SUPPORTED;
+            ret = DEPENDENCY_NOT_SUPPORTED;
 #endif
-    }
-    break;
-    case 1:
-    {
-#if defined(MBEDTLS_MD_CAN_SHA1)
-        ret = DEPENDENCY_SUPPORTED;
-#else
-        ret = DEPENDENCY_NOT_SUPPORTED;
-#endif
-    }
-    break;
-#endif
-
-
-    default:
+        }
         break;
+
+        case 1:
+        {
+#if defined(MBEDTLS_MD_CAN_SHA1)
+            ret = DEPENDENCY_SUPPORTED;
+#else
+            ret = DEPENDENCY_NOT_SUPPORTED;
+#endif
+        }
+        break;
+#endif
+
+
+        default:
+            break;
     }
+
     return ret;
 }
 
@@ -787,9 +810,12 @@ int dispatch_test(size_t func_idx, void **params)
     int ret = DISPATCH_TEST_SUCCESS;
     TestWrapper_t fp = NULL;
 
-    if (func_idx < (int) (sizeof(test_funcs) / sizeof(TestWrapper_t))) {
+    if (func_idx < (int)(sizeof(test_funcs) / sizeof(TestWrapper_t)))
+    {
         fp = test_funcs[func_idx];
-        if (fp) {
+
+        if (fp)
+        {
 #if defined(MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG)
             mbedtls_test_enable_insecure_external_rng();
 #endif
@@ -799,11 +825,15 @@ int dispatch_test(size_t func_idx, void **params)
 #if defined(MBEDTLS_TEST_MUTEX_USAGE)
             mbedtls_test_mutex_usage_check();
 #endif /* MBEDTLS_TEST_MUTEX_USAGE */
-        } else {
+        }
+        else
+        {
             ret = DISPATCH_UNSUPPORTED_SUITE;
             mbedtls_fprintf(stdout, "dispatch_test, DISPATCH_UNSUPPORTED_SUITE\r\n");
         }
-    } else {
+    }
+    else
+    {
         ret = DISPATCH_TEST_FN_NOT_FOUND;
     }
 
@@ -826,14 +856,19 @@ int check_test(size_t func_idx)
     int ret = DISPATCH_TEST_SUCCESS;
     TestWrapper_t fp = NULL;
 
-    if (func_idx < (int) (sizeof(test_funcs)/sizeof(TestWrapper_t))) {
+    if (func_idx < (int)(sizeof(test_funcs) / sizeof(TestWrapper_t)))
+    {
         fp = test_funcs[func_idx];
-        if (fp == NULL) {
+
+        if (fp == NULL)
+        {
             ret = DISPATCH_UNSUPPORTED_SUITE;
             mbedtls_fprintf(stdout, "check_test, DISPATCH_UNSUPPORTED_SUITE\r\n");
 
         }
-    } else {
+    }
+    else
+    {
         ret = DISPATCH_TEST_FN_NOT_FOUND;
     }
 
@@ -854,7 +889,8 @@ int check_test(size_t func_idx)
 int verify_string(char **str)
 {
     if ((*str)[0] != '"' ||
-            (*str)[strlen(*str) - 1] != '"') {
+            (*str)[strlen(*str) - 1] != '"')
+    {
         mbedtls_fprintf(stderr,
                         "Expected string (with \"\") for parameter and got: %s\n", *str);
         return -1;
@@ -875,50 +911,50 @@ int verify_string(char **str)
  *
  * \return      0 if success else 1
  */
-int verify_int( char *str, int32_t *value )
+int verify_int(char *str, int32_t *value)
 {
     size_t i;
     int minus = 0;
     int digits = 1;
     int hex = 0;
 
-    for( i = 0; i < strlen( str ); i++ )
+    for (i = 0; i < strlen(str); i++)
     {
-        if( i == 0 && str[i] == '-' )
+        if (i == 0 && str[i] == '-')
         {
             minus = 1;
             continue;
         }
 
-        if( ( ( minus && i == 2 ) || ( !minus && i == 1 ) ) &&
-                str[i - 1] == '0' && ( str[i] == 'x' || str[i] == 'X' ) )
+        if (((minus && i == 2) || (!minus && i == 1)) &&
+                str[i - 1] == '0' && (str[i] == 'x' || str[i] == 'X'))
         {
             hex = 1;
             continue;
         }
 
-        if( ! ( ( str[i] >= '0' && str[i] <= '9' ) ||
-                ( hex && ( ( str[i] >= 'a' && str[i] <= 'f' ) ||
-                           ( str[i] >= 'A' && str[i] <= 'F' ) ) ) ) )
+        if (!((str[i] >= '0' && str[i] <= '9') ||
+                (hex && ((str[i] >= 'a' && str[i] <= 'f') ||
+                         (str[i] >= 'A' && str[i] <= 'F')))))
         {
             digits = 0;
             break;
         }
     }
 
-    if( digits )
+    if (digits)
     {
-        if( hex )
-            *value = strtol( str, NULL, 16 );
+        if (hex)
+            *value = strtol(str, NULL, 16);
         else
-            *value = strtol( str, NULL, 10 );
+            *value = strtol(str, NULL, 10);
 
-        return( 0 );
+        return (0);
     }
 
-    mbedtls_fprintf( stderr,
-                     "Expected integer for parameter and got: %s\n", str );
-    return( KEY_VALUE_MAPPING_NOT_FOUND );
+    mbedtls_fprintf(stderr,
+                    "Expected integer for parameter and got: %s\n", str);
+    return (KEY_VALUE_MAPPING_NOT_FOUND);
 }
 /**
  * \brief       Usage string.
@@ -953,23 +989,32 @@ int get_line(FILE *f, char *buf, size_t len)
     int i = 0, str_len = 0, has_string = 0;
 
     /* Read until we get a valid line */
-    do {
+    do
+    {
         ret = myfgets(buf, len, f);
-        if (ret == NULL) {
+
+        if (ret == NULL)
+        {
             return -1;
         }
 
         str_len = strlen(buf);
 
         /* Skip empty line and comment */
-        if (str_len == 0 || buf[0] == '#') {
+        if (str_len == 0 || buf[0] == '#')
+        {
             continue;
         }
+
         has_string = 0;
-        for (i = 0; i < str_len; i++) {
+
+        for (i = 0; i < str_len; i++)
+        {
             char c = buf[i];
+
             if (c != ' ' && c != '\t' && c != '\n' &&
-                    c != '\v' && c != '\f' && c != '\r') {
+                    c != '\v' && c != '\f' && c != '\r')
+            {
                 has_string = 1;
                 break;
             }
@@ -978,10 +1023,14 @@ int get_line(FILE *f, char *buf, size_t len)
 
     /* Strip new line and carriage return */
     ret = buf + strlen(buf);
-    if (ret-- > buf && *ret == '\n') {
+
+    if (ret-- > buf && *ret == '\n')
+    {
         *ret = '\0';
     }
-    if (ret-- > buf && *ret == '\r') {
+
+    if (ret-- > buf && *ret == '\r')
+    {
         *ret = '\0';
     }
 
@@ -1007,18 +1056,24 @@ static int parse_arguments(char *buf, size_t len, char **params,
 
     params[cnt++] = cur;
 
-    while (*p != '\0' && p < (buf + len)) {
-        if (*p == '\\') {
+    while (*p != '\0' && p < (buf + len))
+    {
+        if (*p == '\\')
+        {
             p++;
             p++;
             continue;
         }
-        if (*p == ':') {
-            if (p + 1 < buf + len) {
+
+        if (*p == ':')
+        {
+            if (p + 1 < buf + len)
+            {
                 cur = p + 1;
                 TEST_HELPER_ASSERT(cnt < params_len);
                 params[cnt++] = cur;
             }
+
             *p = '\0';
         }
 
@@ -1026,24 +1081,32 @@ static int parse_arguments(char *buf, size_t len, char **params,
     }
 
     /* Replace backslash escapes in strings */
-    for (i = 0; i < cnt; i++) {
+    for (i = 0; i < cnt; i++)
+    {
         p = params[i];
         q = params[i];
 
-        while (*p != '\0') {
-            if (*p == '\\') {
+        while (*p != '\0')
+        {
+            if (*p == '\\')
+            {
                 ++p;
-                switch (*p) {
-                case 'n':
-                    *p = '\n';
-                    break;
-                default:
-                    // Fall through to copying *p
-                    break;
+
+                switch (*p)
+                {
+                    case 'n':
+                        *p = '\n';
+                        break;
+
+                    default:
+                        // Fall through to copying *p
+                        break;
                 }
             }
+
             *(q++) = *(p++);
         }
+
         *q = '\0';
     }
 
@@ -1074,26 +1137,39 @@ static int convert_params(size_t cnt, char **params,
     char **out = params;
     int ret = DISPATCH_TEST_SUCCESS;
 
-    while (cur < params + cnt) {
+    while (cur < params + cnt)
+    {
         char *type = *cur++;
         char *val = *cur++;
 
-        if (strcmp(type, "char*") == 0) {
-            if (verify_string(&val) == 0) {
+        if (strcmp(type, "char*") == 0)
+        {
+            if (verify_string(&val) == 0)
+            {
                 *out++ = val;
-            } else {
+            }
+            else
+            {
                 ret = (DISPATCH_INVALID_TEST_DATA);
                 break;
             }
-        } else if (strcmp(type, "int") == 0) {
-            if (verify_int(val, (int32_t*)(&(int_params_store->sint)))== 0) {
+        }
+        else if (strcmp(type, "int") == 0)
+        {
+            if (verify_int(val, (int32_t *)(&(int_params_store->sint))) == 0)
+            {
                 *out++ = (char *) int_params_store++;
-            } else {
+            }
+            else
+            {
                 ret = (DISPATCH_INVALID_TEST_DATA);
                 break;
             }
-        } else if (strcmp(type, "hex") == 0) {
-            if (verify_string(&val) == 0) {
+        }
+        else if (strcmp(type, "hex") == 0)
+        {
+            if (verify_string(&val) == 0)
+            {
                 size_t len;
 
                 TEST_HELPER_ASSERT(
@@ -1102,24 +1178,35 @@ static int convert_params(size_t cnt, char **params,
 
                 int_params_store->len = len;
                 *out++ = val;
-                *out++ = (char *) (int_params_store++);
-            } else {
+                *out++ = (char *)(int_params_store++);
+            }
+            else
+            {
                 ret = (DISPATCH_INVALID_TEST_DATA);
                 break;
             }
-        } else if (strcmp(type, "exp") == 0) {
+        }
+        else if (strcmp(type, "exp") == 0)
+        {
             int exp_id = strtol(val, NULL, 10);
-            if (get_expression(exp_id, &int_params_store->sint) == 0) {
+
+            if (get_expression(exp_id, &int_params_store->sint) == 0)
+            {
                 *out++ = (char *) int_params_store++;
-            } else {
+            }
+            else
+            {
                 ret = (DISPATCH_INVALID_TEST_DATA);
                 break;
             }
-        } else {
+        }
+        else
+        {
             ret = (DISPATCH_INVALID_TEST_DATA);
             break;
         }
     }
+
     return ret;
 }
 
@@ -1141,7 +1228,7 @@ static int convert_params(size_t cnt, char **params,
  * \return      0 for success else 1
  */
 #if defined(__GNUC__)
-__attribute__((__noinline__))
+    __attribute__((__noinline__))
 #endif
 static int test_snprintf(size_t n, const char *ref_buf, int ref_ret)
 {
@@ -1149,17 +1236,22 @@ static int test_snprintf(size_t n, const char *ref_buf, int ref_ret)
     char buf[10] = "xxxxxxxxx";
     const char ref[10] = "xxxxxxxxx";
 
-    if (n >= sizeof(buf)) {
+    if (n >= sizeof(buf))
+    {
         return -1;
     }
+
     ret = mbedtls_snprintf(buf, n, "%s", "123");
-    if (ret < 0 || (size_t) ret >= n) {
+
+    if (ret < 0 || (size_t) ret >= n)
+    {
         ret = -1;
     }
 
     if (strncmp(ref_buf, buf, sizeof(buf)) != 0 ||
             ref_ret != ret ||
-            memcmp(buf + n, ref + n, sizeof(buf) - n) != 0) {
+            memcmp(buf + n, ref + n, sizeof(buf) - n) != 0)
+    {
         return 1;
     }
 
@@ -1197,27 +1289,41 @@ static void write_outcome_entry(FILE *outcome_file,
     static const char *configuration = NULL;
     static const char *test_suite = NULL;
 
-    if (outcome_file == NULL) {
+    if (outcome_file == NULL)
+    {
         return;
     }
 
-    if (platform == NULL) {
+    if (platform == NULL)
+    {
         platform = getenv("MBEDTLS_TEST_PLATFORM");
-        if (platform == NULL) {
+
+        if (platform == NULL)
+        {
             platform = "unknown";
         }
     }
-    if (configuration == NULL) {
+
+    if (configuration == NULL)
+    {
         configuration = getenv("MBEDTLS_TEST_CONFIGURATION");
-        if (configuration == NULL) {
+
+        if (configuration == NULL)
+        {
             configuration = "unknown";
         }
     }
-    if (test_suite == NULL) {
+
+    if (test_suite == NULL)
+    {
         test_suite = strrchr(argv0, '/');
-        if (test_suite != NULL) {
+
+        if (test_suite != NULL)
+        {
             test_suite += 1; // skip the '/'
-        } else {
+        }
+        else
+        {
             test_suite = argv0;
         }
     }
@@ -1246,61 +1352,79 @@ static void write_outcome_result(FILE *outcome_file,
                                  int ret,
                                  const mbedtls_test_info_t *info)
 {
-    if (outcome_file == NULL) {
+    if (outcome_file == NULL)
+    {
         return;
     }
 
     /* Write the end of the outcome line.
      * Ignore errors: writing the outcome file is on a best-effort basis. */
-    switch (ret) {
-    case DISPATCH_TEST_SUCCESS:
-        if (unmet_dep_count > 0) {
-            size_t i;
-            mbedtls_fprintf(outcome_file, "SKIP");
-            for (i = 0; i < unmet_dep_count; i++) {
-                mbedtls_fprintf(outcome_file, "%c%d",
-                                i == 0 ? ';' : ':',
-                                unmet_dependencies[i]);
+    switch (ret)
+    {
+        case DISPATCH_TEST_SUCCESS:
+            if (unmet_dep_count > 0)
+            {
+                size_t i;
+                mbedtls_fprintf(outcome_file, "SKIP");
+
+                for (i = 0; i < unmet_dep_count; i++)
+                {
+                    mbedtls_fprintf(outcome_file, "%c%d",
+                                    i == 0 ? ';' : ':',
+                                    unmet_dependencies[i]);
+                }
+
+                if (missing_unmet_dependencies)
+                {
+                    mbedtls_fprintf(outcome_file, ":...");
+                }
+
+                break;
             }
-            if (missing_unmet_dependencies) {
-                mbedtls_fprintf(outcome_file, ":...");
+
+            switch (info->result)
+            {
+                case MBEDTLS_TEST_RESULT_SUCCESS:
+                    mbedtls_fprintf(outcome_file, "PASS;");
+                    break;
+
+                case MBEDTLS_TEST_RESULT_SKIPPED:
+                    mbedtls_fprintf(outcome_file, "SKIP;Runtime skip");
+                    break;
+
+                default:
+                    mbedtls_fprintf(outcome_file, "FAIL;%s:%d:%s",
+                                    info->filename, info->line_no,
+                                    info->test);
+                    break;
             }
+
             break;
-        }
-        switch (info->result) {
-        case MBEDTLS_TEST_RESULT_SUCCESS:
-            mbedtls_fprintf(outcome_file, "PASS;");
+
+        case DISPATCH_TEST_FN_NOT_FOUND:
+            mbedtls_fprintf(outcome_file, "FAIL;Test function not found");
             break;
-        case MBEDTLS_TEST_RESULT_SKIPPED:
-            mbedtls_fprintf(outcome_file, "SKIP;Runtime skip");
+
+        case DISPATCH_INVALID_TEST_DATA:
+            mbedtls_fprintf(outcome_file, "FAIL;Invalid test data");
             break;
+
+        case DISPATCH_UNSUPPORTED_SUITE:
+            mbedtls_fprintf(outcome_file, "SKIP;Unsupported suite");
+            break;
+
         default:
-            mbedtls_fprintf(outcome_file, "FAIL;%s:%d:%s",
-                            info->filename, info->line_no,
-                            info->test);
+            mbedtls_fprintf(outcome_file, "FAIL;Unknown cause");
             break;
-        }
-        break;
-    case DISPATCH_TEST_FN_NOT_FOUND:
-        mbedtls_fprintf(outcome_file, "FAIL;Test function not found");
-        break;
-    case DISPATCH_INVALID_TEST_DATA:
-        mbedtls_fprintf(outcome_file, "FAIL;Invalid test data");
-        break;
-    case DISPATCH_UNSUPPORTED_SUITE:
-        mbedtls_fprintf(outcome_file, "SKIP;Unsupported suite");
-        break;
-    default:
-        mbedtls_fprintf(outcome_file, "FAIL;Unknown cause");
-        break;
     }
+
     mbedtls_fprintf(outcome_file, "\n");
     fflush(outcome_file);
 }
 
 #if defined(__unix__) ||                                \
     (defined(__APPLE__) && defined(__MACH__))
-#define MBEDTLS_HAVE_CHDIR
+    #define MBEDTLS_HAVE_CHDIR
 #endif
 
 #if defined(MBEDTLS_HAVE_CHDIR)
@@ -1316,21 +1440,30 @@ static void try_chdir_if_supported(const char *argv0)
      * backslash support on Windows leads to chdir into the wrong directory
      * on the CI). */
     const char *slash = strrchr(argv0, '/');
-    if (slash == NULL) {
+
+    if (slash == NULL)
+    {
         return;
     }
+
     size_t path_size = slash - argv0 + 1;
     char *path = mbedtls_calloc(1, path_size);
-    if (path == NULL) {
+
+    if (path == NULL)
+    {
         return;
     }
+
     memcpy(path, argv0, path_size - 1);
     path[path_size - 1] = 0;
     int ret = chdir(path);
-    if (ret != 0) {
+
+    if (ret != 0)
+    {
         mbedtls_fprintf(stderr, "%s: note: chdir(\"%s\") failed.\n",
                         __func__, path);
     }
+
     mbedtls_free(path);
 }
 #else /* MBEDTLS_HAVE_CHDIR */
@@ -1396,7 +1529,9 @@ int execute_tests(int argc, const char **argv)
      * structures, which should work on every modern platform. Let's be sure.
      */
     memset(&pointer, 0, sizeof(void *));
-    if (pointer != NULL) {
+
+    if (pointer != NULL)
+    {
         mbedtls_fprintf(stderr, "all-bits-zero is not a NULL pointer\n");
         return 1;
     }
@@ -1404,29 +1539,39 @@ int execute_tests(int argc, const char **argv)
     /*
      * Make sure we have a snprintf that correctly zero-terminates
      */
-    if (run_test_snprintf() != 0) {
+    if (run_test_snprintf() != 0)
+    {
         mbedtls_fprintf(stderr, "the snprintf implementation is broken\n");
         return 1;
     }
 
-    if (outcome_file_name != NULL && *outcome_file_name != '\0') {
+    if (outcome_file_name != NULL && *outcome_file_name != '\0')
+    {
         outcome_file = myfopen(outcome_file_name, "a");
-        if (outcome_file == NULL) {
+
+        if (outcome_file == NULL)
+        {
             mbedtls_fprintf(stderr, "Unable to open outcome file. Continuing anyway.\n");
         }
     }
 
-    while (arg_index < argc) {
+    while (arg_index < argc)
+    {
         next_arg = argv[arg_index];
 
         if (strcmp(next_arg, "--verbose") == 0 ||
-                strcmp(next_arg, "-v") == 0) {
+                strcmp(next_arg, "-v") == 0)
+        {
             option_verbose = 1;
-        } else if (strcmp(next_arg, "--help") == 0 ||
-                   strcmp(next_arg, "-h") == 0) {
+        }
+        else if (strcmp(next_arg, "--help") == 0 ||
+                 strcmp(next_arg, "-h") == 0)
+        {
             mbedtls_fprintf(stdout, USAGE);
             mbedtls_exit(EXIT_SUCCESS);
-        } else {
+        }
+        else
+        {
             /* Not an option, therefore treat all further arguments as the file
              * list.
              */
@@ -1439,7 +1584,8 @@ int execute_tests(int argc, const char **argv)
     }
 
     /* If no files were specified, assume a default */
-    if (test_files == NULL || testfile_count == 0) {
+    if (test_files == NULL || testfile_count == 0)
+    {
         test_files = &default_filename;
         testfile_count = 1;
     }
@@ -1450,7 +1596,8 @@ int execute_tests(int argc, const char **argv)
     /* Now begin to execute the tests in the testfiles */
     for (testfile_index = 0;
             testfile_index < testfile_count;
-            testfile_index++) {
+            testfile_index++)
+    {
         size_t unmet_dep_count = 0;
         int unmet_dependencies[20];
         int missing_unmet_dependencies = 0;
@@ -1458,98 +1605,135 @@ int execute_tests(int argc, const char **argv)
         test_filename = test_files[testfile_index];
 
         file = myfopen(test_filename, "r");
-        if (file == NULL) {
+
+        if (file == NULL)
+        {
             mbedtls_fprintf(stderr, "Failed to open test file: %s\n",
                             test_filename);
-            if (outcome_file != NULL) {
+
+            if (outcome_file != NULL)
+            {
                 myfclose(outcome_file);
             }
+
             return 1;
         }
 
-        while (!myfeof(file)) {
-            if (unmet_dep_count > 0) {
+        while (!myfeof(file))
+        {
+            if (unmet_dep_count > 0)
+            {
                 mbedtls_fprintf(stderr,
                                 "FATAL: Dep count larger than zero at start of loop\n");
                 mbedtls_exit(MBEDTLS_EXIT_FAILURE);
             }
+
             unmet_dep_count = 0;
             missing_unmet_dependencies = 0;
 
-            if ((ret = get_line(file, buf, sizeof(buf))) != 0) {
+            if ((ret = get_line(file, buf, sizeof(buf))) != 0)
+            {
                 break;
             }
+
             mbedtls_fprintf(stdout, "%s%.66s",
                             mbedtls_test_info.result == MBEDTLS_TEST_RESULT_FAILED ?
                             "\n" : "", buf);
             mbedtls_fprintf(stdout, " ");
-            for (i = strlen(buf) + 1; i < 67; i++) {
+
+            for (i = strlen(buf) + 1; i < 67; i++)
+            {
                 mbedtls_fprintf(stdout, ".");
             }
+
             mbedtls_fprintf(stdout, " ");
             fflush(stdout);
             write_outcome_entry(outcome_file, argv[0], buf);
 
             total_tests++;
 
-            if ((ret = get_line(file, buf, sizeof(buf))) != 0) {
+            if ((ret = get_line(file, buf, sizeof(buf))) != 0)
+            {
                 break;
             }
+
             cnt = parse_arguments(buf, strlen(buf), params,
                                   sizeof(params) / sizeof(params[0]));
 
-            if (strcmp(params[0], "depends_on") == 0) {
-                for (i = 1; i < cnt; i++) {
+            if (strcmp(params[0], "depends_on") == 0)
+            {
+                for (i = 1; i < cnt; i++)
+                {
                     int dep_id = strtol(params[i], NULL, 10);
-                    if (dep_check(dep_id) != DEPENDENCY_SUPPORTED) {
+
+                    if (dep_check(dep_id) != DEPENDENCY_SUPPORTED)
+                    {
                         if (unmet_dep_count <
-                                ARRAY_LENGTH(unmet_dependencies)) {
+                                ARRAY_LENGTH(unmet_dependencies))
+                        {
                             unmet_dependencies[unmet_dep_count] = dep_id;
                             unmet_dep_count++;
-                        } else {
+                        }
+                        else
+                        {
                             missing_unmet_dependencies = 1;
                         }
                     }
                 }
 
-                if ((ret = get_line(file, buf, sizeof(buf))) != 0) {
+                if ((ret = get_line(file, buf, sizeof(buf))) != 0)
+                {
                     break;
                 }
+
                 cnt = parse_arguments(buf, strlen(buf), params,
                                       sizeof(params) / sizeof(params[0]));
             }
 
             // If there are no unmet dependencies execute the test
-            if (unmet_dep_count == 0) {
+            if (unmet_dep_count == 0)
+            {
                 mbedtls_test_info_reset();
 
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
+
                 /* Suppress all output from the library unless we're verbose
                  * mode
                  */
-                if (!option_verbose) {
+                if (!option_verbose)
+                {
                     stdout_fd = redirect_output(stdout, "/dev/null");
-                    if (stdout_fd == -1) {
+
+                    if (stdout_fd == -1)
+                    {
                         /* Redirection has failed with no stdout so exit */
                         exit(1);
                     }
                 }
+
 #endif /* __unix__ || __APPLE__ __MACH__ */
 
                 function_id = strtoul(params[0], NULL, 10);
-                if ((ret = check_test(function_id)) == DISPATCH_TEST_SUCCESS) {
+
+                if ((ret = check_test(function_id)) == DISPATCH_TEST_SUCCESS)
+                {
                     ret = convert_params(cnt - 1, params + 1, (mbedtls_test_argument_t *)int_params/*Wayne: Just for pass the building.*/);
-                    if (DISPATCH_TEST_SUCCESS == ret) {
-                        mbedtls_fprintf(stdout, "\r\nfunction_id=%d, %s \r\n ",function_id, *(params));
-                        ret = dispatch_test(function_id, (void **) (params + 1));
+
+                    if (DISPATCH_TEST_SUCCESS == ret)
+                    {
+                        mbedtls_fprintf(stdout, "\r\nfunction_id=%d, %s \r\n ", function_id, *(params));
+                        ret = dispatch_test(function_id, (void **)(params + 1));
                     }
                 }
 
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
-                if (!option_verbose && restore_output(stdout, stdout_fd)) {
+
+                if (!option_verbose && restore_output(stdout, stdout_fd))
+                {
                     /* Redirection has failed with no stdout so exit */
                     exit(1);
                 }
+
 #endif /* __unix__ || __APPLE__ __MACH__ */
 
             }
@@ -1558,82 +1742,119 @@ int execute_tests(int argc, const char **argv)
                                  unmet_dep_count, unmet_dependencies,
                                  missing_unmet_dependencies,
                                  ret, &mbedtls_test_info);
-            if (unmet_dep_count > 0 || ret == DISPATCH_UNSUPPORTED_SUITE) {
+
+            if (unmet_dep_count > 0 || ret == DISPATCH_UNSUPPORTED_SUITE)
+            {
                 total_skipped++;
                 //mbedtls_fprintf(stdout, "++++");
-                mbedtls_fprintf(stdout, "unmet_dep_count=%d ",unmet_dep_count);
+                mbedtls_fprintf(stdout, "unmet_dep_count=%d ", unmet_dep_count);
                 mbedtls_fprintf(stdout, "SKIPPED\n");
-                if (1 == option_verbose && ret == DISPATCH_UNSUPPORTED_SUITE) {
+
+                if (1 == option_verbose && ret == DISPATCH_UNSUPPORTED_SUITE)
+                {
                     mbedtls_fprintf(stdout, "\n   Test Suite not enabled");
                 }
 
-                if (1 == option_verbose && unmet_dep_count > 0) {
+                if (1 == option_verbose && unmet_dep_count > 0)
+                {
                     mbedtls_fprintf(stdout, "\n   Unmet dependencies: ");
-                    for (i = 0; i < unmet_dep_count; i++) {
+
+                    for (i = 0; i < unmet_dep_count; i++)
+                    {
                         mbedtls_fprintf(stdout, "%d ",
                                         unmet_dependencies[i]);
                     }
-                    if (missing_unmet_dependencies) {
+
+                    if (missing_unmet_dependencies)
+                    {
                         mbedtls_fprintf(stdout, "...");
                     }
                 }
+
                 mbedtls_fprintf(stdout, "\n");
                 fflush(stdout);
 
                 unmet_dep_count = 0;
                 missing_unmet_dependencies = 0;
-            } else if (ret == DISPATCH_TEST_SUCCESS) {
-                if (mbedtls_test_info.result == MBEDTLS_TEST_RESULT_SUCCESS) {
+            }
+            else if (ret == DISPATCH_TEST_SUCCESS)
+            {
+                if (mbedtls_test_info.result == MBEDTLS_TEST_RESULT_SUCCESS)
+                {
                     mbedtls_fprintf(stdout, "PASS\n");
-                } else if (mbedtls_test_info.result == MBEDTLS_TEST_RESULT_SKIPPED) {
+                }
+                else if (mbedtls_test_info.result == MBEDTLS_TEST_RESULT_SKIPPED)
+                {
                     mbedtls_fprintf(stdout, "SKIPPED\n");
                     total_skipped++;
-                } else {
+                }
+                else
+                {
                     total_errors++;
                     mbedtls_fprintf(stdout, "FAILED\n");
                     mbedtls_fprintf(stdout, "  %s\n  at ",
                                     mbedtls_test_info.test);
-                    if (mbedtls_test_info.step != (unsigned long) (-1)) {
+
+                    if (mbedtls_test_info.step != (unsigned long)(-1))
+                    {
                         mbedtls_fprintf(stdout, "step %lu, ",
                                         mbedtls_test_info.step);
                     }
+
                     mbedtls_fprintf(stdout, "line %d, %s",
                                     mbedtls_test_info.line_no,
                                     mbedtls_test_info.filename);
-                    if (mbedtls_test_info.line1[0] != 0) {
+
+                    if (mbedtls_test_info.line1[0] != 0)
+                    {
                         mbedtls_fprintf(stdout, "\n  %s",
                                         mbedtls_test_info.line1);
                     }
-                    if (mbedtls_test_info.line2[0] != 0) {
+
+                    if (mbedtls_test_info.line2[0] != 0)
+                    {
                         mbedtls_fprintf(stdout, "\n  %s",
                                         mbedtls_test_info.line2);
                     }
                 }
+
                 fflush(stdout);
-            } else if (ret == DISPATCH_INVALID_TEST_DATA) {
+            }
+            else if (ret == DISPATCH_INVALID_TEST_DATA)
+            {
                 mbedtls_fprintf(stderr, "FAILED: FATAL PARSE ERROR\n");
                 myfclose(file);
                 mbedtls_exit(2);
-            } else if (ret == DISPATCH_TEST_FN_NOT_FOUND) {
+            }
+            else if (ret == DISPATCH_TEST_FN_NOT_FOUND)
+            {
                 mbedtls_fprintf(stderr, "FAILED: FATAL TEST FUNCTION NOT FOUND\n");
                 myfclose(file);
                 mbedtls_exit(2);
-            } else {
+            }
+            else
+            {
                 total_errors++;
             }
         }
+
         myfclose(file);
     }
 
-    if (outcome_file != NULL) {
+    if (outcome_file != NULL)
+    {
         myfclose(outcome_file);
     }
 
     mbedtls_fprintf(stdout,
                     "\n--------------------------------------------------\n\n");
-    if (total_errors == 0) {
+
+    if (total_errors == 0)
+    {
         mbedtls_fprintf(stdout, "PASSED");
-    } else {
+    }
+    else
+    {
         mbedtls_fprintf(stdout, "FAILED");
     }
 
@@ -1661,16 +1882,16 @@ int execute_tests(int argc, const char **argv)
 /* Main Test code */
 volatile uint32_t g_u32Ticks = 0;
 #ifdef MBEDTLS_STD
-char au8KeyIn[]   = "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0bab";//22 Octects
-char au8Salt[]       = "000102030405060708090a0b0c";//13 Octects
-char au8Info[]        = "f0f1f2f3f4f5f6f7f8f9";//10 Octects
-char au8KeyOut[] = "3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4c5db02d56ecc4c5bf34007208d5b887185865";//42 Octects
+    char au8KeyIn[]   = "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0bab";//22 Octects
+    char au8Salt[]       = "000102030405060708090a0b0c";//13 Octects
+    char au8Info[]        = "f0f1f2f3f4f5f6f7f8f9";//10 Octects
+    char au8KeyOut[] = "3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4c5db02d56ecc4c5bf34007208d5b887185865";//42 Octects
 #else
 
-char au8KeyIn[]   = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
-char au8Salt[]       = "606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f";
-char au8Info[]        = "b0b1b2b3b4b5b6b7b8b9babb00bdbebfc0c1c2c3c4c5c6c7c8c9cacbcc0200";
-char au8KeyOut[] = "805e0bf8fb46941dcbfdab0819afae98bd57e0c5dea15c6772907cb86714ac69504b982aed43f66c64e92ccc4b998b9144759139868e7959e58d9a63252d5788";
+    char au8KeyIn[]   = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
+    char au8Salt[]       = "606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f";
+    char au8Info[]        = "b0b1b2b3b4b5b6b7b8b9babb00bdbebfc0c1c2c3c4c5c6c7c8c9cacbcc0200";
+    char au8KeyOut[] = "805e0bf8fb46941dcbfdab0819afae98bd57e0c5dea15c6772907cb86714ac69504b982aed43f66c64e92ccc4b998b9144759139868e7959e58d9a63252d5788";
 
 #endif
 
@@ -1726,7 +1947,7 @@ void SysTick_Handler()
 int main()
 {
     int argc;
-    const char* argv[] = { 0 };
+    const char *argv[] = { 0 };
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -1744,7 +1965,7 @@ int main()
     printf("MBEDTLS HKDF self test ...\n");
 
 #if defined(MBEDTLS_TEST_HOOKS)
-    extern void (*mbedtls_test_hook_test_fail)( const char * test, int line, const char * file );
+    extern void (*mbedtls_test_hook_test_fail)(const char *test, int line, const char *file);
     mbedtls_test_hook_test_fail = &mbedtls_test_fail;
 #if defined(MBEDTLS_ERROR_C)
     mbedtls_test_hook_error_add = &mbedtls_test_err_add_check;
@@ -1752,12 +1973,13 @@ int main()
 #endif
 
     int ret = mbedtls_test_platform_setup();
-    if( ret != 0 )
+
+    if (ret != 0)
     {
-        mbedtls_fprintf( stderr,
-                         "FATAL: Failed to initialize platform - error %d\n",
-                         ret );
-        return( -1 );
+        mbedtls_fprintf(stderr,
+                        "FATAL: Failed to initialize platform - error %d\n",
+                        ret);
+        return (-1);
     }
 
     printf("Pure software crypto running.\n");
@@ -1769,15 +1991,15 @@ int main()
     //ret = execute_tests( argc, argv );
     mbedtls_test_info_reset();
 #ifdef MBEDTLS_STD
-    data_t nvt_ikm = {.x = (uint8_t *) &au8KeyIn[0], .len =22 };
-    data_t nvt_salt = {.x = (uint8_t *) &au8Salt[0], .len =13 };
-    data_t nvt_info = {.x = (uint8_t *) &au8Info[0], .len =10 };
-    data_t nvt_okm = {.x = (uint8_t *) &au8KeyOut[0], .len =42 };
+    data_t nvt_ikm = {.x = (uint8_t *) &au8KeyIn[0], .len = 22 };
+    data_t nvt_salt = {.x = (uint8_t *) &au8Salt[0], .len = 13 };
+    data_t nvt_info = {.x = (uint8_t *) &au8Info[0], .len = 10 };
+    data_t nvt_okm = {.x = (uint8_t *) &au8KeyOut[0], .len = 42 };
 #else//NVT HKDF format
-    data_t nvt_ikm = {.x = (uint8_t *) &au8KeyIn[0], .len =strlen(au8KeyIn)/2 };
-    data_t nvt_salt = {.x = (uint8_t *) &au8Salt[0], .len =strlen(au8Salt) /2};
-    data_t nvt_info = {.x = (uint8_t *) &au8Info[0], .len =strlen(au8Info) /2};
-    data_t nvt_okm = {.x = (uint8_t *) &au8KeyOut[0], .len =64 };
+    data_t nvt_ikm = {.x = (uint8_t *) &au8KeyIn[0], .len = strlen(au8KeyIn) / 2 };
+    data_t nvt_salt = {.x = (uint8_t *) &au8Salt[0], .len = strlen(au8Salt) / 2};
+    data_t nvt_info = {.x = (uint8_t *) &au8Info[0], .len = strlen(au8Info) / 2};
+    data_t nvt_okm = {.x = (uint8_t *) &au8KeyOut[0], .len = 64 };
 #endif
     test_test_hkdf_sha256(&nvt_ikm,  &nvt_salt, &nvt_info, &nvt_okm);
 
@@ -1790,5 +2012,5 @@ int main()
 
     mbedtls_test_platform_teardown();
 
-    for(;;) {}
+    for (;;) {}
 }

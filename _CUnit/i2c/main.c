@@ -48,9 +48,9 @@ void SYS_Init(void)
     SetDebugUartMFP();
     //
     /*
-               SCL    SDA	 SMBAL    SMBSUS
-        I2C0   PA5    PA4	 PC3	  PC2
-        I2C1   PB1    PB0	 PB9	  PB8
+               SCL    SDA    SMBAL    SMBSUS
+        I2C0   PA5    PA4    PC3      PC2
+        I2C1   PB1    PB0    PB9      PB8
     */
     CLK->I2CCTL = (CLK_I2CCTL_I2C0CKEN_Msk | CLK_I2CCTL_I2C1CKEN_Msk
                    | CLK_I2CCTL_I2C2CKEN_Msk | CLK_I2CCTL_I2C3CKEN_Msk);
@@ -84,7 +84,8 @@ void AddTests(void)
     assert((NULL != CU_get_registry()));
     assert(!CU_is_test_running());
 
-    if (CUE_SUCCESS != CU_register_suites(suites)) {
+    if (CUE_SUCCESS != CU_register_suites(suites))
+    {
         fprintf(stderr, "Register suites failed - %s ", CU_get_error_msg());
         exit(EXIT_FAILURE);
     }
@@ -102,10 +103,13 @@ int main(int argc, char *argv[])
     printf("+--------------------------------------+\n");
     printf("__DATE__, __TEIM__ = %s, %s\n", __DATE__, __TIME__);
 
-    if (CU_initialize_registry()) {
+    if (CU_initialize_registry())
+    {
         fprintf(stderr, " Initialization of Test Registry failed. ");
         exit(EXIT_FAILURE);
-    } else {
+    }
+    else
+    {
         AddTests();
         CU_console_run_tests();
         CU_cleanup_registry();

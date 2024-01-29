@@ -96,10 +96,10 @@ static inline void write64(void *addr, uint64_t val)
   * @return  32-bit unsigned value stored in specified I/O port
   * @note The input port must be 32-bit aligned
   */
-#define inpw	read32
-#define inp32	read32
-#define readl	read32
-#define readw	read16
-#define readb	read8
+#define inpw    read32
+#define inp32   read32
+#define readl   read32
+#define readw   read16
+#define readb   read8
 
 #endif /* __ARCH_MMIO_H__ */

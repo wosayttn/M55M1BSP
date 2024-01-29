@@ -214,7 +214,7 @@ NVT_ITCM void TIMER0_IRQHandler(void)
     UTCPD_TimerBaseInc();
     /* clear timer interrupt flag */
     TIMER_ClearIntFlag(TIMER0);
-      /*Confirm that the Flag has been cleared.*/
+    /*Confirm that the Flag has been cleared.*/
     M32(&TIMER0->INTSTS);
 }
 
@@ -236,7 +236,7 @@ NVT_ITCM void TIMER1_IRQHandler(void)
 
     /* clear timer interrupt flag */
     TIMER_ClearIntFlag(TIMER1);
-   /*Confirm that the Flag has been cleared.*/
+    /*Confirm that the Flag has been cleared.*/
     M32(&TIMER1->INTSTS);
 }
 
@@ -275,8 +275,8 @@ void pd_task(void)
 
     while (1)
     {
-//        pd_timer_init(port);
-//        pd_task_init(port);
+        //        pd_timer_init(port);
+        //        pd_task_init(port);
         pd_task_reinit(port);
         /* As long as pd_task_loop returns true, keep running the loop.
          * pd_task_loop returns false when the code needs to re-init
@@ -364,7 +364,7 @@ int main()
     ACMP_Init();
 #endif
 
-   /* Google EC need to enable interrupt */
+    /* Google EC need to enable interrupt */
     NVIC_EnableIRQ(UTCPD_IRQn);
 
     pd_task();

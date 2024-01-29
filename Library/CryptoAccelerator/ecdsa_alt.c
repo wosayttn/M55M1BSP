@@ -35,11 +35,11 @@
 #include <string.h>
 
 #if defined(MBEDTLS_PLATFORM_C)
-#include "mbedtls/platform.h"
+    #include "mbedtls/platform.h"
 #else
-#include <stdlib.h>
-#define mbedtls_calloc    calloc
-#define mbedtls_free       free
+    #include <stdlib.h>
+    #define mbedtls_calloc    calloc
+    #define mbedtls_free       free
 #endif
 
 #include "mbedtls/platform_util.h"
@@ -73,31 +73,32 @@
  * Derive a suitable integer for group grp from a buffer of length len
  * SEC1 4.1.3 step 5 aka SEC1 4.1.4 step 3
  */
-int derive_mpi(const mbedtls_ecp_group* grp, mbedtls_mpi* x,
-    const unsigned char* buf, size_t blen)
+int derive_mpi(const mbedtls_ecp_group *grp, mbedtls_mpi *x,
+               const unsigned char *buf, size_t blen)
 {
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     size_t n_size = (grp->nbits + 7) / 8;
     size_t use_size = blen > n_size ? n_size : blen;
 
     MBEDTLS_MPI_CHK(mbedtls_mpi_read_binary(x, buf, use_size));
-    if(use_size * 8 > grp->nbits)
+
+    if (use_size * 8 > grp->nbits)
         MBEDTLS_MPI_CHK(mbedtls_mpi_shift_r(x, use_size * 8 - grp->nbits));
 
     /* While at it, reduce modulo N */
-    if(mbedtls_mpi_cmp_mpi(x, &grp->N) >= 0)
+    if (mbedtls_mpi_cmp_mpi(x, &grp->N) >= 0)
         MBEDTLS_MPI_CHK(mbedtls_mpi_sub_mpi(x, x, &grp->N));
 
 cleanup:
-    return(ret);
+    return (ret);
 }
 
 
 
 /* Clean ECC reg to zero */
-static void ECC_ZeroReg(unsigned int * reg)
+static void ECC_ZeroReg(unsigned int *reg)
 {
-    for(int i = 0; i < 18; i++)
+    for (int i = 0; i < 18; i++)
     {
         reg[i] = 0;
     }
@@ -108,55 +109,59 @@ static void ECC_Copy(uint32_t *dest, uint32_t *src, uint32_t size)
     uint32_t u32Data, *pu32Dest, *pu32Src;
     int32_t i;
     uint32_t len;
-    uint8_t* pu8;
+    uint8_t *pu8;
 
     len = (uint32_t)size;
-    pu32Dest = (uint32_t*)dest;
-    pu32Src = (uint32_t*)src;
-    for(i = 0; i < len / 4; i++)
+    pu32Dest = (uint32_t *)dest;
+    pu32Src = (uint32_t *)src;
+
+    for (i = 0; i < len / 4; i++)
     {
         *pu32Dest++ = *pu32Src++;
     }
 
     len = size & 0x3;
-    if(len > 0)
+
+    if (len > 0)
     {
-        pu8 = (uint8_t*)pu32Src;
+        pu8 = (uint8_t *)pu32Src;
         u32Data = 0;
-        for(i = 0; i < len; i++)
+
+        for (i = 0; i < len; i++)
         {
-            u32Data += (*pu8++) << (i*8);
+            u32Data += (*pu8++) << (i * 8);
         }
 
         *pu32Dest = u32Data;
     }
 }
 
-static void ECC_InitCurve(mbedtls_ecp_group* grp)
+static void ECC_InitCurve(mbedtls_ecp_group *grp)
 {
-    CRYPTO_T* crpt = CRYPTO;
+    CRYPTO_T *crpt = CRYPTO;
 
     /* Reset Crypto */
-   	SYS->CRYPTORST |= SYS_CRYPTORST_CRYPTO0RST_Msk;
+    SYS->CRYPTORST |= SYS_CRYPTORST_CRYPTO0RST_Msk;
     SYS->CRYPTORST = 0;
     ECC_ENABLE_INT(crpt);
 
     ECC_Copy((uint32_t *)crpt->ECC_A, grp->A.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->A));
-    ECC_Copy((uint32_t*)crpt->ECC_B, grp->B.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->B));
+    ECC_Copy((uint32_t *)crpt->ECC_B, grp->B.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->B));
 
-    ECC_Copy((uint32_t*)crpt->ECC_X1, grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(X).MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(X)));
-    ECC_Copy((uint32_t*)crpt->ECC_Y1, grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(Y).MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(Y)));
-    ECC_Copy((uint32_t*)crpt->ECC_N, grp->P.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->P));
+    ECC_Copy((uint32_t *)crpt->ECC_X1, grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(X).MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(X)));
+    ECC_Copy((uint32_t *)crpt->ECC_Y1, grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(Y).MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(Y)));
+    ECC_Copy((uint32_t *)crpt->ECC_N, grp->P.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->P));
 }
 
 /* Add mission parameters of the curve */
-static int ECC_FixCurve(mbedtls_ecp_group* grp)
+static int ECC_FixCurve(mbedtls_ecp_group *grp)
 {
 
-    if(grp->MBEDTLS_PRIVATE(T) == NULL)
+    if (grp->MBEDTLS_PRIVATE(T) == NULL)
     {
         grp->MBEDTLS_PRIVATE(T) = mbedtls_calloc(1, sizeof(mbedtls_ecp_point));
-        if(grp->MBEDTLS_PRIVATE(T) == NULL)
+
+        if (grp->MBEDTLS_PRIVATE(T) == NULL)
         {
             return MBEDTLS_ERR_ECP_ALLOC_FAILED;
         }
@@ -167,29 +172,29 @@ static int ECC_FixCurve(mbedtls_ecp_group* grp)
     }
 
 
-    if(mbedtls_mpi_size(&grp->A) < 1)
+    if (mbedtls_mpi_size(&grp->A) < 1)
     {
-        if(grp->id == MBEDTLS_ECP_DP_SECP192R1)
+        if (grp->id == MBEDTLS_ECP_DP_SECP192R1)
         {
             mbedtls_mpi_read_string(&grp->A, 16, "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFFFFFFFFFFFC");
         }
-        else if(grp->id == MBEDTLS_ECP_DP_SECP224R1)
+        else if (grp->id == MBEDTLS_ECP_DP_SECP224R1)
         {
             mbedtls_mpi_read_string(&grp->A, 16, "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFE");
         }
-        else if(grp->id == MBEDTLS_ECP_DP_SECP256R1)
+        else if (grp->id == MBEDTLS_ECP_DP_SECP256R1)
         {
             mbedtls_mpi_read_string(&grp->A, 16, "FFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFC");
         }
-        else if(grp->id == MBEDTLS_ECP_DP_SECP384R1)
+        else if (grp->id == MBEDTLS_ECP_DP_SECP384R1)
         {
             mbedtls_mpi_read_string(&grp->A, 16, "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFFFF0000000000000000FFFFFFFC");
         }
-        else if(grp->id == MBEDTLS_ECP_DP_SECP521R1)
+        else if (grp->id == MBEDTLS_ECP_DP_SECP521R1)
         {
             mbedtls_mpi_read_string(&grp->A, 16, "1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC");
         }
-        else if(grp->id == MBEDTLS_ECP_DP_CURVE25519)
+        else if (grp->id == MBEDTLS_ECP_DP_CURVE25519)
         {
             mbedtls_mpi_read_string(&grp->A, 16, "0000000000000000000000000000000000000000000000000000000000076D06");
             mbedtls_mpi_read_string(&grp->B, 16, "0000000000000000000000000000000000000000000000000000000000000001");
@@ -197,20 +202,22 @@ static int ECC_FixCurve(mbedtls_ecp_group* grp)
             mbedtls_mpi_read_string(&grp->N, 16, "1000000000000000000000000000000014def9dea2f79cd65812631a5cf5d3ed");
         }
     }
+
     return 0;
 }
 
 
-static int run_ecc_codec(mbedtls_ecp_group* grp, uint32_t mode)
+static int run_ecc_codec(mbedtls_ecp_group *grp, uint32_t mode)
 {
-    CRYPTO_T* crpt = CRYPTO;
+    CRYPTO_T *crpt = CRYPTO;
     uint32_t eccop;
     uint32_t timeout = 200000000;
 
-	//CRYPTO_ECC_CTL_CURVEM_Pos) | ECCOP_POINT_MUL | CRYPTO_ECC_CTL_SCAP_Msk | CRYPTO_ECC_CTL_START_Msk;
-	
+    //CRYPTO_ECC_CTL_CURVEM_Pos) | ECCOP_POINT_MUL | CRYPTO_ECC_CTL_SCAP_Msk | CRYPTO_ECC_CTL_START_Msk;
+
     eccop = mode & CRYPTO_ECC_CTL_ECCOP_Msk;
-    if(eccop == ECCOP_MODULE)
+
+    if (eccop == ECCOP_MODULE)
     {
         crpt->ECC_CTL = CRYPTO_ECC_CTL_FSEL_Msk;
     }
@@ -219,13 +226,13 @@ static int run_ecc_codec(mbedtls_ecp_group* grp, uint32_t mode)
         /* CURVE_GF_P */
         crpt->ECC_CTL = CRYPTO_ECC_CTL_FSEL_Msk;
 
-        if(eccop == ECCOP_POINT_MUL)
+        if (eccop == ECCOP_POINT_MUL)
         {
             /* Enable side-channel protection in some operation */
             crpt->ECC_CTL |= CRYPTO_ECC_CTL_SCAP_Msk;
             /* If SCAP enabled, the curve order must be written to ECC_X2 */
             //Hex2Reg(pCurve->Eorder, crpt->ECC_X2);
-            ECC_Copy((uint32_t*)crpt->ECC_X2, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
+            ECC_Copy((uint32_t *)crpt->ECC_X2, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
         }
     }
 
@@ -236,9 +243,9 @@ static int run_ecc_codec(mbedtls_ecp_group* grp, uint32_t mode)
     crpt->ECC_CTL |= (grp->pbits << CRYPTO_ECC_CTL_CURVEM_Pos) | mode | CRYPTO_ECC_CTL_START_Msk;
 
     /* Waiting for calculation */
-    while((crpt->INTSTS & CRYPTO_INTSTS_ECCIF_Msk) == 0)
+    while ((crpt->INTSTS & CRYPTO_INTSTS_ECCIF_Msk) == 0)
     {
-        if(timeout-- <= 0)
+        if (timeout-- <= 0)
             return MBEDTLS_ERR_ECP_HW_ACCEL_FAILED;
     }
 
@@ -249,39 +256,45 @@ static int run_ecc_codec(mbedtls_ecp_group* grp, uint32_t mode)
 #if defined(MBEDTLS_ECDSA_SIGN_ALT)
 
 
-int mbedtls_ecdsa_can_do( mbedtls_ecp_group_id gid )
+int mbedtls_ecdsa_can_do(mbedtls_ecp_group_id gid)
 {
-    switch( gid )
+    switch (gid)
     {
 #ifdef MBEDTLS_ECP_DP_CURVE25519_ENABLED
-        case MBEDTLS_ECP_DP_CURVE25519: return 0;
+
+        case MBEDTLS_ECP_DP_CURVE25519:
+            return 0;
 #endif
 #ifdef MBEDTLS_ECP_DP_CURVE448_ENABLED
-        case MBEDTLS_ECP_DP_CURVE448: return 0;
+
+        case MBEDTLS_ECP_DP_CURVE448:
+            return 0;
 #endif
-    default: return 1;
+
+        default:
+            return 1;
     }
 }
 
 
-int32_t  ECC_Sign(mbedtls_ecp_group* grp, mbedtls_mpi* r, mbedtls_mpi* s,
-    const mbedtls_mpi* d, const unsigned char* buf, size_t blen,
-    int (*f_rng)(void*, unsigned char*, size_t), void* p_rng)
+int32_t  ECC_Sign(mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
+                  const mbedtls_mpi *d, const unsigned char *buf, size_t blen,
+                  int (*f_rng)(void *, unsigned char *, size_t), void *p_rng)
 {
     uint32_t volatile temp_result1[18], temp_result2[18];
-    CRYPTO_T* crpt = CRYPTO;
+    CRYPTO_T *crpt = CRYPTO;
     size_t len, nblimbs;
     mbedtls_mpi e;
     mbedtls_mpi k, *pk;
 
 
     /* Fail cleanly on curves such as Curve25519 that can't be used for ECDSA */
-    if(!mbedtls_ecdsa_can_do(grp->id) || grp->N.MBEDTLS_PRIVATE(p) == NULL)
-        return(MBEDTLS_ERR_ECP_BAD_INPUT_DATA);
+    if (!mbedtls_ecdsa_can_do(grp->id) || grp->N.MBEDTLS_PRIVATE(p) == NULL)
+        return (MBEDTLS_ERR_ECP_BAD_INPUT_DATA);
 
     /* Make sure d is in range 1..n-1 */
-    if(mbedtls_mpi_cmp_int(d, 1) < 0 || mbedtls_mpi_cmp_mpi(d, &grp->N) >= 0)
-        return(MBEDTLS_ERR_ECP_INVALID_KEY);
+    if (mbedtls_mpi_cmp_int(d, 1) < 0 || mbedtls_mpi_cmp_mpi(d, &grp->N) >= 0)
+        return (MBEDTLS_ERR_ECP_INVALID_KEY);
 
 
     pk = &k;
@@ -292,8 +305,8 @@ int32_t  ECC_Sign(mbedtls_ecp_group* grp, mbedtls_mpi* r, mbedtls_mpi* s,
     /* Generate a random k. It will use CRYPTO SHA*/
     mbedtls_ecp_gen_privkey(grp, pk, f_rng, p_rng);
 
-   /* Reset Crypto */
-   	SYS->CRYPTORST |= SYS_CRYPTORST_CRYPTO0RST_Msk;
+    /* Reset Crypto */
+    SYS->CRYPTORST |= SYS_CRYPTORST_CRYPTO0RST_Msk;
     SYS->CRYPTORST = 0;
 
     ECC_InitCurve(grp);
@@ -303,30 +316,30 @@ int32_t  ECC_Sign(mbedtls_ecp_group* grp, mbedtls_mpi* r, mbedtls_mpi* s,
         *      (1) Use SHA to calculate e
         */
 
-        /*   2. Select a random integer k form [1, n-1]
-        *      (1) Notice that n is order, not prime modulus or irreducible polynomial function
-        */
+    /*   2. Select a random integer k form [1, n-1]
+    *      (1) Notice that n is order, not prime modulus or irreducible polynomial function
+    */
 
-        /*
-        *   3. Compute r = x1 (mod n), where (x1, y1) = k * G. If r = 0, go to step 2
-        *      (1) Write the curve parameter A, B, and curve length M to corresponding registers
-        *      (2) Write the prime modulus or irreducible polynomial function to N registers according
-        *      (3) Write the point G(x, y) to X1, Y1 registers
-        *      (4) Write the random integer k to K register
-        *      (5) Set ECCOP(CRPT_ECC_CTL[10:9]) to 00
-        *      (6) Set FSEL(CRPT_ECC_CTL[8]) according to used curve of prime field or binary field
-        *      (7) Set START(CRPT_ECC_CTL[0]) to 1
-        *      (8) Wait for BUSY(CRPT_ECC_STS[0]) be cleared
-        *      (9) Write the curve order and curve length to N ,M registers according
-        *      (10) Write 0x0 to Y1 registers
-        *      (11) Set ECCOP(CRPT_ECC_CTL[10:9]) to 01
-        *      (12) Set MOPOP(CRPT_ECC_CTL[12:11]) to 10
-        *      (13) Set START(CRPT_ECC_CTL[0]) to 1         *
-        *      (14) Wait for BUSY(CRPT_ECC_STS[0]) be cleared
-        *      (15) Read X1 registers to get r
-        */
+    /*
+    *   3. Compute r = x1 (mod n), where (x1, y1) = k * G. If r = 0, go to step 2
+    *      (1) Write the curve parameter A, B, and curve length M to corresponding registers
+    *      (2) Write the prime modulus or irreducible polynomial function to N registers according
+    *      (3) Write the point G(x, y) to X1, Y1 registers
+    *      (4) Write the random integer k to K register
+    *      (5) Set ECCOP(CRPT_ECC_CTL[10:9]) to 00
+    *      (6) Set FSEL(CRPT_ECC_CTL[8]) according to used curve of prime field or binary field
+    *      (7) Set START(CRPT_ECC_CTL[0]) to 1
+    *      (8) Wait for BUSY(CRPT_ECC_STS[0]) be cleared
+    *      (9) Write the curve order and curve length to N ,M registers according
+    *      (10) Write 0x0 to Y1 registers
+    *      (11) Set ECCOP(CRPT_ECC_CTL[10:9]) to 01
+    *      (12) Set MOPOP(CRPT_ECC_CTL[12:11]) to 10
+    *      (13) Set START(CRPT_ECC_CTL[0]) to 1         *
+    *      (14) Wait for BUSY(CRPT_ECC_STS[0]) be cleared
+    *      (15) Read X1 registers to get r
+    */
 
-        /* 3-(4) Write the random integer k to K register */
+    /* 3-(4) Write the random integer k to K register */
     ECC_ZeroReg((uint32_t *)crpt->ECC_K);
     ECC_Copy((uint32_t *)crpt->ECC_K, pk->MBEDTLS_PRIVATE(p), mbedtls_mpi_size(pk));
 
@@ -347,8 +360,8 @@ int32_t  ECC_Sign(mbedtls_ecp_group* grp, mbedtls_mpi* r, mbedtls_mpi* s,
     nblimbs = len / 4 + ((len & 0x3) != 0);
     mbedtls_mpi_grow(r, nblimbs);
     mbedtls_mpi_grow(s, nblimbs);
-    ECC_Copy(r->MBEDTLS_PRIVATE(p), (uint32_t*)crpt->ECC_X1, len);
-    ECC_Copy((uint32_t *)temp_result1, (uint32_t*)crpt->ECC_X1, len);
+    ECC_Copy(r->MBEDTLS_PRIVATE(p), (uint32_t *)crpt->ECC_X1, len);
+    ECC_Copy((uint32_t *)temp_result1, (uint32_t *)crpt->ECC_X1, len);
 
     /*
         *   4. Compute s = k^-1 * (e + d * r)(mod n). If s = 0, go to step 2
@@ -381,12 +394,12 @@ int32_t  ECC_Sign(mbedtls_ecp_group* grp, mbedtls_mpi* r, mbedtls_mpi* s,
         *      (27) Read X1 registers to get s
         */
 
-        /* S/W: GFp_add_mod_order(pCurve->key_len+2, 0, x1, a, R); */
+    /* S/W: GFp_add_mod_order(pCurve->key_len+2, 0, x1, a, R); */
 
-        /*  4-(1) Write the curve order to N registers */
+    /*  4-(1) Write the curve order to N registers */
     //Hex2Reg(pCurve->Eorder, crpt->ECC_N);
     ECC_ZeroReg((uint32_t *)crpt->ECC_N);
-    ECC_Copy((uint32_t*)crpt->ECC_N, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
+    ECC_Copy((uint32_t *)crpt->ECC_N, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
 
     /*  4-(2) Write 0x1 to Y1 registers */
     ECC_ZeroReg((uint32_t *)crpt->ECC_Y1);
@@ -394,7 +407,7 @@ int32_t  ECC_Sign(mbedtls_ecp_group* grp, mbedtls_mpi* r, mbedtls_mpi* s,
 
     /*  4-(3) Write the random integer k to X1 registers */
     ECC_ZeroReg((uint32_t *)crpt->ECC_X1);
-    ECC_Copy((uint32_t*)crpt->ECC_X1, pk->MBEDTLS_PRIVATE(p), mbedtls_mpi_size(pk));
+    ECC_Copy((uint32_t *)crpt->ECC_X1, pk->MBEDTLS_PRIVATE(p), mbedtls_mpi_size(pk));
 
 
     run_ecc_codec(grp, ECCOP_MODULE | MODOP_DIV);
@@ -405,7 +418,7 @@ int32_t  ECC_Sign(mbedtls_ecp_group* grp, mbedtls_mpi* r, mbedtls_mpi* s,
 
     /*  4-(9) Write the curve order and curve length to N ,M registers */
     ECC_ZeroReg((uint32_t *)crpt->ECC_N);
-    ECC_Copy((uint32_t*)crpt->ECC_N, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
+    ECC_Copy((uint32_t *)crpt->ECC_N, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
 
     /*  4-(10) Write r, d to X1, Y1 registers */
     ECC_Copy((uint32_t *)crpt->ECC_X1, (uint32_t *)temp_result1, 72);
@@ -417,7 +430,7 @@ int32_t  ECC_Sign(mbedtls_ecp_group* grp, mbedtls_mpi* r, mbedtls_mpi* s,
 
     /*  4-(15) Write the curve order to N registers */
     ECC_ZeroReg((uint32_t *)crpt->ECC_N);
-    ECC_Copy((uint32_t*)crpt->ECC_N, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
+    ECC_Copy((uint32_t *)crpt->ECC_N, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
 
 
     /*  4-(16) Write e to Y1 registers */
@@ -425,7 +438,7 @@ int32_t  ECC_Sign(mbedtls_ecp_group* grp, mbedtls_mpi* r, mbedtls_mpi* s,
     mbedtls_mpi_init(&e);
     derive_mpi(grp, &e, buf, blen);
 
-    ECC_Copy((uint32_t*)crpt->ECC_Y1, e.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&e));
+    ECC_Copy((uint32_t *)crpt->ECC_Y1, e.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&e));
     mbedtls_mpi_free(&e);
 
     run_ecc_codec(grp, ECCOP_MODULE | MODOP_ADD);
@@ -442,7 +455,7 @@ int32_t  ECC_Sign(mbedtls_ecp_group* grp, mbedtls_mpi* r, mbedtls_mpi* s,
     run_ecc_codec(grp, ECCOP_MODULE | MODOP_MUL);
 
     /*  4-(27) Read X1 registers to get s */
-    ECC_Copy(s->MBEDTLS_PRIVATE(p), (uint32_t*)crpt->ECC_X1, len);
+    ECC_Copy(s->MBEDTLS_PRIVATE(p), (uint32_t *)crpt->ECC_X1, len);
 
 
     mbedtls_mpi_free(pk);
@@ -455,18 +468,18 @@ int32_t  ECC_Sign(mbedtls_ecp_group* grp, mbedtls_mpi* r, mbedtls_mpi* s,
 /*
  * Compute ECDSA signature of a hashed message
  */
-int mbedtls_ecdsa_sign( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
-                const mbedtls_mpi *d, const unsigned char *buf, size_t blen,
-                int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
+int mbedtls_ecdsa_sign(mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
+                       const mbedtls_mpi *d, const unsigned char *buf, size_t blen,
+                       int (*f_rng)(void *, unsigned char *, size_t), void *p_rng)
 {
     int ret;
 
-    ECDSA_VALIDATE_RET( grp   != NULL );
-    ECDSA_VALIDATE_RET( r     != NULL );
-    ECDSA_VALIDATE_RET( s     != NULL );
-    ECDSA_VALIDATE_RET( d     != NULL );
-    ECDSA_VALIDATE_RET( f_rng != NULL );
-    ECDSA_VALIDATE_RET( buf   != NULL || blen == 0 );
+    ECDSA_VALIDATE_RET(grp   != NULL);
+    ECDSA_VALIDATE_RET(r     != NULL);
+    ECDSA_VALIDATE_RET(s     != NULL);
+    ECDSA_VALIDATE_RET(d     != NULL);
+    ECDSA_VALIDATE_RET(f_rng != NULL);
+    ECDSA_VALIDATE_RET(buf   != NULL || blen == 0);
 
     ret = ECC_Sign(grp, r, s, d, buf, blen, f_rng, p_rng);
 
@@ -477,13 +490,13 @@ int mbedtls_ecdsa_sign( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
 
 #if defined(MBEDTLS_ECDSA_VERIFY_ALT)
 
-int  ECC_Verify(mbedtls_ecp_group * grp,
-    const unsigned char* buf, size_t blen,
-    const mbedtls_ecp_point * Q,
-    const mbedtls_mpi * r,
-    const mbedtls_mpi * s)
+int  ECC_Verify(mbedtls_ecp_group *grp,
+                const unsigned char *buf, size_t blen,
+                const mbedtls_ecp_point *Q,
+                const mbedtls_mpi *r,
+                const mbedtls_mpi *s)
 {
-    CRYPTO_T* crpt;
+    CRYPTO_T *crpt;
     uint32_t  temp_result1[18], temp_result2[18];
     uint32_t  temp_x[18], temp_y[18];
     int32_t   i, ret = 0;
@@ -491,7 +504,7 @@ int  ECC_Verify(mbedtls_ecp_group * grp,
     int32_t u1_zero_flag = 0;
 
     /* Reset Crypto */
-   	SYS->CRYPTORST |= SYS_CRYPTORST_CRYPTO0RST_Msk;
+    SYS->CRYPTORST |= SYS_CRYPTORST_CRYPTO0RST_Msk;
     SYS->CRYPTORST = 0;
 
     crpt = CRYPTO;
@@ -504,30 +517,30 @@ int  ECC_Verify(mbedtls_ecp_group * grp,
      *      (1) Use SHA to calculate e
      */
 
-     /*
-      *   3. Compute w = s^-1 (mod n)
-      *      (1) Write the curve order to N registers
-      *      (2) Write 0x1 to Y1 registers
-      *      (3) Write s to X1 registers
-      *      (4) Set ECCOP(CRPT_ECC_CTL[10:9]) to 01
-      *      (5) Set MOPOP(CRPT_ECC_CTL[12:11]) to 00
-      *      (6) Set FSEL(CRPT_ECC_CTL[8]) according to used curve of prime field or binary field
-      *      (7) Set START(CRPT_ECC_CTL[0]) to 1
-      *      (8) Wait for BUSY(CRPT_ECC_STS[0]) be cleared
-      *      (9) Read X1 registers to get w
-      */
+    /*
+     *   3. Compute w = s^-1 (mod n)
+     *      (1) Write the curve order to N registers
+     *      (2) Write 0x1 to Y1 registers
+     *      (3) Write s to X1 registers
+     *      (4) Set ECCOP(CRPT_ECC_CTL[10:9]) to 01
+     *      (5) Set MOPOP(CRPT_ECC_CTL[12:11]) to 00
+     *      (6) Set FSEL(CRPT_ECC_CTL[8]) according to used curve of prime field or binary field
+     *      (7) Set START(CRPT_ECC_CTL[0]) to 1
+     *      (8) Wait for BUSY(CRPT_ECC_STS[0]) be cleared
+     *      (9) Read X1 registers to get w
+     */
 
     /*  3-(1) Write the curve order to N registers */
-    ECC_Copy((uint32_t*)crpt->ECC_N, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
+    ECC_Copy((uint32_t *)crpt->ECC_N, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
 
     /*  3-(2) Write 0x1 to Y1 registers */
     ECC_ZeroReg((uint32_t *)crpt->ECC_Y1);
     crpt->ECC_Y1[0] = 0x1UL;
 
     /*  3-(3) Write s to X1 registers */
-    ECC_Copy((uint32_t*)crpt->ECC_X1, s->MBEDTLS_PRIVATE(p), mbedtls_mpi_size(s));
+    ECC_Copy((uint32_t *)crpt->ECC_X1, s->MBEDTLS_PRIVATE(p), mbedtls_mpi_size(s));
 
-    if((ret = run_ecc_codec(grp, ECCOP_MODULE | MODOP_DIV)))
+    if ((ret = run_ecc_codec(grp, ECCOP_MODULE | MODOP_DIV)))
     {
         return ret;
     }
@@ -555,11 +568,11 @@ int  ECC_Verify(mbedtls_ecp_group * grp,
         *      (14) Read X1 registers to get u2
         */
 
-        /*  4-(1) Write the curve order and curve length to N ,M registers */
+    /*  4-(1) Write the curve order and curve length to N ,M registers */
     ECC_ZeroReg((uint32_t *)crpt->ECC_N);
 
     //Hex2Reg(pCurve->Eorder, crpt->ECC_N);
-    ECC_Copy((uint32_t*)crpt->ECC_N, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
+    ECC_Copy((uint32_t *)crpt->ECC_N, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
 
     /* 4-(2) Write e, w to X1, Y1 registers */
     ECC_ZeroReg((uint32_t *)crpt->ECC_X1);
@@ -567,37 +580,37 @@ int  ECC_Verify(mbedtls_ecp_group * grp,
     mbedtls_mpi_init(&e);
     derive_mpi(grp, &e, buf, blen);
 
-    ECC_Copy((uint32_t*)crpt->ECC_X1, e.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&e));
+    ECC_Copy((uint32_t *)crpt->ECC_X1, e.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&e));
     mbedtls_mpi_free(&e);
 
-    ECC_Copy((uint32_t*)crpt->ECC_Y1, temp_result2, 72);
+    ECC_Copy((uint32_t *)crpt->ECC_Y1, temp_result2, 72);
 
-    if((ret = run_ecc_codec(grp, ECCOP_MODULE | MODOP_MUL)))
+    if ((ret = run_ecc_codec(grp, ECCOP_MODULE | MODOP_MUL)))
     {
         return ret;
     }
 
     /*  4-(7) Read X1 registers to get u1 */
-    ECC_Copy((uint32_t *)temp_result1, (uint32_t*)crpt->ECC_X1, 72);
+    ECC_Copy((uint32_t *)temp_result1, (uint32_t *)crpt->ECC_X1, 72);
 
     /*  4-(8) Write the curve order and curve length to N ,M registers */
     ECC_ZeroReg((uint32_t *)crpt->ECC_N);
 
-    ECC_Copy((uint32_t*)crpt->ECC_N, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
+    ECC_Copy((uint32_t *)crpt->ECC_N, grp->N.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->N));
 
     /* 4-(9) Write r, w to X1, Y1 registers */
     ECC_ZeroReg((uint32_t *)crpt->ECC_X1);
-    ECC_Copy((uint32_t*)crpt->ECC_X1, r->MBEDTLS_PRIVATE(p), mbedtls_mpi_size(r));
+    ECC_Copy((uint32_t *)crpt->ECC_X1, r->MBEDTLS_PRIVATE(p), mbedtls_mpi_size(r));
 
-    ECC_Copy((uint32_t*)crpt->ECC_Y1, temp_result2, 72);
+    ECC_Copy((uint32_t *)crpt->ECC_Y1, temp_result2, 72);
 
-    if((ret = run_ecc_codec(grp, ECCOP_MODULE | MODOP_MUL)))
+    if ((ret = run_ecc_codec(grp, ECCOP_MODULE | MODOP_MUL)))
     {
         return ret;
     }
 
     /*  4-(14) Read X1 registers to get u2 */
-    ECC_Copy((uint32_t *)temp_result2, (uint32_t*)crpt->ECC_X1, 72);
+    ECC_Copy((uint32_t *)temp_result2, (uint32_t *)crpt->ECC_X1, 72);
 
     /*
         *   5. Compute X * (x1', y1') = u1 * G + u2 * Q
@@ -632,33 +645,33 @@ int  ECC_Verify(mbedtls_ecp_group * grp,
         *   6. The signature is valid if x1 * = r, otherwise it is invalid
         */
 
-        /*
-        *  (1) Write the curve parameter A, B, N, and curve length M to corresponding registers
-        *  (2) Write the point G(x, y) to X1, Y1 registers
-        */
+    /*
+    *  (1) Write the curve parameter A, B, N, and curve length M to corresponding registers
+    *  (2) Write the point G(x, y) to X1, Y1 registers
+    */
     ECC_InitCurve(grp);
 
     // Skip u1 if e = 0
-    for(i = 0; i < 18; i++)
+    for (i = 0; i < 18; i++)
     {
-        if(temp_result1[i])
+        if (temp_result1[i])
             break;
     }
 
     // if e != 0
-    if(i != 18)
+    if (i != 18)
     {
         /* (3) Write u1 to K registers */
-        ECC_Copy((uint32_t*)crpt->ECC_K, temp_result1, 72);
+        ECC_Copy((uint32_t *)crpt->ECC_K, temp_result1, 72);
 
-        if((ret = run_ecc_codec(grp, ECCOP_POINT_MUL)))
+        if ((ret = run_ecc_codec(grp, ECCOP_POINT_MUL)))
         {
             return ret;
         }
 
         /* (7) Read X1, Y1 registers to get u1*G */
-        ECC_Copy(temp_x, (uint32_t*)crpt->ECC_X1, 72);
-        ECC_Copy(temp_y, (uint32_t*)crpt->ECC_Y1, 72);
+        ECC_Copy(temp_x, (uint32_t *)crpt->ECC_X1, 72);
+        ECC_Copy(temp_y, (uint32_t *)crpt->ECC_Y1, 72);
     }
     else
     {
@@ -675,37 +688,37 @@ int  ECC_Verify(mbedtls_ecp_group * grp,
 
 
     /* (10) Write u2 to K registers */
-    ECC_Copy((uint32_t*)crpt->ECC_K, (uint32_t *)temp_result2, 72);
+    ECC_Copy((uint32_t *)crpt->ECC_K, (uint32_t *)temp_result2, 72);
 
-    if((ret = run_ecc_codec(grp, ECCOP_POINT_MUL)))
+    if ((ret = run_ecc_codec(grp, ECCOP_POINT_MUL)))
     {
         return ret;
     }
 
-    ECC_Copy((uint32_t *)temp_result1, (uint32_t*)crpt->ECC_X1, 72);
-    ECC_Copy((uint32_t *)temp_result2, (uint32_t*)crpt->ECC_Y1, 72);
+    ECC_Copy((uint32_t *)temp_result1, (uint32_t *)crpt->ECC_X1, 72);
+    ECC_Copy((uint32_t *)temp_result2, (uint32_t *)crpt->ECC_Y1, 72);
 
-    if(u1_zero_flag == 0)
+    if (u1_zero_flag == 0)
     {
         /* (14) Write the curve parameter A, B, N, and curve length M to corresponding registers */
         ECC_InitCurve(grp);
 
         /* Write the result data u2*Q to X1, Y1 registers */
-        ECC_Copy((uint32_t*)crpt->ECC_X1, (uint32_t *)temp_result1, 72);
-        ECC_Copy((uint32_t*)crpt->ECC_Y1, (uint32_t*)temp_result2, 72);
+        ECC_Copy((uint32_t *)crpt->ECC_X1, (uint32_t *)temp_result1, 72);
+        ECC_Copy((uint32_t *)crpt->ECC_Y1, (uint32_t *)temp_result2, 72);
 
         /* (15) Write the result data u1*G to X2, Y2 registers */
-        ECC_Copy((uint32_t*)crpt->ECC_X2, (uint32_t*)temp_x, 72);
-        ECC_Copy((uint32_t*)crpt->ECC_Y2, (uint32_t*)temp_y, 72);
+        ECC_Copy((uint32_t *)crpt->ECC_X2, (uint32_t *)temp_x, 72);
+        ECC_Copy((uint32_t *)crpt->ECC_Y2, (uint32_t *)temp_y, 72);
 
-        if((ret = run_ecc_codec(grp, ECCOP_POINT_ADD)))
+        if ((ret = run_ecc_codec(grp, ECCOP_POINT_ADD)))
         {
             return ret;
         }
 
         /* (19) Read X1, Y1 registers to get X' (x1', y1') */
-        ECC_Copy(temp_x, (uint32_t*)crpt->ECC_X1, 72);
-        ECC_Copy(temp_y, (uint32_t*)crpt->ECC_Y1, 72);
+        ECC_Copy(temp_x, (uint32_t *)crpt->ECC_X1, 72);
+        ECC_Copy(temp_y, (uint32_t *)crpt->ECC_Y1, 72);
     }
     else
     {
@@ -714,10 +727,11 @@ int  ECC_Verify(mbedtls_ecp_group * grp,
     }
 
     /*  (20) Write the curve order and curve length to N ,M registers */
-    for(i = 0; i < 18; i++)
+    for (i = 0; i < 18; i++)
     {
         crpt->ECC_N[i] = 0UL;
     }
+
     ECC_ZeroReg((uint32_t *)crpt->ECC_N);
 
     ECC_Copy((uint32_t *)crpt->ECC_N, grp->P.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&grp->P));
@@ -726,10 +740,10 @@ int  ECC_Verify(mbedtls_ecp_group * grp,
         *  (21) Write x1 * to X1 registers
         *  (22) Write 0x0 to Y1 registers
         */
-    ECC_Copy((uint32_t*)crpt->ECC_X1, temp_x, 72);
-    ECC_ZeroReg((uint32_t*)crpt->ECC_Y1);
+    ECC_Copy((uint32_t *)crpt->ECC_X1, temp_x, 72);
+    ECC_ZeroReg((uint32_t *)crpt->ECC_Y1);
 
-    if((ret = run_ecc_codec(grp, ECCOP_MODULE | MODOP_ADD)))
+    if ((ret = run_ecc_codec(grp, ECCOP_MODULE | MODOP_ADD)))
     {
         return ret;
     }
@@ -737,7 +751,7 @@ int  ECC_Verify(mbedtls_ecp_group * grp,
     /*  (27) Read X1 registers to get x1 * (mod n) */
 
     /* 6. The signature is valid if x1 * = r, otherwise it is invalid */
-    if(memcmp((uint8_t *)crpt->ECC_X1, (uint8_t *)r->MBEDTLS_PRIVATE(p), mbedtls_mpi_size(r)) != 0)
+    if (memcmp((uint8_t *)crpt->ECC_X1, (uint8_t *)r->MBEDTLS_PRIVATE(p), mbedtls_mpi_size(r)) != 0)
     {
         return MBEDTLS_ERR_ECP_VERIFY_FAILED;
     }
@@ -749,23 +763,23 @@ int  ECC_Verify(mbedtls_ecp_group * grp,
 /*
  * Verify ECDSA signature of hashed message
  */
-int mbedtls_ecdsa_verify( mbedtls_ecp_group *grp,
-                          const unsigned char *buf, size_t blen,
-                          const mbedtls_ecp_point *Q,
-                          const mbedtls_mpi *r,
-                          const mbedtls_mpi *s)
+int mbedtls_ecdsa_verify(mbedtls_ecp_group *grp,
+                         const unsigned char *buf, size_t blen,
+                         const mbedtls_ecp_point *Q,
+                         const mbedtls_mpi *r,
+                         const mbedtls_mpi *s)
 {
     int ret;
 
-    ECDSA_VALIDATE_RET( grp != NULL );
-    ECDSA_VALIDATE_RET( Q   != NULL );
-    ECDSA_VALIDATE_RET( r   != NULL );
-    ECDSA_VALIDATE_RET( s   != NULL );
-    ECDSA_VALIDATE_RET( buf != NULL || blen == 0 );
+    ECDSA_VALIDATE_RET(grp != NULL);
+    ECDSA_VALIDATE_RET(Q   != NULL);
+    ECDSA_VALIDATE_RET(r   != NULL);
+    ECDSA_VALIDATE_RET(s   != NULL);
+    ECDSA_VALIDATE_RET(buf != NULL || blen == 0);
 
     ret = ECC_Verify(grp, buf, blen, Q, r, s);
 
-    return( ret );
+    return (ret);
 }
 #endif /* MBEDTLS_ECDSA_VERIFY_ALT */
 #endif /* MBEDTLS_ECDSA_C */

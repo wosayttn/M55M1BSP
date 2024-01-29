@@ -334,28 +334,28 @@
  */
 #define LWIP_CHECKSUM_CTRL_PER_NETIF    1
 #if 1
-/**
- * PPP_SUPPORT==1: Enable PPP. Check doc/ppp.txt to understand the implementation
- */
-#define PPP_SUPPORT                     0
+    /**
+    * PPP_SUPPORT==1: Enable PPP. Check doc/ppp.txt to understand the implementation
+    */
+    #define PPP_SUPPORT                     0
 
-/**
- * PPP_INPROC_IRQ_SAFE==1 call pppos_input() using tcpip_callback().
- *
- * Please read the "PPPoS input path" chapter in the PPP documentation about this option.
- */
-#define PPP_INPROC_IRQ_SAFE             0
+    /**
+    * PPP_INPROC_IRQ_SAFE==1 call pppos_input() using tcpip_callback().
+    *
+    * Please read the "PPPoS input path" chapter in the PPP documentation about this option.
+    */
+    #define PPP_INPROC_IRQ_SAFE             0
 
-/**
- * PPP_NOTIFY_PHASE==1: Support PPP notify phase support
- *
- * PPP notify phase support allows you to set a callback which is
- * called on change of the internal PPP state machine.
- *
- * This can be used for example to set a LED pattern depending on the
- * current phase of the PPP session.
- */
-//#define PPP_NOTIFY_PHASE                1//clyu ping time 1800ms
+    /**
+    * PPP_NOTIFY_PHASE==1: Support PPP notify phase support
+    *
+    * PPP notify phase support allows you to set a callback which is
+    * called on change of the internal PPP state machine.
+    *
+    * This can be used for example to set a LED pattern depending on the
+    * current phase of the PPP session.
+    */
+    //#define PPP_NOTIFY_PHASE                1//clyu ping time 1800ms
 #endif
 /**
  * MSCHAP_SUPPORT==1: Support MSCHAP.

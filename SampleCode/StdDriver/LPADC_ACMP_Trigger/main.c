@@ -91,9 +91,9 @@ void SYS_Init(void)
     SetDebugUartMFP();
 
     /* Set PA.10 to input mode */
-    GPIO_SetMode(PA, BIT10 , GPIO_MODE_INPUT);
+    GPIO_SetMode(PA, BIT10, GPIO_MODE_INPUT);
     /* Set PB.0 - PB.1 to input mode */
-    GPIO_SetMode(PB, BIT0 | BIT1 , GPIO_MODE_INPUT);
+    GPIO_SetMode(PB, BIT0 | BIT1, GPIO_MODE_INPUT);
 
     /* Configure the PB.0 - PB.1 LPADC analog input pins. */
     SET_LPADC0_CH0_PB0();
@@ -102,7 +102,7 @@ void SYS_Init(void)
     /* Set PA10 multi-function pin for ACMP1 positive input pin */
     SET_ACMP1_P0_PA10();
     /* Disable the PA10 digital input path to avoid the leakage current. */
-    GPIO_DISABLE_DIGITAL_PATH(PA, BIT10 );
+    GPIO_DISABLE_DIGITAL_PATH(PA, BIT10);
     /* Disable the PB.0 - PB.1 digital input path to avoid the leakage current. */
     GPIO_DISABLE_DIGITAL_PATH(PB, BIT0 | BIT1);
 
@@ -168,7 +168,7 @@ void LPADC_FunctionTest(void)
             g_u32COVNUMFlag = 0;
             g_u32ACMP1IntFlag = 0;
 
-           printf("Conversion result of channel 0:\n");
+            printf("Conversion result of channel 0:\n");
 
             while (1)
             {
@@ -247,7 +247,7 @@ void LPADC_FunctionTest(void)
 
                 ai32ConversionData[u32COVNUMFlag] = LPADC_GET_CONVERSION_DATA(LPADC0, 0);
 
-               if (g_u32COVNUMFlag >= 6)
+                if (g_u32COVNUMFlag >= 6)
                     break;
 
             }

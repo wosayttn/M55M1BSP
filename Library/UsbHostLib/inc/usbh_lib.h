@@ -239,9 +239,9 @@ extern uint32_t  usbh_memory_used(void);
 /// @endcond HIDDEN_SYMBOLS
 
 /** @} end of group USBH_EXPORTED_FUNCTIONS */
-       
+
 /** @} end of group USBH_Library */
-       
+
 /** @} end of group LIBRARY */
 
 #ifdef __cplusplus

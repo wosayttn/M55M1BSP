@@ -48,9 +48,9 @@ void EADC_MACRO_DOUBLE_BUFFER(EADC_T *psEadc);
 
 void CU_S2T1_MACRO_EADC_BASIC(void)
 {
-   EADC_MACRO_BASIC_TEST(EADC0);
-// EADC_MACRO_BASIC_TEST(EADC1);
-}	
+    EADC_MACRO_BASIC_TEST(EADC0);
+    // EADC_MACRO_BASIC_TEST(EADC1);
+}
 void EADC_MACRO_BASIC_TEST(EADC_T *psEadc)
 {
     unsigned int moduleNum, moduleMask;
@@ -63,22 +63,22 @@ void EADC_MACRO_BASIC_TEST(EADC_T *psEadc)
     CU_ASSERT_EQUAL(psEadc->CTL & EADC_CTL_ADCRST_Msk, 0);
 
     EADC_ENABLE_INT(psEadc, BIT0);
-    CU_ASSERT_EQUAL(psEadc->CTL & ((BIT0) << EADC_CTL_ADCIEN0_Pos),0x04);
+    CU_ASSERT_EQUAL(psEadc->CTL & ((BIT0) << EADC_CTL_ADCIEN0_Pos), 0x04);
     EADC_DISABLE_INT(psEadc, BIT0);
     CU_ASSERT_EQUAL(psEadc->CTL & ((BIT0) << EADC_CTL_ADCIEN0_Pos), 0);
 
     EADC_ENABLE_INT(psEadc, BIT1);
-    CU_ASSERT_EQUAL(psEadc->CTL & ((BIT1) << EADC_CTL_ADCIEN0_Pos),0x08);
+    CU_ASSERT_EQUAL(psEadc->CTL & ((BIT1) << EADC_CTL_ADCIEN0_Pos), 0x08);
     EADC_DISABLE_INT(psEadc, BIT1);
     CU_ASSERT_EQUAL(psEadc->CTL & ((BIT1) << EADC_CTL_ADCIEN0_Pos), 0);
 
     EADC_ENABLE_INT(psEadc, BIT2);
-    CU_ASSERT_EQUAL(psEadc->CTL & ((BIT2) << EADC_CTL_ADCIEN0_Pos),0x10);
+    CU_ASSERT_EQUAL(psEadc->CTL & ((BIT2) << EADC_CTL_ADCIEN0_Pos), 0x10);
     EADC_DISABLE_INT(psEadc, BIT2);
     CU_ASSERT_EQUAL(psEadc->CTL & ((BIT2) << EADC_CTL_ADCIEN0_Pos), 0);
 
     EADC_ENABLE_INT(psEadc, BIT3);
-    CU_ASSERT_EQUAL(psEadc->CTL & ((BIT3) << EADC_CTL_ADCIEN0_Pos),0x20);
+    CU_ASSERT_EQUAL(psEadc->CTL & ((BIT3) << EADC_CTL_ADCIEN0_Pos), 0x20);
     EADC_DISABLE_INT(psEadc, BIT3);
     CU_ASSERT_EQUAL(psEadc->CTL & ((BIT3) << EADC_CTL_ADCIEN0_Pos), 0);
 
@@ -86,22 +86,23 @@ void EADC_MACRO_BASIC_TEST(EADC_T *psEadc)
     for (moduleNum = 0; moduleNum < 28; moduleNum++)    /* valid sample modules are 0 ~ 15 for MxCTL1  */
     {
         moduleMask = (BIT0 << moduleNum);
-      
-        if(moduleNum < 19)
+
+        if (moduleNum < 19)
         {
-          EADC_ENABLE_INT_POSITION(psEadc, moduleNum);
-          CU_ASSERT_EQUAL((&(psEadc->SCTL[0]))[moduleNum] & EADC_SCTL_INTPOS_Msk, 0x20);
-          EADC_DISABLE_INT_POSITION(psEadc, moduleNum);
-          CU_ASSERT_EQUAL((&(psEadc->SCTL[0]))[moduleNum] & EADC_SCTL_INTPOS_Msk, 0);
+            EADC_ENABLE_INT_POSITION(psEadc, moduleNum);
+            CU_ASSERT_EQUAL((&(psEadc->SCTL[0]))[moduleNum] & EADC_SCTL_INTPOS_Msk, 0x20);
+            EADC_DISABLE_INT_POSITION(psEadc, moduleNum);
+            CU_ASSERT_EQUAL((&(psEadc->SCTL[0]))[moduleNum] & EADC_SCTL_INTPOS_Msk, 0);
         }
-				else if(moduleNum >= 19 && moduleNum < 24)
+        else if (moduleNum >= 19 && moduleNum < 24)
         {
-           EADC_ENABLE_INT_POSITION(psEadc, moduleNum);
-          CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_INTPOS_Msk, 0x20);
-          EADC_DISABLE_INT_POSITION(psEadc, moduleNum);
-          CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum-19] & EADC_SCTL_INTPOS_Msk, 0);
-        
+            EADC_ENABLE_INT_POSITION(psEadc, moduleNum);
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum - 19] & EADC_SCTL_INTPOS_Msk, 0x20);
+            EADC_DISABLE_INT_POSITION(psEadc, moduleNum);
+            CU_ASSERT_EQUAL((&(psEadc->SCTL19[0]))[moduleNum - 19] & EADC_SCTL_INTPOS_Msk, 0);
+
         }
+
         EADC_ENABLE_SAMPLE_MODULE_INT(psEadc, 0, moduleMask);
         CU_ASSERT_EQUAL(psEadc->INTSRC[0] & moduleMask, moduleMask);
         EADC_DISABLE_SAMPLE_MODULE_INT(psEadc, 0, moduleMask);
@@ -121,31 +122,37 @@ void EADC_MACRO_BASIC_TEST(EADC_T *psEadc)
         CU_ASSERT_EQUAL(psEadc->INTSRC[3] & moduleMask, moduleMask);
         EADC_DISABLE_SAMPLE_MODULE_INT(psEadc, 3, moduleMask);
         CU_ASSERT_EQUAL(psEadc->INTSRC[3] & moduleMask, 0);
-      }
-        /*--- Run a simple EADC conversion sample ---*/
-     for (moduleNum = 0; moduleNum < 28; moduleNum++)    /* valid sample modules are 0 ~ 15 for MxCTL1  */
+    }
+
+    /*--- Run a simple EADC conversion sample ---*/
+    for (moduleNum = 0; moduleNum < 28; moduleNum++)    /* valid sample modules are 0 ~ 15 for MxCTL1  */
     {
         moduleMask = (BIT0 << moduleNum);
 
         EADC_Open(psEadc, EADC_CTL_DIFFEN_SINGLE_END);
 
-        if(moduleNum < 24)
+        if (moduleNum < 24)
         {
-          EADC_ConfigSampleModule(psEadc, moduleNum, EADC_SOFTWARE_TRIGGER, 0);
+            EADC_ConfigSampleModule(psEadc, moduleNum, EADC_SOFTWARE_TRIGGER, 0);
         }
-          EADC_CLR_INT_FLAG(psEadc, EADC_STATUS2_ADIF0_Msk);
-          CU_ASSERT_EQUAL(psEadc->STATUS2 & EADC_STATUS2_ADIF0_Msk, 0);
-         
-          EADC_ENABLE_SAMPLE_MODULE_INT(psEadc, intNum, moduleMask);
-          CU_ASSERT_EQUAL((&(psEadc->INTSRC[0]))[intNum] & moduleMask, moduleMask);
-          EADC_START_CONV(psEadc, moduleMask);
-          /* Don't test EADC_START_CONV() here for timing issue. Test it later. */
-           while (EADC_IS_BUSY(psEadc) == 0){};
-           unsigned int tmp_result;
-           tmp_result = EADC_IS_BUSY(psEadc);
-           CU_ASSERT_EQUAL((psEadc->STATUS2 & EADC_STATUS2_BUSY_Msk) >> EADC_STATUS2_BUSY_Pos, tmp_result);
 
-            while (EADC_IS_BUSY(psEadc));
+        EADC_CLR_INT_FLAG(psEadc, EADC_STATUS2_ADIF0_Msk);
+        CU_ASSERT_EQUAL(psEadc->STATUS2 & EADC_STATUS2_ADIF0_Msk, 0);
+
+        EADC_ENABLE_SAMPLE_MODULE_INT(psEadc, intNum, moduleMask);
+        CU_ASSERT_EQUAL((&(psEadc->INTSRC[0]))[intNum] & moduleMask, moduleMask);
+        EADC_START_CONV(psEadc, moduleMask);
+
+        /* Don't test EADC_START_CONV() here for timing issue. Test it later. */
+        while (EADC_IS_BUSY(psEadc) == 0) {};
+
+        unsigned int tmp_result;
+
+        tmp_result = EADC_IS_BUSY(psEadc);
+
+        CU_ASSERT_EQUAL((psEadc->STATUS2 & EADC_STATUS2_BUSY_Msk) >> EADC_STATUS2_BUSY_Pos, tmp_result);
+
+        while (EADC_IS_BUSY(psEadc));
 
         // Ignore EADC_GET_INT_FLAG() if run wrong FPGA code
 #ifndef WRONG_FPGA_CODE
@@ -184,13 +191,14 @@ void EADC_MACRO_BASIC_TEST(EADC_T *psEadc)
 
         unsigned int conversion_result;
         conversion_result = EADC_GET_CONV_DATA(psEadc, moduleNum);
-				
-				if(moduleNum < 19)
-         CU_ASSERT_EQUAL((&(psEadc->DAT[0]))[moduleNum] & EADC_DAT_RESULT_Msk, conversion_result);
-        if(moduleNum >= 19)				
-         CU_ASSERT_EQUAL((&(psEadc->DAT19[0]))[moduleNum-19] & EADC_DAT_RESULT_Msk, conversion_result);
-       
-				/* Test EADC_START_CONV() here for timing issue. */
+
+        if (moduleNum < 19)
+            CU_ASSERT_EQUAL((&(psEadc->DAT[0]))[moduleNum] & EADC_DAT_RESULT_Msk, conversion_result);
+
+        if (moduleNum >= 19)
+            CU_ASSERT_EQUAL((&(psEadc->DAT19[0]))[moduleNum - 19] & EADC_DAT_RESULT_Msk, conversion_result);
+
+        /* Test EADC_START_CONV() here for timing issue. */
         EADC_START_CONV(psEadc, moduleMask);
 
 
@@ -226,9 +234,9 @@ void EADC_MACRO_BASIC_TEST(EADC_T *psEadc)
 
 
 void CU_S2T2_MACRO_EADC_COMP(void)
-{ 
-  EADC_MACRO_COMP_TEST(EADC0);
-//	EADC_MACRO_COMP_TEST(EADC1);
+{
+    EADC_MACRO_COMP_TEST(EADC0);
+    //  EADC_MACRO_COMP_TEST(EADC1);
 }
 void EADC_MACRO_COMP_TEST(EADC_T *psEadc)
 {
@@ -377,8 +385,8 @@ void EADC_MACRO_COMP_TEST(EADC_T *psEadc)
 void CU_S2T4_MACRO_EADC_OTHER(void)
 {
     EADC_MACRO_OTHER_TEST(EADC0);
-//	  EADC_MACRO_OTHER_TEST(EADC1);
-}	
+    //    EADC_MACRO_OTHER_TEST(EADC1);
+}
 void EADC_MACRO_OTHER_TEST(EADC_T *psEadc)
 {
     unsigned int moduleNum;// moduleMask;
@@ -387,86 +395,86 @@ void EADC_MACRO_OTHER_TEST(EADC_T *psEadc)
     for (moduleNum = 0; moduleNum < 28; moduleNum++)    /* valid sample modules are 0 ~ 15 */
     {
         //moduleMask = (BIT0 << moduleNum);
-        if(moduleNum < 19)
+        if (moduleNum < 19)
         {
-          EADC_ENABLE_LEFT_ALIGN(psEadc, moduleNum);
-          CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_ALIGN_Msk, EADC_MCTL1_ALIGN_Msk);
-          EADC_DISABLE_LEFT_ALIGN(psEadc, moduleNum);
-          CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_ALIGN_Msk, 0);
+            EADC_ENABLE_LEFT_ALIGN(psEadc, moduleNum);
+            CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_ALIGN_Msk, EADC_MCTL1_ALIGN_Msk);
+            EADC_DISABLE_LEFT_ALIGN(psEadc, moduleNum);
+            CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_ALIGN_Msk, 0);
 
-          EADC_ENABLE_AVG(psEadc, moduleNum);
-          CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_AVG_Msk, EADC_MCTL1_AVG_Msk);
-          EADC_DISABLE_AVG(psEadc, moduleNum);
-          CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_AVG_Msk, 0);
+            EADC_ENABLE_AVG(psEadc, moduleNum);
+            CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_AVG_Msk, EADC_MCTL1_AVG_Msk);
+            EADC_DISABLE_AVG(psEadc, moduleNum);
+            CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_AVG_Msk, 0);
 
-          EADC_ENABLE_ACU(psEadc, moduleNum, EADC_MCTL1_ACU_1);
-          CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_ACU_Msk, EADC_MCTL1_ACU_1);
-          EADC_ENABLE_ACU(psEadc, moduleNum, EADC_MCTL1_ACU_16);
-          CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_ACU_Msk, EADC_MCTL1_ACU_16);
-          EADC_ENABLE_ACU(psEadc, moduleNum, EADC_MCTL1_ACU_256);
-          CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_ACU_Msk, EADC_MCTL1_ACU_256);
-          EADC_DISABLE_ACU(psEadc, moduleNum);
-          CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_ACU_Msk, 0);
+            EADC_ENABLE_ACU(psEadc, moduleNum, EADC_MCTL1_ACU_1);
+            CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_ACU_Msk, EADC_MCTL1_ACU_1);
+            EADC_ENABLE_ACU(psEadc, moduleNum, EADC_MCTL1_ACU_16);
+            CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_ACU_Msk, EADC_MCTL1_ACU_16);
+            EADC_ENABLE_ACU(psEadc, moduleNum, EADC_MCTL1_ACU_256);
+            CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_ACU_Msk, EADC_MCTL1_ACU_256);
+            EADC_DISABLE_ACU(psEadc, moduleNum);
+            CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_ACU_Msk, 0);
         }
-        else if(moduleNum >= 19 && moduleNum < 24)
+        else if (moduleNum >= 19 && moduleNum < 24)
         {
-          
-        
+
+
             EADC_ENABLE_LEFT_ALIGN(psEadc, moduleNum);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_M19CTL1_ALIGN_Msk, EADC_M19CTL1_ALIGN_Msk);
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_M19CTL1_ALIGN_Msk, EADC_M19CTL1_ALIGN_Msk);
             EADC_DISABLE_LEFT_ALIGN(psEadc, moduleNum);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_M19CTL1_ALIGN_Msk, 0);
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_M19CTL1_ALIGN_Msk, 0);
 
             EADC_ENABLE_AVG(psEadc, moduleNum);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_M19CTL1_AVG_Msk, EADC_M19CTL1_AVG_Msk);
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_M19CTL1_AVG_Msk, EADC_M19CTL1_AVG_Msk);
             EADC_DISABLE_AVG(psEadc, moduleNum);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_M19CTL1_AVG_Msk, 0);
- 
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_M19CTL1_AVG_Msk, 0);
+
             EADC_ENABLE_ACU(psEadc, moduleNum, EADC_MCTL1_ACU_1);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_M19CTL1_ACU_Msk, EADC_MCTL1_ACU_1);
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_M19CTL1_ACU_Msk, EADC_MCTL1_ACU_1);
             EADC_ENABLE_ACU(psEadc, moduleNum, EADC_MCTL1_ACU_16);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_M19CTL1_ACU_Msk, EADC_MCTL1_ACU_16);
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_M19CTL1_ACU_Msk, EADC_MCTL1_ACU_16);
             EADC_ENABLE_ACU(psEadc, moduleNum, EADC_MCTL1_ACU_256);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_M19CTL1_ACU_Msk, EADC_MCTL1_ACU_256);
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_M19CTL1_ACU_Msk, EADC_MCTL1_ACU_256);
             EADC_DISABLE_ACU(psEadc, moduleNum);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_MCTL1_ACU_Msk, 0);						
-				}
-				else
-					{
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_MCTL1_ACU_Msk, 0);
+        }
+        else
+        {
             EADC_ENABLE_LEFT_ALIGN(psEadc, moduleNum);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_M19CTL1_ALIGN_Msk, 0);
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_M19CTL1_ALIGN_Msk, 0);
             EADC_DISABLE_LEFT_ALIGN(psEadc, moduleNum);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_M19CTL1_ALIGN_Msk, 0);
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_M19CTL1_ALIGN_Msk, 0);
 
             EADC_ENABLE_AVG(psEadc, moduleNum);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_M19CTL1_AVG_Msk, 0);
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_M19CTL1_AVG_Msk, 0);
             EADC_DISABLE_AVG(psEadc, moduleNum);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_M19CTL1_AVG_Msk, 0);
- 
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_M19CTL1_AVG_Msk, 0);
+
             EADC_ENABLE_ACU(psEadc, moduleNum, EADC_MCTL1_ACU_1);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_M19CTL1_ACU_Msk, 0);
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_M19CTL1_ACU_Msk, 0);
             EADC_ENABLE_ACU(psEadc, moduleNum, EADC_MCTL1_ACU_16);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_M19CTL1_ACU_Msk, 0);
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_M19CTL1_ACU_Msk, 0);
             EADC_ENABLE_ACU(psEadc, moduleNum, EADC_MCTL1_ACU_256);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_M19CTL1_ACU_Msk, 0);
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_M19CTL1_ACU_Msk, 0);
             EADC_DISABLE_ACU(psEadc, moduleNum);
-            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum-19] & EADC_MCTL1_ACU_Msk, 0);	         
-					
-          }
-       
-        
+            CU_ASSERT_EQUAL((&(psEadc->M19CTL1[0]))[moduleNum - 19] & EADC_MCTL1_ACU_Msk, 0);
+
+        }
+
+
     }
 
-   
+
     return;
 }
 
 #if 1
 void CU_S2T3_MACRO_EADC_DOUBLE_BUFFER(void)
 {
- EADC_MACRO_DOUBLE_BUFFER(EADC0);
-// EADC_MACRO_DOUBLE_BUFFER(EADC1);
-}	
+    EADC_MACRO_DOUBLE_BUFFER(EADC0);
+    // EADC_MACRO_DOUBLE_BUFFER(EADC1);
+}
 
 void EADC_MACRO_DOUBLE_BUFFER(EADC_T *psEadc)
 {
@@ -510,27 +518,32 @@ void EADC_MACRO_DOUBLE_BUFFER(EADC_T *psEadc)
         //        /* Second EADC conversion */
         EADC_START_CONV(psEadc, moduleMask);
 
-        while (EADC_IS_BUSY(psEadc) == 0){};
+        while (EADC_IS_BUSY(psEadc) == 0) {};
 
-        while (EADC_IS_BUSY(psEadc) == 1){};
+        while (EADC_IS_BUSY(psEadc) == 1) {};
 
 
         // Ignore EADC_GET_INT_FLAG() if run wrong FPGA code
 #ifndef WRONG_FPGA_CODE
         //        while(EADC_GET_INT_FLAG(EADC, EADC_STATUS2_ADIF0_Msk) == 0) {}
         CU_ASSERT_EQUAL(psEadc->STATUS2 & EADC_STATUS2_ADIF0_Msk, EADC_STATUS2_ADIF0_Msk);
+
 #endif
 
         EADC_CLR_INT_FLAG(psEadc, EADC_STATUS2_ADIF0_Msk);
+
         CU_ASSERT_EQUAL(psEadc->STATUS2 & EADC_STATUS2_ADIF0_Msk, 0);
 
         conversion_result = EADC_GET_CONV_DATA(psEadc, moduleNum);
+
         CU_ASSERT_EQUAL((&(psEadc->DAT[0]))[moduleNum] & EADC_DAT0_RESULT_Msk, conversion_result);
 
         conversion_result2 = EADC_GET_DOUBLE_DATA(psEadc, moduleNum);
+
         CU_ASSERT_EQUAL((&(psEadc->DDAT[0]))[moduleNum] & EADC_DDAT0_RESULT_Msk, conversion_result2);
 
         EADC_DISABLE_DOUBLE_BUFFER(psEadc, moduleNum);
+
         CU_ASSERT_EQUAL((&(psEadc->MCTL1[0]))[moduleNum] & EADC_MCTL1_DBMEN_Msk, 0);
 
         EADC_Close(psEadc);

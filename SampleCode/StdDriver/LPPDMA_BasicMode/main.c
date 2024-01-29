@@ -58,8 +58,8 @@ NVT_ITCM void LPPDMA_IRQHandler(void)
         printf("unknown interrupt 0x%08X!!\n", u32Status);
     }
 
-	// CPU read interrupt flag register to wait write(clear) instruction completement.
-	u32Status = LPPDMA_GET_INT_STATUS(LPPDMA);
+    // CPU read interrupt flag register to wait write(clear) instruction completement.
+    u32Status = LPPDMA_GET_INT_STATUS(LPPDMA);
 }
 
 static void SYS_Init(void)

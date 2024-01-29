@@ -140,7 +140,7 @@ typedef struct
 /**
     @addtogroup WDT_CONST WDT Bit Field Definition
     Constant Definitions for WDT Controller
-    @{ 
+    @{
 */
 
 #define WDT_CTL_RSTEN_Pos                (1)                                               /*!< WDT_T::CTL: RSTEN Position             */

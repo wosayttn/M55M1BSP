@@ -16,9 +16,9 @@
 #define MBEDTLS_EXIT_SUCCESS    0
 #define MBEDTLS_EXIT_FAILURE    -1
 
-extern int mbedtls_aes_self_test( int verbose );
-extern int mbedtls_gcm_self_test( int verbose );
-extern int mbedtls_ccm_self_test( int verbose );
+extern int mbedtls_aes_self_test(int verbose);
+extern int mbedtls_gcm_self_test(int verbose);
+extern int mbedtls_ccm_self_test(int verbose);
 void SYS_Init(void);
 
 
@@ -28,11 +28,11 @@ volatile uint32_t g_u32Ticks = 0;
 void SYS_Init(void)
 {
 
-      /*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-   /* Enable Internal RC 12MHz clock */
+    /* Enable Internal RC 12MHz clock */
     CLK_EnableXtalRC(CLK_SRCCTL_HIRCEN_Msk);
 
     /* Waiting for Internal RC clock ready */
@@ -45,7 +45,7 @@ void SYS_Init(void)
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
 
-   /* Enable PLL0 200MHz clock */
+    /* Enable PLL0 200MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
 
     /* Switch SCLK clock source to PLL0 and divide 1 */
@@ -68,8 +68,8 @@ void SYS_Init(void)
     /* Enable CRYPTO module clock */
     CLK_EnableModuleClock(CRYPTO0_MODULE);
 
-		 /* Debug UART clock setting*/
-     SetDebugUartCLK();
+    /* Debug UART clock setting*/
+    SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -122,11 +122,13 @@ int32_t main(void)
     i32Ret = mbedtls_ccm_self_test(1);
 #endif
 
-    if(i32Ret < 0)
+    if (i32Ret < 0)
     {
         printf("Test fail!\n");
     }
+
     printf("Test Done!\n");
-    while(1);
+
+    while (1);
 
 }

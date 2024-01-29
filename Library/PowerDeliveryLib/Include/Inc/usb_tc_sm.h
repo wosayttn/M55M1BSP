@@ -380,21 +380,21 @@ void tc_usb_firmware_fw_update_limited_run(int port);
 
 #ifdef CONFIG_USB_CTVPD
 
-/**
- * Resets the charge-through support timer. This can be
- * called many times but the support timer will only
- * reset once, while in the Attached.SNK state.
- *
- * @param port USB-C port number
- */
-void tc_reset_support_timer(int port);
+    /**
+    * Resets the charge-through support timer. This can be
+    * called many times but the support timer will only
+    * reset once, while in the Attached.SNK state.
+    *
+    * @param port USB-C port number
+    */
+    void tc_reset_support_timer(int port);
 
 #else
 
-/**
- *
- */
-void tc_ctvpd_detected(int port);
+    /**
+    *
+    */
+    void tc_ctvpd_detected(int port);
 #endif /* CONFIG_USB_CTVPD */
 #endif /* __CROS_EC_USB_TC_H */
 

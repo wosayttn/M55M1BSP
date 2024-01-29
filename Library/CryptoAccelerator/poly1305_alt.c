@@ -30,19 +30,19 @@
 #include <string.h>
 
 #if defined(MBEDTLS_SELF_TEST)
-#if defined(MBEDTLS_PLATFORM_C)
-#include "mbedtls/platform.h"
-#else
-#include <stdio.h>
-#define mbedtls_printf printf
-#endif /* MBEDTLS_PLATFORM_C */
+    #if defined(MBEDTLS_PLATFORM_C)
+        #include "mbedtls/platform.h"
+    #else
+        #include <stdio.h>
+        #define mbedtls_printf printf
+    #endif /* MBEDTLS_PLATFORM_C */
 #endif /* MBEDTLS_SELF_TEST */
 
 #if defined(MBEDTLS_POLY1305_ALT)
 #include "NuMicro.h"
 
 #if defined(MBEDTLS_NO_64BIT_MULTIPLICATION)
-static uint64_t mul64( uint32_t a, uint32_t b )
+static uint64_t mul64(uint32_t a, uint32_t b)
 {
     /* a = al + 2**16 ah, b = bl + 2**16 bh */
     const uint16_t al = (uint16_t) a;
@@ -52,15 +52,15 @@ static uint64_t mul64( uint32_t a, uint32_t b )
 
     /* ab = al*bl + 2**16 (ah*bl + bl*bh) + 2**32 ah*bh */
     const uint32_t lo = (uint32_t) al * bl;
-    const uint64_t me = (uint64_t)( (uint32_t) ah * bl ) + (uint32_t) al * bh;
+    const uint64_t me = (uint64_t)((uint32_t) ah * bl) + (uint32_t) al * bh;
     const uint32_t hi = (uint32_t) ah * bh;
 
-    return( lo + ( me << 16 ) + ( (uint64_t) hi << 32 ) );
+    return (lo + (me << 16) + ((uint64_t) hi << 32));
 }
 #else
-static inline uint64_t mul64( uint32_t a, uint32_t b )
+static inline uint64_t mul64(uint32_t a, uint32_t b)
 {
-    return( (uint64_t) a * b );
+    return ((uint64_t) a * b);
 }
 #endif
 
@@ -76,10 +76,10 @@ static inline uint64_t mul64( uint32_t a, uint32_t b )
  *                          applied to the input data before calling this
  *                          function.  Otherwise, set this parameter to 1.
  */
-static void poly1305_process( mbedtls_poly1305_context *ctx,
-                              size_t nblocks,
-                              const unsigned char *input,
-                              uint32_t needs_padding )
+static void poly1305_process(mbedtls_poly1305_context *ctx,
+                             size_t nblocks,
+                             const unsigned char *input,
+                             uint32_t needs_padding)
 {
 
 }
@@ -91,60 +91,60 @@ static void poly1305_process( mbedtls_poly1305_context *ctx,
  * \param mac               The buffer to where the MAC is written. Must be
  *                          big enough to contain the 16-byte MAC.
  */
-static void poly1305_compute_mac( const mbedtls_poly1305_context *ctx,
-                                  unsigned char mac[16] )
+static void poly1305_compute_mac(const mbedtls_poly1305_context *ctx,
+                                 unsigned char mac[16])
 {
 
 }
 
-void mbedtls_poly1305_init( mbedtls_poly1305_context *ctx )
+void mbedtls_poly1305_init(mbedtls_poly1305_context *ctx)
 {
 
 
 }
 
-void mbedtls_poly1305_free( mbedtls_poly1305_context *ctx )
+void mbedtls_poly1305_free(mbedtls_poly1305_context *ctx)
 {
 
 }
 
-int mbedtls_poly1305_starts( mbedtls_poly1305_context *ctx,
-                             const unsigned char key[32] )
+int mbedtls_poly1305_starts(mbedtls_poly1305_context *ctx,
+                            const unsigned char key[32])
 {
 
 
-    return( 0 );
+    return (0);
 }
 
-int mbedtls_poly1305_update( mbedtls_poly1305_context *ctx,
-                             const unsigned char *input,
-                             size_t ilen )
+int mbedtls_poly1305_update(mbedtls_poly1305_context *ctx,
+                            const unsigned char *input,
+                            size_t ilen)
 {
 
 
-    return( 0 );
+    return (0);
 }
 
-int mbedtls_poly1305_finish( mbedtls_poly1305_context *ctx,
-                             unsigned char mac[16] )
+int mbedtls_poly1305_finish(mbedtls_poly1305_context *ctx,
+                            unsigned char mac[16])
 {
 
 
-    return( 0 );
+    return (0);
 }
 
-int mbedtls_poly1305_mac( const unsigned char key[32],
-                          const unsigned char *input,
-                          size_t ilen,
-                          unsigned char mac[16] )
+int mbedtls_poly1305_mac(const unsigned char key[32],
+                         const unsigned char *input,
+                         size_t ilen,
+                         unsigned char mac[16])
 {
 
-    POLY1305_SetKeyandClearNonce(CRYPTO,  (unsigned char *)key);
-	
-	POLY1305_SetDMATransfer(CRYPTO, input,  mac, ilen);
-	
-	POLY1305_Start(CRYPTO);
-    return( 0 );
+    POLY1305_SetKeyandClearNonce(CRYPTO, (unsigned char *)key);
+
+    POLY1305_SetDMATransfer(CRYPTO, input,  mac, ilen);
+
+    POLY1305_Start(CRYPTO);
+    return (0);
 }
 
 #endif /* MBEDTLS_POLY1305_ALT */

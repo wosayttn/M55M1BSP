@@ -954,7 +954,7 @@ typedef struct
 /**
     @addtogroup HSUSBH_USBH1_CONST HSUSBH and USBH1 Bit Field Definition
     Constant Definitions for HSUSBH Controller
-    @{ 
+    @{
 */
 
 #define HSUSBH_EHCVNR_CRLEN_Pos          (0)                                               /*!< HSUSBH_T::EHCVNR: CRLEN Position       */

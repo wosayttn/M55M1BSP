@@ -34,10 +34,13 @@ int IsHexChar(char c)
 {
     if ((c >= '0') && (c <= '9'))
         return 1;
+
     if ((c >= 'a') && (c <= 'f'))
         return 1;
+
     if ((c >= 'A') && (c <= 'F'))
         return 1;
+
     return 0;
 }
 
@@ -46,10 +49,13 @@ uint8_t Char2Hex(uint8_t c)
 {
     if ((c >= '0') && (c <= '9'))
         return c - '0';
+
     if ((c >= 'a') && (c <= 'f'))
         return c - 'a' + 10;
+
     if ((c >= 'A') && (c <= 'F'))
         return c - 'A' + 10;
+
     return 0;
 }
 
@@ -167,12 +173,15 @@ int  main(void)
     uint32_t u32KeyLen, u32KeyLenAlign, u32MacLen, u32MsgLen;
 #ifdef TEST_HMAC_SHA256
     char *keyStr = "6f35628d65813435534b5d67fbdb54cb33403d04e843103e6399f806cb5df95febbdd61236f33245";
-    char *msg    = "752cff52e4b90768558e5369e75d97c69643509a5e5904e0a386cbe4d0970ef73f918f675945a9aefe26daea27587e8dc909dd56fd0468805f834039b345f855cfe19c44b55af241fff3ffcd8045cd5c288e6c4e284c3720570b58e4d47b8feeedc52fd1401f698a209fccfa3b4c0d9a797b046a2759f82a54c41ccd7b5f592b";
+    char *msg    =
+        "752cff52e4b90768558e5369e75d97c69643509a5e5904e0a386cbe4d0970ef73f918f675945a9aefe26daea27587e8dc909dd56fd0468805f834039b345f855cfe19c44b55af241fff3ffcd8045cd5c288e6c4e284c3720570b58e4d47b8feeedc52fd1401f698a209fccfa3b4c0d9a797b046a2759f82a54c41ccd7b5f592b";
     char *hmac   = "05d1243e6465ed9620c9aec1c351a186"; // The golden pattern
     uint32_t u32OpMode = HMAC_MODE_SHA256;
 #else
-    char *keyStr = "726374c4b8df517510db9159b730f93431e0cd468d4f3821eab0edb93abd0fba46ab4f1ef35d54fec3d85fa89ef72ff3d35f22cf5ab69e205c10afcdf4aaf11338dbb12073474fddb556e60b8ee52f91163ba314303ee0c910e64e87fbf302214edbe3f2";
-    char *msg    = "ac939659dc5f668c9969c0530422e3417a462c8b665e8db25a883a625f7aa59b89c5ad0ece5712ca17442d1798c6dea25d82c5db260cb59c75ae650be56569c1bd2d612cc57e71315917f116bbfa65a0aeb8af7840ee83d3e7101c52cf652d2773531b7a6bdd690b846a741816c860819270522a5b0cdfa1d736c501c583d916";
+    char *keyStr =
+        "726374c4b8df517510db9159b730f93431e0cd468d4f3821eab0edb93abd0fba46ab4f1ef35d54fec3d85fa89ef72ff3d35f22cf5ab69e205c10afcdf4aaf11338dbb12073474fddb556e60b8ee52f91163ba314303ee0c910e64e87fbf302214edbe3f2";
+    char *msg    =
+        "ac939659dc5f668c9969c0530422e3417a462c8b665e8db25a883a625f7aa59b89c5ad0ece5712ca17442d1798c6dea25d82c5db260cb59c75ae650be56569c1bd2d612cc57e71315917f116bbfa65a0aeb8af7840ee83d3e7101c52cf652d2773531b7a6bdd690b846a741816c860819270522a5b0cdfa1d736c501c583d916";
     char *hmac   = "bd3d2df6f9d284b421a43e5f9cb94bc4ff88a88243f1f0133bad0fb1791f6569"; // The golden pattern
     uint32_t u32OpMode = HMAC_MODE_SHA512;
 #endif
@@ -218,6 +227,7 @@ int  main(void)
     g_HMAC_done = 0;
     CRYPTO->HMAC_CTL |= CRYPTO_HMAC_CTL_START_Msk | CRYPTO_HMAC_CTL_DMAEN_Msk | CRYPTO_HMAC_CTL_DMALAST_Msk;
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     while (!g_HMAC_done)
     {
         if (--u32TimeOutCnt == 0)
@@ -230,10 +240,12 @@ int  main(void)
     printf("\nHMAC Output:\n");
 
     pu8 = (uint8_t *)&CRYPTO->HMAC_DGST[0];
+
     for (i = 0; i < 32; i++)
     {
         printf("%02x", pu8[i]);
     }
+
     printf("\n");
 
 
@@ -243,6 +255,7 @@ int  main(void)
     }
 
     printf("\nHMAC Demo Done\n");
+
     while (1) {}
 }
 

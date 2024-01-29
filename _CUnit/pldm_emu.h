@@ -12,7 +12,7 @@ __INLINE void InitDebugUart(void)
     DEBUG_PORT->LINE = (UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1);
 }
 
-__STATIC_INLINE void PLDM_UART_Open(UART_T* psUART, uint32_t u32Baudrate)
+__STATIC_INLINE void PLDM_UART_Open(UART_T *psUART, uint32_t u32Baudrate)
 {
     InitDebugUart();
 }
@@ -21,10 +21,12 @@ __STATIC_INLINE void tube_printf(char *strMsg)
 {
     uint32_t u32TubeAddr = 0x5000F000;
     char *ptr;
-    for(ptr = strMsg; *ptr != 0; ptr++)
+
+    for (ptr = strMsg; *ptr != 0; ptr++)
     {
         M32(u32TubeAddr) = *ptr;
     }
+
     M32(u32TubeAddr) = '\r';
 }
 

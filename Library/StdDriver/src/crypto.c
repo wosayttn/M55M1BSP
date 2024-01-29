@@ -12,9 +12,9 @@
 
 /** @cond HIDDEN_SYMBOLS */
 #if ENABLE_DEBUG
-#define CRYPTO_DBGMSG   printf
+    #define CRYPTO_DBGMSG   printf
 #else
-#define CRYPTO_DBGMSG(...)   do { } while (0)       /* disable debug */
+    #define CRYPTO_DBGMSG(...)   do { } while (0)       /* disable debug */
 #endif
 /** @endcond HIDDEN_SYMBOLS */
 
@@ -76,8 +76,8 @@ void PRNG_Open(CRYPTO_T *crypto, uint32_t u32KeySize, uint32_t u32SeedReload, ui
         crypto->PRNG_SEED = u32Seed;
     }
 
-    crypto->PRNG_CTL =  (u32KeySize << CRYPTO_PRNG_CTL_KEYSZ_Pos) |
-                        (u32SeedReload << CRYPTO_PRNG_CTL_SEEDRLD_Pos);
+    crypto->PRNG_CTL = (u32KeySize << CRYPTO_PRNG_CTL_KEYSZ_Pos) |
+                       (u32SeedReload << CRYPTO_PRNG_CTL_SEEDRLD_Pos);
 }
 
 /**
@@ -180,7 +180,7 @@ void AES_Start_KS(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32DMAMode, in
     if (ksel == 0)
         crypto->AES_KSCTL = CRYPTO_AES_KSCTL_RSRC_Msk | knum;     /* from KS SRAM */
     else
-        crypto->AES_KSCTL = (2<<CRYPTO_AES_KSCTL_RSSRC_Pos) | CRYPTO_AES_KSCTL_RSRC_Msk | knum; /* from KS OTP */
+        crypto->AES_KSCTL = (2 << CRYPTO_AES_KSCTL_RSSRC_Pos) | CRYPTO_AES_KSCTL_RSRC_Msk | knum; /* from KS OTP */
 
     crypto->AES_CTL = g_AES_CTL[u32Channel];
     crypto->AES_CTL |= CRYPTO_AES_CTL_START_Msk | (u32DMAMode << CRYPTO_AES_CTL_DMALAST_Pos);
@@ -200,12 +200,13 @@ void AES_Start_KS(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32DMAMode, in
 void AES_SetKey(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t au32Keys[], uint32_t u32KeySize)
 {
     uint32_t  i, wcnt;
-    void   * key_reg_addr;
-	  uint32_t * u32p_key_reg;
+    void    *key_reg_addr;
+    uint32_t *u32p_key_reg;
 
     key_reg_addr = (void *)((uint32_t)&crypto->AES_KEY[0] + (u32Channel * 0x3CUL));
-    wcnt = 4UL + u32KeySize*2UL;
-    u32p_key_reg = (uint32_t*)key_reg_addr;
+    wcnt = 4UL + u32KeySize * 2UL;
+    u32p_key_reg = (uint32_t *)key_reg_addr;
+
     for (i = 0U; i < wcnt; i++)
     {
         outpw(u32p_key_reg, au32Keys[i]);
@@ -230,8 +231,8 @@ void AES_SetKey_KS(CRYPTO_T *crypto, KS_MEM_Type mem, int32_t i32KeyIdx)
 {
     /* Use key in key store */
     crypto->AES_KSCTL = CRYPTO_AES_KSCTL_RSRC_Msk /* use KS */  |
-                      (uint32_t)((int)mem << CRYPTO_AES_KSCTL_RSSRC_Pos) /* KS Memory type */ |
-                      (uint32_t)i32KeyIdx /* key num */ ;
+                        (uint32_t)((int)mem << CRYPTO_AES_KSCTL_RSSRC_Pos) /* KS Memory type */ |
+                        (uint32_t)i32KeyIdx /* key num */ ;
 
 }
 
@@ -245,10 +246,11 @@ void AES_SetKey_KS(CRYPTO_T *crypto, KS_MEM_Type mem, int32_t i32KeyIdx)
 void AES_SetInitVect(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t au32IV[])
 {
     uint32_t  i;
-    void  * key_reg_addr;
-    uint32_t * u32p_key_reg;
+    void   *key_reg_addr;
+    uint32_t *u32p_key_reg;
     key_reg_addr = (void *)((uint32_t)&crypto->AES_IV[0] + (u32Channel * 0x3CUL));
-    u32p_key_reg = (uint32_t*)key_reg_addr;
+    u32p_key_reg = (uint32_t *)key_reg_addr;
+
     for (i = 0U; i < 4U; i++)
     {
         outpw(u32p_key_reg, au32IV[i]);
@@ -268,7 +270,7 @@ void AES_SetInitVect(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t au32IV[])
 void AES_SetDMATransfer(CRYPTO_T *crypto, uint32_t u32Channel, uint32_t u32SrcAddr,
                         uint32_t u32DstAddr, uint32_t u32TransCnt)
 {
-    void * reg_addr;
+    void *reg_addr;
 
     reg_addr = (void *)((uint32_t)&crypto->AES_SADDR + (u32Channel * 0x3CUL));
     outpw(reg_addr, u32SrcAddr);
@@ -306,7 +308,7 @@ void SHA_Open(CRYPTO_T *crypto, uint32_t u32OpMode, uint32_t u32SwapType, uint32
     if (hmac_key_len != 0UL)
     {
         crypto->HMAC_KEYCNT = hmac_key_len;
-        crypto->HMAC_CTL |= (1<<11);  /* M55M1, migrate from M480LD HMACEN is CRYPTO_HMAC_CTL[11] */
+        crypto->HMAC_CTL |= (1 << 11); /* M55M1, migrate from M480LD HMACEN is CRYPTO_HMAC_CTL[11] */
     }
 }
 
@@ -322,7 +324,7 @@ void SHA_Open(CRYPTO_T *crypto, uint32_t u32OpMode, uint32_t u32SwapType, uint32
 void SHA_Start(CRYPTO_T *crypto, uint32_t u32DMAMode)
 {
     crypto->HMAC_CTL &= ~(0x7UL << CRYPTO_HMAC_CTL_DMALAST_Pos);
-    crypto->HMAC_CTL |= CRYPTO_HMAC_CTL_START_Msk |  (u32DMAMode << CRYPTO_HMAC_CTL_DMALAST_Pos);
+    crypto->HMAC_CTL |= CRYPTO_HMAC_CTL_START_Msk | (u32DMAMode << CRYPTO_HMAC_CTL_DMALAST_Pos);
 }
 
 /**
@@ -374,7 +376,8 @@ void SHA_Read(CRYPTO_T *crypto, uint32_t u32Digest[])
     }
 
     reg_addr = (uint32_t) & (crypto->HMAC_DGST[0]);
-    for(i = 0UL; i < wcnt; i++)
+
+    for (i = 0UL; i < wcnt; i++)
     {
         u32Digest[i] = inpw(reg_addr);
         reg_addr += 4UL;
@@ -797,16 +800,16 @@ const ECC_CURVE _Curve[] =
     },
     {
         CURVE_25519,
-        64,		// Echar
+        64,     // Echar
         "0000000000000000000000000000000000000000000000000000000000076D06",  /* a */
         "0000000000000000000000000000000000000000000000000000000000000001",  /* b */
         "0000000000000000000000000000000000000000000000000000000000000009",  /* x */
         "20ae19a1b8a086b4e01edd2c7748d14c923d4d7e6d7c61b229e9c5a27eced3d9",  /* y */
-        78,		// Epl
+        78,     // Epl
         "7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFED",  /* p */
-        78,		// Eol
+        78,     // Eol
         "1000000000000000000000000000000014def9dea2f79cd65812631a5cf5d3ed",  /* n */
-        255,	// key_len
+        255,    // key_len
         10,
         5,
         2,
@@ -816,7 +819,7 @@ const ECC_CURVE _Curve[] =
 
 static ECC_CURVE  *pCurve;
 static ECC_CURVE  Curve_Copy;
-static ECC_CURVE * get_curve(E_ECC_CURVE ecc_curve);
+static ECC_CURVE *get_curve(E_ECC_CURVE ecc_curve);
 static void run_ecc_codec(CRYPTO_T *crypto, uint32_t mode, int enable_scap);
 static char  temp_hex_str[160];
 int32_t ecc_init_curve(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve);
@@ -827,10 +830,12 @@ static void dump_ecc_reg(char *str, uint32_t volatile regs[], int32_t count)
     int32_t  i;
 
     printf("%s => ", str);
+
     for (i = 0; i < count; i++)
     {
         printf("0x%08x ", regs[i]);
     }
+
     printf("\n");
 }
 #else
@@ -853,6 +858,7 @@ static char  ch2hex(char ch)
     {
         ch = ch - 'A' + 10U;
     }
+
     return ch;
 }
 
@@ -861,13 +867,16 @@ static int  __strlen(char *str)
 {
     char  *p = str;
     int   len = 0;
+
     while (*p != 0)
     {
         p++;
         len++;
+
         if (len > 1024)   /* max. 4096 bits */
             break;
     }
+
     // printf("< %d >\n", len);
     return len;
 }
@@ -886,12 +895,14 @@ void Hex2Reg(char input[], uint32_t volatile reg[])
     while (si >= 0)
     {
         val32 = 0UL;
+
         for (i = 0UL; (i < 8UL) && (si >= 0); i++)
         {
             hex = ch2hex(input[si]);
             val32 |= (uint32_t)hex << (i * 4UL);
             si--;
         }
+
         reg[ri++] = val32;
     }
 }
@@ -905,9 +916,11 @@ void Hex2RegEx(char input[], uint32_t volatile reg[], int shift)
     si = (int)__strlen(input) - 1;
     ri = 0L;
     carry = 0UL;
+
     while (si >= 0)
     {
         val32 = 0UL;
+
         for (i = 0UL; (i < 8UL) && (si >= 0L); i++)
         {
             hex = (uint32_t)ch2hex(input[si]);
@@ -917,8 +930,10 @@ void Hex2RegEx(char input[], uint32_t volatile reg[], int shift)
             carry = (hex >> 4UL) & 0xFUL;
             si--;
         }
+
         reg[ri++] = val32;
     }
+
     if (carry != 0UL)
     {
         reg[ri] = carry;
@@ -935,7 +950,7 @@ void Hex2RegEx(char input[], uint32_t volatile reg[], int shift)
   */
 static char get_Nth_nibble_char(uint32_t val32, uint32_t idx)
 {
-    return hex_char_tbl[ (val32 >> (idx * 4U)) & 0xfU ];
+    return hex_char_tbl[(val32 >> (idx * 4U)) & 0xfU ];
 }
 
 
@@ -957,7 +972,7 @@ void Reg2Hex(int32_t count, uint32_t volatile reg[], char output[])
     }
 }
 
-static ECC_CURVE * get_curve(E_ECC_CURVE ecc_curve)
+static ECC_CURVE *get_curve(E_ECC_CURVE ecc_curve)
 {
     uint32_t   i;
     ECC_CURVE  *ret = NULL;
@@ -969,11 +984,13 @@ static ECC_CURVE * get_curve(E_ECC_CURVE ecc_curve)
             memcpy((char *)&Curve_Copy, &_Curve[i], sizeof(ECC_CURVE));
             ret = &Curve_Copy;   /* (ECC_CURVE *)&_Curve[i]; */
         }
+
         if (ret != NULL)
         {
             break;
         }
     }
+
     return ret;
 }
 
@@ -982,6 +999,7 @@ int32_t ecc_init_curve(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve)
     int32_t  i, ret = 0;
 
     pCurve = get_curve(ecc_curve);
+
     if (pCurve == NULL)
     {
         CRYPTO_DBGMSG("Cannot find curve %d!!\n", ecc_curve);
@@ -1025,6 +1043,7 @@ int32_t ecc_init_curve(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve)
             Hex2Reg(pCurve->Pp, crypto->ECC_N);
         }
     }
+
     dump_ecc_reg("Init N:", crypto->ECC_N, 18);
     //dump_ecc_reg("CRYPTO_ECC_CURVE_N", crypto->ECC_N, 10);
     return ret;
@@ -1036,7 +1055,8 @@ int32_t ECC_GetCurve(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, ECC_CURVE *curve)
 
     /* Update pCurve pointer */
     err = ecc_init_curve(crypto, ecc_curve);
-    if(err == 0)
+
+    if (err == 0)
     {
         /* get curve */
         memcpy(curve, pCurve, sizeof(ECC_CURVE));
@@ -1061,6 +1081,7 @@ static int  get_nibble_value(char c)
     {
         c = c - 'A' + (char)10;
     }
+
     return (int)c;
 }
 
@@ -1069,9 +1090,10 @@ int ecc_strcmp(char *s1, char *s2)
     char  c1, c2;
 
     while (*s1 == '0') s1++;
+
     while (*s2 == '0') s2++;
 
-    for ( ; *s1 || *s2; s1++, s2++)
+    for (; *s1 || *s2; s1++, s2++)
     {
         if ((*s1 >= 'A') && (*s1 <= 'Z'))
             c1 = *s1 + 32;
@@ -1086,6 +1108,7 @@ int ecc_strcmp(char *s1, char *s2)
         if (c1 != c2)
             return 1;
     }
+
     return 0;
 }
 
@@ -1114,6 +1137,7 @@ void ECC_Complete(CRYPTO_T *crypto)
         crypto->INTSTS = CRYPTO_INTSTS_ECCEIF_Msk;
         printf("ECCERRIF is set!!\n");
         printf("ECC_STS = 0x%x\n", crypto->ECC_STS);
+
         while (1);
     }
 }
@@ -1127,8 +1151,8 @@ void ECC_Start(uint32_t ecc_ctl)
 {
     g_ECC_done = g_ECCERR_done = 0UL;
     CRYPTO->ECC_CTL |= ecc_ctl;
-    
-    while ((g_ECC_done== 0UL) && (g_ECCERR_done== 0UL))
+
+    while ((g_ECC_done == 0UL) && (g_ECCERR_done == 0UL))
     {
         printf("ECC_start\n");
     }
@@ -1149,6 +1173,7 @@ int ECC_IsPrivateKeyValid(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char private_
     int       ret = -1;
 
     pCurve = get_curve(ecc_curve);
+
     if (pCurve == NULL)
     {
         ret = -1;
@@ -1171,12 +1196,14 @@ int ECC_IsPrivateKeyValid(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char private_
             ret = 1;
             break;
         }
+
         if (get_nibble_value(private_k[i]) > get_nibble_value(pCurve->Eorder[i]))
         {
             ret = 0;
             break;
         }
     }
+
     return ret;
 }
 
@@ -1205,6 +1232,7 @@ int32_t  ECC_GeneratePublicKey(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *pr
         {
             crypto->ECC_K[i] = 0UL;
         }
+
         Hex2Reg(private_k, crypto->ECC_K);
 
         /* set FSEL (Field selection) */
@@ -1222,9 +1250,10 @@ int32_t  ECC_GeneratePublicKey(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *pr
         {
             crypto->ECC_X2[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_X2);
 
-        if  (ecc_curve == CURVE_25519)
+        if (ecc_curve == CURVE_25519)
         {
             // dump_ecc_reg("CRYPTO_ECC_POINT_X2", crypto->ECC_X2, 10);
             // crypto->ECC_CTL |= CRYPTO_ECC_CTL_SCAP_Msk;
@@ -1238,7 +1267,7 @@ int32_t  ECC_GeneratePublicKey(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *pr
         crypto->ECC_CTL |= ((uint32_t)pCurve->key_len << CRYPTO_ECC_CTL_CURVEM_Pos) |
                            ECCOP_POINT_MUL | CRYPTO_ECC_CTL_PFA2C_Msk | CRYPTO_ECC_CTL_START_Msk;
 
-        while ((g_ECC_done== 0UL) && (g_ECCERR_done== 0UL))
+        while ((g_ECC_done == 0UL) && (g_ECCERR_done == 0UL))
         {
             printf("ECC_start\n");
         }
@@ -1277,22 +1306,23 @@ int32_t  ECC_GeneratePublicKey_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k
         {
             crypto->ECC_K[i] = 0UL;
         }
+
         if (k_ksnum >= 0x80)
         {
             if (is_ecdh)
-                crypto->ECC_KSCTL = (0x2UL<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) | CRYPTO_ECC_KSCTL_ECDH_Msk |
+                crypto->ECC_KSCTL = (0x2UL << CRYPTO_ECC_KSCTL_RSSRCK_Pos) | CRYPTO_ECC_KSCTL_ECDH_Msk |
                                     CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
             else
-                crypto->ECC_KSCTL = (0x2UL<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+                crypto->ECC_KSCTL = (0x2UL << CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
                                     CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
         }
         else
         {
             if (is_ecdh)
-                crypto->ECC_KSCTL = (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) | CRYPTO_ECC_KSCTL_ECDH_Msk |
+                crypto->ECC_KSCTL = (0 << CRYPTO_ECC_KSCTL_RSSRCK_Pos) | CRYPTO_ECC_KSCTL_ECDH_Msk |
                                     CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
             else
-                crypto->ECC_KSCTL = (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+                crypto->ECC_KSCTL = (0 << CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
                                     CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
         }
 
@@ -1311,15 +1341,17 @@ int32_t  ECC_GeneratePublicKey_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k
         {
             crypto->ECC_X2[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_X2);
 
         g_ECC_done = g_ECCERR_done = 0UL;
         crypto->ECC_CTL |= ((uint32_t)pCurve->key_len << CRYPTO_ECC_CTL_CURVEM_Pos) |
                            ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
 
-        while ((g_ECC_done== 0UL) && (g_ECCERR_done== 0UL))
+        while ((g_ECC_done == 0UL) && (g_ECCERR_done == 0UL))
         {
         }
+
         crypto->ECC_KSCTL = 0;
 
         Reg2Hex(pCurve->Echar, crypto->ECC_X1, public_k1);
@@ -1358,6 +1390,7 @@ int32_t  ECC_Mutiply(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char x1[], char y1
             crypto->ECC_Y1[i] = 0UL;
             crypto->ECC_K[i] = 0UL;
         }
+
         Hex2Reg(x1, crypto->ECC_X1);
         Hex2Reg(y1, crypto->ECC_Y1);
         Hex2Reg(k, crypto->ECC_K);
@@ -1377,7 +1410,7 @@ int32_t  ECC_Mutiply(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char x1[], char y1
         crypto->ECC_CTL |= ((uint32_t)pCurve->key_len << CRYPTO_ECC_CTL_CURVEM_Pos) |
                            ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
 
-        while ((g_ECC_done== 0UL) && (g_ECCERR_done== 0UL))
+        while ((g_ECC_done == 0UL) && (g_ECCERR_done == 0UL))
         {
         }
 
@@ -1431,11 +1464,11 @@ int32_t  ECC_Mutiply_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int x1_ksnum, c
 
         if (x1_ksnum >= 0x80)
         {
-            ecc_ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (x1_ksnum - 0x80);
+            ecc_ksxy |= (2 << CRYPTO_ECC_KSXY_RSSRCX_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (x1_ksnum - 0x80);
         }
         else if (x1_ksnum >= 0)
         {
-            ecc_ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (x1_ksnum);
+            ecc_ksxy |= (0 << CRYPTO_ECC_KSXY_RSSRCX_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (x1_ksnum);
         }
         else
         {
@@ -1444,26 +1477,27 @@ int32_t  ECC_Mutiply_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int x1_ksnum, c
 
         if (y1_ksnum >= 0x80)
         {
-            ecc_ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (y1_ksnum - 0x80);
+            ecc_ksxy |= (2 << CRYPTO_ECC_KSXY_RSSRCY_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (y1_ksnum - 0x80);
         }
         else if (x1_ksnum >= 0)
         {
-            ecc_ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (y1_ksnum);
+            ecc_ksxy |= (0 << CRYPTO_ECC_KSXY_RSSRCY_Pos) | CRYPTO_ECC_KSXY_RSRCXY_Msk | (y1_ksnum);
         }
         else
         {
             Hex2Reg(x1, crypto->ECC_Y1);
         }
+
         crypto->ECC_KSXY = ecc_ksxy;
 
         if (k_ksnum >= 0x80)
         {
-            crypto->ECC_KSCTL = (2<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+            crypto->ECC_KSCTL = (2 << CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
                                 CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
         }
         else if (k_ksnum >= 0)
         {
-            crypto->ECC_KSCTL = (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+            crypto->ECC_KSCTL = (0 << CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
                                 CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
         }
         else
@@ -1486,9 +1520,10 @@ int32_t  ECC_Mutiply_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int x1_ksnum, c
         crypto->ECC_CTL |= ((uint32_t)pCurve->key_len << CRYPTO_ECC_CTL_CURVEM_Pos) |
                            ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
 
-        while ((g_ECC_done== 0UL) && (g_ECCERR_done== 0UL))
+        while ((g_ECC_done == 0UL) && (g_ECCERR_done == 0UL))
         {
         }
+
         crypto->ECC_KSCTL = 0;
         crypto->ECC_KSXY = 0;
 
@@ -1557,11 +1592,12 @@ int32_t  ECC_GenerateSecretZ(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *priv
             /*  CURVE_GF_P */
             crypto->ECC_CTL = CRYPTO_ECC_CTL_FSEL_Msk;
         }
+
         g_ECC_done = g_ECCERR_done = 0UL;
         crypto->ECC_CTL |= ((uint32_t)pCurve->key_len << CRYPTO_ECC_CTL_CURVEM_Pos) |
                            ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
 
-        while ((g_ECC_done== 0UL) && (g_ECCERR_done== 0UL))
+        while ((g_ECC_done == 0UL) && (g_ECCERR_done == 0UL))
         {
         }
 
@@ -1619,14 +1655,15 @@ int32_t  ECC_GenerateSecretZ_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k_k
 
     if (k_ksnum >= 0x80)
     {
-        ecc_ksctl |= (0x2<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+        ecc_ksctl |= (0x2 << CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
                      CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
     }
     else if (k_ksnum >= 0)
     {
-        ecc_ksctl |= (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+        ecc_ksctl |= (0 << CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
                      CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
     }
+
 #if 0
     else if ((ecc_curve == CURVE_B_163) || (ecc_curve == CURVE_B_233) || (ecc_curve == CURVE_B_283) ||
              (ecc_curve == CURVE_B_409) || (ecc_curve == CURVE_B_571) || (ecc_curve == CURVE_K_163))
@@ -1638,6 +1675,7 @@ int32_t  ECC_GenerateSecretZ_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k_k
     {
         Hex2RegEx(private_k, crypto->ECC_K, 2);
     }
+
 #endif
     else
     {
@@ -1676,9 +1714,10 @@ int32_t  ECC_GenerateSecretZ_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, int k_k
                        ECCOP_POINT_MUL | CRYPTO_ECC_CTL_START_Msk;
 
 
-    while ((g_ECC_done== 0UL) && (g_ECCERR_done== 0UL))
+    while ((g_ECC_done == 0UL) && (g_ECCERR_done == 0UL))
     {
     }
+
     crypto->ECC_KSCTL = 0;
     crypto->ECC_KSXY = 0;
 
@@ -1723,7 +1762,8 @@ static void run_ecc_codec(CRYPTO_T *crypto, uint32_t mode, int enable_scap)
     }
 
     crypto->ECC_CTL |= ((uint32_t)pCurve->key_len << CRYPTO_ECC_CTL_CURVEM_Pos) | mode | CRYPTO_ECC_CTL_START_Msk;
-    while ((g_ECC_done== 0UL) && (g_ECCERR_done== 0UL))
+
+    while ((g_ECC_done == 0UL) && (g_ECCERR_done == 0UL))
     {
     }
 
@@ -1793,12 +1833,14 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_K[i] = 0UL;
         }
+
         Hex2Reg(k, crypto->ECC_K);
 
         for (i = 0; i < 18; i++)
         {
             crypto->ECC_X2[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_X2);
 
         run_ecc_codec(crypto, ECCOP_POINT_MUL | CRYPTO_ECC_CTL_ECDSAR_Msk, 1);
@@ -1808,6 +1850,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /* 3-(10) Write 0x0 to Y1 registers */
@@ -1846,6 +1889,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /*  4-(2) Write the random integer k to X1 and d to Y1 */
@@ -1853,6 +1897,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_Y1[i] = 0UL;
         }
+
         Hex2Reg(d, crypto->ECC_Y1);
 
         /*  4-(3) Write the random integer k to X1 registers */
@@ -1860,6 +1905,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_X1[i] = 0UL;
         }
+
         Hex2Reg(k, crypto->ECC_X1);
 
         /*  4-(3) Write the r to X2 and e to Y2 */
@@ -1872,6 +1918,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_Y2[i] = 0UL;
         }
+
         Hex2Reg(message, crypto->ECC_Y2);
 
         /* 4-(4) Set CURVEM(CRYPTO_ECC_CTL[31:22]) to key length  */
@@ -1956,12 +2003,14 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_K[i] = 0UL;
         }
+
         Hex2Reg(k, crypto->ECC_K);
 
         for (i = 0; i < 18; i++)
         {
             crypto->ECC_X2[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_X2);
 
         run_ecc_codec(crypto, ECCOP_POINT_MUL, 1);
@@ -1971,6 +2020,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /* 3-(10) Write 0x0 to Y1 registers */
@@ -2027,6 +2077,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /*  4-(2) Write 0x1 to Y1 registers */
@@ -2034,6 +2085,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_Y1[i] = 0UL;
         }
+
         crypto->ECC_Y1[0] = 0x1UL;
 
         /*  4-(3) Write the random integer k to X1 registers */
@@ -2041,6 +2093,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_X1[i] = 0UL;
         }
+
         Hex2Reg(k, crypto->ECC_X1);
 
         run_ecc_codec(crypto, ECCOP_MODULE | MODOP_DIV, 0);
@@ -2067,6 +2120,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /*  4-(10) Write r, d to X1, Y1 registers */
@@ -2079,6 +2133,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_Y1[i] = 0UL;
         }
+
         Hex2Reg(d, crypto->ECC_Y1);
 
         run_ecc_codec(crypto, ECCOP_MODULE | MODOP_MUL, 0);
@@ -2093,6 +2148,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /*  4-(16) Write e to Y1 registers */
@@ -2100,6 +2156,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_Y1[i] = 0UL;
         }
+
         Hex2Reg(message, crypto->ECC_Y1);
 
         run_ecc_codec(crypto, ECCOP_MODULE | MODOP_ADD, 0);
@@ -2114,6 +2171,7 @@ int32_t  ECC_GenerateSignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *me
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /*  4-(22) Write k^-1 to Y1 registers */
@@ -2145,10 +2203,12 @@ int32_t  ECC_Write_N(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve)
     {
         return -1;
     }
+
     for (i = 0; i < 18; i++)
     {
         crypto->ECC_N[i] = 0UL;
     }
+
     Hex2Reg(pCurve->Eorder, crypto->ECC_N);
     return 0;
 }
@@ -2174,7 +2234,7 @@ int32_t  ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char 
 {
     uint32_t volatile temp_result1[18], temp_result2[18];
     uint32_t   ksxy;
-    int32_t  	i, ret = 0;
+    int32_t     i, ret = 0;
 
     if (ecc_init_curve(crypto, ecc_curve) != 0)
     {
@@ -2219,12 +2279,12 @@ int32_t  ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char 
 
         if (k_ksnum >= 0x80)
         {
-            crypto->ECC_KSCTL = (0x2UL<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+            crypto->ECC_KSCTL = (0x2UL << CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
                                 CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum - 0x80);
         }
         else
         {
-            crypto->ECC_KSCTL = (0<<CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
+            crypto->ECC_KSCTL = (0 << CRYPTO_ECC_KSCTL_RSSRCK_Pos) |
                                 CRYPTO_ECC_KSCTL_RSRCK_Msk | (k_ksnum);
         }
 
@@ -2232,6 +2292,7 @@ int32_t  ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char 
         {
             crypto->ECC_X2[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_X2);
 
         run_ecc_codec(crypto, ECCOP_POINT_MUL | CRYPTO_ECC_CTL_ECDSAR_Msk, 1);
@@ -2242,6 +2303,7 @@ int32_t  ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char 
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /* 3-(10) Write 0x0 to Y1 registers */
@@ -2249,6 +2311,7 @@ int32_t  ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char 
         {
             crypto->ECC_Y1[i] = 0UL;
         }
+
         printf("second\n");
         run_ecc_codec(crypto, ECCOP_MODULE | MODOP_ADD, 0);
 
@@ -2257,6 +2320,7 @@ int32_t  ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char 
         {
             temp_result1[i] = crypto->ECC_X1[i];
         }
+
         Reg2Hex(pCurve->Echar, temp_result1, R);
 
 #if ENABLE_DEBUG
@@ -2283,6 +2347,7 @@ int32_t  ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char 
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /*  4-(2) Write the random integer k to X1 and d to Y1 */
@@ -2291,22 +2356,22 @@ int32_t  ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char 
 
         if (k_ksnum >= 0x80)
         {
-            ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | (k_ksnum - 0x80);
+            ksxy |= (2 << CRYPTO_ECC_KSXY_RSSRCX_Pos) | (k_ksnum - 0x80);
         }
         else if (k_ksnum >= 0)
         {
-            ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | (k_ksnum);
+            ksxy |= (0 << CRYPTO_ECC_KSXY_RSSRCX_Pos) | (k_ksnum);
         }
         else
             return -3;
 
         if (d_ksnum >= 0x80)
         {
-            ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | ((d_ksnum - 0x80) << 8);
+            ksxy |= (2 << CRYPTO_ECC_KSXY_RSSRCY_Pos) | ((d_ksnum - 0x80) << 8);
         }
         else if (d_ksnum >= 0)
         {
-            ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | (d_ksnum << 8);
+            ksxy |= (0 << CRYPTO_ECC_KSXY_RSSRCY_Pos) | (d_ksnum << 8);
         }
         else
         {
@@ -2327,6 +2392,7 @@ int32_t  ECC_GenerateSignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char 
         {
             crypto->ECC_Y2[i] = 0UL;
         }
+
         Hex2Reg(message, crypto->ECC_Y2);
 
         /* 4-(4) Set CURVEM(CRYPTO_ECC_CTL[31:22]) to key length  */
@@ -2404,6 +2470,7 @@ int32_t  ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *mess
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /*  3-(2) Write 0x1 to Y1 registers */
@@ -2411,6 +2478,7 @@ int32_t  ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *mess
         {
             crypto->ECC_Y1[i] = 0UL;
         }
+
         crypto->ECC_Y1[0] = 0x1UL;
 
         /*  3-(3) Write s to X1 registers */
@@ -2418,6 +2486,7 @@ int32_t  ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *mess
         {
             crypto->ECC_X1[i] = 0UL;
         }
+
         Hex2Reg(S, crypto->ECC_X1);
 
         run_ecc_codec(crypto, ECCOP_MODULE | MODOP_DIV, 0);
@@ -2458,6 +2527,7 @@ int32_t  ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *mess
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /* 4-(2) Write e, w to X1, Y1 registers */
@@ -2465,6 +2535,7 @@ int32_t  ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *mess
         {
             crypto->ECC_X1[i] = 0UL;
         }
+
         Hex2Reg(message, crypto->ECC_X1);
 
         for (i = 0; i < 18; i++)
@@ -2490,6 +2561,7 @@ int32_t  ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *mess
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /* 4-(9) Write r, w to X1, Y1 registers */
@@ -2497,6 +2569,7 @@ int32_t  ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *mess
         {
             crypto->ECC_X1[i] = 0UL;
         }
+
         Hex2Reg(R, crypto->ECC_X1);
 
         for (i = 0; i < 18; i++)
@@ -2566,6 +2639,7 @@ int32_t  ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *mess
         {
             crypto->ECC_X2[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_X2);
 
         run_ecc_codec(crypto, ECCOP_POINT_MUL, 1);
@@ -2607,6 +2681,7 @@ int32_t  ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *mess
         {
             crypto->ECC_X2[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_X2);
 
         run_ecc_codec(crypto, ECCOP_POINT_MUL, 1);
@@ -2662,6 +2737,7 @@ int32_t  ECC_VerifySignature(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *mess
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /*
@@ -2759,6 +2835,7 @@ int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *m
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /*  3-(2) Write 0x1 to Y1 registers */
@@ -2766,6 +2843,7 @@ int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *m
         {
             crypto->ECC_Y1[i] = 0UL;
         }
+
         crypto->ECC_Y1[0] = 0x1UL;
 
         /*  3-(3) Write s to X1 registers */
@@ -2773,6 +2851,7 @@ int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *m
         {
             crypto->ECC_X1[i] = 0UL;
         }
+
         Hex2Reg(S, crypto->ECC_X1);
 
         run_ecc_codec(crypto, ECCOP_MODULE | MODOP_DIV, 0);
@@ -2813,6 +2892,7 @@ int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *m
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /* 4-(2) Write e, w to X1, Y1 registers */
@@ -2820,6 +2900,7 @@ int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *m
         {
             crypto->ECC_X1[i] = 0UL;
         }
+
         Hex2Reg(message, crypto->ECC_X1);
 
         for (i = 0; i < 18; i++)
@@ -2845,6 +2926,7 @@ int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *m
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /* 4-(9) Write r, w to X1, Y1 registers */
@@ -2852,6 +2934,7 @@ int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *m
         {
             crypto->ECC_X1[i] = 0UL;
         }
+
         Hex2Reg(R, crypto->ECC_X1);
 
         for (i = 0; i < 18; i++)
@@ -2950,22 +3033,22 @@ int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *m
 
         if (x_ksnum >= 0x80)
         {
-            ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | (x_ksnum - 0x80);
+            ksxy |= (2 << CRYPTO_ECC_KSXY_RSSRCX_Pos) | (x_ksnum - 0x80);
         }
         else if (x_ksnum >= 0)
         {
-            ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCX_Pos) | (x_ksnum);
+            ksxy |= (0 << CRYPTO_ECC_KSXY_RSSRCX_Pos) | (x_ksnum);
         }
         else
             return -3;
 
         if (y_ksnum >= 0x80)
         {
-            ksxy |= (2<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | ((y_ksnum - 0x80) << 8);
+            ksxy |= (2 << CRYPTO_ECC_KSXY_RSSRCY_Pos) | ((y_ksnum - 0x80) << 8);
         }
         else if (y_ksnum >= 0)
         {
-            ksxy |= (0<<CRYPTO_ECC_KSXY_RSSRCY_Pos) | (y_ksnum << 8);
+            ksxy |= (0 << CRYPTO_ECC_KSXY_RSSRCY_Pos) | (y_ksnum << 8);
         }
         else
         {
@@ -3035,6 +3118,7 @@ int32_t  ECC_VerifySignature_KS(CRYPTO_T *crypto, E_ECC_CURVE ecc_curve, char *m
         {
             crypto->ECC_N[i] = 0UL;
         }
+
         Hex2Reg(pCurve->Eorder, crypto->ECC_N);
 
         /*
@@ -3110,43 +3194,57 @@ static int32_t CheckRsaBufferSize(uint32_t u32OpMode, uint32_t u32BufSize, uint3
                                       sizeof(RSA_BUF_SCAP_T), sizeof(RSA_BUF_CRT_SCAP_T), sizeof(RSA_BUF_CRT_SCAP_T), \
                                       sizeof(RSA_BUF_KS_T)
                                      };
-    if(u32UseKS)
+
+    if (u32UseKS)
     {
-        if(u32BufSize != s_au32RsaBufSizeTbl[BUF_KS])
+        if (u32BufSize != s_au32RsaBufSizeTbl[BUF_KS])
             return (-1);
     }
     else
     {
-        switch(u32OpMode)
+        switch (u32OpMode)
         {
-        case RSA_MODE_NORMAL:
-            if(u32BufSize != s_au32RsaBufSizeTbl[BUF_NORMAL])
+            case RSA_MODE_NORMAL:
+                if (u32BufSize != s_au32RsaBufSizeTbl[BUF_NORMAL])
+                    return (-1);
+
+                break;
+
+            case RSA_MODE_CRT:
+                if (u32BufSize != s_au32RsaBufSizeTbl[BUF_CRT])
+                    return (-1);
+
+                break;
+
+            case RSA_MODE_CRTBYPASS:
+                if (u32BufSize != s_au32RsaBufSizeTbl[BUF_CRTBYPASS])
+                    return (-1);
+
+                break;
+
+            case RSA_MODE_SCAP:
+                if (u32BufSize != s_au32RsaBufSizeTbl[BUF_SCAP])
+                    return (-1);
+
+                break;
+
+            case RSA_MODE_CRT_SCAP:
+                if (u32BufSize != s_au32RsaBufSizeTbl[BUF_CRT_SCAP])
+                    return (-1);
+
+                break;
+
+            case RSA_MODE_CRTBYPASS_SCAP:
+                if (u32BufSize != s_au32RsaBufSizeTbl[BUF_CRTBYPASS_SCAP])
+                    return (-1);
+
+                break;
+
+            default:
                 return (-1);
-            break;
-        case RSA_MODE_CRT:
-            if(u32BufSize != s_au32RsaBufSizeTbl[BUF_CRT])
-                return (-1);
-            break;
-        case RSA_MODE_CRTBYPASS:
-            if(u32BufSize != s_au32RsaBufSizeTbl[BUF_CRTBYPASS])
-                return (-1);
-            break;
-        case RSA_MODE_SCAP:
-            if(u32BufSize != s_au32RsaBufSizeTbl[BUF_SCAP])
-                return (-1);
-            break;
-        case RSA_MODE_CRT_SCAP:
-            if(u32BufSize != s_au32RsaBufSizeTbl[BUF_CRT_SCAP])
-                return (-1);
-            break;
-        case RSA_MODE_CRTBYPASS_SCAP:
-            if(u32BufSize != s_au32RsaBufSizeTbl[BUF_CRTBYPASS_SCAP])
-                return (-1);
-            break;
-        default:
-            return (-1);
         }
     }
+
     return 0;
 }
 /**
@@ -3180,14 +3278,16 @@ static int32_t CheckRsaBufferSize(uint32_t u32OpMode, uint32_t u32BufSize, uint3
 int32_t RSA_Open(CRYPTO_T *crypto, uint32_t u32OpMode, uint32_t u32KeySize, \
                  void *psRSA_Buf, uint32_t u32BufSize, uint32_t u32UseKS)
 {
-    if(psRSA_Buf == 0)
+    if (psRSA_Buf == 0)
     {
         return (-1);
     }
-    if(CheckRsaBufferSize(u32OpMode, u32BufSize, u32UseKS) != 0)
+
+    if (CheckRsaBufferSize(u32OpMode, u32BufSize, u32UseKS) != 0)
     {
         return (-1);
     }
+
     s_u32RsaOpMode = u32OpMode;
     s_pRSABuf = psRSA_Buf;
     crypto->RSA_CTL = (u32OpMode) | (u32KeySize << CRYPTO_RSA_CTL_KEYLENG_Pos);
@@ -3202,10 +3302,11 @@ int32_t RSA_Open(CRYPTO_T *crypto, uint32_t u32OpMode, uint32_t u32KeySize, \
   */
 int32_t RSA_SetKey(CRYPTO_T *crypto, char *Key)
 {
-    if(s_pRSABuf == 0)
+    if (s_pRSABuf == 0)
     {
         return (-1);
     }
+
     Hex2Reg(Key, ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaE);
     crypto->RSA_SADDR[2] = (uint32_t) & ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaE; /* the public key or private key */
     return 0;
@@ -3222,17 +3323,19 @@ int32_t RSA_SetKey(CRYPTO_T *crypto, char *Key)
   */
 int32_t RSA_SetDMATransfer(CRYPTO_T *crypto, char *Src, char *n, char *P, char *Q)
 {
-    if(s_pRSABuf == 0)
+    if (s_pRSABuf == 0)
     {
         return (-1);
     }
+
     Hex2Reg(Src, ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaM);
     Hex2Reg(n, ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaN);
     /* Assign the data to DMA */
     crypto->RSA_SADDR[0] = (uint32_t) & ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaM; /* plaintext / encrypt data */
     crypto->RSA_SADDR[1] = (uint32_t) & ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaN; /* the base of modulus operation */
     crypto->RSA_DADDR    = (uint32_t) & ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaOutput; /* encrypt data / decrypt data */
-    if((s_u32RsaOpMode & CRYPTO_RSA_CTL_CRT_Msk) && (s_u32RsaOpMode & CRYPTO_RSA_CTL_SCAP_Msk))
+
+    if ((s_u32RsaOpMode & CRYPTO_RSA_CTL_CRT_Msk) && (s_u32RsaOpMode & CRYPTO_RSA_CTL_SCAP_Msk))
     {
         /* For RSA CRT/SCAP mode, two primes of private key */
         Hex2Reg(P, ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaP);
@@ -3248,7 +3351,7 @@ int32_t RSA_SetDMATransfer(CRYPTO_T *crypto, char *Src, char *n, char *P, char *
         /* For SCAP mode to store the intermediate temporary value(blind key) */
         crypto->RSA_MADDR[6] = (uint32_t) & ((RSA_BUF_CRT_SCAP_T *)s_pRSABuf)->au32RsaTmpBlindKey;
     }
-    else if(s_u32RsaOpMode & CRYPTO_RSA_CTL_CRT_Msk)
+    else if (s_u32RsaOpMode & CRYPTO_RSA_CTL_CRT_Msk)
     {
         /* For RSA CRT/SCAP mode, two primes of private key */
         Hex2Reg(P, ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaP);
@@ -3262,7 +3365,7 @@ int32_t RSA_SetDMATransfer(CRYPTO_T *crypto, char *Src, char *n, char *P, char *
         crypto->RSA_MADDR[4] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaTmpRp; /* for storing the intermediate temporary value(Rp) */
         crypto->RSA_MADDR[5] = (uint32_t) & ((RSA_BUF_CRT_T *)s_pRSABuf)->au32RsaTmpRq; /* for storing the intermediate temporary value(Rq) */
     }
-    else if(s_u32RsaOpMode & CRYPTO_RSA_CTL_SCAP_Msk)
+    else if (s_u32RsaOpMode & CRYPTO_RSA_CTL_SCAP_Msk)
     {
         /* For RSA CRT/SCAP mode, two primes of private key */
         Hex2Reg(P, ((RSA_BUF_SCAP_T *)s_pRSABuf)->au32RsaP);
@@ -3272,6 +3375,7 @@ int32_t RSA_SetDMATransfer(CRYPTO_T *crypto, char *Src, char *n, char *P, char *
         /* For SCAP mode to store the intermediate temporary value(blind key) */
         crypto->RSA_MADDR[6] = (uint32_t) & ((RSA_BUF_SCAP_T *)s_pRSABuf)->au32RsaTmpBlindKey;
     }
+
     return 0;
 }
 /**
@@ -3292,10 +3396,11 @@ void RSA_Start(CRYPTO_T *crypto)
   */
 int32_t RSA_Read(CRYPTO_T *crypto, char *Output)
 {
-    if(s_pRSABuf == 0)
+    if (s_pRSABuf == 0)
     {
         return (-1);
     }
+
     uint32_t au32CntTbl[4] = {256, 512, 768, 1024}; /* count is key length divided by 4 */
     uint32_t u32CntIdx = 0;
     u32CntIdx = (crypto->RSA_CTL & CRYPTO_RSA_CTL_KEYLENG_Msk) >> CRYPTO_RSA_CTL_KEYLENG_Pos;
@@ -3316,14 +3421,15 @@ int32_t RSA_Read(CRYPTO_T *crypto, char *Output)
   */
 int32_t RSA_SetKey_KS(CRYPTO_T *crypto, uint32_t u32KeyNum, uint32_t u32KSMemType, uint32_t u32BlindKeyNum)
 {
-    if(s_u32RsaOpMode & CRYPTO_RSA_CTL_SCAP_Msk)
+    if (s_u32RsaOpMode & CRYPTO_RSA_CTL_SCAP_Msk)
     {
         crypto->RSA_KSCTL = (u32BlindKeyNum << 8) | (u32KSMemType << CRYPTO_RSA_KSCTL_RSSRC_Pos) | CRYPTO_RSA_KSCTL_RSRC_Msk | u32KeyNum;
     }
     else
     {
-        crypto->RSA_KSCTL = (u32KSMemType <<CRYPTO_RSA_KSCTL_RSSRC_Pos) | CRYPTO_RSA_KSCTL_RSRC_Msk | u32KeyNum;
+        crypto->RSA_KSCTL = (u32KSMemType << CRYPTO_RSA_KSCTL_RSSRC_Pos) | CRYPTO_RSA_KSCTL_RSRC_Msk | u32KeyNum;
     }
+
     return 0;
 }
 /**
@@ -3347,23 +3453,26 @@ int32_t RSA_SetDMATransfer_KS(CRYPTO_T *crypto, char *Src, char *n, uint32_t u32
                               uint32_t u32QNum, uint32_t u32CpNum, uint32_t u32CqNum, uint32_t u32DpNum,
                               uint32_t u32DqNum, uint32_t u32RpNum, uint32_t u32RqNum)
 {
-    if(s_pRSABuf == 0)
+    if (s_pRSABuf == 0)
     {
         return (-1);
     }
+
     Hex2Reg(Src, ((RSA_BUF_KS_T *)s_pRSABuf)->au32RsaM);
     Hex2Reg(n, ((RSA_BUF_KS_T *)s_pRSABuf)->au32RsaN);
     /* Assign the data to DMA */
     crypto->RSA_SADDR[0] = (uint32_t) & ((RSA_BUF_KS_T *)s_pRSABuf)->au32RsaM; /* plaintext / encrypt data */
     crypto->RSA_SADDR[1] = (uint32_t) & ((RSA_BUF_KS_T *)s_pRSABuf)->au32RsaN; /* the base of modulus operation */
     crypto->RSA_DADDR    = (uint32_t) & ((RSA_BUF_KS_T *)s_pRSABuf)->au32RsaOutput; /* encrypt data / decrypt data */
-    if((s_u32RsaOpMode & CRYPTO_RSA_CTL_CRT_Msk) || (s_u32RsaOpMode & CRYPTO_RSA_CTL_SCAP_Msk))
+
+    if ((s_u32RsaOpMode & CRYPTO_RSA_CTL_CRT_Msk) || (s_u32RsaOpMode & CRYPTO_RSA_CTL_SCAP_Msk))
     {
         /* For RSA CRT/SCAP mode, two primes of private key */
         crypto->RSA_KSSTS0 = (crypto->RSA_KSSTS0 & (~(CRYPTO_RSA_KSSTS0_NUM0_Msk | CRYPTO_RSA_KSSTS0_NUM1_Msk))) | \
                              (u32PNum << CRYPTO_RSA_KSSTS0_NUM0_Pos) | (u32QNum << CRYPTO_RSA_KSSTS0_NUM1_Pos);
     }
-    if(s_u32RsaOpMode & CRYPTO_RSA_CTL_CRT_Msk)
+
+    if (s_u32RsaOpMode & CRYPTO_RSA_CTL_CRT_Msk)
     {
         /* For RSA CRT mode, Cp, Cq, Dp, Dq, Rp, Rq */
         crypto->RSA_KSSTS0 = (crypto->RSA_KSSTS0 & (~(CRYPTO_RSA_KSSTS0_NUM2_Msk | CRYPTO_RSA_KSSTS0_NUM3_Msk))) | \
@@ -3371,6 +3480,7 @@ int32_t RSA_SetDMATransfer_KS(CRYPTO_T *crypto, char *Src, char *n, uint32_t u32
         crypto->RSA_KSSTS1 = (u32DpNum << CRYPTO_RSA_KSSTS1_NUM4_Pos) | (u32DqNum << CRYPTO_RSA_KSSTS1_NUM5_Pos) | \
                              (u32RpNum << CRYPTO_RSA_KSSTS1_NUM6_Pos) | (u32RqNum << CRYPTO_RSA_KSSTS1_NUM7_Pos);
     }
+
     return 0;
 }
 
@@ -3386,10 +3496,12 @@ void CHAPOLY_Complete(CRYPTO_T *crypto)
     if (CHAPOLY_GET_INT_FLAG(crypto))
     {
         g_CHAPOLY_done = 1;
+
         if (crypto->INTSTS & CRYPTO_INTSTS_CHAPOLYEIF_Msk)
         {
             printf("CHAPOLY INTSTS error flag set!!\n");
         }
+
         printf("CHAPOLY INTSTS = 0x%08x !!\n", CRYPTO->CHAPOLY_STS);
         CHAPOLY_CLR_INT_FLAG(crypto);
     }
@@ -3407,16 +3519,19 @@ void CHAPOLY_Complete(CRYPTO_T *crypto)
 void CHA_SetKeyandNonce(CRYPTO_T *crypto,  unsigned char *key, unsigned char *nonce, int counter)
 {
     int i;
+
     for (i = 0; i < 8; i++)
     {
         crypto->CHAPOLY_KEY[i] = *(uint32_t *)(&key[i * 4]);
 
     }
+
     for (i = 0; i < 3; i++)
     {
         crypto->CHAPOLY_NONCE[i] = *(uint32_t *)(&nonce[i * 4]);
 
     }
+
     crypto->CHAPOLY_BLOCKCNT = counter;
 }
 
@@ -3429,7 +3544,7 @@ void CHA_SetKeyandNonce(CRYPTO_T *crypto,  unsigned char *key, unsigned char *no
   * @param[in]  src_len              The length of input data
   * @return None
   */
-void CHA_SetDMATransfer(CRYPTO_T *crypto, uint8_t* u8pInputData,  uint8_t* u8pOutputData, int src_len)
+void CHA_SetDMATransfer(CRYPTO_T *crypto, uint8_t *u8pInputData,  uint8_t *u8pOutputData, int src_len)
 {
     crypto->CHAPOLY_SADDR = (uint32_t)u8pInputData;
     crypto->CHAPOLY_DADDR = (uint32_t)u8pOutputData;
@@ -3469,9 +3584,13 @@ void CHA_Start(CRYPTO_T *crypto, int is_encrypt)
     crypto->CHAPOLY_CTL |=  CRYPTO_CHAPOLY_CTL_DMAEN_Msk | CRYPTO_CHAPOLY_CTL_START_Msk;
 
 #ifdef ENABLE_INTERRUPT
+
     while (!g_CHAPOLY_done);
+
 #else
+
     while (crypto->CHAPOLY_STS & CRYPTO_CHAPOLY_STS_BUSY_Msk);
+
 #endif
 }
 
@@ -3485,11 +3604,13 @@ void POLY1305_SetKeyandClearNonce(CRYPTO_T *crypto,  unsigned char *key)
 {
     int  i;
 
-    memcpy((void*)(crypto->CHAPOLY_KEY), key, 32);
+    memcpy((void *)(crypto->CHAPOLY_KEY), key, 32);
+
     for (i = 0; i < 8; i++)
     {
         crypto->CHAPOLY_KEY[i] = *(uint32_t *)(&key[i * 4]);
     }
+
     for (i = 0; i < 3; i++)
         crypto->CHAPOLY_NONCE[i] = 0;
 }
@@ -3502,7 +3623,7 @@ void POLY1305_SetKeyandClearNonce(CRYPTO_T *crypto,  unsigned char *key)
   * @param[in]  src_len         The input data length
   * @return None
   */
-void POLY1305_SetDMATransfer(CRYPTO_T *crypto, uint8_t* u8pInputData,  uint8_t* u8pOutputData, int src_len)
+void POLY1305_SetDMATransfer(CRYPTO_T *crypto, uint8_t *u8pInputData,  uint8_t *u8pOutputData, int src_len)
 {
     crypto->CHAPOLY_BLOCKCNT = 0;
     crypto->CHAPOLY_SADDR = (uint32_t)u8pInputData;
@@ -3528,9 +3649,13 @@ void POLY1305_Start(CRYPTO_T *crypto)
     crypto->CHAPOLY_CTL = ctrl | CRYPTO_CHAPOLY_CTL_DMAEN_Msk | CRYPTO_CHAPOLY_CTL_DMALAST_Msk | CRYPTO_CHAPOLY_CTL_START_Msk;
 
 #ifdef ENABLE_INTERRUPT
+
     while (!g_CHAPOLY_done);
+
 #else
+
     while (CRYPTO->CHAPOLY_STS & CRYPTO_CHAPOLY_STS_BUSY_Msk);
+
 #endif
 }
 
@@ -3546,15 +3671,19 @@ void CHAPOLY_Start(CRYPTO_T *crypto)
 
     __DSB();
 
-    ctrl |= ( CHAPOLY_MODE_AEAD<< CRYPTO_CHAPOLY_CTL_OPMODE_Pos);
+    ctrl |= (CHAPOLY_MODE_AEAD << CRYPTO_CHAPOLY_CTL_OPMODE_Pos);
     // ctrl |= CRPT_CHAPOLY_CTL_INSWAP_Msk | CRPT_CHAPOLY_CTL_OUTSWAP_Msk;
 
     crypto->CHAPOLY_CTL = ctrl | CRYPTO_CHAPOLY_CTL_DMAEN_Msk | CRYPTO_CHAPOLY_CTL_DMALAST_Msk | CRYPTO_CHAPOLY_CTL_START_Msk;
 
 #ifdef ENABLE_INTERRUPT
+
     while (!g_CHAPOLY_done);
+
 #else
+
     while (CRYPTO->CHAPOLY_STS & CRYPTO_CHAPOLY_STS_BUSY_Msk);
+
 #endif
 }
 

@@ -26,34 +26,34 @@ typedef enum
 
 typedef struct _s_mqtt_subscribe_info
 {
-    char * topic;
-    uint32_t (*upcall_func)(struct _s_mqtt_subscribe_info * sinfo, uint32_t qos, uint32_t dup, uint32_t retained, void * payload, uint32_t payload_len);
-    struct _s_mqtt_subscribe_info * next;
+    char *topic;
+    uint32_t (*upcall_func)(struct _s_mqtt_subscribe_info *sinfo, uint32_t qos, uint32_t dup, uint32_t retained, void *payload, uint32_t payload_len);
+    struct _s_mqtt_subscribe_info *next;
     uint8_t qos;
     uint8_t granted_qos;
 } _S_MQTT_SUBSCRIBE_INFO;
 
 typedef struct _s_mqtt_clinet_info
 {
-    _S_MQTT_TCP_INFO * ti;
-    tls_configuration_t * ssl_conf;
+    _S_MQTT_TCP_INFO *ti;
+    tls_configuration_t *ssl_conf;
 
-    MQTTPacket_connectData * options;
+    MQTTPacket_connectData *options;
     void (*connection_fail_upcall)(struct _s_mqtt_clinet_info *);
-    void * upcall_arg;
+    void *upcall_arg;
 
-    _S_MQTT_SUBSCRIBE_INFO * subs_info;
+    _S_MQTT_SUBSCRIBE_INFO *subs_info;
 
-    uint8_t * buffer;
+    uint8_t *buffer;
     uint32_t buffer_size;
     uint32_t tcp_send_wait_time_ms;
     uint32_t tcp_recv_wait_time_ms;
     uint32_t last_publish_tick;
 
-    const char * hostname;
+    const char *hostname;
     xSemaphoreHandle tx_control;
     xSemaphoreHandle rx_semphr;
-    struct netbuf * recv_buf;
+    struct netbuf *recv_buf;
 
     uint8_t current_pub_qos;
     uint8_t session_present;
@@ -96,7 +96,7 @@ void mqtt_client_tick_divider(uint32_t divider);
                     functions
     @eg         mqtt_clientn_init(512, 10000, 30000, 0);
 */
-_S_MQTT_CLIENT_INFO * mqtt_client_init(uint32_t buffer_size, uint32_t tcp_send_timeout, uint32_t tcp_recv_timeout, void (*connect_failupcall)(_S_MQTT_CLIENT_INFO *));
+_S_MQTT_CLIENT_INFO *mqtt_client_init(uint32_t buffer_size, uint32_t tcp_send_timeout, uint32_t tcp_recv_timeout, void (*connect_failupcall)(_S_MQTT_CLIENT_INFO *));
 
 /**
     @fn         mqtt_client_is_connected
@@ -107,7 +107,7 @@ _S_MQTT_CLIENT_INFO * mqtt_client_init(uint32_t buffer_size, uint32_t tcp_send_t
     @see        mqtt_client_init
     @see        mqtt_client_connect
 */
-uint32_t mqtt_client_is_connected(_S_MQTT_CLIENT_INFO * cinfo);
+uint32_t mqtt_client_is_connected(_S_MQTT_CLIENT_INFO *cinfo);
 
 /**
     @fn         mqtt_client_connect
@@ -125,7 +125,7 @@ uint32_t mqtt_client_is_connected(_S_MQTT_CLIENT_INFO * cinfo);
                     mqtt_client_init and mqtt_client_will_options
     @eg         mqtt_client_connect(cinfo, "mqtt.flespi.io", 1883, options);
 */
-_E_MQTT_ERRORS mqtt_client_connect(_S_MQTT_CLIENT_INFO * cinfo, const char * hostname, uint32_t port, MQTTPacket_connectData * options, tls_configuration_t * conf);
+_E_MQTT_ERRORS mqtt_client_connect(_S_MQTT_CLIENT_INFO *cinfo, const char *hostname, uint32_t port, MQTTPacket_connectData *options, tls_configuration_t *conf);
 
 /**
     @fn         mqtt_client_connect_options
@@ -141,7 +141,7 @@ _E_MQTT_ERRORS mqtt_client_connect(_S_MQTT_CLIENT_INFO * cinfo, const char * hos
     @note       this function needs to be called before calling mqtt_client_connect, as it will create the options pointer
     @eg         mqtt_client_connect_options("12345678", 30, 1, "username", "password");
 */
-MQTTPacket_connectData * mqtt_client_connect_options(char * client_id, uint32_t alive_interval, uint32_t clean_session, const char * username, const char * password);
+MQTTPacket_connectData *mqtt_client_connect_options(char *client_id, uint32_t alive_interval, uint32_t clean_session, const char *username, const char *password);
 
 /**
     @fn         mqtt_client_will_options
@@ -159,7 +159,7 @@ MQTTPacket_connectData * mqtt_client_connect_options(char * client_id, uint32_t 
                     This function is optional and need not be called if the will msg is not required
     @eg         mqtt_clinet_will_options(c, "my/death", "I am dead", 0, 1);
 */
-void mqtt_client_will_options(MQTTPacket_connectData * c, char * topic, char * msg, uint32_t retained, uint32_t qos);
+void mqtt_client_will_options(MQTTPacket_connectData *c, char *topic, char *msg, uint32_t retained, uint32_t qos);
 
 /**
     @fn         mqtt_client_tcp_close
@@ -177,7 +177,7 @@ void mqtt_client_will_options(MQTTPacket_connectData * c, char * topic, char * m
                     mqtt_client_tcp_delete
     @eg         mqtt_client_tcp_close(cinfo);
 */
-_E_MQTT_ERRORS mqtt_client_tcp_close(_S_MQTT_CLIENT_INFO * info);
+_E_MQTT_ERRORS mqtt_client_tcp_close(_S_MQTT_CLIENT_INFO *info);
 
 /**
     @fn         mqtt_client_tcp_delete
@@ -194,7 +194,7 @@ _E_MQTT_ERRORS mqtt_client_tcp_close(_S_MQTT_CLIENT_INFO * info);
                     the tcp connection and reconnect again usin mqtt_client_connect
     @eg         mqtt_client_tcp_delete(cinfo, 1);
 */
-_E_MQTT_ERRORS mqtt_client_tcp_delete(_S_MQTT_CLIENT_INFO * info, uint32_t force);
+_E_MQTT_ERRORS mqtt_client_tcp_delete(_S_MQTT_CLIENT_INFO *info, uint32_t force);
 
 /**
     @fn         mqtt_client_publish
@@ -211,7 +211,7 @@ _E_MQTT_ERRORS mqtt_client_tcp_delete(_S_MQTT_CLIENT_INFO * info, uint32_t force
     @note       If mqtt_client_publish_info is not called, the default qos of 0 and retain of 0 is used.
     @eg         mqtt_client_publish(cinfo, "my/data", "this is a test", 14, 2);
 */
-_E_MQTT_ERRORS mqtt_client_publish(_S_MQTT_CLIENT_INFO * info, char * _topic, const void * payload, uint32_t payload_len, uint32_t retry);
+_E_MQTT_ERRORS mqtt_client_publish(_S_MQTT_CLIENT_INFO *info, char *_topic, const void *payload, uint32_t payload_len, uint32_t retry);
 
 /**
     @fn         mqtt_client_set_publish_info
@@ -225,7 +225,7 @@ _E_MQTT_ERRORS mqtt_client_publish(_S_MQTT_CLIENT_INFO * info, char * _topic, co
     @note       if you want to change the qos and/or retain flag, call this function before calling the publish function
     @eg         mqtt_client_set_publish_info(cinfo, 2, 0);
 */
-void mqtt_client_set_publish_info(_S_MQTT_CLIENT_INFO * info, uint32_t qos, uint32_t retain);
+void mqtt_client_set_publish_info(_S_MQTT_CLIENT_INFO *info, uint32_t qos, uint32_t retain);
 
 /**
     @fn         mqtt_client_disconnect
@@ -241,7 +241,7 @@ void mqtt_client_set_publish_info(_S_MQTT_CLIENT_INFO * info, uint32_t qos, uint
                     a direct tcp close is not performed.
     @eg         mqtt_client_disconnect(cinfo, 0);
 */
-_E_MQTT_ERRORS mqtt_client_disconnect(_S_MQTT_CLIENT_INFO * info, uint32_t reconnect);
+_E_MQTT_ERRORS mqtt_client_disconnect(_S_MQTT_CLIENT_INFO *info, uint32_t reconnect);
 
 /**
     @fn         mqtt_client_delete
@@ -255,7 +255,7 @@ _E_MQTT_ERRORS mqtt_client_disconnect(_S_MQTT_CLIENT_INFO * info, uint32_t recon
                     also delete the pointer passed. So do not use the passed variable after calling this function.
     @eg         mqtt_client_delete(cinfo);
 */
-_E_MQTT_ERRORS mqtt_client_delete(_S_MQTT_CLIENT_INFO * info);
+_E_MQTT_ERRORS mqtt_client_delete(_S_MQTT_CLIENT_INFO *info);
 
 /**
     @fn         mqtt_client_subscribe
@@ -281,8 +281,8 @@ _E_MQTT_ERRORS mqtt_client_delete(_S_MQTT_CLIENT_INFO * info);
                     ***You can use same function or different functions for upcall with each topic
     @eg         mqtt_client_subscribe(cinfo, "my/topic/subs", 1, _upcall_func);
 */
-_E_MQTT_ERRORS mqtt_client_subscribe(_S_MQTT_CLIENT_INFO * info, char * subscribe_topic, int32_t qos,
-                                     uint32_t (*subscribe_func)(_S_MQTT_SUBSCRIBE_INFO * sinfo, uint32_t qos, uint32_t dup, uint32_t retained, void * payload, uint32_t payload_len));
+_E_MQTT_ERRORS mqtt_client_subscribe(_S_MQTT_CLIENT_INFO *info, char *subscribe_topic, int32_t qos,
+                                     uint32_t (*subscribe_func)(_S_MQTT_SUBSCRIBE_INFO *sinfo, uint32_t qos, uint32_t dup, uint32_t retained, void *payload, uint32_t payload_len));
 
 /**
     @fn         mqtt_client_unsubscribe
@@ -297,7 +297,7 @@ _E_MQTT_ERRORS mqtt_client_subscribe(_S_MQTT_CLIENT_INFO * info, char * subscrib
                     inside the structure, nothing will be done.
     @eg         mqtt_client_unsubsscribe(cinfo, "my/topic/subs");
 */
-_E_MQTT_ERRORS mqtt_client_unsubscribe(_S_MQTT_CLIENT_INFO * info, char * stopic);
+_E_MQTT_ERRORS mqtt_client_unsubscribe(_S_MQTT_CLIENT_INFO *info, char *stopic);
 
 /**
     @fn         mqtt_client_error_to_string
@@ -307,7 +307,7 @@ _E_MQTT_ERRORS mqtt_client_unsubscribe(_S_MQTT_CLIENT_INFO * info, char * stopic
 
     @note       used during debug
 */
-const char * mqtt_client_error_to_string(_E_MQTT_ERRORS err);
+const char *mqtt_client_error_to_string(_E_MQTT_ERRORS err);
 
 /**
     @fn         mqtt_client_upcall_argument
@@ -321,5 +321,5 @@ const char * mqtt_client_error_to_string(_E_MQTT_ERRORS err);
                     the passed argument is saved to the variable upcall_arg and to be used from the structure pointer
                     directly.
 */
-void mqtt_client_upcall_argument(_S_MQTT_CLIENT_INFO * info, void * arg);
+void mqtt_client_upcall_argument(_S_MQTT_CLIENT_INFO *info, void *arg);
 #endif
