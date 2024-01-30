@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>mbedTLS_ECDH</name>
+	<name>mbedTLS_ECDSA</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -71,9 +71,9 @@
 			<locationURI>$%7BPARENT-4-PROJECT_LOC%7D/ThirdParty/mbedtls/tests/src/random.c</locationURI>
 		</link>
 		<link>
-			<name>User/test_suite_ecdh.cpp</name>
+			<name>User/test_suite_ecdsa.cpp</name>
 			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/test_suite_ecdh.c</locationURI>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/test_suite_ecdsa.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

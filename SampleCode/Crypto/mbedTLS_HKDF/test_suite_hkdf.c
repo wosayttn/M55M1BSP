@@ -418,7 +418,6 @@ void test_test_hkdf_sha256(data_t *ikm, data_t *salt, data_t *info,
     int ret;
     size_t mylen;
     unsigned char okm[128] = { '\0' };
-    unsigned char okm_char[128] = { '\0' };
     MD_PSA_INIT();
 
     const mbedtls_md_info_t *md = mbedtls_md_info_from_type(MBEDTLS_MD_SHA256);//0x04 for SHA256
@@ -1946,9 +1945,6 @@ void SysTick_Handler()
  */
 int main()
 {
-    int argc;
-    const char *argv[] = { 0 };
-
     /* Unlock protected registers */
     SYS_UnlockReg();
 

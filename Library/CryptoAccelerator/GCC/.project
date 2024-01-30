@@ -205,6 +205,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/ThirdParty/mbedtls/library/ecjpake.c</locationURI>
 		</link>
         <link>
+			<name>mbedcrypto/ecp.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/ThirdParty/mbedtls/library/ecp.c</locationURI>
+		</link>
+        <link>
 			<name>mbedcrypto/ecp_curves.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/ThirdParty/mbedtls/library/ecp_curves.c</locationURI>
