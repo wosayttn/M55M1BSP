@@ -83,7 +83,7 @@ static void SYS_Init(void)
     /* Set multi-function pins for DMIC */
     SET_DMIC0_CLK_PB4();
     SET_DMIC0_DAT_PB5();
-	SYS->GPB_MFOS = BIT5;
+    SYS->GPB_MFOS = BIT5;
 
 }
 

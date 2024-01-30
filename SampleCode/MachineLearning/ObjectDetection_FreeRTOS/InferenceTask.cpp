@@ -29,8 +29,8 @@ bool InferenceProcess::RunJob(
     info("Inference process task run job...\n");
 
 #if defined(__PROFILE__)
-	uint64_t u64StartCycle;
-	uint64_t u64EndCycle;
+    uint64_t u64StartCycle;
+    uint64_t u64EndCycle;
 
     profiler.StartProfiling("Inference");
 #endif
@@ -46,9 +46,9 @@ bool InferenceProcess::RunJob(
     TfLiteTensor *modelOutput1 = m_model->GetOutputTensor(1);
 
 #if defined(__PROFILE__)
-		u64StartCycle = pmu_get_systick_Count();
+    u64StartCycle = pmu_get_systick_Count();
 #endif
-	
+
     pPostProc->RunPostProcessing(
         mode1Rows,
         modelCols,
@@ -59,8 +59,8 @@ bool InferenceProcess::RunJob(
         *results);
 
 #if defined(__PROFILE__)
-		u64EndCycle = pmu_get_systick_Count();
-		info("post processing cycles %llu \n", (u64EndCycle - u64StartCycle));
+    u64EndCycle = pmu_get_systick_Count();
+    info("post processing cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
 
     return runInf;

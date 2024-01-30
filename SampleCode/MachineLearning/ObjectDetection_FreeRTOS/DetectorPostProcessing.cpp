@@ -52,7 +52,7 @@ void DetectorPostprocessing::RunPostProcessing(
     net.inputWidth = static_cast<int>(imgNetCols);
     net.inputHeight = static_cast<int>(imgNetRows);
     net.numClasses = m_numClasses;
-	
+
 
     Branch branches0;
     Branch branches1;
@@ -169,7 +169,7 @@ void DetectorPostprocessing::RunPostProcessing(
 
 #if defined (__ICCARM__)
     net.branches.erase(net.branches.begin(), net.branches.end());
-#endif    
+#endif
 }
 
 

@@ -860,7 +860,7 @@ public:
                   "Traits::index_t must be an unsigned integral type");
     static_assert(sizeof(index_t) >= sizeof(size_t),
                   "Traits::index_t must be at least as wide as Traits::size_t");
-    static_assert((BLOCK_SIZE > 1) && !(BLOCK_SIZE & (BLOCK_SIZE - 1)),
+    static_assert((BLOCK_SIZE > 1)&& !(BLOCK_SIZE & (BLOCK_SIZE - 1)),
                   "Traits::BLOCK_SIZE must be a power of 2 (and at least 2)");
     static_assert((EXPLICIT_BLOCK_EMPTY_COUNTER_THRESHOLD > 1) &&
                   !(EXPLICIT_BLOCK_EMPTY_COUNTER_THRESHOLD &

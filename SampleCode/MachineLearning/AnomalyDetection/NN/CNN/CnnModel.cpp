@@ -22,7 +22,7 @@
 #ifdef CNN
 
 #ifndef ACTIVATION_BUF_SZ
-#define ACTIVATION_BUF_SZ       AD_ARENA /* default value of 128kiB */
+    #define ACTIVATION_BUF_SZ       AD_ARENA /* default value of 128kiB */
 #endif /* ACTIVATION_BUF_SZ */
 
 uint8_t  _tensor_arena[ACTIVATION_BUF_SZ] ALIGNMENT_ATTRIBUTE;
@@ -32,7 +32,7 @@ CNNModel::CNNModel()
 
 }
 
-const tflite::MicroOpResolver& CNNModel::GetOpResolver()
+const tflite::MicroOpResolver &CNNModel::GetOpResolver()
 {
     return this->_opResolver;
 }
@@ -53,17 +53,21 @@ bool CNNModel::EnlistOperations()
     this->_opResolver.AddMean();
     this->_opResolver.AddPad();
 
-    if (kTfLiteOk == this->_opResolver.AddEthosU()) {
+    if (kTfLiteOk == this->_opResolver.AddEthosU())
+    {
         printf("Added %s support to op resolver\n",
                tflite::GetString_ETHOSU());
-    } else {
+    }
+    else
+    {
         printf("Failed to add Arm NPU support to op resolver.");
         return false;
     }
+
     return true;
 }
 
-uint8_t* CNNModel::GetTensorArena()
+uint8_t *CNNModel::GetTensorArena()
 {
     return _tensor_arena;
 }

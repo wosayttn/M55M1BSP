@@ -47,8 +47,8 @@ static void SYS_Init(void)
     /* Enable CCAP module clock */
     CLK_EnableModuleClock(CCAP0_MODULE);
 
-	/* Select UART module clock source as HIRC and UART module clock divider as 1 */
-	SetDebugUartCLK();
+    /* Select UART module clock source as HIRC and UART module clock divider as 1 */
+    SetDebugUartCLK();
 
 
     /*---------------------------------------------------------------------------------------------------------*/
@@ -56,7 +56,7 @@ static void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART RXD and TXD */
-	SetDebugUartMFP();
+    SetDebugUartMFP();
 }
 
 

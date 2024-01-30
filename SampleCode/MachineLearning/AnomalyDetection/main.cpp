@@ -76,7 +76,7 @@ void sensor_timer_run(void)
 /*------------------------------------------------------------------------------------------*/
 void TIMER0_IRQHandler(void)
 {
-    u8TimeUpFlag =1;
+    u8TimeUpFlag = 1;
     // clear timer interrupt flag
     TIMER_ClearIntFlag(TIMER0);
 }
@@ -100,7 +100,7 @@ uint64_t Get_SysTick_Cycle_Count_Export(void)
 
 int Init_SysTick_Export(void)
 {
-    const uint32_t ticks_10ms = SystemCoreClock/100 + 1;
+    const uint32_t ticks_10ms = SystemCoreClock / 100 + 1;
     int err = 0;
 
     /* Reset CPU cycle count value. */
@@ -117,7 +117,8 @@ int Init_SysTick_Export(void)
     NVIC_EnableIRQ(SysTick_IRQn);
 
     /* Wait for SysTick to kick off */
-    while (!err && !SysTick->VAL) {
+    while (!err && !SysTick->VAL)
+    {
         __NOP();
     }
 
@@ -233,7 +234,8 @@ static void loadAndEnableConfig(ARM_MPU_Region_t const *table, uint32_t cnt)
 
 
 
-int main(void) {
+int main(void)
+{
 
     float cc[IMU_DATAIN_SIZE];
     float err_mae, temp;
@@ -242,7 +244,7 @@ int main(void) {
     g_u32Ticks = 0;
     s_u8CopygsensorData = 0;
     err_mae = 0;
-    temp =0;
+    temp = 0;
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -265,7 +267,8 @@ int main(void) {
     int state;
 
     /* If Arm Ethos-U NPU is to be used, we initialise it here */
-    if (0 != (state = arm_ethosu_npu_init())) {
+    if (0 != (state = arm_ethosu_npu_init()))
+    {
         return state;
     }
 
@@ -302,10 +305,10 @@ int main(void) {
     sensor_timer_run();
 
     /*Looping start here*/
-    while(1)
+    while (1)
     {
 
-        if(u8TimeUpFlag==1)
+        if (u8TimeUpFlag == 1)
         {
             /*
                 Get IMU 3-axis raw data, keep in gsensorBuffer, float type
@@ -315,7 +318,8 @@ int main(void) {
             u8TimeUpFlag = 0;
 
         }
-        if(s_u8CopygsensorData==1)
+
+        if (s_u8CopygsensorData == 1)
         {
 
             Init_SysTick_Export();
@@ -327,24 +331,30 @@ int main(void) {
             //printf(" g_u32Ticks_end=%d ticks\n", g_u32Ticks_end);
             err_mae = 0;
             temp = 0;
+
             for (uint16_t i = 0; i < IMU_DATAIN_SIZE; i++)
             {
 
                 cc[i]  = mainclassify.outQuantParams.scale *
-                         (float) (((int8_t)(mainclassify.output[i])) - mainclassify.outQuantParams.offset);
+                         (float)(((int8_t)(mainclassify.output[i])) - mainclassify.outQuantParams.offset);
 
                 /*MAE computation*/
-                temp = (float)(cc[i])-(mainclassify.gsensorBuffer[i]);
-                if(temp<0) temp = (-temp);
-                err_mae +=temp;
+                temp = (float)(cc[i]) - (mainclassify.gsensorBuffer[i]);
+
+                if (temp < 0) temp = (-temp);
+
+                err_mae += temp;
 
             }
-            err_mae/=IMU_DATAIN_SIZE;
+
+            err_mae /= IMU_DATAIN_SIZE;
+
             //printf("mae = %f\r\n",err_mae);
-            if(mainclassify.GetAnomalyDetectResult(err_mae))
+            if (mainclassify.GetAnomalyDetectResult(err_mae))
                 printf("ANOMAL! Please put the boad still and face up. \r\n");
-			else
-			    printf(".\r\n");
+            else
+                printf(".\r\n");
+
             s_u8CopygsensorData = 0;
         }
 

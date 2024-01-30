@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.cpp
  * @version  V1.00
- * @brief    VWW network sample. Demonstrate person detect. 
+ * @brief    VWW network sample. Demonstrate person detect.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -123,7 +123,7 @@ int main()
                          eMPU_ATTR_CACHEABLE_WTRA) // Attribute index - Write-Through, Read-allocate
         },
 #if defined (__USE_CCAP__)
-		{
+        {
             // Image data from CCAP DMA, so must set frame buffer to Non-cache attribute
             ARM_MPU_RBAR(((unsigned int)fb_array),        // Base
                          ARM_MPU_SH_NON,    // Non-shareable
@@ -182,20 +182,20 @@ int main()
 #if defined(__PROFILE__)
 
     arm::app::Profiler profiler;
-	uint64_t u64StartCycle;
-	uint64_t u64EndCycle;	
-	uint64_t u64CCAPStartCycle;
-	uint64_t u64CCAPEndCycle;	
+    uint64_t u64StartCycle;
+    uint64_t u64EndCycle;
+    uint64_t u64CCAPStartCycle;
+    uint64_t u64CCAPEndCycle;
 #else
-	pmu_reset_counters();
+    pmu_reset_counters();
 #endif
 
 #define EACH_PERF_SEC 5
-	uint64_t u64PerfCycle;
-	uint64_t u64PerfFrames = 0;
-	
-	u64PerfCycle = pmu_get_systick_Count();
-	u64PerfCycle += (SystemCoreClock * EACH_PERF_SEC);
+    uint64_t u64PerfCycle;
+    uint64_t u64PerfFrames = 0;
+
+    u64PerfCycle = pmu_get_systick_Count();
+    u64PerfCycle += (SystemCoreClock * EACH_PERF_SEC);
 
 #if defined (__USE_CCAP__)
     //Setup image senosr
@@ -204,10 +204,10 @@ int main()
 #endif
 
 #if defined (__USE_DISPLAY__)
-	char szDisplayText[100];
+    char szDisplayText[100];
 
-	Display_Init();
-	Display_ClearLCD(C_WHITE);
+    Display_Init();
+    Display_ClearLCD(C_WHITE);
 #endif
 
 #if !defined (__USE_CCAP__)
@@ -256,22 +256,22 @@ int main()
 
 #if defined (__USE_DISPLAY__)
         //Display image on LCD
-		S_DISP_RECT sDispRect;
-		
-		sDispRect.u32TopLeftX = 0;
-		sDispRect.u32TopLeftY = 0;
-		sDispRect.u32BottonRightX = (frameBuffer.w - 1);
-		sDispRect.u32BottonRightY = (frameBuffer.h - 1);
+        S_DISP_RECT sDispRect;
+
+        sDispRect.u32TopLeftX = 0;
+        sDispRect.u32TopLeftY = 0;
+        sDispRect.u32BottonRightX = (frameBuffer.w - 1);
+        sDispRect.u32BottonRightY = (frameBuffer.h - 1);
 
 #if defined(__PROFILE__)
-		u64StartCycle = pmu_get_systick_Count();
+        u64StartCycle = pmu_get_systick_Count();
 #endif
 
-		Display_FillRect((uint16_t *)frameBuffer.data ,&sDispRect);
+        Display_FillRect((uint16_t *)frameBuffer.data, &sDispRect);
 
 #if defined(__PROFILE__)
-		u64EndCycle = pmu_get_systick_Count();
-		info("display image cycles %llu \n", (u64EndCycle - u64StartCycle));
+        u64EndCycle = pmu_get_systick_Count();
+        info("display image cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
 
 #endif
@@ -294,27 +294,27 @@ int main()
             resizeImg.pixfmt = PIXFORMAT_RGB888;
 
 #if defined(__PROFILE__)
-		u64StartCycle = pmu_get_systick_Count();
+        u64StartCycle = pmu_get_systick_Count();
 #endif
         imlib_nvt_scale(&frameBuffer, &resizeImg, &roi);
 #if defined(__PROFILE__)
-		u64EndCycle = pmu_get_systick_Count();
-		info("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
+        u64EndCycle = pmu_get_systick_Count();
+        info("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
 
 #if defined (__USE_CCAP__)
         //Capture new image
 #if defined(__PROFILE__)
-		u64CCAPStartCycle = pmu_get_systick_Count();
+        u64CCAPStartCycle = pmu_get_systick_Count();
 #endif
         ImageSensor_TriggerCapture((uint32_t)frameBuffer.data);
-#endif		
-
-#if defined(__PROFILE__)
-		u64StartCycle = pmu_get_systick_Count();
 #endif
 
-		//Quantize input tensor data
+#if defined(__PROFILE__)
+        u64StartCycle = pmu_get_systick_Count();
+#endif
+
+        //Quantize input tensor data
         auto *req_data = static_cast<uint8_t *>(inputTensor->data.data);
         auto *signed_req_data = static_cast<int8_t *>(inputTensor->data.data);
 
@@ -325,15 +325,15 @@ int main()
         }
 
 #if defined(__PROFILE__)
-		u64EndCycle = pmu_get_systick_Count();
-		info("quantize cycles %llu \n", (u64EndCycle - u64StartCycle));
+        u64EndCycle = pmu_get_systick_Count();
+        info("quantize cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
 
 #if !defined (__USE_CCAP__)
         /* Run inference over this image. */
         info("Running inference on image %" PRIu32 " => %s\n", u8ImgIdx, get_filename(u8ImgIdx));
 #endif
-		
+
 #if defined(__PROFILE__)
         profiler.StartProfiling("Inference");
 #endif
@@ -353,26 +353,26 @@ int main()
 
         ImageSensor_WaitCaptureDone();
 #if defined(__PROFILE__)
-		u64CCAPEndCycle = pmu_get_systick_Count();
-		info("ccap capture cycles %llu \n", (u64CCAPEndCycle - u64CCAPStartCycle));
+        u64CCAPEndCycle = pmu_get_systick_Count();
+        info("ccap capture cycles %llu \n", (u64CCAPEndCycle - u64CCAPStartCycle));
 #endif
-#endif		
-		
+#endif
+
         std::vector<arm::app::ClassificationResult> results;
 
 #if defined(__PROFILE__)
-		u64StartCycle = pmu_get_systick_Count();
+        u64StartCycle = pmu_get_systick_Count();
 #endif
 
         classifier.GetClassificationResults(outputTensor, results,
                                             labels, 1,
                                             false);
 #if defined(__PROFILE__)
-		u64EndCycle = pmu_get_systick_Count();
-		info("post processing cycles %llu \n", (u64EndCycle - u64StartCycle));
+        u64EndCycle = pmu_get_systick_Count();
+        info("post processing cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
 
-		//show result
+        //show result
         info("Final results:\n");
 
         for (int i = 0; i < results.size(); i ++)
@@ -381,58 +381,59 @@ int main()
                  results[i].m_labelIdx, results[i].m_normalisedVal,
                  results[i].m_label.c_str());
 #if defined (__USE_DISPLAY__)
-			sprintf(szDisplayText,"%s",results[i].m_label.c_str());
+            sprintf(szDisplayText, "%s", results[i].m_label.c_str());
 
-			sDispRect.u32TopLeftX = 0;
-			sDispRect.u32TopLeftY = frameBuffer.h;
-			sDispRect.u32BottonRightX = (frameBuffer.w);
-			sDispRect.u32BottonRightY = (frameBuffer.h + FONT_HTIGHT - 1);
+            sDispRect.u32TopLeftX = 0;
+            sDispRect.u32TopLeftY = frameBuffer.h;
+            sDispRect.u32BottonRightX = (frameBuffer.w);
+            sDispRect.u32BottonRightY = (frameBuffer.h + FONT_HTIGHT - 1);
 
-			Display_ClearRect(C_WHITE, &sDispRect);
-			Display_PutText(
-				szDisplayText,
-				strlen(szDisplayText),
-				0,
-				frameBuffer.h,
-				C_BLUE,
-				C_WHITE,		
-				true
-			);
+            Display_ClearRect(C_WHITE, &sDispRect);
+            Display_PutText(
+                szDisplayText,
+                strlen(szDisplayText),
+                0,
+                frameBuffer.h,
+                C_BLUE,
+                C_WHITE,
+                true
+            );
 #endif
         }
 
 #if defined(__PROFILE__)
-		profiler.PrintProfilingResult();
+        profiler.PrintProfilingResult();
 #endif
-		u64PerfFrames ++;
-		if(pmu_get_systick_Count() > u64PerfCycle)
-		{
-			info("Total inference rate: %llu\n", u64PerfFrames / EACH_PERF_SEC);
+        u64PerfFrames ++;
+
+        if (pmu_get_systick_Count() > u64PerfCycle)
+        {
+            info("Total inference rate: %llu\n", u64PerfFrames / EACH_PERF_SEC);
 
 #if defined (__USE_DISPLAY__)
-			sprintf(szDisplayText,"Frame Rate %llu",u64PerfFrames / EACH_PERF_SEC);
+            sprintf(szDisplayText, "Frame Rate %llu", u64PerfFrames / EACH_PERF_SEC);
 
-			sDispRect.u32TopLeftX = 0;
-			sDispRect.u32TopLeftY = frameBuffer.h + FONT_HTIGHT;
-			sDispRect.u32BottonRightX = (frameBuffer.w );
-			sDispRect.u32BottonRightY = (frameBuffer.h + (2 * FONT_HTIGHT) - 1);
+            sDispRect.u32TopLeftX = 0;
+            sDispRect.u32TopLeftY = frameBuffer.h + FONT_HTIGHT;
+            sDispRect.u32BottonRightX = (frameBuffer.w);
+            sDispRect.u32BottonRightY = (frameBuffer.h + (2 * FONT_HTIGHT) - 1);
 
-			Display_ClearRect(C_WHITE, &sDispRect);
-			Display_PutText(
-				szDisplayText,
-				strlen(szDisplayText),
-				0,
-				frameBuffer.h + FONT_HTIGHT,
-				C_BLUE,
-				C_WHITE,		
-				true
-			);
+            Display_ClearRect(C_WHITE, &sDispRect);
+            Display_PutText(
+                szDisplayText,
+                strlen(szDisplayText),
+                0,
+                frameBuffer.h + FONT_HTIGHT,
+                C_BLUE,
+                C_WHITE,
+                true
+            );
 #endif
 
-			u64PerfCycle = pmu_get_systick_Count();
-			u64PerfCycle += (SystemCoreClock * EACH_PERF_SEC);
-			u64PerfFrames = 0;
-		}
+            u64PerfCycle = pmu_get_systick_Count();
+            u64PerfCycle += (SystemCoreClock * EACH_PERF_SEC);
+            u64PerfFrames = 0;
+        }
 
 
         u8ImgIdx ++;

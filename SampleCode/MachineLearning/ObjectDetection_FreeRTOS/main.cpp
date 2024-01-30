@@ -41,7 +41,7 @@
 #define MAINLOOP_TASK_PRIO  3
 #define INFERENCE_TASK_PRIO 4
 
-#define NUM_FRAMEBUF 2	//1 or 2
+#define NUM_FRAMEBUF 2  //1 or 2
 
 typedef enum
 {
@@ -139,7 +139,7 @@ __attribute__((section(".bss.sram.data"), aligned(32))) static char fb_array[OMV
 __attribute__((section(".bss.sram.data"), aligned(32))) static char jpeg_array[OMV_JPEG_BUF_SIZE];
 
 #if (NUM_FRAMEBUF == 2)
-__attribute__((section(".bss.sram.data"), aligned(32))) static char frame_buf1[OMV_FB_SIZE];
+    __attribute__((section(".bss.sram.data"), aligned(32))) static char frame_buf1[OMV_FB_SIZE];
 #endif
 
 char *_fb_base = NULL;
@@ -247,7 +247,7 @@ static void main_task(void *pvParameters)
                          eMPU_ATTR_DEV_nGnRnE) // Attribute index - Device
         },
 #if defined (__USE_CCAP__)
-		{
+        {
             // Image data from CCAP DMA, so must set frame buffer to Non-cache attribute
             ARM_MPU_RBAR(((unsigned int)fb_array),        // Base
                          ARM_MPU_SH_NON,    // Non-shareable
@@ -258,7 +258,7 @@ static void main_task(void *pvParameters)
                          eMPU_ATTR_NON_CACHEABLE) // NonCache
         },
 #if (NUM_FRAMEBUF == 2)
-		{
+        {
             // Image data from CCAP DMA, so must set frame buffer to Non-cache attribute
             ARM_MPU_RBAR(((unsigned int)frame_buf1),        // Base
                          ARM_MPU_SH_NON,    // Non-shareable
@@ -335,20 +335,20 @@ static void main_task(void *pvParameters)
 
 #if defined(__PROFILE__)
     arm::app::Profiler profiler;
-	uint64_t u64StartCycle;
-	uint64_t u64EndCycle;	
-	uint64_t u64CCAPStartCycle;
-	uint64_t u64CCAPEndCycle;	
+    uint64_t u64StartCycle;
+    uint64_t u64EndCycle;
+    uint64_t u64CCAPStartCycle;
+    uint64_t u64CCAPEndCycle;
 #else
-	pmu_reset_counters();
+    pmu_reset_counters();
 #endif
 
 #define EACH_PERF_SEC 5
-	uint64_t u64PerfCycle = 0;
-	uint64_t u64PerfFrames = 0;
-	
-	u64PerfCycle = (uint64_t)pmu_get_systick_Count() + (uint64_t)(SystemCoreClock * EACH_PERF_SEC);
-	info("init perfcycles %llu \n", u64PerfCycle);
+    uint64_t u64PerfCycle = 0;
+    uint64_t u64PerfFrames = 0;
+
+    u64PerfCycle = (uint64_t)pmu_get_systick_Count() + (uint64_t)(SystemCoreClock * EACH_PERF_SEC);
+    info("init perfcycles %llu \n", u64PerfCycle);
 
     S_FRAMEBUF *infFramebuf;
     S_FRAMEBUF *fullFramebuf;
@@ -363,16 +363,16 @@ static void main_task(void *pvParameters)
 #endif
 
 #if defined (__USE_DISPLAY__)
-	char szDisplayText[160];
-	S_DISP_RECT sDispRect;
+    char szDisplayText[160];
+    S_DISP_RECT sDispRect;
 
-	Display_Init();
-	Display_ClearLCD(C_WHITE);
+    Display_Init();
+    Display_ClearLCD(C_WHITE);
 #endif
 
     while (1)
     {
-		
+
         infFramebuf = get_inf_framebuf();
 
         if (infFramebuf)
@@ -408,18 +408,19 @@ static void main_task(void *pvParameters)
             resizeImg.pixfmt = PIXFORMAT_RGB888;
 
 #if defined(__PROFILE__)
-		u64StartCycle = pmu_get_systick_Count();
+            u64StartCycle = pmu_get_systick_Count();
 #endif
             imlib_nvt_scale(&fullFramebuf->frameImage, &resizeImg, &roi);
 
 #if defined(__PROFILE__)
-		u64EndCycle = pmu_get_systick_Count();
-		info("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
+            u64EndCycle = pmu_get_systick_Count();
+            info("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
 
 #if defined(__PROFILE__)
-		u64StartCycle = pmu_get_systick_Count();
+            u64StartCycle = pmu_get_systick_Count();
 #endif
+
             /* If the data is signed. */
             if (model.IsDataSigned())
             {
@@ -427,8 +428,8 @@ static void main_task(void *pvParameters)
             }
 
 #if defined(__PROFILE__)
-			u64EndCycle = pmu_get_systick_Count();
-			info("quantize cycles %llu \n", (u64EndCycle - u64StartCycle));
+            u64EndCycle = pmu_get_systick_Count();
+            info("quantize cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
             //trigger inference
             inferenceJob->responseQueue = inferenceResponseQueue;
@@ -451,52 +452,54 @@ static void main_task(void *pvParameters)
 
             //display result image
 #if defined (__USE_DISPLAY__)
-			//Display image on LCD			
-			sDispRect.u32TopLeftX = 0;
-			sDispRect.u32TopLeftY = 0;
-			sDispRect.u32BottonRightX = (infFramebuf->frameImage.w - 1);
-			sDispRect.u32BottonRightY = (infFramebuf->frameImage.h - 1);
+            //Display image on LCD
+            sDispRect.u32TopLeftX = 0;
+            sDispRect.u32TopLeftY = 0;
+            sDispRect.u32BottonRightX = (infFramebuf->frameImage.w - 1);
+            sDispRect.u32BottonRightY = (infFramebuf->frameImage.h - 1);
 
 #if defined(__PROFILE__)
-			u64StartCycle = pmu_get_systick_Count();
+            u64StartCycle = pmu_get_systick_Count();
 #endif
 
-			Display_FillRect((uint16_t *)infFramebuf->frameImage.data ,&sDispRect);
+            Display_FillRect((uint16_t *)infFramebuf->frameImage.data, &sDispRect);
 
 #if defined(__PROFILE__)
-			u64EndCycle = pmu_get_systick_Count();
-			info("display image cycles %llu \n", (u64EndCycle - u64StartCycle));
+            u64EndCycle = pmu_get_systick_Count();
+            info("display image cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
 
 #endif
 
-			u64PerfFrames ++;
-			if((uint64_t) pmu_get_systick_Count() > u64PerfCycle)
-			{
-				info("Total inference rate: %llu\n", u64PerfFrames / EACH_PERF_SEC);
+            u64PerfFrames ++;
+
+            if ((uint64_t) pmu_get_systick_Count() > u64PerfCycle)
+            {
+                info("Total inference rate: %llu\n", u64PerfFrames / EACH_PERF_SEC);
 #if defined (__USE_DISPLAY__)
-				sprintf(szDisplayText,"Frame Rate %llu",u64PerfFrames / EACH_PERF_SEC);
-//				sprintf(szDisplayText,"Time %llu",(uint64_t) pmu_get_systick_Count() / (uint64_t)SystemCoreClock);
+                sprintf(szDisplayText, "Frame Rate %llu", u64PerfFrames / EACH_PERF_SEC);
+                //              sprintf(szDisplayText,"Time %llu",(uint64_t) pmu_get_systick_Count() / (uint64_t)SystemCoreClock);
 
-				sDispRect.u32TopLeftX = 0;
-				sDispRect.u32TopLeftY = frameBuffer.h + FONT_HTIGHT;
-				sDispRect.u32BottonRightX = (frameBuffer.w );
-				sDispRect.u32BottonRightY = (frameBuffer.h + (2 * FONT_HTIGHT) - 1);
+                sDispRect.u32TopLeftX = 0;
+                sDispRect.u32TopLeftY = frameBuffer.h + FONT_HTIGHT;
+                sDispRect.u32BottonRightX = (frameBuffer.w);
+                sDispRect.u32BottonRightY = (frameBuffer.h + (2 * FONT_HTIGHT) - 1);
 
-				Display_ClearRect(C_WHITE, &sDispRect);
-				Display_PutText(
-					szDisplayText,
-					strlen(szDisplayText),
-					0,
-					frameBuffer.h + FONT_HTIGHT,
-					C_BLUE,
-					C_WHITE,		
-					false
-				);
+                Display_ClearRect(C_WHITE, &sDispRect);
+                Display_PutText(
+                    szDisplayText,
+                    strlen(szDisplayText),
+                    0,
+                    frameBuffer.h + FONT_HTIGHT,
+                    C_BLUE,
+                    C_WHITE,
+                    false
+                );
 #endif
-				u64PerfCycle = (uint64_t)pmu_get_systick_Count() + (uint64_t)(SystemCoreClock * EACH_PERF_SEC);
-				u64PerfFrames = 0;
-			}
+                u64PerfCycle = (uint64_t)pmu_get_systick_Count() + (uint64_t)(SystemCoreClock * EACH_PERF_SEC);
+                u64PerfFrames = 0;
+            }
+
             PresentInferenceResult(infFramebuf->results, labels);
             infFramebuf->eState = eFRAMEBUF_EMPTY;
         }
@@ -511,44 +514,45 @@ static void main_task(void *pvParameters)
 
             while ((chStdIn = getchar()))
             {
-                    if (chStdIn == 'q')
-                    {
-                            vTaskDelete(nullptr);
-                            return;
-                    }
-                    else if (chStdIn != 'n')
-                    {
-                            break;
-                    }
+                if (chStdIn == 'q')
+                {
+                    vTaskDelete(nullptr);
+                    return;
+                }
+                else if (chStdIn != 'n')
+                {
+                    break;
+                }
             }
 
             const uint8_t *pu8ImgSrc = get_img_array(u8ImgIdx);
 
             if (nullptr == pu8ImgSrc)
             {
-                    printf_err("Failed to get image index %" PRIu32 " (max: %u)\n", u8ImgIdx,
-                                       NUMBER_OF_FILES - 1);
-                    vTaskDelete(nullptr);
-                    return;
+                printf_err("Failed to get image index %" PRIu32 " (max: %u)\n", u8ImgIdx,
+                           NUMBER_OF_FILES - 1);
+                vTaskDelete(nullptr);
+                return;
             }
 
             u8ImgIdx ++;
 
             if (u8ImgIdx >= NUMBER_OF_FILES)
-                    u8ImgIdx = 0;
+                u8ImgIdx = 0;
+
 #endif
-			
+
 #if defined (__USE_CCAP__)
             //capture frame from CCAP
 #if defined(__PROFILE__)
-		u64CCAPStartCycle = pmu_get_systick_Count();
+            u64CCAPStartCycle = pmu_get_systick_Count();
 #endif
 
-		ImageSensor_Capture((uint32_t)(emptyFramebuf->frameImage.data));
+            ImageSensor_Capture((uint32_t)(emptyFramebuf->frameImage.data));
 
 #if defined(__PROFILE__)
-		u64CCAPEndCycle = pmu_get_systick_Count();
-		info("ccap capture cycles %llu \n", (u64CCAPEndCycle - u64CCAPStartCycle));
+            u64CCAPEndCycle = pmu_get_systick_Count();
+            info("ccap capture cycles %llu \n", (u64CCAPEndCycle - u64CCAPStartCycle));
 #endif
 
 #else
@@ -571,7 +575,7 @@ static void main_task(void *pvParameters)
             emptyFramebuf->eState = eFRAMEBUF_FULL;
         }
 
-		vTaskDelay(1);
+        vTaskDelay(1);
     }
 
 }

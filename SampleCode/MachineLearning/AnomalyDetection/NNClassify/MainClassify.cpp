@@ -14,16 +14,20 @@
 bool MainClassify::_InitModel()
 {
     this->model = std::unique_ptr<CNNModel>(new CNNModel());
-    if (this->model) {
+
+    if (this->model)
+    {
         return this->model->Init();
     }
+
     printf("Failed to allocate memory for the model\r\n");
     return false;
 }
 
-MainClassify::MainClassify(int8_t* pBuffer)
+MainClassify::MainClassify(int8_t *pBuffer)
 {
-    if (this->_InitModel()) {
+    if (this->_InitModel())
+    {
         this->gsensorBufferIdx = 0;
         this->gsensorBufferPtr = pBuffer;
         this->InitMainClassify();
@@ -32,7 +36,8 @@ MainClassify::MainClassify(int8_t* pBuffer)
 
 void MainClassify::InitMainClassify()
 {
-    if (!model->IsInited()) {
+    if (!model->IsInited())
+    {
         printf("Warning: model has not been initialised\r\n");
         model->Init();
     }
@@ -73,10 +78,10 @@ void MainClassify::FillInTensorData()
 {
 
     // Copy image into the TfLite tensor.
-    int8_t* inTensorData = tflite::GetTensorData<int8_t>(model->GetInputTensor());
-	
+    int8_t *inTensorData = tflite::GetTensorData<int8_t>(model->GetInputTensor());
+
     // Copy -sensor data into the TfLite tensor.
-    memcpy(inTensorData, gsensorBufferPtr, IMU_DATAIN_SIZE*1*sizeof(int8_t));
+    memcpy(inTensorData, gsensorBufferPtr, IMU_DATAIN_SIZE * 1 * sizeof(int8_t));
 }
 
 
@@ -88,58 +93,65 @@ void MainClassify::Classify()
     model->RunInference();
 
     // Get output from the TfLite tensor.
-    int8_t* outTensorData = tflite::GetTensorData<int8_t>(model->GetOutputTensor());
-    memcpy(output.data(), outTensorData, IMU_DATAIN_SIZE*1* sizeof(int8_t));
+    int8_t *outTensorData = tflite::GetTensorData<int8_t>(model->GetOutputTensor());
+    memcpy(output.data(), outTensorData, IMU_DATAIN_SIZE * 1 * sizeof(int8_t));
 
 }
 
 uint8_t MainClassify::FillSensorData(uint8_t u8Img)
 {
     float fBuff[3];
-    uint8_t ret=0;
-    if(gsensorBufferIdx < IMU_DATAIN_SIZE)
+    uint8_t ret = 0;
+
+    if (gsensorBufferIdx < IMU_DATAIN_SIZE)
     {
         MPU6500_readXYZ_mg(fBuff);
         this->gsensorBuffer[gsensorBufferIdx] = ((fBuff[0]) - VAL_NORMALIZE_MIN) / (VAL_NORMALIZE_MAX - VAL_NORMALIZE_MIN) ;
-        this->gsensorBuffer[gsensorBufferIdx+1] =  ((fBuff[1]) - VAL_NORMALIZE_MIN) / (VAL_NORMALIZE_MAX - VAL_NORMALIZE_MIN) ;
-        this->gsensorBuffer[gsensorBufferIdx+2] =  ((fBuff[2]) - VAL_NORMALIZE_MIN) / (VAL_NORMALIZE_MAX - VAL_NORMALIZE_MIN) ;
+        this->gsensorBuffer[gsensorBufferIdx + 1] = ((fBuff[1]) - VAL_NORMALIZE_MIN) / (VAL_NORMALIZE_MAX - VAL_NORMALIZE_MIN) ;
+        this->gsensorBuffer[gsensorBufferIdx + 2] = ((fBuff[2]) - VAL_NORMALIZE_MIN) / (VAL_NORMALIZE_MAX - VAL_NORMALIZE_MIN) ;
 
-        gsensorBufferIdx+=3;
+        gsensorBufferIdx += 3;
     }
     else
     {
         gsensorBufferIdx = 0;
-        ret =1;
+        ret = 1;
         //printf("FillSensorData FULL!\r\n");
     }
+
     return ret;
 }
 
 uint8_t MainClassify::QuantizeInputData()
 {
     uint8_t ret = 0;
-    float* fpImg = &this->gsensorBuffer[0];
+    float *fpImg = &this->gsensorBuffer[0];
     uint32_t ii;
-    for(ii=0; ii<IMU_DATAIN_SIZE; ii++)
+
+    for (ii = 0; ii < IMU_DATAIN_SIZE; ii++)
     {
         /*Quantize input data with input quantization param.*/
-        this->gsensorBufferPtr[ii] = (int8_t)(  (((float)(*fpImg++))) / inQuantParams.scale) + inQuantParams.offset;
+        this->gsensorBufferPtr[ii] = (int8_t)((((float)(*fpImg++))) / inQuantParams.scale) + inQuantParams.offset;
     }
+
     return ret;
 }
 
-QuantParams MainClassify::GetTensorQuantParams(TfLiteTensor* tensor)
+QuantParams MainClassify::GetTensorQuantParams(TfLiteTensor *tensor)
 {
-    QuantParams params = {.scale=0, .offset=0};
+    QuantParams params = {.scale = 0, .offset = 0};
+
     if (kTfLiteAffineQuantization == tensor->quantization.type)
     {
-        auto* quantParams = (TfLiteAffineQuantization*) (tensor->quantization.params);
+        auto *quantParams = (TfLiteAffineQuantization *)(tensor->quantization.params);
+
         if (quantParams && 0 == quantParams->quantized_dimension)
         {
             if (quantParams->scale->size)
             {
                 params.scale = quantParams->scale->data[0];
             }
+
             if (quantParams->zero_point->size)
             {
                 params.offset = quantParams->zero_point->data[0];
@@ -152,16 +164,17 @@ QuantParams MainClassify::GetTensorQuantParams(TfLiteTensor* tensor)
             params.offset = tensor->params.zero_point;
         }
     }
+
     return params;
 }
 
 int MainClassify::GetAnomalyDetectResult(float f_mae)
 {
     /*Check value range, mae must >=0*/
-    if(f_mae<0) return -1;
+    if (f_mae < 0) return -1;
 
-    if( f_mae > VAL_ANOMALY_IMU_00G_THRESHOLD) return 1;//Anomal
-	  else if( f_mae < (VAL_ANOMALY_IMU_00G_THRESHOLD-0.01)) return 1;//Anomal
+    if (f_mae > VAL_ANOMALY_IMU_00G_THRESHOLD) return 1;//Anomal
+    else if (f_mae < (VAL_ANOMALY_IMU_00G_THRESHOLD - 0.01)) return 1; //Anomal
     else return 0; //Normal
 
 }

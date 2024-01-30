@@ -16,7 +16,7 @@
 
 #define DESIGN_NAME "M55M1"
 //#define HYPERRAM_SPIM_PORT SPIM0
-#define HYPERRAM_SPIM_PORT SPIM1		//For NuMaker-M55M1 board
+#define HYPERRAM_SPIM_PORT SPIM1        //For NuMaker-M55M1 board
 
 static void SYS_Init(void)
 {

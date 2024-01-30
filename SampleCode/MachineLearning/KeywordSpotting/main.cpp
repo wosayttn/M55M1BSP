@@ -29,7 +29,7 @@
 #include "DMICRecord.h"
 
 #if defined(__PROFILE__)
-#include "Profiler.hpp"
+    #include "Profiler.hpp"
 #endif
 
 namespace arm
@@ -157,14 +157,14 @@ int main()
 
 #endif
 
-	
+
 #if defined(__PROFILE__)
     arm::app::Profiler profiler;
-	uint64_t u64StartCycle;
-	uint64_t u64EndCycle;	
+    uint64_t u64StartCycle;
+    uint64_t u64EndCycle;
 #endif
 
-	
+
 #if !defined(USE_DMIC)
     char chStdIn;
 
@@ -243,8 +243,9 @@ int main()
                  audioDataSlider.TotalStrides() + 1);
 
 #if defined(__PROFILE__)
-			u64StartCycle = pmu_get_systick_Count();
-#endif	
+            u64StartCycle = pmu_get_systick_Count();
+#endif
+
             /* Run the pre-processing, inference and post-processing. */
             if (!preProcess.DoPreProcess(inferenceWindow, arm::app::audio::KwsMFCC::ms_defaultSamplingFreq))
             {
@@ -253,13 +254,13 @@ int main()
             }
 
 #if defined(__PROFILE__)
-			u64EndCycle = pmu_get_systick_Count();
-			info("MFCC cycles %llu \n", (u64EndCycle - u64StartCycle));
+            u64EndCycle = pmu_get_systick_Count();
+            info("MFCC cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
 
-			
+
 #if defined(__PROFILE__)
-			profiler.StartProfiling("Inference");
+            profiler.StartProfiling("Inference");
 #endif
 
             if (!model.RunInference())
@@ -269,12 +270,12 @@ int main()
             }
 
 #if defined(__PROFILE__)
-			profiler.StopProfiling();
+            profiler.StopProfiling();
 #endif
 
 #if defined(__PROFILE__)
-			u64StartCycle = pmu_get_systick_Count();
-#endif	
+            u64StartCycle = pmu_get_systick_Count();
+#endif
 
             if (!postProcess.DoPostProcess())
             {
@@ -283,8 +284,8 @@ int main()
             }
 
 #if defined(__PROFILE__)
-			u64EndCycle = pmu_get_systick_Count();
-			info("Post process cycles %llu \n", (u64EndCycle - u64StartCycle));
+            u64EndCycle = pmu_get_systick_Count();
+            info("Post process cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
 
             /* Add results from this window to our final results vector. */
@@ -315,7 +316,7 @@ int main()
                      topKeyword.c_str(),
                      result.m_threshold);
 #endif
-			}
+            }
             else
             {
                 for (uint32_t j = 0; j < result.m_resultVec.size(); ++j)
