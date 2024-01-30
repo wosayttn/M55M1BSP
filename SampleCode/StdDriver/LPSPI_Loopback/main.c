@@ -1,9 +1,9 @@
 /******************************************************************************
- * @file     main.c
- * @version  V1.00
- * @brief    Implement LPSPI Master loop back transfer. This sample code needs to
- *           connect MISO_0 pin and MOSI_0 pin together. It will compare the
- *           received data with transmitted data.
+ * @file    main.c
+ * @version V1.00
+ * @brief   LPSPI read/write demo in LPPDMA mode.
+ *          Connecting LPSPI MISO and MOSI pins.
+ *          Both TX LPPDMA function and RX LPPDMA function will be enabled.
  *
  * @note
  * SPDX-License-Identifier: Apache-2.0

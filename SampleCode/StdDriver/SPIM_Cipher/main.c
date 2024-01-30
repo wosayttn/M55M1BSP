@@ -1,8 +1,9 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    Demonstrate SPIM DMA read/write with cipher enabled. This sample
- *           also dumps SPI flash content via I/O mode read to prove it is encrypted cipher context.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Show SPIM DMA read/write with cipher enabled. This sample code
+ *          also dumps SPI Flash content via I/O mode read to prove it is
+ *          encrypted cipher context.
  *
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/

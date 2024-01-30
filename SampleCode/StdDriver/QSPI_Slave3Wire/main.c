@@ -1,9 +1,9 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    Configure QSPI0 as Slave 3 wire mode and demonstrate how to
- *           communicate with an off-chip SPI Master device with FIFO mode.
- *           This sample code needs to work with SPI_MasterFIFOMode sample code.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Configure QSPI as Slave 3-wire mode and demonstrate how to communicate
+ *          with an off-chip SPI Master device with FIFO mode.
+ *          This sample code needs to work with SPI_MasterFIFOMode sample code.
  *
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

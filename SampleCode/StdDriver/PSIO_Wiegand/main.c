@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    Demonstrate how to implement Wiegand26 protocol by PSIO.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Demonstrate how to implement Wiegand26 protocol by PSIO.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

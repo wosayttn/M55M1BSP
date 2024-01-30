@@ -1,9 +1,9 @@
 /*************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    Implement USCI_SPI0 Master loop back transfer.
- *           This sample code needs to connect USCI_SPI0_MISO pin and USCI_SPI0_MOSI pin together.
- *           It will compare the received data with transmitted data.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Implement USCI_SPI0 master loop back transfer.
+ *          This sample code needs to connect USCI_SPI0_MISO pin and USCI_SPI0_MOSI pin together.
+ *          It will compare the received data with transmitted data.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

@@ -1,9 +1,9 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    Configure SPI0 as Slave mode and demonstrate how to communicate
- *           with an off-chip SPI Master device with FIFO mode. This sample
- *           code needs to work with SPI_MasterFifoMode sample code.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Configure SPI as slave mode and demonstrate how to communicate
+ *          with an off-chip SPI master device with FIFO mode.
+ *          This sample code needs to work with SPI_MasterFIFOMode sample code.
  *
  * @note
  * SPDX-License-Identifier: Apache-2.0

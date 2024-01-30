@@ -1,8 +1,9 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    Configure SPI0 as I2S Master mode and demonstrate how I2S works in Master mode.
- *           This sample code needs to work with I2S_Slave.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Configure SPI as I²S master mode and demonstrate how I²S works in master mode.
+ *          This sample code needs to work with SPII2S_Slave sample code.
+ *
  * @note
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    Demonstrate how to light up the WS1812B LED array.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Demonstrate how to light up the WS1812B LED array.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

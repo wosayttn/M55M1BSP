@@ -1,8 +1,8 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    Demonstrate how to do LPSPI loopback test in Auto-operation mode
- *           when chip enters power-down mode.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Demonstrate how to do LPSPI loopback test
+ *          in Auto-operation mode when chip enters Power-down mode
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

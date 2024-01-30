@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    MP3 player sample plays MP3 files stored on SD memory card.
+ * @file    main.c
+ * @version V1.00
+ * @brief   MP3 player sample plays MP3 files stored on SD memory card.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

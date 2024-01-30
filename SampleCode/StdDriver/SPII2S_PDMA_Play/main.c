@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    This is a I2S demo for playing data and demonstrate how I2S works with PDMA.
+ * @file    main.c
+ * @version V1.00
+ * @brief   An I2S demo for playing data and demonstrating how I2S works with PDMA.
  *
  * @note
  * SPDX-License-Identifier: Apache-2.0

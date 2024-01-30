@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    This sample show HyperRAM read/write through HyperBus Interface.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Show HyperRAM read/write through HyperBus Interface.
  *
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/

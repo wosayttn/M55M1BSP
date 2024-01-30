@@ -1,8 +1,9 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    Demonstrate SPIM DMM mode read function. This sample programs SPI
- *           flash with DMA write and verify flash with DMA read and DMM mode CPU read respectively.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Show SPIM DMM mode read function. This sample code programs
+ *          SPI Flash with DMA write and verify flash with DMA read
+ *          and DMM mode CPU read respectively.
  *
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/

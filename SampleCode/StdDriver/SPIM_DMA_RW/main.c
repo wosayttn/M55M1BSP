@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    Show SPIM DMA mode read/write function.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Show SPIM DMA mode read/write function.
  *
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/

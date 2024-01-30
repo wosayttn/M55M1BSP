@@ -1,7 +1,7 @@
 /******************************************************************************
- * @file     main.c
- * @version  V1.00
- * @brief    Access SPI flash using QSPI dual mode.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Access SPI flash using QSPI dual mode.
  *
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

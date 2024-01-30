@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    Access SPI flash through SPI interface.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Access SPI flash through SPI interface.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

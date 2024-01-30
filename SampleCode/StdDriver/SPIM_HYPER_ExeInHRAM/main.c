@@ -1,8 +1,8 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    This sample shows how to make an application booting from APROM
- *           with a sub-routine resided on HyperRAM.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Show how to make an application booting from APROM
+ *          with a sub-routine resided on HyperRAM.
  *
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/

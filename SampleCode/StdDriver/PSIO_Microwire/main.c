@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    Demonstrate how to implement Microwire protocol by PSIO.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Demonstrate how to implement Microwire protocol by PSIO.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

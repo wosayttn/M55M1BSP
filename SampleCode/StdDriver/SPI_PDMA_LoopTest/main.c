@@ -1,11 +1,9 @@
 /******************************************************************************
- * @file     main.c
- * @version  V1.00
- * @brief
- *           Demonstrate SPI data transfer with PDMA.
- *           SPI0 will be configured as Master mode and connect MISO_0 pin and
- *           MOSI_0 pin together. Both TX PDMA function and RX PDMA function
- *           will be enabled.
+ * @file    main.c
+ * @version V1.00
+ * @brief   SPI read/write demo in PDMA mode.
+ *          Connecting SPI MISO and MOSI pins.
+ *          Both TX PDMA function and RX PDMA function will be enabled.
  *
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

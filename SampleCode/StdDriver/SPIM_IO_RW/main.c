@@ -1,8 +1,7 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    This sample demonstrates how to issue SPI flash erase, program,
- *           and read commands under SPIM I/O mode.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Show how to issue SPI Flash erase, program, and read commands under SPIM I/O mode.
  *
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/

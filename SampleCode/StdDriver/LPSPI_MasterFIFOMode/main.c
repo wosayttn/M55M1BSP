@@ -1,9 +1,9 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.0
- * @brief    Configure LPSPI0 as Master mode and demonstrate how to communicate
- *           with an off-chip LPSPI Slave device with FIFO mode. This sample
- *           code needs to work with LPSPI_SlaveFifoMode sample code.
+ * @file    main.c
+ * @version V1.0
+ * @brief   Configure LPSPI as Master mode and demonstrate how to communicate
+ *          with an off-chip SPI slave device with FIFO mode.
+ *          This sample code needs to work with LPSPI_SlaveFIFOMode sample code.
  *
  * @note
  * SPDX-License-Identifier: Apache-2.0

@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V3.00
- * @brief    Demonstrate how to implement HDQ protocol by PSIO.
+ * @file    main.c
+ * @version V3.00
+ * @brief   Demonstrate how to implement HDQ protocol by PSIO.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    Access a SD card formatted in FAT file system
+ * @file    main.c
+ * @version V1.00
+ * @brief   Access a SD card formatted in FAT file system
  *
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/

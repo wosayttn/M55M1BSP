@@ -1,9 +1,10 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V0.1
- * @brief    Demonstrate USCI_SPI data transfer with PDMA.
- *           USCI_SPI0 will be configured as Master mode.
- *           Both TX PDMA function and RX PDMA function will be enabled.
+ * @file    main.c
+ * @version V0.1
+ * @brief   Demonstrate SPI data transfer with PDMA.
+ *          USCI_SPI0 will be configured as master mode and USCI_SPI1
+ *          will be configured as slave mode.
+ *          Both Tx PDMA function and Rx PDMA function will be enabled.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

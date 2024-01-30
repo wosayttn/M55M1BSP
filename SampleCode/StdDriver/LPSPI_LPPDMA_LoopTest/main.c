@@ -1,11 +1,10 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.0
- * @brief
- *           Demonstrate LPSPI data transfer with LPPDMA.
- *           LPSPI0 will be configured as Master mode and connect MISO_0 pin and
- *           MOSI_0 pin together. Both TX LPPDMA function and RX LPPDMA function
- *           will be enabled.
+ * @file    main.c
+ * @version V1.0
+ * @brief   Demonstrate LPSPI data transfer with LPPDMA.
+ *          LPSPI0 will be configured as Master mode and connect MISO_0 pin and MOSI_0 pin together.
+ *          Both TX LPPDMA function and RX LPPDMA function will be enabled.
+ *
  * @note
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

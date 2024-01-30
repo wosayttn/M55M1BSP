@@ -1,9 +1,9 @@
 /******************************************************************************
- * @file     main.c
- * @version  V1.00
- * @brief    Implement SPI Master loop back transfer. This sample code needs to
- *           connect MISO_0 pin and MOSI_0 pin together. It will compare the
- *           received data with transmitted data.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Implement SPI Master loop back transfer.
+ *          This sample code needs to connect MISO pin and MOSI pin together.
+ *          It will compare the received data with transmitted data.
  *
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

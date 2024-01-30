@@ -1,9 +1,9 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    Demonstrate SPI half-duplex mode.
- *           SPI0 will be configured as Master mode and SPI1 will be configured as Slave mode.
- *           Both SPI0 and SPI1 will be configured as half-duplex mode.
+ * @file    main.c
+ * @version V1.00
+ * @brief   Demonstrate SPI half-duplex mode.
+ *          Configure SPI0 as master mode and SPI1 as slave mode.
+ *          Both SPI0 and SPI1 are half-duplex mode.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

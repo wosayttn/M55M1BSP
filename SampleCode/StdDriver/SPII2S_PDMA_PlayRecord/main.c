@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    This is a I2S demo for playing and recording data with PDMA function.
+ * @file    main.c
+ * @version V1.00
+ * @brief   An I2S demo for playing and recording data with PDMA function.
  *
  * @note
  * SPDX-License-Identifier: Apache-2.0

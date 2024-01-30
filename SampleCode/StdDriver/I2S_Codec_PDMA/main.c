@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    This is an I2S demo with PDMA function connected with audio codec.
+ * @file    main.c
+ * @version V1.00
+ * @brief   This is an I2S demo with PDMA function connected with codec.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

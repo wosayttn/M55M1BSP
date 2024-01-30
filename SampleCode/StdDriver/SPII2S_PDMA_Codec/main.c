@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     main.c
- * @version  V1.00
- * @brief    This is a I2S demo with PDMA function connected with NAU8822 codec.
+ * @file    main.c
+ * @version V1.00
+ * @brief   An I2S demo with PDMA function connected with audio codec.
  *
  * @note
  * SPDX-License-Identifier: Apache-2.0
