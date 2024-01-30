@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    Show how to wake up system from SPD Power-down mode by TG pin(PC.0),Wake-up Timer, BOD, LVR.
+ * @brief    Show how to wake up system form SPD Power-down mode by different wakeup sources.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

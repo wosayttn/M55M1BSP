@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief   CLK_ClockDetector for M55M1 series MCU
+ * @brief   Show the usage of clock fail detector and clock frequency monitor function.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

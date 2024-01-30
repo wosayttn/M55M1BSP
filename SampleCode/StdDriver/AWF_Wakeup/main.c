@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief   Demonstrate how to use AWF Wake-up
+ * @brief   Demonstrate how to use AWF wake-up function.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

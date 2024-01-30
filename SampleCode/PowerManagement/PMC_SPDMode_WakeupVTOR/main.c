@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief   Show how to continue executing code after wake-up from SPD power-down mode.
+ * @brief   Show how to continue executing code after wake-up form SPD Power-down mode by VTOR function.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

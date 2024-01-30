@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    Demonstrate how to minimize power consumption when entering power down mode.
+ * @brief    Demonstrate how to minimize power consumption when entering Power-down mode.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

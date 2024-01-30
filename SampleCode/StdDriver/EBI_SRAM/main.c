@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    Configure EBI interface to access BS616LV4017 (SRAM) on EBI interface.
+ * @brief    Configure EBI interface to access SRAM connected on EBI interface.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

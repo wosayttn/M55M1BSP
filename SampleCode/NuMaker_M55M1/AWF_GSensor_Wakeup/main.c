@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file    main.c
  * @version V1.00
- * @brief   Demonstrate how to use Gsenor to wake-up by AWF through low power domain IP(LPTMR,LPPDMA,LPI2C)
+ * @brief   Demonstrate how to use G-senor to wake-up by AWF through low power domain IP: LPTMR, LPPDMA, LPI2C.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

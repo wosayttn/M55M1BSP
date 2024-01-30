@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    Configure EBI interface to access MX29LV320T (NOR Flash) on EBI interface.
+ * @brief    Configure EBI interface to access NOR Flash connected on EBI interface.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    Show how to wake up system from NPD0~NPD4 Power-down mode by BOD.
+ * @brief    Show how to wake up system form NPD Power-down mode by different wakeup sources.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
