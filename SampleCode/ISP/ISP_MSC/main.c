@@ -21,13 +21,40 @@ int32_t SYS_Init(void)
 #if (!CRYSTAL_LESS)
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+
+    /* Select SCLK to HIRC before APLL setting*/
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL0_SELECT);
+    /* Set clock with limitations */
+    CLK_SET_HCLK2DIV(2);
+    CLK_SET_PCLK0DIV(2);
+    CLK_SET_PCLK1DIV(2);
+    CLK_SET_PCLK2DIV(2);
+    CLK_SET_PCLK3DIV(2);
+    CLK_SET_PCLK4DIV(2);
+    /* Switch SCLK clock source to APLL0 */
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
+
     /* Enable APLL1 96MHz clock */
     CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, 96000000, CLK_APLL1_SELECT);
     /* Select USB clock source as HIRC48M and USB clock divider as 1 */
     CLK_SetModuleClock(USBD0_MODULE, CLK_USBSEL_USBSEL_APLL1_DIV2, CLK_USBDIV_USBDIV(1));
 #else
+    /* Select SCLK to HIRC before APLL setting*/
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
+    /* Set clock with limitations */
+    CLK_SET_HCLK2DIV(2);
+    CLK_SET_PCLK0DIV(2);
+    CLK_SET_PCLK1DIV(2);
+    CLK_SET_PCLK2DIV(2);
+    CLK_SET_PCLK3DIV(2);
+    CLK_SET_PCLK4DIV(2);
+    /* Switch SCLK clock source to APLL0 */
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
+
     CLK_EnableXtalRC(CLK_SRCCTL_HIRC48MEN_Msk);
     CLK_WaitClockReady(CLK_STATUS_HIRC48MSTB_Msk);
     /* Select USB clock source as HIRC48M and USB clock divider as 1 */

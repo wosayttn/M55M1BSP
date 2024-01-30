@@ -374,7 +374,11 @@ __WEAK uint32_t ProcessHardFault(uint32_t *pu32StackFrame)
 }
 
 #if defined (__GNUC__) && !defined(__ARMCC_VERSION)
-    #include "../../Device/Nuvoton/M55M1/Source/GCC/retarget_GCC.c"
+    #ifndef NVT_ISP_FUNC
+        #include "../../Device/Nuvoton/M55M1/Source/GCC/retarget_GCC.c"
+    #else
+        // To reduce code size
+    #endif
 #endif
 
 #if defined (__ARMCC_VERSION)

@@ -72,8 +72,21 @@ int32_t SYS_Init(void)
     CLK_EnableXtalRC(CLK_SRCCTL_HXTEN_Msk);
     /* Waiting for HXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
-    /* Switch SCLK clock source to PLL0 and Enable PLL0 160MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+
+    /* Select SCLK to HIRC before APLL setting*/
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_HIRC);
+    /* Enable APLL0 180MHz clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ, CLK_APLL0_SELECT);
+    /* Set clock with limitations */
+    CLK_SET_HCLK2DIV(2);
+    CLK_SET_PCLK0DIV(2);
+    CLK_SET_PCLK1DIV(2);
+    CLK_SET_PCLK2DIV(2);
+    CLK_SET_PCLK3DIV(2);
+    CLK_SET_PCLK4DIV(2);
+    /* Switch SCLK clock source to APLL0 */
+    CLK_SetSCLK(CLK_SCLKSEL_SCLKSEL_APLL0);
+
     /* Select CAN FD0 clock source is HCLK */
     CLK_SetModuleClock(CANFD0_MODULE, CLK_CANFDSEL_CANFD0SEL_HXT, CLK_CANFDDIV_CANFD0DIV(1));
     /* Enable module clock */
