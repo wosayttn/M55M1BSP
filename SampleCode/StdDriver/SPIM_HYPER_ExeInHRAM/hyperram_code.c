@@ -200,6 +200,16 @@ void SPIM_Hyper_DefaultConfig(SPIM_T *spim, uint32_t u32CSMaxLow, uint32_t u32Ac
 
 void HyperRAM_Init(SPIM_T *spim)
 {
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    /* Enable SPIM0/1 Module Clock */
+    CLK_EnableModuleClock(SPIM0_MODULE);
+    CLK_EnableModuleClock(SPIM1_MODULE);
+
+    /* Lock protected registers */
+    SYS_LockReg();
+
     /* Enable SPIM Hyper Bus Mode */
     SPIM_HYPER_Init(spim, 1);
 
