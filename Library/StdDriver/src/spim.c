@@ -2388,16 +2388,6 @@ int32_t SPIM_SetDLLDelayNum(SPIM_T *spim, uint32_t u32DelayNum)
     volatile int i32Timeout = SPIM_TIMEOUT;
     uint32_t u32Div =  0;
 
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
-    /* Enable SPIM0/1 Module Clock */
-    CLK_EnableModuleClock(SPIM0_MODULE);
-    CLK_EnableModuleClock(SPIM1_MODULE);
-
-    /* Lock protected registers */
-    SYS_LockReg();
-
     /* SPIM starts to send DLL reference clock to DLL circuit
        that the frequency is the same as the SPIM output bus clock. */
     SPIM_ENABLE_DLLOLDO(SPIM0, SPIM_OP_ENABLE);
