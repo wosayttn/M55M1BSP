@@ -240,22 +240,14 @@ int RETARGET(_getpid)()
 
 void RETARGET(_exit)(int return_code)
 {
-    char exit_code_buffer[64] = {0};
+    char exit_code_buffer[32] = {0};
     const char *p             = exit_code_buffer;
 
     // Print out the exit code on the uart so any reader know how we exit.
-
-    /* By appending 0x04, ASCII for end-of-transmission the FVP model exits,
-     * if the configuration parameter shutdown_on_eot on the uart is enabled.
-     * For some versions of FVP, the shutdown_on_eot is broken, but the same
-     * behaviour can be created by passing specifying a shutdown_tag= for the
-     * uart when starting the model so that is added last as well.
-     */
     snprintf(exit_code_buffer,
              sizeof(exit_code_buffer),
-             "Application exit code: %d.\n" // Let the readers know how we exit
-             "\04\n"                        // end-of-transmission
-             "EXITTHESIM\n",                // shutdown_tag
+             "Exit code: %d.\n"      // Let the readers know how we exit
+             "\04\n",                // end-of-transmission
              return_code);
 
     while (*p != '\0')
