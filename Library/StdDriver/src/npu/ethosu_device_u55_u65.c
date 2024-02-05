@@ -212,9 +212,13 @@ bool ethosu_dev_handle_interrupt(struct ethosu_device *dev)
     dev->reg->CMD.word = cmd.word;
 
     // If a fault has occured, the NPU needs to be reset
-    if (dev->reg->STATUS.bus_status || dev->reg->STATUS.cmd_parse_error || dev->reg->STATUS.wd_fault ||
-            dev->reg->STATUS.ecc_fault || !dev->reg->STATUS.cmd_end_reached)
+    if (dev->reg->STATUS.bus_status ||
+            dev->reg->STATUS.cmd_parse_error ||
+            dev->reg->STATUS.wd_fault ||
+            dev->reg->STATUS.ecc_fault ||
+            !dev->reg->STATUS.cmd_end_reached)
     {
+        LOG_ERR("ethosu_dev_handle_interrupt fault");
         return false;
     }
 
@@ -293,8 +297,8 @@ void ethosu_dev_get_hw_info(struct ethosu_device *dev, struct ethosu_hw_info *hw
 }
 
 enum ethosu_error_codes ethosu_dev_set_clock_and_power(struct ethosu_device *dev,
-                                                       enum ethosu_clock_q_request clock_q,
-                                                       enum ethosu_power_q_request power_q)
+        enum ethosu_clock_q_request clock_q,
+        enum ethosu_power_q_request power_q)
 {
     struct cmd_r cmd = {0};
     cmd.word         = dev->reg->CMD.word & NPU_CMD_PWR_CLK_MASK;

@@ -20,7 +20,7 @@
 
 #define ETHOS_U_CACHE_BUF_SZ    (0U)
 
-#define ETHOS_U_MEM_BYTE_ALIGNMENT                  16
+#define ETHOS_U_MEM_BYTE_ALIGNMENT                  32
 
 /**
  * Activation buffer aka tensor arena section name

@@ -74,6 +74,13 @@ static void SYS_Init(void)
     /* Set multi-function pins for UART RXD and TXD */
     SetDebugUartMFP();
 
+    /* LED IO PI12 */
+    GPIO_SetMode(PI, BIT12, GPIO_MODE_OUTPUT);
+
+    /* LED IO PG14, PG15 */
+    GPIO_SetMode(PG, BIT14, GPIO_MODE_OUTPUT);
+    GPIO_SetMode(PG, BIT15, GPIO_MODE_OUTPUT);
+
     HyperRAM_PinConfig(HYPERRAM_SPIM_PORT);
 }
 
@@ -102,6 +109,10 @@ int BoardInit(void)
 
     info("%s: complete\n", __FUNCTION__);
 
+    PI12 = 1;
+    PG14 = 1;
+    PG15 = 1;
+	
 #if defined(ARM_NPU)
 
     int state;

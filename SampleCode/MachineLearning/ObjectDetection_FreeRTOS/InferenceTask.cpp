@@ -26,7 +26,7 @@ bool InferenceProcess::RunJob(
     std::vector<object_detection::DetectionResult> *results
 )
 {
-    info("Inference process task run job...\n");
+//    info("Inference process task run job...\n");
 
 #if defined(__PROFILE__)
     uint64_t u64StartCycle;
@@ -83,15 +83,13 @@ extern "C" {
     int ethosu_mutex_lock(void *mutex)
     {
         SemaphoreHandle_t handle = reinterpret_cast<SemaphoreHandle_t>(mutex);
-        xSemaphoreTake(handle, portMAX_DELAY);
-        return 0;
+        return (xSemaphoreTake(handle, DEF_RTOS_WAIT_TIME) == pdTRUE) ? 0 : -1;
     }
 
     int ethosu_mutex_unlock(void *mutex)
     {
         SemaphoreHandle_t handle = reinterpret_cast<SemaphoreHandle_t>(mutex);
-        xSemaphoreGive(handle);
-        return 0;
+        return (xSemaphoreGive(handle) == pdTRUE) ? 0 : -1;
     }
 
     void *ethosu_semaphore_create(void)
@@ -102,18 +100,44 @@ extern "C" {
     int ethosu_semaphore_take(void *sem)
     {
         SemaphoreHandle_t handle = reinterpret_cast<SemaphoreHandle_t>(sem);
-        xSemaphoreTake(handle, portMAX_DELAY);
-        return 0;
+        return (xSemaphoreTake(handle, DEF_RTOS_WAIT_TIME) == pdTRUE) ? 0 : -1;
     }
 
     int ethosu_semaphore_give(void *sem)
     {
         SemaphoreHandle_t handle = reinterpret_cast<SemaphoreHandle_t>(sem);
-        xSemaphoreGive(handle);
+        return (xSemaphoreGive(handle) == pdTRUE) ? 0 : -1;
+    }
+
+    int ethosu_semaphore_give_from_ISR(void *sem)
+    {
+        SemaphoreHandle_t handle = reinterpret_cast<SemaphoreHandle_t>(sem);
+        BaseType_t xHighPriorityTaskWoken = pdFALSE;
+
+        xSemaphoreGiveFromISR(handle, &xHighPriorityTaskWoken);
+        portYIELD_FROM_ISR(xHighPriorityTaskWoken);
         return 0;
     }
 }
 
+void INFERENCE_ASSERT(int cond, const char *func, int line)
+{
+#define NVT_SET_PIN(port, pin)    (*((volatile uint32_t *)((0x40229800+(0x40*(port))) + ((pin)<<2))))
+
+    if (!cond)
+    {
+        while (1)
+        {
+            printf("Timeout is at %s %d line\n", func, line);
+            printf("Timeout is at %s %d line\n", func, line);
+            NVT_SET_PIN(6, 15) = ~NVT_SET_PIN(6, 15) ; //PG15 pin light-off
+            printf("Timeout is at %s %d line\n", func, line);
+            printf("Timeout is at %s %d line\n", func, line);
+        }
+    }
+
+    NVT_SET_PIN(6, 15) = ~NVT_SET_PIN(6, 15) ; //PG15 pin light-off
+}
 
 void inferenceProcessTask(void *pvParameters)
 {
@@ -121,11 +145,14 @@ void inferenceProcessTask(void *pvParameters)
 
     InferenceProcess::InferenceProcess inferenceProcess(params.model);
 
+    BaseType_t RET;
+
     for (;;)
     {
         xInferenceJob *xJob;
 
-        xQueueReceive(params.queueHandle, &xJob, portMAX_DELAY);
+        RET = xQueueReceive(params.queueHandle, &xJob, DEF_RTOS_WAIT_TIME);
+        INFERENCE_ASSERT(RET == pdTRUE, __func__, __LINE__);
 
         inferenceProcess.RunJob(
             xJob->pPostProc,
@@ -136,9 +163,9 @@ void inferenceProcessTask(void *pvParameters)
             xJob->results
         );
 
-        xQueueSend(xJob->responseQueue, &xJob, portMAX_DELAY);
+        RET = xQueueSend(xJob->responseQueue, &xJob, DEF_RTOS_WAIT_TIME);
+        INFERENCE_ASSERT(RET == pdTRUE, __func__, __LINE__);
     }
-
 }
 
 

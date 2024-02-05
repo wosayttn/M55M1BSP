@@ -28,6 +28,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -91,6 +92,25 @@ enum ethosu_request_clients
     ETHOSU_PMU_REQUEST       = 0,
     ETHOSU_INFERENCE_REQUEST = 1,
 };
+
+static inline void ETHOSU_ASSERT(int cond, const char* func, int line)
+{
+   #define NVT_SET_PIN(port, pin)    (*((volatile uint32_t *)((0x40229800+(0x40*(port))) + ((pin)<<2))))
+		 
+	 if (!cond)
+	 {
+		 while (1)
+		 {
+         printf("Timeout is at %s %d line\n", func, line);
+         printf("Timeout is at %s %d line\n", func, line);
+	       NVT_SET_PIN(8, 12) = ~NVT_SET_PIN(8, 12) ; //PI12 pin toggle
+         printf("Timeout is at %s %d line\n", func, line);
+         printf("Timeout is at %s %d line\n", func, line);
+		 }
+	 }
+
+   NVT_SET_PIN(8, 12) = ~NVT_SET_PIN(8, 12) ; //PI12 pin toggle
+}
 
 /******************************************************************************
  * Prototypes (weak functions in driver)
@@ -172,6 +192,14 @@ int ethosu_semaphore_take(void *sem);
  * @returns 0 on success, else negative error code
  */
 int ethosu_semaphore_give(void *sem);
+
+/**
+ * Give semaphore from ISR.
+ *
+ * @param sem       Pointer to semaphore handle
+ * @returns 0 on success, else negative error code
+ */
+int ethosu_semaphore_give_from_ISR(void *sem);
 
 /**
  * Callback invoked just before the inference is started.

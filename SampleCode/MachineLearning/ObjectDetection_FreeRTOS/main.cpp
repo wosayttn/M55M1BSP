@@ -27,7 +27,7 @@
 #include "NuMicro.h"
 
 #define __USE_CCAP__
-#define __USE_DISPLAY__
+//#define __USE_DISPLAY__
 
 #include "Profiler.hpp"
 
@@ -214,6 +214,24 @@ static void DrawImageDetectionBoxes(
     }
 }
 
+static inline void MAIN_ASSERT(int cond, const char *func, int line)
+{
+#define NVT_SET_PIN(port, pin)    (*((volatile uint32_t *)((0x40229800+(0x40*(port))) + ((pin)<<2))))
+
+    if (!cond)
+    {
+        while (1)
+        {
+            printf("Timeout is at %s %d line\n", func, line);
+            printf("Timeout is at %s %d line\n", func, line);
+            NVT_SET_PIN(6, 14) = ~NVT_SET_PIN(6, 14) ; //PG14 pin toggle
+            printf("Timeout is at %s %d line\n", func, line);
+            printf("Timeout is at %s %d line\n", func, line);
+        }
+    }
+    NVT_SET_PIN(6, 14) = ~NVT_SET_PIN(6, 14) ; //PG14 pin toggle
+}
+
 static void main_task(void *pvParameters)
 {
     BaseType_t ret;
@@ -283,7 +301,7 @@ static void main_task(void *pvParameters)
     taskParam.model = &model;
     taskParam.queueHandle = inferenceProcessQueue;
 
-    ret = xTaskCreate(inferenceProcessTask, "inference task", 1 * 1024, &taskParam, INFERENCE_TASK_PRIO, nullptr);
+    ret = xTaskCreate(inferenceProcessTask, "inference task", 4 * 1024, &taskParam, INFERENCE_TASK_PRIO, nullptr);
 
     if (ret != pdPASS)
     {
@@ -387,7 +405,8 @@ static void main_task(void *pvParameters)
             inferenceJob->srcImgHeight = infFramebuf->frameImage.h;
             inferenceJob->results = &infFramebuf->results; //&results;
 
-            xQueueReceive(inferenceResponseQueue, &inferenceJob, portMAX_DELAY);
+            ret = xQueueReceive(inferenceResponseQueue, &inferenceJob, DEF_RTOS_WAIT_TIME);
+            MAIN_ASSERT(ret == pdTRUE, __func__, __LINE__);
         }
 
         fullFramebuf = get_full_framebuf();
@@ -440,18 +459,21 @@ static void main_task(void *pvParameters)
             inferenceJob->srcImgHeight = fullFramebuf->frameImage.h;
             inferenceJob->results = &fullFramebuf->results;
 
-            xQueueSend(inferenceProcessQueue, &inferenceJob, portMAX_DELAY);
+            ret = xQueueSend(inferenceProcessQueue, &inferenceJob, DEF_RTOS_WAIT_TIME);
+            MAIN_ASSERT(ret == pdTRUE, __func__, __LINE__);
+
             fullFramebuf->eState = eFRAMEBUF_INF;
         }
 
         if (infFramebuf)
         {
             //draw bbox and render
+
+#if defined (__USE_DISPLAY__)
             /* Draw boxes. */
             DrawImageDetectionBoxes(infFramebuf->results, &infFramebuf->frameImage, labels);
 
             //display result image
-#if defined (__USE_DISPLAY__)
             //Display image on LCD
             sDispRect.u32TopLeftX = 0;
             sDispRect.u32TopLeftY = 0;
@@ -475,10 +497,11 @@ static void main_task(void *pvParameters)
 
             if ((uint64_t) pmu_get_systick_Count() > u64PerfCycle)
             {
-                info("Total inference rate: %llu\n", u64PerfFrames / EACH_PERF_SEC);
+//                info("Total inference rate: %llu\n", u64PerfFrames / EACH_PERF_SEC);
 #if defined (__USE_DISPLAY__)
-                sprintf(szDisplayText, "Frame Rate %llu", u64PerfFrames / EACH_PERF_SEC);
-                //              sprintf(szDisplayText,"Time %llu",(uint64_t) pmu_get_systick_Count() / (uint64_t)SystemCoreClock);
+                //sprintf(szDisplayText, "Frame Rate %llu", u64PerfFrames / EACH_PERF_SEC);
+                sprintf(szDisplayText, "Time %llu", (uint64_t) pmu_get_systick_Count() / (uint64_t)SystemCoreClock);
+                info("Running %s sec \n", szDisplayText);
 
                 sDispRect.u32TopLeftX = 0;
                 sDispRect.u32TopLeftY = frameBuffer.h + FONT_HTIGHT;
@@ -588,7 +611,7 @@ int main()
     BoardInit();
 
     /* Create main task. */
-    ret = xTaskCreate(main_task, "main task", 2 * 1024, nullptr, MAINLOOP_TASK_PRIO, nullptr);
+    ret = xTaskCreate(main_task, "main task", 4 * 1024, nullptr, MAINLOOP_TASK_PRIO, nullptr);
 
     if (ret != pdPASS)
     {
