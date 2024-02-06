@@ -11,10 +11,13 @@
 
 namespace InferenceProcess
 {
+InferenceProcess::InferenceProcess()
+{}
 
-InferenceProcess::InferenceProcess(
-    Model *model)
-    :   m_model(model)
+InferenceProcess::~InferenceProcess()
+{}
+
+InferenceProcess::InferenceProcess(Model *model): m_model(model)
 {}
 
 bool InferenceProcess::RunJob(
@@ -73,6 +76,8 @@ bool InferenceProcess::RunJob(
  * Overrides weak-linked symbols in ethosu_driver.c to implement thread handling
  ****************************************************************************/
 
+#if !defined(SINGLE_TASK)
+
 extern "C" {
 
     void *ethosu_mutex_create(void)
@@ -119,7 +124,7 @@ extern "C" {
         return 0;
     }
 }
-
+//SINGLE_TASK=1,__USE_CCAP__=1
 void INFERENCE_ASSERT(int cond, const char *func, int line)
 {
 #define NVT_SET_PIN(port, pin)    (*((volatile uint32_t *)((0x40229800+(0x40*(port))) + ((pin)<<2))))
@@ -167,7 +172,30 @@ void inferenceProcessTask(void *pvParameters)
         INFERENCE_ASSERT(RET == pdTRUE, __func__, __LINE__);
     }
 }
+#else
 
+void do_inference(Model *model, xInferenceJob *xJob)
+{
+    static InferenceProcess::InferenceProcess inferenceProcess;
+    static int s_ModelInit = 0;
+
+    if (!s_ModelInit)
+    {
+        inferenceProcess.m_model = model;
+        s_ModelInit = 1;
+    }
+
+    inferenceProcess.RunJob(
+        xJob->pPostProc,
+        xJob->modelCols,
+        xJob->mode1Rows,
+        xJob->srcImgWidth,
+        xJob->srcImgHeight,
+        xJob->results
+    );
+}
+
+#endif
 
 
 

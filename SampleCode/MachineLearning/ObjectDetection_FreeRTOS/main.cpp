@@ -26,7 +26,7 @@
 #undef PI /* PI macro conflict with CMSIS/DSP */
 #include "NuMicro.h"
 
-#define __USE_CCAP__
+//#define __USE_CCAP__
 //#define __USE_DISPLAY__
 
 #include "Profiler.hpp"
@@ -232,6 +232,28 @@ static inline void MAIN_ASSERT(int cond, const char *func, int line)
     NVT_SET_PIN(6, 14) = ~NVT_SET_PIN(6, 14) ; //PG14 pin toggle
 }
 
+#if defined(SINGLE_TASK)
+
+void INFERENCE_ASSERT(int cond, const char *func, int line)
+{
+
+    if (!cond)
+    {
+        while (1)
+        {
+            printf("Timeout is at %s %d line\n", func, line);
+            printf("Timeout is at %s %d line\n", func, line);
+            NVT_SET_PIN(6, 15) = ~NVT_SET_PIN(6, 15) ; //PG15 pin light-off
+            printf("Timeout is at %s %d line\n", func, line);
+            printf("Timeout is at %s %d line\n", func, line);
+        }
+    }
+
+    NVT_SET_PIN(6, 15) = ~NVT_SET_PIN(6, 15) ; //PG15 pin light-off
+}
+#endif
+
+
 static void main_task(void *pvParameters)
 {
     BaseType_t ret;
@@ -246,8 +268,7 @@ static void main_task(void *pvParameters)
                     arm::app::yolofastest::GetModelLen()))
     {
         printf_err("Failed to initialise model\n");
-        vTaskDelete(nullptr);
-        return;
+        MAIN_ASSERT(0, __func__, __LINE__);
     }
 
     /* Setup cache poicy of tensor arean buffer */
@@ -293,6 +314,8 @@ static void main_task(void *pvParameters)
     // Setup MPU configuration
     InitPreDefMPURegion(&mpuConfig[0], mpuConfig.size());
 
+#if !defined(SINGLE_TASK)
+
     // Setup inference resource and create task
     struct ProcessTaskParams taskParam;
     QueueHandle_t inferenceProcessQueue = xQueueCreate(1, sizeof(xInferenceJob *));
@@ -306,29 +329,27 @@ static void main_task(void *pvParameters)
     if (ret != pdPASS)
     {
         printf_err("FreeRTOS: Failed to inference process task \n");
-        vTaskDelete(nullptr);
-        return;
+        MAIN_ASSERT(0, __func__, __LINE__);
     }
+#endif
 
 #if !defined (__USE_CCAP__)
     uint8_t u8ImgIdx = 0;
     char chStdIn;
 #endif
 
-    TfLiteTensor *inputTensor   = model.GetInputTensor(0);
+    TfLiteTensor *inputTensor  = model.GetInputTensor(0);
     TfLiteTensor *outputTensor = model.GetOutputTensor(0);
 
     if (!inputTensor->dims)
     {
         printf_err("Invalid input tensor dims\n");
-        vTaskDelete(nullptr);
-        return;
+        MAIN_ASSERT(0, __func__, __LINE__);
     }
     else if (inputTensor->dims->size < 3)
     {
         printf_err("Input tensor dimension should be >= 3\n");
-        vTaskDelete(nullptr);
-        return;
+        MAIN_ASSERT(0, __func__, __LINE__);
     }
 
     TfLiteIntArray *inputShape = model.GetInputShape(0);
@@ -392,7 +413,7 @@ static void main_task(void *pvParameters)
     {
 
         infFramebuf = get_inf_framebuf();
-
+#if !defined(SINGLE_TASK)
         if (infFramebuf)
         {
             /* Detector post-processing*/
@@ -408,6 +429,7 @@ static void main_task(void *pvParameters)
             ret = xQueueReceive(inferenceResponseQueue, &inferenceJob, DEF_RTOS_WAIT_TIME);
             MAIN_ASSERT(ret == pdTRUE, __func__, __LINE__);
         }
+#endif
 
         fullFramebuf = get_full_framebuf();
 
@@ -430,6 +452,7 @@ static void main_task(void *pvParameters)
             u64StartCycle = pmu_get_systick_Count();
 #endif
             imlib_nvt_scale(&fullFramebuf->frameImage, &resizeImg, &roi);
+            MAIN_ASSERT(1, __func__, __LINE__);
 
 #if defined(__PROFILE__)
             u64EndCycle = pmu_get_systick_Count();
@@ -451,7 +474,6 @@ static void main_task(void *pvParameters)
             info("quantize cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
             //trigger inference
-            inferenceJob->responseQueue = inferenceResponseQueue;
             inferenceJob->pPostProc = &postProcess;
             inferenceJob->modelCols = inputImgCols;
             inferenceJob->mode1Rows = inputImgRows;
@@ -459,8 +481,16 @@ static void main_task(void *pvParameters)
             inferenceJob->srcImgHeight = fullFramebuf->frameImage.h;
             inferenceJob->results = &fullFramebuf->results;
 
+#if !defined(SINGLE_TASK)
+            inferenceJob->responseQueue = inferenceResponseQueue;
             ret = xQueueSend(inferenceProcessQueue, &inferenceJob, DEF_RTOS_WAIT_TIME);
             MAIN_ASSERT(ret == pdTRUE, __func__, __LINE__);
+#else
+            void do_inference(Model * model, xInferenceJob * xJob);
+
+            do_inference(&model, inferenceJob);
+            INFERENCE_ASSERT(1, __func__, __LINE__);
+#endif
 
             fullFramebuf->eState = eFRAMEBUF_INF;
         }
@@ -532,6 +562,8 @@ static void main_task(void *pvParameters)
         if (emptyFramebuf)
         {
 #if !defined (__USE_CCAP__)
+#if !defined(SINGLE_TASK)
+
             info("Press 'n' to run next image inference \n");
             info("Press 'q' to exit program \n");
 
@@ -539,14 +571,14 @@ static void main_task(void *pvParameters)
             {
                 if (chStdIn == 'q')
                 {
-                    vTaskDelete(nullptr);
-                    return;
+                    goto exit_main_task;
                 }
                 else if (chStdIn != 'n')
                 {
                     break;
                 }
             }
+#endif
 
             const uint8_t *pu8ImgSrc = get_img_array(u8ImgIdx);
 
@@ -554,7 +586,9 @@ static void main_task(void *pvParameters)
             {
                 printf_err("Failed to get image index %" PRIu32 " (max: %u)\n", u8ImgIdx,
                            NUMBER_OF_FILES - 1);
+#if !defined(BAREMETAL)
                 vTaskDelete(nullptr);
+#endif
                 return;
             }
 
@@ -597,21 +631,29 @@ static void main_task(void *pvParameters)
             emptyFramebuf->results.clear();
             emptyFramebuf->eState = eFRAMEBUF_FULL;
         }
-
+#if !defined(SINGLE_TASK)
         vTaskDelay(1);
+#endif
     }
 
+exit_main_task:
+
+#if !defined(BAREMETAL)
+    vTaskDelete(nullptr);
+#endif
+    return ;
 }
+
+#if !defined(BAREMETAL)
 
 int main()
 {
-    BaseType_t ret;
 
     /* Initialize the UART module to allow printf related functions (if using retarget) */
     BoardInit();
 
     /* Create main task. */
-    ret = xTaskCreate(main_task, "main task", 4 * 1024, nullptr, MAINLOOP_TASK_PRIO, nullptr);
+    BaseType_t ret = xTaskCreate(main_task, "main task", 8 * 1024, nullptr, MAINLOOP_TASK_PRIO, nullptr);
 
     if (ret != pdPASS)
     {
@@ -699,6 +741,20 @@ void vApplicationTickHook(void)
 
     FreeRTOS_TickHook(xTaskGetTickCount());
 }
+
+#else
+int main()
+{
+    /* Initialize the UART module to allow printf related functions (if using retarget) */
+    BoardInit();
+
+    main_task(0);
+
+    /* This is unreachable without errors. */
+    info("program terminating...\n");
+}
+#endif
+
 /*-----------------------------------------------------------*/
 
 

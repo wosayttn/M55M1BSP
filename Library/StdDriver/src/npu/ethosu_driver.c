@@ -394,7 +394,7 @@ void __attribute__((weak)) ethosu_irq_handler(struct ethosu_driver *drv)
         drv->status_error = true;
     }
 
-    ETHOSU_ASSERT(!ethosu_semaphore_give(drv->semaphore), __func__, __LINE__);
+    ETHOSU_ASSERT(!ethosu_semaphore_give_from_ISR(drv->semaphore), __func__, __LINE__);
 }
 
 /******************************************************************************

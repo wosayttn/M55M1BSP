@@ -28,6 +28,10 @@ namespace InferenceProcess
 class InferenceProcess
 {
 public:
+    Model *m_model = nullptr;
+
+    InferenceProcess();
+    ~InferenceProcess();
     InferenceProcess(Model *model);
     bool RunJob(
         object_detection::DetectorPostprocessing *pPostProc,
@@ -42,7 +46,6 @@ protected:
     arm::app::Profiler profiler;
 #endif
 
-    Model *m_model = nullptr;
 };
 }// namespace InferenceProcess
 

@@ -103,13 +103,22 @@ static inline void ETHOSU_ASSERT(int cond, const char* func, int line)
 		 {
          printf("Timeout is at %s %d line\n", func, line);
          printf("Timeout is at %s %d line\n", func, line);
+         printf("Timeout is at %s %d line\n", func, line);
+         printf("Timeout is at %s %d line\n", func, line);
+         printf("Timeout is at %s %d line\n", func, line);
+         printf("Timeout is at %s %d line\n", func, line);
+         printf("Timeout is at %s %d line\n", func, line);
+         printf("Timeout is at %s %d line\n", func, line);
+         printf("Timeout is at %s %d line\n", func, line);
+         printf("Timeout is at %s %d line\n", func, line);
+         printf("Timeout is at %s %d line\n", func, line);
 	       NVT_SET_PIN(8, 12) = ~NVT_SET_PIN(8, 12) ; //PI12 pin toggle
-         printf("Timeout is at %s %d line\n", func, line);
-         printf("Timeout is at %s %d line\n", func, line);
 		 }
 	 }
-
-   NVT_SET_PIN(8, 12) = ~NVT_SET_PIN(8, 12) ; //PI12 pin toggle
+	 else
+	 {
+       NVT_SET_PIN(8, 12) = ~NVT_SET_PIN(8, 12) ; //PI12 pin toggle
+	 }
 }
 
 /******************************************************************************
