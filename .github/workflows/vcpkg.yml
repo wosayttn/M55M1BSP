@@ -1,0 +1,40 @@
+name: Build CMSIS Project (vcpkg + cbuild)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 1: 安裝 vcpkg
+      - name: Install vcpkg
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          cd vcpkg
+          ./bootstrap-vcpkg.sh
+          echo "$PWD" >> $GITHUB_PATH
+
+      # Step 2: 自動尋找所有 .csolution.yml 並逐一建置
+      - name: Activate & Build each csolution
+        run: |
+          mapfile -t solutions < <(find . -name '*.csolution.yml')
+
+          for sol in "${solutions[@]}"; do
+            proj_dir=$(dirname "$sol")
+            proj=$(basename "$sol")
+            echo "Processing: $sol, $proj"
+            cd "$proj_dir"
+
+            echo "Running: vcpkg activate"
+            vcpkg activate
+
+            echo "Building: $sol"
+            cbuild "$proj" --rebuild --update-rte --packs
+
+            cd - > /dev/null
+          done
