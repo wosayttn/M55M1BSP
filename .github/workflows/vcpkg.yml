@@ -31,10 +31,10 @@ jobs:
             cd "$proj_dir"
 
             echo "Running: vcpkg activate"
-            vcpkg-shell activate
+            vcpkg activate
 
             echo "Building: $sol"
-            vcpkg-shell bash -c "cbuild \"$proj\" --rebuild --update-rte --packs"
+            cbuild "$proj" --update-rte --packs
 
             cd - > /dev/null
           done
