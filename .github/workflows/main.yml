@@ -5,6 +5,15 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      context:
+        description: 'Build context (e.g. Debug, Release)'
+        required: false
+        default: 'Debug'
+      project:
+        description: 'Specific .csolution.yml path to build (optional)'
+        required: false
 
 jobs:
   detect-toolchain:
