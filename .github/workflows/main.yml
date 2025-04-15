@@ -1,0 +1,94 @@
+name: Smart Multi-Toolchain Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  detect-toolchain:
+    runs-on: ubuntu-latest
+    outputs:
+      gcc-projects: ${{ steps.set-matrix.outputs.gcc }}
+      mdk-projects: ${{ steps.set-matrix.outputs.mdk }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Scan projects and classify by toolchain
+      id: set-matrix
+      run: |
+        echo "Scanning for .csolution.yml..."
+
+        gcc_projects=()
+        mdk_projects=()
+
+        while IFS= read -r file; do
+          if grep -q "GCC" "$file"; then
+            gcc_projects+=("$file")
+          elif grep -q "ARMCC" "$file"; then
+            mdk_projects+=("$file")
+          fi
+        done < <(find . -name "*.csolution.yml")
+
+        echo "gcc=$(jq -nc '$ARGS.positional' --args "${gcc_projects[@]}")" >> $GITHUB_OUTPUT
+        echo "mdk=$(jq -nc '$ARGS.positional' --args "${mdk_projects[@]}")" >> $GITHUB_OUTPUT
+
+  build-gcc:
+    needs: detect-toolchain
+    runs-on: ubuntu-latest
+    if: ${{ fromJson(needs.detect-toolchain.outputs.gcc).size > 0 }}
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.detect-toolchain.outputs.gcc) }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install CMSIS-Toolbox + GCC
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential gcc-arm-none-eabi unzip wget
+        wget https://github.com/Open-CMSIS-Pack/devtools/releases/download/1.16.0/cmsis-toolbox-linux-amd64.zip
+        unzip cmsis-toolbox-linux-amd64.zip -d cmsis-toolbox
+        sudo mv cmsis-toolbox/* /usr/local/bin/
+
+    - name: Build GCC project
+      run: |
+        context="Debug"
+        echo "Building ${{ matrix.project }} with GCC"
+        csolution convert -s "${{ matrix.project }}" -c "$context"
+        find . -name '*.cprj' | grep "$(dirname "${{ matrix.project }}")" | while read -r cprj; do
+          cbuild "$cprj"
+        done
+
+  build-mdk:
+    needs: detect-toolchain
+    runs-on: windows-latest
+    if: ${{ fromJson(needs.detect-toolchain.outputs.mdk).size > 0 }}
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.detect-toolchain.outputs.mdk) }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup CMSIS Toolbox (Windows)
+      run: |
+        Invoke-WebRequest -Uri "https://github.com/Open-CMSIS-Pack/devtools/releases/download/1.16.0/cmsis-toolbox-windows-amd64.zip" -OutFile "cmsis-toolbox.zip"
+        Expand-Archive -Path "cmsis-toolbox.zip" -DestinationPath "cmsis-toolbox"
+        $env:Path += ";$PWD\cmsis-toolbox"
+
+    - name: Build with MDK
+      run: |
+        $project = "${{ matrix.project }}"
+        $context = "Debug"
+        Write-Host "Building $project with ARM MDK"
+        csolution convert -s $project -c $context
+        Get-ChildItem -Recurse -Filter *.uvprojx | ForEach-Object {
+          & "C:\Keil_v5\UV4\UV4.exe" -b $_.FullName -j0 -o build.log
+        }
