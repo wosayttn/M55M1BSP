@@ -72,8 +72,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y gcc-arm-none-eabi build-essential unzip wget
-        wget https://github.com/Open-CMSIS-Pack/devtools/releases/download/2.5.0/cmsis-toolbox-linux-amd64.zip
-             https://github.com/Open-CMSIS-Pack/cmsis-toolbox/releases/download/2.5.0/cmsis-toolbox-linux-amd64.tar.gz
+        wget https://github.com/Open-CMSIS-Pack/cmsis-toolbox/releases/download/2.5.0/cmsis-toolbox-linux-amd64.tar.gz
         tar -xzf cmsis-toolbox-linux-amd64.zip -C toolbox
         sudo mv toolbox/* /usr/local/bin
 
@@ -101,7 +100,7 @@ jobs:
 
     - name: Setup CMSIS Toolbox
       run: |
-        Invoke-WebRequest -Uri "https://github.com/Open-CMSIS-Pack/devtools/releases/download/1.16.0/cmsis-toolbox-windows-amd64.zip" -OutFile "cmsis-toolbox.zip"
+        Invoke-WebRequest -Uri "https://github.com/Open-CMSIS-Pack/cmsis-toolbox/releases/download/2.5.0/cmsis-toolbox-windows-amd64.zip" -OutFile "cmsis-toolbox.zip"
         Expand-Archive -Path "cmsis-toolbox.zip" -DestinationPath "cmsis-toolbox"
         $env:Path += ";$PWD\cmsis-toolbox"
 
