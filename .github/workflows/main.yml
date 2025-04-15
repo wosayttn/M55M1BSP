@@ -37,7 +37,7 @@ jobs:
         if [ -n "$single" ]; then
           files="$single"
         else
-          files=$(find . -name "*.csolution.yml")
+          files=$(find ./SampleCode/CortexM55 -name "*.csolution.yml")
         fi
 
         gcc_list=()
