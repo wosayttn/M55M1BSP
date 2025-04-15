@@ -30,8 +30,8 @@ jobs:
             echo "Processing: $sol, $proj"
             cd "$proj_dir"
 
-            echo "Running: vcpkg activate"
-            vcpkg activate
+            #echo "Running: vcpkg activate"
+            #vcpkg activate
 
             echo "Building: $sol"
             cbuild "$proj" --update-rte --packs
