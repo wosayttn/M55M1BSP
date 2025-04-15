@@ -1,4 +1,4 @@
-name: Build CMSIS Project (vcpkg + cbuild)
+name: VCPKG CMSIS-PROJECT
 
 on:
   workflow_dispatch:
