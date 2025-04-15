@@ -31,7 +31,7 @@ jobs:
             cd "$proj_dir"
 
             echo "Running: vcpkg activate"
-            vcpkg activate
+            vcpkg-shell activate
 
             echo "Building: $sol"
             vcpkg-shell bash -c "cbuild \"$proj\" --rebuild --update-rte --packs"
