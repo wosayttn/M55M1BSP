@@ -73,9 +73,8 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y gcc-arm-none-eabi build-essential unzip wget
         wget https://github.com/Open-CMSIS-Pack/cmsis-toolbox/releases/download/2.5.0/cmsis-toolbox-linux-amd64.tar.gz
-        mkdir -p toolbox
-        tar -xzf cmsis-toolbox-linux-amd64.tar.gz -C toolbox
-        sudo mv toolbox/bin/* /usr/local/bin
+        tar -xzf cmsis-toolbox-linux-amd64.tar.gz
+        sudo mv cmsis-toolbox-linux-amd64/bin/* /usr/local/bin
 
     - name: Build with GCC
       run: |
