@@ -75,7 +75,7 @@ jobs:
         wget https://github.com/Open-CMSIS-Pack/cmsis-toolbox/releases/download/2.5.0/cmsis-toolbox-linux-amd64.tar.gz
         mkdir -p toolbox
         tar -xzf cmsis-toolbox-linux-amd64.tar.gz -C toolbox
-        sudo mv toolbox/* /usr/local/bin
+        sudo mv toolbox/bin/* /usr/local/bin
 
     - name: Build with GCC
       run: |
